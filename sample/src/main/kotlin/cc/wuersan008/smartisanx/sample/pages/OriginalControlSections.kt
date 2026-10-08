@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroupItem
+import cc.wuersan008.smartisanx.ui.control.SmartisanChips
 import cc.wuersan008.smartisanx.ui.control.SmartisanSmoothSeekBar
 import androidx.compose.runtime.mutableFloatStateOf
 import kotlin.math.roundToInt
@@ -46,6 +48,7 @@ fun OriginalControlSections() {
     ButtonTabGroupSection()
     CalculatorButtonSection()
     SmoothSeekBarSection()
+    ChipsSection()
     NumberPickerSection()
     PageIndicatorSection()
     ProgressIndicatorSection()
@@ -141,6 +144,43 @@ private fun CalculatorButtonSection() {
                 text = "按键触发 $pressedTimes 次；按住删除键会按原版节奏连发",
                 modifier = Modifier.padding(top = 12.dp),
                 style = LocalSmartisanTypography.current.caption,
+                color = LocalSmartisanColors.current.textTertiary,
+            )
+        }
+    }
+}
+
+/** 标签（芯片）：framework 的 `smartisanos.widget.ChipsView` / `ShadowChipsView`。 */
+@Composable
+private fun ChipsSection() {
+    val tags = listOf("工作", "家人", "重要", "待办")
+    var selected by remember { mutableStateOf(emptySet<String>()) }
+    var removable by remember { mutableStateOf(tags) }
+    SampleSectionHeader("标签（framework ChipsView）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
+            SmartisanChips(
+                chips = tags,
+                selected = selected,
+                onChipClick = { t ->
+                    selected = if (t in selected) selected - t else selected + t
+                },
+            )
+            SmartisanText(
+                text = "已选：${if (selected.isEmpty()) "无" else selected.joinToString("、")}",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textTertiary,
+            )
+            SmartisanChips(
+                chips = removable,
+                modifier = Modifier.padding(top = 12.dp),
+                onChipRemove = { t -> removable = removable - t },
+            )
+            SmartisanText(
+                text = if (removable.isEmpty()) "全部删掉了" else "点右侧叉号可删除",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
                 color = LocalSmartisanColors.current.textTertiary,
             )
         }
