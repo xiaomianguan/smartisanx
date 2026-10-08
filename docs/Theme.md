@@ -129,6 +129,62 @@ follow an in-app light/dark switch.
 
 If you need the same fidelity as the light theme, treat light as the reference.
 
+## Fonts
+
+**The original Smartisan fonts are used by default.**
+
+| Purpose | Font | Source |
+| --- | --- | --- |
+| Body text | `FZCCHK` | `assets/FZCCHK.TTF` in `smartisanos_11.apk` |
+| Mechanical numerals (clock, timer) | `SmartisanClock`, three weights | same, `assets/SmartisanClock*.ttf/otf` |
+
+The font files live in `library/core/src/main/res/font/`, wired through `SmartisanFonts.Original`,
+and `SmartisanTheme` applies them to every text style via `withFonts()`.
+
+### About smartisan-compact-cns
+
+The original Smartisan OS UI font is the system font **smartisan-compact-cns**, which lives in the
+ROM at `/system/fonts/` and is **not inside any APK**. None of the factory resources available here
+(the 12 APKs, `Tool/framework-res.apk`, `Tool/smartisanos_11.apk`) contain it, so the default falls
+back to the Smartisan fonts obtainable from the same system.
+
+To switch to the real `smartisan-compact-cns`:
+
+1. put the file at `library/core/src/main/res/font/smartisan_compact_cns.ttf`
+   (resource names must be lowercase with underscores);
+2. in `SmartisanFonts.Original`, replace `R.font.fzcchk` with `R.font.smartisan_compact_cns`.
+
+### Using a different font
+
+Three options.
+
+**Follow the system default** (loads no font files):
+
+```kotlin
+SmartisanTheme(fonts = SmartisanFonts.SystemDefault) { /* ... */ }
+```
+
+**Use your own font:**
+
+```kotlin
+val myFont = FontFamily(Font(R.font.my_font))
+SmartisanTheme(fonts = SmartisanFonts.custom(myFont)) { /* ... */ }
+```
+
+**Custom font for the mechanical numerals only:**
+
+```kotlin
+SmartisanTheme(
+    fonts = SmartisanFonts.custom(text = null, numerals = myClockFont),
+) { /* ... */ }
+```
+
+### How fonts relate to text styles
+
+Every style in `SmartisanTypography` carries a `fontFamily`. `SmartisanTheme` applies the chosen
+fonts to all of them with `withFonts()`: `numeric` and `displayNumeric` get the mechanical numeral
+font, everything else gets the body font. To override individual styles, pass your own
+`SmartisanTypography`.
 ## Page texture and card shadows
 
 Smartisan screens are not flat: **the whole page is a fine vertical-stripe linen texture**, and content

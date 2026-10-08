@@ -142,11 +142,13 @@ fun SmartisanTheme(
     colors: SmartisanColors = lightSmartisanColors(),
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
+    fonts: SmartisanFonts = SmartisanFonts.Original,
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalSmartisanColors provides colors,
-        LocalSmartisanTypography provides typography,
+        LocalSmartisanTypography provides typography.withFonts(fonts.text, fonts.numerals),
+        LocalSmartisanFonts provides fonts,
         LocalSmartisanShapes provides shapes,
         LocalSmartisanDarkOverride provides !colors.isLight,
         content = content,
@@ -161,12 +163,14 @@ fun SmartisanTheme(
     controller: ThemeController,
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
+    fonts: SmartisanFonts = SmartisanFonts.Original,
     content: @Composable () -> Unit,
 ) {
     val colors = controller.colors()
     CompositionLocalProvider(
         LocalSmartisanColors provides colors,
-        LocalSmartisanTypography provides typography,
+        LocalSmartisanTypography provides typography.withFonts(fonts.text, fonts.numerals),
+        LocalSmartisanFonts provides fonts,
         LocalSmartisanShapes provides shapes,
         LocalSmartisanDarkOverride provides !colors.isLight,
         LocalSmartisanThemeController provides controller,

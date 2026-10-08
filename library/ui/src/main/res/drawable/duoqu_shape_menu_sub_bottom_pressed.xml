@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/duoqu_menu_sub_item_pressed" />
+    <corners android:bottomLeftRadius="@dimen/duoqu_menu_sub_radius" android:bottomRightRadius="@dimen/duoqu_menu_sub_radius" />
+</shape>

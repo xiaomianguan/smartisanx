@@ -23,5 +23,4 @@
     <color name="song_index_text_color">#85878a</color>
     <color name="surface_card">#34373c</color>
 
-    <drawable name="menu_list_item_normal">#34373c</drawable>
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="#ff000000" />
+        </shape>
+    </item>
+    <item android:top="@dimen/status_bar_height">
+        <shape>
+            <solid android:color="#edd7b7" />
+        </shape>
+    </item>
+    <item android:gravity="top" android:drawable="@drawable/action_bar_with_shadow" android:top="@dimen/status_bar_height" />
+</layer-list>

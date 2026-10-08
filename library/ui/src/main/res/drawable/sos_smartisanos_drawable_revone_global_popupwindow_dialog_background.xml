@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/sos_smartisanos_dimen_revone_popup_window_shadow_radius" />
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
+    <item android:left="2.0dp" android:top="2.0dp" android:right="2.0dp" android:bottom="2.0dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/sos_smartisanos_dimen_revone_popup_window_shadow_radius" />
+            <solid android:color="#fff6f6f6" />
+            <stroke android:width="2.0px" android:color="#ffe8e8e8" />
+        </shape>
+    </item>
+</layer-list>

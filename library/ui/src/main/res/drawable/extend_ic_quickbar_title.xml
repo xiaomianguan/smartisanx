@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list android:paddingMode="stack"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/extend_quickbar_wide" />
+    <item android:gravity="center" android:drawable="@drawable/extend_selector_quickbar_title_icon" android:left="@dimen/extend_button_margin_rtf" android:top="@dimen/extend_button_margin_rtf" android:right="@dimen/extend_button_margin_rtf" android:bottom="@dimen/extend_button_margin_rtf" />
+</layer-list>

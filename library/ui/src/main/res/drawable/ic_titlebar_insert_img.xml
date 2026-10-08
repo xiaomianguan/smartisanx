@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list android:paddingMode="stack"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/btn_back_wide" />
+    <item android:gravity="center" android:drawable="@drawable/insert_picture_icon" android:left="@dimen/extend_button_margin_old_insert" android:top="@dimen/extend_button_margin_old" android:right="@dimen/extend_button_margin_old_insert" android:bottom="@dimen/extend_button_margin_old" />
+</layer-list>

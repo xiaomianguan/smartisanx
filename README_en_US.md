@@ -275,6 +275,16 @@ Dark mode is therefore **experimental**, with two known limitations:
 
 If you need the same fidelity as the light theme, treat light as the reference.
 
+### Fonts
+
+**The original Smartisan fonts are used by default**: body text `FZCCHK`, mechanical numerals
+`SmartisanClock` in three weights, taken from `assets/` in the factory `smartisanos_11.apk`.
+
+The original UI font is the system font `smartisan-compact-cns`, which only exists in the ROM at
+`/system/fonts/` and not inside any APK, so the default falls back to the Smartisan fonts obtainable
+from the same system. To use the system default, your own font, or a different numeral font, see
+[Theme.md](docs/Theme.md#fonts).
+
 ### Page texture and card shadows
 
 Smartisan screens are not flat: **the whole page is a fine vertical-stripe linen texture**, and content

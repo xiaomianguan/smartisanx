@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list android:oneshot="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:duration="500" android:drawable="@drawable/quick_message_reading_a" />
+    <item android:duration="500" android:drawable="@drawable/quick_message_reading_b" />
+    <item android:duration="500" android:drawable="@drawable/quick_message_reading_c" />
+    <item android:duration="500" android:drawable="@drawable/quick_message_reading_d" />
+</animation-list>

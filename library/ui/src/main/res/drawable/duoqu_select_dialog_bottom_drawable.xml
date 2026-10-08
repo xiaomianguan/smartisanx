@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:topLeftRadius="18.0dp" android:topRightRadius="18.0dp" android:bottomLeftRadius="18.0dp" android:bottomRightRadius="18.0dp" />
+    <stroke android:width="0.33300006dp" android:color="@color/duoqu_select_dialog_bottom_drawable_stroke" />
+    <gradient android:startColor="@color/duoqu_select_dialog_bottom_drawable_gradient_start" android:endColor="@color/duoqu_select_dialog_bottom_drawable_gradient_end" android:angle="270.0" android:type="linear" />
+</shape>

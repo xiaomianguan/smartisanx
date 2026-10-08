@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list android:paddingMode="stack"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ext_folder_delete_all_bg" />
+    <item android:gravity="center" android:drawable="@drawable/title_bar_trash_icon" android:left="10.0dp" android:top="4.0dp" android:right="10.0dp" android:bottom="4.0dp" />
+</layer-list>

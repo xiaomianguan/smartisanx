@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list android:oneshot="true"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_button_trash" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0006" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0010" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0013" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0016" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0019" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0021" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0023" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0025" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0026" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0027" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0028" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0029" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0029" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0030" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0029" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0027" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0025" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0021" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0016" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_del_btn_mov_0009" />
+    <item android:duration="@integer/config_delBtnAnimTime" android:drawable="@drawable/ext_title_bar_button_trash" />
+</animation-list>

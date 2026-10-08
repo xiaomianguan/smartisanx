@@ -99,3 +99,28 @@ class SmartisanTypography(
 /** 当前 [SmartisanTypography]。 */
 val LocalSmartisanTypography: ProvidableCompositionLocal<SmartisanTypography> =
     staticCompositionLocalOf { SmartisanTypography() }
+
+/**
+ * 把字体族套用到全部文字样式上。
+ *
+ * [text] 用于正文，[numerals] 用于等宽数字与大号数字（时钟、计时器）。
+ * 传 `null` 表示该处跟随系统默认字体。
+ */
+fun SmartisanTypography.withFonts(
+    text: androidx.compose.ui.text.font.FontFamily?,
+    numerals: androidx.compose.ui.text.font.FontFamily? = text,
+): SmartisanTypography =
+    SmartisanTypography(
+        titleBar = titleBar.copy(fontFamily = text),
+        title = title.copy(fontFamily = text),
+        body = body.copy(fontFamily = text),
+        listItemPrimary = listItemPrimary.copy(fontFamily = text),
+        listItemSecondary = listItemSecondary.copy(fontFamily = text),
+        sectionTitle = sectionTitle.copy(fontFamily = text),
+        button = button.copy(fontFamily = text),
+        dialogButton = dialogButton.copy(fontFamily = text),
+        dialogTitle = dialogTitle.copy(fontFamily = text),
+        caption = caption.copy(fontFamily = text),
+        numeric = numeric.copy(fontFamily = numerals ?: text),
+        displayNumeric = displayNumeric.copy(fontFamily = numerals ?: text),
+    )

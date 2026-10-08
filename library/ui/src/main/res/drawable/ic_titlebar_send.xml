@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list android:paddingMode="stack"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/btn_back_wide" />
+    <item android:gravity="center" android:drawable="@drawable/title_bar_button_share" android:left="@dimen/extend_share_button_margin" android:top="@dimen/extend_share_button_margin" android:right="@dimen/extend_share_button_margin" android:bottom="@dimen/extend_share_button_margin" />
+</layer-list>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:height="48.0dp" android:drawable="@drawable/action_bar_default" />
+    <item android:drawable="@drawable/action_bar_shadow" android:top="48.0dp" />
+</layer-list>

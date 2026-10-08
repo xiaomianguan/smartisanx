@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="-2.0dp">
+        <shape android:shape="rectangle">
+            <corners android:bottomLeftRadius="@dimen/popup_window_shadow_radius" android:bottomRightRadius="@dimen/popup_window_shadow_radius" />
+            <solid android:color="#f2f2f2" />
+            <stroke android:width="@dimen/divider_line_size" android:color="@color/divider_line_color" />
+        </shape>
+    </item>
+</layer-list>

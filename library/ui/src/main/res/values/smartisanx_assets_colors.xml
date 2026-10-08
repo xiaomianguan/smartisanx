@@ -29,5 +29,4 @@
     <color name="surface_card">#ffffff</color>
 
     <!-- 原版把菜单项底色写成 values 里的 <drawable>，revone_menu_list_selector 会引用它。 -->
-    <drawable name="menu_list_item_normal">#ffffff</drawable>
 </resources>

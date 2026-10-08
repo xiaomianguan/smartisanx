@@ -6,4 +6,6 @@
     <dimen name="classic_timer_680_button_size">90dp</dimen>
     <dimen name="classic_timer_680_buttons_margin_top">15dp</dimen>
     <dimen name="classic_timer_680_ruler_height">600dp</dimen>
+    <dimen name="album_list_item_img_mask_height">48.0dp</dimen>
+    <dimen name="album_list_item_img_radius">7.1999817dp</dimen>
 </resources>

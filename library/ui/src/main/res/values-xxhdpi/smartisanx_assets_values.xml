@@ -10,4 +10,5 @@
     <dimen name="timer_bottom_top">539dp</dimen>
     <dimen name="timer_time_top">472dp</dimen>
     <dimen name="world_label_top">399dp</dimen>
+    <dimen name="status_bar_height">26.0dp</dimen>
 </resources>

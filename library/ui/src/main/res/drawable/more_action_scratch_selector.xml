@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:drawable="@drawable/more_select_icon_djing_on" />
+    <item android:state_checked="false" android:drawable="@drawable/more_select_icon_djing" />
+    <item android:state_enabled="true" android:drawable="@drawable/more_select_icon_djing_on" />
+    <item android:state_enabled="false" android:drawable="@drawable/more_select_icon_djing" />
+</selector>

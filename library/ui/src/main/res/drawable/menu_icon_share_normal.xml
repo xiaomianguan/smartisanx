@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="center" android:height="50.0dp" android:width="50.0dp">
+        <shape android:shape="oval">
+            <solid android:color="#9bc5e8" />
+        </shape>
+    </item>
+    <item android:gravity="center">
+        <bitmap android:gravity="center" android:src="@drawable/standard_icon_share_reverse" />
+    </item>
+</layer-list>
