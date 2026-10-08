@@ -20,7 +20,13 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // 库里有上万个原版素材，发布构建靠资源压缩把没用到的剔掉。
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 
