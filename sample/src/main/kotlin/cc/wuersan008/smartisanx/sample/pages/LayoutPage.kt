@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
-import cc.wuersan008.smartisanx.icons.SmartisanXIcons
-import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
-import cc.wuersan008.smartisanx.icons.SmartisanXStatusIcons
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
@@ -26,8 +24,6 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
 /** 布局页：标题栏、列表行、分组、标签栏、滚动条、空态。 */
 @Composable
 fun LayoutPage(onBack: () -> Unit) {
-    val colors = LocalSmartisanColors.current
-
     SamplePageScaffold(title = "布局与列表", onBack = onBack) {
         SampleSectionHeader("标题栏")
         SmartisanGroup {
@@ -46,7 +42,7 @@ fun LayoutPage(onBack: () -> Unit) {
                     actions =
                         listOf(
                             SmartisanTitleBarAction(SmartisanDrawables.IconSearch, "搜索", onClick = {}),
-                            SmartisanTitleBarAction(SmartisanXIcons.More, "更多", onClick = {}),
+                            SmartisanTitleBarAction(SmartisanOriginalIcons.More, "更多", onClick = {}),
                         ),
                     includeStatusBar = false,
                     showShadow = false,
@@ -79,10 +75,10 @@ fun LayoutPage(onBack: () -> Unit) {
                 title = "带前置图标",
                 summary = "来自锤子音乐的资料库行",
                 leading = {
+                    // 原版文件夹图标（tabbar_folder_selector），不再用自绘矢量图标。
                     SmartisanIcon(
-                        imageVector = SmartisanXStatusIcons.Folder,
+                        res = SmartisanOriginalIcons.TabFolder,
                         contentDescription = null,
-                        tint = colors.textSecondary,
                         size = 24.dp,
                     )
                 },
@@ -91,10 +87,10 @@ fun LayoutPage(onBack: () -> Unit) {
             SmartisanListItem(
                 title = "带后置箭头",
                 trailing = {
+                    // 原版列表箭头（selector_list_content_item_arrow）。
                     SmartisanIcon(
-                        imageVector = SmartisanXIcons.ChevronRight,
+                        res = SmartisanDrawables.ListItemArrow,
                         contentDescription = null,
-                        tint = colors.textDisabled,
                         size = 18.dp,
                     )
                 },

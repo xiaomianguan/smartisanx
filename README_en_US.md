@@ -18,7 +18,7 @@ modules split by responsibility, the demo app as its own module, components grou
 > **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
 > its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
 > in Compose, the library uses the assets the three revival projects recovered from the original
-> APKs (481 files, including night-mode and per-density variants).
+> APKs (1382 files, including night-mode and per-density variants).
 > Those assets belong to their respective rights holders; please read
 > [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
@@ -265,14 +265,14 @@ own pressed state.
 
 ### Inventory
 
-Every graphic asset under `library/ui/src/main/res/` — **481 files** — comes from one of the three
-revival projects:
+Every graphic asset and colour state list under `library/ui/src/main/res/` — **1382 files** — comes
+from one of the three revival projects:
 
 | Source | Files | Contents |
 | --- | --- | --- |
-| [SmartisanMusic-Revived](https://github.com/Mangi-11/SmartisanMusic-Revived) | 190 | Title bar background and shadow, title bar icon selectors, switch bitmaps, dialog and menu backgrounds, list row and group card selectors, checkbox and radio selectors, rating stars, bottom tab icons, popup menu backgrounds |
-| [SmartisanWeather-Revived](https://github.com/Mangi-11/SmartisanWeather-Revived) | 23 | Page texture `list_bg`, title bar icon selectors, red long-button selector, city item selectors |
-| [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived) | 268 | Large and small mechanical dials with hands, tick marks and numerals, ringing ear frame sequence, time wheels, timer caliper and scale, the 6.8.0 pull-ring 30-frame sequence, stopwatch buttons, letter index bar, swipe-delete panel |
+| [SmartisanMusic-Revived](https://github.com/Mangi-11/SmartisanMusic-Revived) | 607 | Title bar background and shadow, title bar icon selectors, switch bitmaps, dialog and menu backgrounds, list row and group card selectors, checkbox and radio selectors, rating stars, bottom tab icons, popup menu backgrounds |
+| [SmartisanWeather-Revived](https://github.com/Mangi-11/SmartisanWeather-Revived) | 414 | Page texture `list_bg`, title bar icon selectors, red long-button selector, city item selectors |
+| [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived) | 359 | Large and small mechanical dials with hands, tick marks and numerals, ringing ear frame sequence, time wheels, timer caliper and scale, the 6.8.0 pull-ring 30-frame sequence, stopwatch buttons, letter index bar, swipe-delete panel |
 
 Assets keep their original file names and qualifier directories (`drawable-night`,
 `drawable-xxhdpi`, and so on). Only two adjustments were made:

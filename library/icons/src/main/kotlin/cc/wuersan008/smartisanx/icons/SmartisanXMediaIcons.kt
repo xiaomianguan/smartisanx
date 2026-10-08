@@ -2,7 +2,12 @@ package cc.wuersan008.smartisanx.icons
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
-/** 播放控制类图标，对应锤子音乐播放页与全局播放条。 */
+/**
+ * 播放控制类图标（库自绘补充），对应锤子音乐播放页与全局播放条。
+ *
+ * 注意：本模块的图标是**库自绘的补充**，不是原版图标。原版有对应素材时，请用
+ * `cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons` 里的位图 / selector。
+ */
 object SmartisanXMediaIcons {
     /** 播放。 */
     val Play: ImageVector by lazy {

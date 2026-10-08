@@ -2,7 +2,12 @@ package cc.wuersan008.smartisanx.icons
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
-/** 状态与内容类图标：评分、收藏、定位、主题、提示等。 */
+/**
+ * 状态与内容类图标（库自绘补充）：评分、收藏、定位、主题、提示等。
+ *
+ * 注意：本模块的图标是**库自绘的补充**，不是原版图标。原版有对应素材时，请用
+ * `cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons` 里的位图 / selector。
+ */
 object SmartisanXStatusIcons {
     /** 实心星。 */
     val Star: ImageVector by lazy {

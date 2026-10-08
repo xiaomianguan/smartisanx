@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.overlay
 
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,13 +11,25 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
@@ -25,30 +38,41 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.rememberSmartisanDrawableButtonBackground
 
 /**
- * 居中弹窗的标题栏与按钮，以及由它们拼出的弹窗。
+ * 居中弹窗的标题栏、底部按钮，以及由它们拼出的弹窗。
  *
- * 复刻来源：
- * - 锤子时钟 `widget/SmartisanModalDialog.kt`：48dp 标题栏、居中加粗标题、48dp 按钮、308dp 弹窗宽度；
- * - 锤子音乐 `ui/components/SmartisanModal.kt` 的 `SmartisanMenuTitleBar` 与 `SmartisanDialogButton`：
- *   标题栏左右文字按钮的排布，以及「红色长按钮 / 通栏确认按钮」的按压反馈。
+ * 复刻来源（严格照抄原版布局 `res/layout/smartisan_modal_dialog.xml`）：
+ * ```
+ * LinearLayout smartisan_modal_root   宽 308dp，背景 smartisan_modal_background，clipToOutline
+ *   TextView     title    高 48dp  18sp 加粗  smartisan_modal_title_text
+ *   FrameLayout  content  背景 smartisan_modal_content_background
+ *   LinearLayout buttons  高 48dp
+ *     TextView cancel   weight=1  背景 smartisan_modal_cancel_background  12.5sp 加粗
+ *     View     divider  宽 1px    背景 smartisan_modal_border
+ *     TextView confirm  weight=1  背景 smartisan_modal_confirm_background 12.5sp 加粗
+ * ```
  *
- * 合并点：两个项目各自实现了一份「标题栏 + 底部按钮」的弹窗骨架（一份用 XML + Dialog，
- * 一份用 Compose + drawable），这里合并成一套 Compose 实现：标题栏底色用原版
- * `bottom_sheet_title_bar_bg`，确认按钮用原版 `shrink_long_btn_red_selector` /
- * `smartisan_menu_confirm_background` 及各自的投影 selector，尺寸与文字颜色仍走
- * [SmartisanDimens] 与主题色板。
+ * 两个按钮的 selector 默认项都是 `@android:color/transparent`：
+ * 弹窗里的确认按钮是**蓝色文字**，不是常驻的红色矩形，只有按下 / 聚焦 / 禁用时才画一层浅色底图。
+ * 圆角只来自外壳的 `smartisan_modal_background`（10dp 圆角 + 1px 描边）与整体裁剪，
+ * 按钮自己不再叠加任何圆角——这是此前「圆角不统一」的根因。
  */
 
-/** 标题栏左右文字按钮的宽度，保证至少 48dp 的可点区域。 */
-private val DialogTitleBarSideWidth = 56.dp
+/** 标题栏图标按钮的可点区域，对应原版 `smartisan_menu_dialog.xml` 里 48dp 的 ImageView。 */
+private val DialogTitleBarIconTouchSize = 48.dp
 
-/** 标题左右留白：让出两侧按钮的宽度再留一点余量。 */
-private val DialogTitleHorizontalPadding = DialogTitleBarSideWidth + 8.dp
+/**
+ * 标题左右留白。
+ *
+ * 对应原版标题的 `layout_marginHorizontal="48dp"`，正好让开两侧 48dp 的图标按钮。
+ */
+private val DialogTitleHorizontalPadding = 48.dp
 
 /** 弹窗内容的默认左右留白，对齐原版弹窗内容区的内缩。 */
 private val DialogContentHorizontalPadding = 18.dp
@@ -56,20 +80,74 @@ private val DialogContentHorizontalPadding = 18.dp
 /** 弹窗内容的默认上下留白。 */
 private val DialogContentVerticalPadding = 16.dp
 
+/** 弹窗标题文字：原版 `smartisan_modal_dialog.xml` 的 18sp 加粗。 */
+private val DialogModalTitleStyle =
+    TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 24.sp)
+
+/** 弹窗底部按钮文字：原版 `smartisan_modal_dialog.xml` 的 12.5sp 加粗。 */
+private val DialogModalButtonStyle =
+    TextStyle(fontSize = 12.5.sp, fontWeight = FontWeight.Bold, lineHeight = 17.sp)
+
 /**
- * 弹窗标题栏：高 48dp，标题居中、13.5sp 加粗，左右是「取消 / 确定」文字按钮。
+ * 原版弹窗里 1px 的物理像素分隔线换算成 dp。
  *
- * 按钮的显隐对齐锤子音乐标题栏的图标逻辑：
- * - [onConfirm] 为 null（例如只需要一个关闭入口的弹层）：右侧只显示「取消」，点击 [onDismiss]；
- * - [onConfirm] 不为 null：左侧「取消」、右侧「确定」，确定按钮由 [confirmEnabled] 控制可用性。
+ * 原版 XML 写的是 `1px`（物理像素），而 Compose 的 dp 会随屏幕密度放大：
+ * 直接写 `1.dp` 在 xxhdpi 上会比原版粗两倍，所以这里按当前密度换算回物理像素。
+ */
+@Composable
+internal fun smartisanOnePixel(): Dp = Dp(1f / LocalDensity.current.density)
+
+/**
+ * 读取原版 `res/color/` 下的 state list，并按 Compose 的按下 / 禁用状态取色。
+ *
+ * 弹窗按钮文字色在原版是 `@color/smartisan_modal_confirm_text` 这样的 selector，
+ * `colorResource` 只能拿到默认色，所以这里用 [ContextCompat.getColorStateList] 取完整状态色。
+ *
+ * @param colorRes `res/color/` 下的 selector 资源，例如 `R.color.smartisan_modal_confirm_text`。
+ * @param enabled 是否可用，禁用时取 `state_enabled="false"` 那一项。
+ * @param pressed 是否按下，按下时取 `state_pressed="true"` 那一项。
+ */
+@Composable
+internal fun rememberSmartisanStateColor(
+    @ColorRes colorRes: Int,
+    enabled: Boolean = true,
+    pressed: Boolean = false,
+): Color {
+    val context = LocalContext.current
+    val stateList =
+        remember(context, colorRes) { ContextCompat.getColorStateList(context, colorRes) }
+    return remember(context, colorRes, stateList, enabled, pressed) {
+        val state =
+            when {
+                !enabled -> intArrayOf(-android.R.attr.state_enabled)
+                pressed -> intArrayOf(android.R.attr.state_pressed)
+                else -> intArrayOf()
+            }
+        val argb =
+            stateList?.getColorForState(state, stateList.defaultColor)
+                ?: ContextCompat.getColor(context, colorRes)
+        Color(argb)
+    }
+}
+
+/**
+ * 弹窗标题栏：高 48dp，标题居中、13.5sp 加粗，左右是原版图标按钮。
+ *
+ * 结构与原版 `smartisan_menu_dialog.xml` 的标题栏一致：`bottom_sheet_title_bar_bg` 底图 +
+ * 居中标题 + 右侧 `standard_icon_cancel_selector` 关闭图标；需要「确定」时（[onConfirm] 不为 null）
+ * 左侧再加一个 `standard_icon_cancel_selector`、右侧换成 `standard_icon_complete_selector`，
+ * 对齐锤子音乐 `SmartisanMenuTitleBar` 的排布。
+ *
+ * 标题文字取色板的 `textSecondary`（浅色下即原版 `smartisan_menu_title_text`），
+ * 因为 `bottom_sheet_title_bar_bg` 自带夜间变体，文字必须跟着主题走。
  *
  * @param title 标题文字。
  * @param onDismiss 取消 / 关闭回调。
- * @param onConfirm 确认回调；为 null 时不显示左侧「取消」，右侧改为「取消」。
- * @param confirmEnabled 「确定」按钮是否可用，禁用时用 `textDisabled` 绘制。
+ * @param onConfirm 确认回调；为 null 时只在右侧显示一个关闭图标。
+ * @param confirmEnabled 「确定」图标是否可用，禁用时交给原版 selector 切换禁用态图标。
  * @param modifier 作用于标题栏容器。
- * @param backgroundRes 标题栏底色；默认用原版 `bottom_sheet_title_bar_bg`
- *   （NinePatch，自带夜间变体），传 null 时退回透明底。
+ * @param backgroundRes 标题栏底色；默认用原版 `bottom_sheet_title_bar_bg`（NinePatch，自带夜间变体），
+ *   传 null 时退回透明底。
  */
 @Composable
 fun SmartisanDialogTitleBar(
@@ -106,88 +184,96 @@ fun SmartisanDialogTitleBar(
             maxLines = 2,
         )
         if (onConfirm != null) {
-            SmartisanDialogTextButton(
-                text = "取消",
+            SmartisanDialogTitleBarIcon(
+                res = SmartisanDrawables.IconCancel,
+                contentDescription = "取消",
                 onClick = onDismiss,
                 modifier = Modifier.align(Alignment.CenterStart),
             )
         }
-        SmartisanDialogTextButton(
-            text = if (onConfirm == null) "取消" else "确定",
+        SmartisanDialogTitleBarIcon(
+            res =
+                if (onConfirm == null) SmartisanDrawables.IconCancel
+                else SmartisanDrawables.IconComplete,
+            contentDescription = if (onConfirm == null) "取消" else "确定",
             onClick = onConfirm ?: onDismiss,
             modifier = Modifier.align(Alignment.CenterEnd),
             enabled = onConfirm == null || confirmEnabled,
-            accent = onConfirm != null,
         )
     }
 }
 
 /**
- * 标题栏里的文字按钮：不使用涟漪，按压时只切换文字颜色，并带系统点击音与触感反馈。
+ * 标题栏里的图标按钮：48dp 可点区域、36dp 图标（对应原版 48dp ImageView 的 6dp 内边距）。
  *
- * @param text 按钮文字。
+ * 不使用涟漪：按下 / 禁用态由原版 selector（`standard_icon_cancel_selector` /
+ * `standard_icon_complete_selector`）自己切换，并附带系统点击音与触感反馈。
+ *
+ * @param res 原版图标 selector。
+ * @param contentDescription 无障碍描述。
  * @param onClick 点击回调。
  * @param modifier 作用于按钮容器。
- * @param enabled 是否可用，禁用时用 `textDisabled` 绘制。
- * @param accent 是否使用强调色文字（用于「确定」）。
+ * @param enabled 是否可用。
  */
 @Composable
-private fun SmartisanDialogTextButton(
-    text: String,
+private fun SmartisanDialogTitleBarIcon(
+    @DrawableRes res: Int,
+    contentDescription: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    accent: Boolean = false,
 ) {
-    val colors = LocalSmartisanColors.current
-    val typography = LocalSmartisanTypography.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     val haptic = smartisanHaptic()
-    val textColor =
-        when {
-            !enabled -> colors.textDisabled
-            pressed -> if (accent) colors.accentPressed else colors.textPrimary
-            accent -> colors.accent
-            else -> colors.textSecondary
-        }
     Box(
         modifier =
             modifier
-                .width(DialogTitleBarSideWidth)
-                .fillMaxHeight()
+                .size(DialogTitleBarIconTouchSize)
                 .smartisanClickable(interactionSource = interaction, enabled = enabled) {
                     haptic()
                     onClick()
                 },
         contentAlignment = Alignment.Center,
     ) {
-        SmartisanText(
-            text = text,
-            style = typography.dialogTitle,
-            color = textColor,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
+        SmartisanIcon(
+            res = res,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(SmartisanDimens.IconSize),
+            enabled = enabled,
+            pressed = pressed,
+            contentScale = ContentScale.Fit,
         )
     }
 }
 
 /**
- * 弹窗底部按钮：高 48dp、17sp 加粗、单行居中。
+ * 弹窗底部按钮：高 48dp、12.5sp 加粗、单行居中，**默认透明底**。
  *
- * [accent] 为 true 时使用原版红色长按钮底图（`shrink_long_btn_red_selector`）与投影
- * （`shadow_button_shrink_shadow_selector`），常态 / 按下 / 禁用三态由 selector 自动切换，
- * 文字取 `onAccent`；否则是表面色底 + `textPrimary` 文字。不使用涟漪，
- * 并附带系统点击音与触感反馈。
+ * 原版弹窗按钮就是「透明底 + 彩色文字」：`smartisan_modal_cancel_background` /
+ * `smartisan_modal_confirm_background` 两个 selector 的默认项都是 `@android:color/transparent`，
+ * 只有按下 / 聚焦 / 禁用时才画一层浅色底图。所以这里：
+ * - 不给按钮加任何圆角（圆角只由 [SmartisanModalWindow] 的外壳提供）；
+ * - 不铺常驻底色，按下态交给原版 selector；
+ * - 文字色用原版 `res/color/` state list：确认蓝色、取消灰色，按下 / 禁用自动切换。
+ *
+ * ```kotlin
+ * Row(Modifier.height(48.dp)) {
+ *     SmartisanDialogButton("取消", onClick = ::cancel, modifier = Modifier.weight(1f), accent = false)
+ *     SmartisanDialogButton("确定", onClick = ::confirm, modifier = Modifier.weight(1f))
+ * }
+ * ```
  *
  * @param text 按钮文字。
  * @param onClick 点击回调。
  * @param modifier 作用于按钮容器，通常配合 `fillMaxWidth()` 或 `weight(1f)` 使用。
- * @param enabled 是否可用，禁用态同样交给原版 selector。
- * @param accent 是否使用强调色实底样式。
- * @param backgroundRes 原版底图；为 null 时强调色样式取 `shrink_long_btn_red_selector`。
- * @param shadowRes 原版投影；为 null 时按底图自动配对。
- * @param showShadow 是否绘制原版投影。
+ * @param enabled 是否可用，禁用态交给原版 selector。
+ * @param accent 是否使用确认按钮的蓝色文字；false 时用取消按钮的灰色文字。
+ * @param backgroundRes 原版底图 selector；为 null 时按 [accent] 取原版弹窗按钮 selector。
+ * @param shadowRes 原版投影 selector；只有传入带投影的底图（例如 `smartisan_menu_confirm_background`）时才需要。
+ * @param showShadow 是否绘制投影；原版弹窗按钮没有投影，默认底图也就不会带投影。
+ * @param contentColor 文字色覆盖；默认取原版 state list，传具体颜色时按传入值绘制
+ *   （例如锤子时钟菜单弹窗的红色通栏按钮用白字）。
  */
 @Composable
 fun SmartisanDialogButton(
@@ -199,35 +285,34 @@ fun SmartisanDialogButton(
     @DrawableRes backgroundRes: Int? = null,
     @DrawableRes shadowRes: Int? = null,
     showShadow: Boolean = true,
+    contentColor: Color = Color.Unspecified,
 ) {
-    val colors = LocalSmartisanColors.current
-    val typography = LocalSmartisanTypography.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     val haptic = smartisanHaptic()
-    // 强调色按钮走原版底图 + 投影 selector，按下态由 drawable 自己切换。
-    val drawableBackground =
+    val resolvedBackgroundRes =
+        backgroundRes
+            ?: if (accent) R.drawable.smartisan_modal_confirm_background
+            else R.drawable.smartisan_modal_cancel_background
+    val backgroundModifier =
         rememberSmartisanDrawableButtonBackground(
-            backgroundRes =
-                backgroundRes ?: if (accent) SmartisanDrawables.DialogButtonAccent else null,
+            backgroundRes = resolvedBackgroundRes,
             shadowRes = shadowRes,
             showShadow = showShadow,
             enabled = enabled,
             pressed = pressed,
-        )
-    // 中性按钮没有对应的原版底图，仍按主题色绘制。
-    val neutralBackground =
-        when {
-            !enabled -> colors.surfaceDisabled
-            pressed -> colors.surfacePressed
-            else -> colors.surface
-        }
-    val backgroundModifier = drawableBackground ?: Modifier.background(neutralBackground)
-    val textColor =
-        when {
-            !enabled -> if (accent) colors.onAccent else colors.textDisabled
-            accent -> colors.onAccent
-            else -> colors.textPrimary
+        ) ?: Modifier
+    val resolvedContentColor =
+        if (contentColor != Color.Unspecified) {
+            contentColor
+        } else {
+            rememberSmartisanStateColor(
+                colorRes =
+                    if (accent) R.color.smartisan_modal_confirm_text
+                    else R.color.smartisan_modal_cancel_text,
+                enabled = enabled,
+                pressed = pressed,
+            )
         }
     Box(
         modifier =
@@ -242,23 +327,21 @@ fun SmartisanDialogButton(
     ) {
         SmartisanText(
             text = text,
-            style = typography.dialogButton,
-            color = textColor,
+            style = DialogModalButtonStyle,
+            color = resolvedContentColor,
             textAlign = TextAlign.Center,
             maxLines = 1,
         )
     }
 }
 
-
 /**
- * 居中弹窗：标题栏 + 内容 + 底部按钮，结构与尺寸对齐锤子时钟的 `SmartisanModalDialog`。
+ * 居中弹窗：标题 + 内容 + 「取消 | 确定」按钮行，结构与尺寸严格对齐原版
+ * `res/layout/smartisan_modal_dialog.xml`。
  *
- * 底部按钮有两种排布：
- * - [dismissText] 为 null（默认）：只显示一个通栏确认按钮，使用原版
- *   `smartisan_menu_confirm_background` / `smartisan_menu_confirm_shadow`；
- * - [dismissText] 非 null：显示「取消 | 确定」两个等宽按钮，中间一条 1px 分隔线，
- *   对齐锤子时钟，其中「确定」使用原版 `shrink_long_btn_red_selector`。
+ * - 标题：48dp 高、18sp 加粗、居中，颜色 `smartisan_modal_title_text`；
+ * - 内容：`smartisan_modal_content_background`（白底 + 2px 描边），默认 18dp 左右、16dp 上下留白；
+ * - 按钮行：48dp 高，两个 `weight(1f)` 的透明按钮，中间一条 1px 的 `smartisan_modal_border` 竖线。
  *
  * 确认时先关闭弹窗再执行 [onConfirm]，与原版 `dismiss()` 之后再执行动作的顺序一致。
  *
@@ -280,7 +363,8 @@ fun SmartisanDialogButton(
  * @param title 标题。
  * @param modifier 作用于弹窗面板。
  * @param confirmText 确认按钮文字。
- * @param dismissText 取消按钮文字；为 null 时不显示取消按钮。
+ * @param dismissText 取消按钮文字；原版布局固定是「取消 | 确定」两个等宽按钮，
+ *   因此为 null 时按原版默认文案「取消」绘制。
  * @param confirmEnabled 确认按钮是否可用。
  * @param onConfirm 确认回调。
  * @param content 弹窗内容，纵向排列，默认带 18dp 左右、16dp 上下留白。
@@ -296,23 +380,34 @@ fun SmartisanDialog(
     onConfirm: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val colors = LocalSmartisanColors.current
     val dismiss = LocalSmartisanModalDismiss.current ?: onDismissRequest
     val confirm = {
         // 与原版一致：先关闭弹窗，再执行确认动作。
         dismiss()
         onConfirm()
     }
+    val cancelText = dismissText ?: "取消"
     SmartisanModalWindow(onDismissRequest = onDismissRequest, modifier = modifier) {
-        SmartisanDialogTitleBar(
-            title = title,
-            onDismiss = dismiss,
-            onConfirm = null,
-            confirmEnabled = confirmEnabled,
-        )
+        // 标题：48dp 高、18sp 加粗、居中（原版 smartisan_modal_title）。
+        Box(
+            modifier = Modifier.fillMaxWidth().height(SmartisanDimens.DialogTitleHeight),
+            contentAlignment = Alignment.Center,
+        ) {
+            SmartisanText(
+                text = title,
+                modifier = Modifier.padding(horizontal = DialogTitleHorizontalPadding),
+                style = DialogModalTitleStyle,
+                // 原版弹窗底图没有夜间变体（始终浅色），所以标题固定用原版深色文字。
+                color = colorResource(R.color.smartisan_modal_title_text),
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+            )
+        }
+        // 内容：原版 smartisan_modal_content_background（白底 + 2px 描边）。
         Column(
             modifier =
                 Modifier.fillMaxWidth()
+                    .smartisanDrawableBackground(R.drawable.smartisan_modal_content_background)
                     .padding(
                         horizontal = DialogContentHorizontalPadding,
                         vertical = DialogContentVerticalPadding,
@@ -320,39 +415,27 @@ fun SmartisanDialog(
         ) {
             content()
         }
-        if (dismissText == null) {
-            // 通栏确认按钮用原版锤子时钟菜单弹窗的确认底图与投影。
+        // 按钮行：48dp + 1px 分隔线 + 两个 weight=1 的透明按钮。
+        Row(modifier = Modifier.fillMaxWidth().height(SmartisanDimens.DialogButtonHeight)) {
+            SmartisanDialogButton(
+                text = cancelText,
+                onClick = dismiss,
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                accent = false,
+            )
+            Box(
+                modifier =
+                    Modifier.fillMaxHeight()
+                        .width(smartisanOnePixel())
+                        .background(colorResource(R.color.smartisan_modal_border)),
+            )
             SmartisanDialogButton(
                 text = confirmText,
                 onClick = confirm,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
                 enabled = confirmEnabled,
-                backgroundRes = SmartisanDrawables.DialogConfirmBackground,
-                shadowRes = SmartisanDrawables.DialogConfirmShadow,
+                accent = true,
             )
-        } else {
-            Row(
-                modifier = Modifier.fillMaxWidth().height(SmartisanDimens.DialogButtonHeight),
-            ) {
-                SmartisanDialogButton(
-                    text = dismissText,
-                    onClick = dismiss,
-                    modifier = Modifier.weight(1f).fillMaxHeight(),
-                    accent = false,
-                )
-                Box(
-                    modifier =
-                        Modifier.fillMaxHeight()
-                            .width(SmartisanDimens.DividerThickness)
-                            .background(colors.divider),
-                )
-                SmartisanDialogButton(
-                    text = confirmText,
-                    onClick = confirm,
-                    modifier = Modifier.weight(1f).fillMaxHeight(),
-                    enabled = confirmEnabled,
-                )
-            }
         }
     }
 }
@@ -385,8 +468,6 @@ fun SmartisanConfirmDialog(
     dismissText: String = "取消",
     onConfirm: () -> Unit,
 ) {
-    val colors = LocalSmartisanColors.current
-    val typography = LocalSmartisanTypography.current
     SmartisanDialog(
         onDismissRequest = onDismissRequest,
         title = title,
@@ -397,8 +478,9 @@ fun SmartisanConfirmDialog(
         SmartisanText(
             text = message,
             modifier = Modifier.fillMaxWidth(),
-            style = typography.body,
-            color = colors.textPrimary,
+            style = LocalSmartisanTypography.current.body,
+            // 弹窗内容区始终是白底（原版底图没有夜间变体），所以说明文字固定用原版深色文字。
+            color = colorResource(R.color.smartisan_text_primary),
             textAlign = TextAlign.Center,
         )
     }

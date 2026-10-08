@@ -2,7 +2,12 @@ package cc.wuersan008.smartisanx.icons
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
-/** 时钟、闹钟、计时类图标，对应锤子时钟的四个页面。 */
+/**
+ * 时钟、闹钟、计时类图标（库自绘补充），对应锤子时钟的四个页面。
+ *
+ * 注意：本模块的图标是**库自绘的补充**，不是原版图标。原版有对应素材时，请用
+ * `cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons` 里的位图 / selector。
+ */
 object SmartisanXClockIcons {
     /** 世界时钟 / 表盘。 */
     val Clock: ImageVector by lazy {

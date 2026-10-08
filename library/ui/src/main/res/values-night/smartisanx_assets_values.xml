@@ -41,4 +41,20 @@
     <color name="tab_bar_text_normal">#9fa1a4</color>
     <color name="tab_bar_text_press">#f2f2f2</color>
     <color name="title_or_btn_text_color">#d2d3d5</color>
+
+    <!--
+      原版锤子时钟没有深色模式，弹窗与菜单的颜色只在 values/ 里有一份浅色。
+      这里按本库校准过的炭灰色板（页底 #25282D / 卡片 #34373C / 分隔线 #404348）
+      补一套夜间取值，让锤子时钟样式的弹窗在深色界面里也成立。
+    -->
+    <color name="smartisan_modal_shell">#FF34373C</color>
+    <color name="smartisan_modal_content">#FF34373C</color>
+    <color name="smartisan_modal_border">#FF404348</color>
+    <color name="smartisan_modal_title_text">#FFF2F2F2</color>
+    <color name="smartisan_modal_cancel_text_normal">#FF9FA1A4</color>
+    <color name="smartisan_modal_cancel_text_disabled">#FF717377</color>
+    <color name="smartisan_menu_content">#FF34373C</color>
+    <color name="smartisan_menu_divider">#FF404348</color>
+    <color name="smartisan_menu_title_text">#FF9FA1A4</color>
+    <color name="smartisan_menu_action_text">#FFF2F2F2</color>
 </resources>

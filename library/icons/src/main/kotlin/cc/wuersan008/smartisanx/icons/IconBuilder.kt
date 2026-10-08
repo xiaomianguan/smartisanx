@@ -11,8 +11,10 @@ import androidx.compose.ui.unit.dp
 /**
  * 图标构造助手。
  *
- * smartisanx 不打包任何位图资源，全部图标用 24×24 的矢量路径描述，
- * 与锤子原版「细线 + 圆角端点」的图标风格一致。
+ * 本模块（`library/icons`）提供的是**补充图标**：24×24 的矢量路径，不是原版图标素材。
+ * 库内真正还原原版质感的是 `library/ui` 里
+ * `cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons` 指向的位图 / selector
+ * （原版 APK 素材，含夜间与多密度变体）；只有原版没有对应素材时，才用本模块的矢量图标。
  *
  * 图标本身使用纯黑填充/描边，颜色由 `SmartisanIcon` 的 `tint` 决定。
  */

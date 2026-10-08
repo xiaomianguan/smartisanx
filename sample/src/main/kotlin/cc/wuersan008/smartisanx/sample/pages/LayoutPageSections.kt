@@ -17,10 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
-import cc.wuersan008.smartisanx.icons.SmartisanXClockIcons
-import cc.wuersan008.smartisanx.icons.SmartisanXMediaIcons
-import cc.wuersan008.smartisanx.icons.SmartisanXStatusIcons
-import cc.wuersan008.smartisanx.icons.SmartisanXIcons
+import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBarItem
@@ -56,12 +53,13 @@ fun TabSection() {
     val tabs = listOf("歌曲", "专辑", "艺术家", "文件夹")
     var tab by remember { mutableIntStateOf(0) }
     var barIndex by remember { mutableIntStateOf(0) }
+    // 使用原版底部标签栏图标：tabbar_*_selector 自带选中态，不需要 tint。
     val barItems =
         listOf(
-            SmartisanBottomBarItem(SmartisanXMediaIcons.Queue, "音乐"),
-            SmartisanBottomBarItem(SmartisanXStatusIcons.Sun, "天气"),
-            SmartisanBottomBarItem(SmartisanXClockIcons.Clock, "时钟"),
-            SmartisanBottomBarItem(SmartisanXIcons.Settings, "设置"),
+            SmartisanBottomBarItem(label = "歌曲", iconRes = SmartisanOriginalIcons.TabSong),
+            SmartisanBottomBarItem(label = "文件夹", iconRes = SmartisanOriginalIcons.TabFolder),
+            SmartisanBottomBarItem(label = "收藏", iconRes = SmartisanOriginalIcons.TabFavorite),
+            SmartisanBottomBarItem(label = "更多", iconRes = SmartisanOriginalIcons.TabMore),
         )
     SmartisanGroup {
         Column {
@@ -124,10 +122,11 @@ fun ScrollbarSection() {
 @Composable
 fun EmptyHintSection() {
     SmartisanGroup {
+        // 空态插图用原版 blank_folder，与锤子音乐资料库空态一致。
         SmartisanEmptyHint(
             title = "这里还没有内容",
             description = "空列表提示来自锤子音乐资料库与锤子天气城市列表。",
-            icon = SmartisanXStatusIcons.Folder,
+            iconRes = SmartisanOriginalIcons.EmptyFolder,
         )
     }
 }

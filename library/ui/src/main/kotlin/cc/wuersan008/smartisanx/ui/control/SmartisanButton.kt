@@ -8,27 +8,27 @@
  * - 锤子天气（Compose）`ui/components/WeatherComponents.kt` 的 `WeatherButton`：
  *   48dp 高、左右 12dp 内边距、加粗文字、按下切换按压态颜色。
  *
- * 强调色按钮直接使用原版 nine-patch selector：底图是 `shrink_long_btn_red_selector`，
- * 投影是 `shadow_button_shrink_shadow_selector`，常态 / 按下 / 禁用三态由 `enabled`、
- * `pressed` 交给 drawable 自动切换，不再用 `accentPressed` 这类手绘换色；
- * 中性按钮没有对应的原版底图，仍取 `surface` / `surfacePressed` + `divider` 描边，
- * 文字按钮取 `link` / `linkPressed`。按压反馈保留轻微缩放，不使用涟漪。
+ * 三种样式都直接用原版 nine-patch selector 当底图，常态 / 按下 / 禁用三态由 `enabled`、
+ * `pressed` 交给 drawable 自动切换，不再用 `accentPressed` 这类手绘换色：
+ * - [SmartisanButtonStyle.Accent]：`shrink_long_btn_red_selector` + 配套的
+ *   `shadow_button_shrink_shadow_selector`，这是**长按钮**（高 48dp），只有它才配红色底图；
+ * - [SmartisanButtonStyle.Neutral]：`revone_dialog_button_bg_selector`；
+ * - [SmartisanButtonStyle.Text]：不加底图，文字取 `link` / `linkPressed`。
+ *
+ * 圆角、按下收缩与投影全部由底图负责，组件**不再叠加任何自绘圆角**，
+ * 也不会用 `shapes.extraSmall` 这类主题圆角去盖原版 nine-patch 的圆角。
  */
 package cc.wuersan008.smartisanx.ui.control
 
 import android.graphics.Rect
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -44,22 +44,18 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
-import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
@@ -72,15 +68,12 @@ enum class SmartisanButtonStyle {
     /** 锤子红实心按钮，对应原版 `shrink_long_btn_red_selector`。 */
     Accent,
 
-    /** 描边中性按钮，用于次要操作。 */
+    /** 中性按钮，对应原版 `revone_dialog_button_bg_selector`，用于次要操作。 */
     Neutral,
 
     /** 纯文字按钮，用于弹窗、设置行里的轻量操作。 */
     Text,
 }
-
-/** 按下时的收缩比例：底图本身已由原版 selector 切换，这里再补一点轻微收缩。 */
-private const val ButtonPressedScale = 0.96f
 
 /** 按钮左右内边距，取自锤子天气 `WeatherButton`。 */
 private val ButtonHorizontalPadding = 12.dp
@@ -217,11 +210,14 @@ private fun SmartisanButtonSpinner(
 }
 
 /**
- * 按钮的公共实现：底图、颜色、缩放与加载态都在这里统一处理。
+ * 按钮的公共实现：底图、文字色与加载态都在这里统一处理。
+ *
+ * 底图全部来自原版 selector，组件**不再叠加任何自绘圆角**：
+ * 圆角、按下收缩、投影都由原版 nine-patch / selector 自己完成。
  *
  * @param contentColorOverride 仅文字按钮使用；为 `Color.Unspecified` 时按样式取默认色。
  * @param backgroundRes 原版底图；为 null 时强调色按钮取 `shrink_long_btn_red_selector`，
- *   其余样式回退到主题色。
+ *   中性按钮取 `revone_dialog_button_bg_selector`，文字按钮不加底图。
  * @param shadowRes 原版投影；为 null 时按底图自动配对。
  * @param showShadow 是否绘制原版投影。
  */
@@ -240,45 +236,29 @@ private fun SmartisanButtonSurface(
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    val shapes = LocalSmartisanShapes.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     val active = enabled && !loading
     val pressActive = pressed && active
-    val shape: Shape = shapes.extraSmall
-    val scale by
-        animateFloatAsState(
-            targetValue = if (pressActive) ButtonPressedScale else 1f,
-            animationSpec = SmartisanMotion.easeInOut(SmartisanMotion.DurationShort),
-            label = "smartisan button press scale",
-        )
-    // 强调色按钮默认使用原版红色收缩按钮的底图与投影。
+    // 底图全部来自原版 selector：强调色是红色长按钮（shrink_long_btn_red_selector +
+    // shadow_button_shrink_shadow_selector），中性是原版弹窗中性按钮
+    // （revone_dialog_button_bg_selector），文字按钮不加底图。
+    // 圆角、按下收缩与投影都由底图自己完成，这里不再叠加任何自绘圆角。
     val resolvedBackgroundRes =
         backgroundRes
-            ?: if (style == SmartisanButtonStyle.Accent) SmartisanDrawables.DialogButtonAccent
-            else null
-    val drawableBackground =
+            ?: when (style) {
+                SmartisanButtonStyle.Accent -> SmartisanDrawables.DialogButtonAccent
+                SmartisanButtonStyle.Neutral -> SmartisanDrawables.DialogButtonNeutral
+                SmartisanButtonStyle.Text -> null
+            }
+    val backgroundModifier =
         rememberSmartisanDrawableButtonBackground(
             backgroundRes = resolvedBackgroundRes,
             shadowRes = shadowRes,
             showShadow = showShadow,
             enabled = enabled,
-            pressed = pressActive,
-        )
-    // 中性按钮没有对应的原版底图，仍按主题色绘制。
-    val neutralBackground =
-        when {
-            !enabled -> colors.surfaceDisabled
-            pressActive -> colors.surfacePressed
-            else -> colors.surface
-        }
-    val backgroundModifier =
-        drawableBackground
-            ?: if (style == SmartisanButtonStyle.Neutral) {
-                Modifier.background(color = neutralBackground, shape = shape)
-            } else {
-                Modifier
-            }
+            pressed = pressed,
+        ) ?: Modifier
     val contentColor =
         when {
             contentColorOverride != Color.Unspecified ->
@@ -298,22 +278,9 @@ private fun SmartisanButtonSurface(
     Box(
         modifier =
             modifier
+                // 原版长按钮固定 48dp 高，底图按 48dp 的 nine-patch 内边距拉伸。
                 .heightIn(min = SmartisanDimens.DialogButtonHeight)
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
                 .then(backgroundModifier)
-                .then(
-                    if (style == SmartisanButtonStyle.Neutral && drawableBackground == null) {
-                        Modifier.border(
-                            border = BorderStroke(SmartisanDimens.DividerThickness, colors.divider),
-                            shape = shape,
-                        )
-                    } else {
-                        Modifier
-                    },
-                )
                 .smartisanClickable(
                     interactionSource = interaction,
                     enabled = active,
@@ -349,7 +316,8 @@ private fun SmartisanButtonSurface(
  * ```
  *
  * @param loading 加载中：显示自绘旋转指示器，并暂时屏蔽点击。
- * @param backgroundRes 原版底图；为 null 时强调色样式使用 `shrink_long_btn_red_selector`。
+ * @param backgroundRes 原版底图；为 null 时强调色样式使用 `shrink_long_btn_red_selector`，
+ *   中性样式使用 `revone_dialog_button_bg_selector`，文字样式不加底图。
  * @param shadowRes 原版投影；为 null 时按底图自动配对。
  * @param showShadow 是否绘制原版投影。
  */

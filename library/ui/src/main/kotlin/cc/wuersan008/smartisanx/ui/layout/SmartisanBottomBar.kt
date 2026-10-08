@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.layout
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,15 +40,29 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  *
  * 对应锤子音乐的可排序底部导航与锤子时钟的四页底部栏：
  * 选中态用强调色并轻微放大，未选中态用三级文字色。
+ *
+ * 图标支持两种来源，原版素材优先：
+ *
+ * ```kotlin
+ * // 原版标签栏图标（tabbar_*_selector，选中态会自动切到按下图）
+ * SmartisanBottomBarItem(label = "歌曲", iconRes = SmartisanOriginalIcons.TabSong)
+ *
+ * // 自定义矢量图标（原版没有对应素材时才用）
+ * SmartisanBottomBarItem(icon = SmartisanXMediaIcons.Queue, label = "音乐")
+ * ```
  */
 @Immutable
 data class SmartisanBottomBarItem(
-    /** 未选中时的图标。 */
-    val icon: ImageVector,
+    /** 未选中时的矢量图标；只使用原版位图图标时可以不传。 */
+    val icon: ImageVector? = null,
     /** 文字标签。 */
     val label: String,
-    /** 选中时的图标，默认与未选中一致。 */
-    val selectedIcon: ImageVector = icon,
+    /** 选中时的矢量图标，默认与未选中一致。 */
+    val selectedIcon: ImageVector? = icon,
+    /** 未选中时的原版位图图标，传了它优先于 [icon]。 */
+    @DrawableRes val iconRes: Int? = null,
+    /** 选中时的原版位图图标，默认与 [iconRes] 一致。 */
+    @DrawableRes val selectedIconRes: Int? = iconRes,
 )
 
 /**
@@ -110,6 +125,8 @@ private fun SmartisanBottomBarItemView(
         label = "smartisan bottom bar press",
     )
     val tint = if (selected) colors.accent else colors.textTertiary
+    val res = if (selected) item.selectedIconRes else item.iconRes
+    val vector = if (selected) item.selectedIcon else item.icon
     Column(
         modifier =
             modifier
@@ -127,12 +144,23 @@ private fun SmartisanBottomBarItemView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        SmartisanIcon(
-            imageVector = if (selected) item.selectedIcon else item.icon,
-            contentDescription = item.label,
-            tint = tint,
-            size = SmartisanDimens.BottomBarIconSize,
-        )
+        when {
+            // 原版位图图标：tabbar_*_selector 自带选中态（state_selected → 按下图），不需要 tint。
+            res != null ->
+                SmartisanIcon(
+                    res = res,
+                    contentDescription = item.label,
+                    size = SmartisanDimens.BottomBarIconSize,
+                    selected = selected,
+                )
+            vector != null ->
+                SmartisanIcon(
+                    imageVector = vector,
+                    contentDescription = item.label,
+                    tint = tint,
+                    size = SmartisanDimens.BottomBarIconSize,
+                )
+        }
         SmartisanText(
             text = item.label,
             modifier = Modifier.padding(top = 1.dp),

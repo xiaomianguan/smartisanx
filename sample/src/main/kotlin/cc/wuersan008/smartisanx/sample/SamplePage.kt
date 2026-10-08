@@ -28,7 +28,7 @@ enum class SamplePage(
     ),
     Icon(
         title = "图标",
-        subtitle = "smartisanx 矢量图标集",
+        subtitle = "原版图标素材与库自绘补充图标",
         icon = SmartisanXStatusIcons.Star,
     ),
     Button(

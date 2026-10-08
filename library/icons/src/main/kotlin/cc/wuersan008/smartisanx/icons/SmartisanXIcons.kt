@@ -3,10 +3,13 @@ package cc.wuersan008.smartisanx.icons
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
- * smartisanx 通用图标。
+ * smartisanx 通用图标（库自绘补充）。
  *
- * 图标风格取自三个复刻项目共用的锤子原版资源：细线、圆角端点、24×24 网格。
+ * 图标风格参考锤子原版：细线、圆角端点、24×24 网格。
  * 颜色由使用处的 `tint` 决定，不打包任何位图。
+ *
+ * 注意：本模块的图标是**库自绘的补充**，不是原版图标。原版有对应素材时，请用
+ * `cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons` 里的位图 / selector。
  */
 object SmartisanXIcons {
     /** 返回。 */
