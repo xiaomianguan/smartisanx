@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.layout
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -15,6 +16,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
@@ -88,5 +90,69 @@ fun SmartisanCard(
     Column(
         modifier = modifier.fillMaxWidth().background(color = color, shape = shape),
         content = content,
+    )
+}
+
+/**
+ * 分组行在分组里的位置。
+ *
+ * 原版把分组卡片拆成 top / middle / bottom / single 四张底图，
+ * 每张都带自己的圆角、描边与按压态，所以行必须知道自己的位置。
+ */
+enum class SmartisanGroupRowPosition {
+    /** 分组里唯一的一行（带完整描边）。 */
+    Single,
+
+    /** 分组第一行。 */
+    Top,
+
+    /** 分组中间行。 */
+    Middle,
+
+    /** 分组最后一行。 */
+    Bottom,
+}
+
+/** 取该位置对应的原版分组底图。 */
+@DrawableRes
+fun smartisanGroupRowBackground(position: SmartisanGroupRowPosition): Int =
+    when (position) {
+        SmartisanGroupRowPosition.Single -> SmartisanDrawables.GroupRowSingle
+        SmartisanGroupRowPosition.Top -> SmartisanDrawables.GroupRowTop
+        SmartisanGroupRowPosition.Middle -> SmartisanDrawables.GroupRowMiddle
+        SmartisanGroupRowPosition.Bottom -> SmartisanDrawables.GroupRowBottom
+    }
+
+/**
+ * 分组里的列表行：自动使用对应位置的原版分组底图。
+ *
+ * 这是 [SmartisanListItem] 的便捷包装，保留了后者的全部参数。
+ */
+@Composable
+fun SmartisanGroupItem(
+    position: SmartisanGroupRowPosition,
+    title: String,
+    modifier: Modifier = Modifier,
+    summary: String? = null,
+    leading: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    enabled: Boolean = true,
+    selected: Boolean = false,
+    showDivider: Boolean = false,
+    onClick: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
+) {
+    SmartisanListItem(
+        title = title,
+        modifier = modifier,
+        summary = summary,
+        leading = leading,
+        trailing = trailing,
+        enabled = enabled,
+        selected = selected,
+        showDivider = showDivider,
+        rowBackgroundRes = smartisanGroupRowBackground(position),
+        onClick = onClick,
+        onLongClick = onLongClick,
     )
 }

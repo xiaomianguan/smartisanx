@@ -3,6 +3,7 @@ package cc.wuersan008.smartisanx.ui.list
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -24,7 +26,9 @@ import kotlinx.coroutines.launch
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
-import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 
 /**
  * 侧滑删除行。
@@ -67,15 +71,24 @@ fun SmartisanSwipeToDelete(
         // 删除面板由内容决定整体尺寸：matchParentSize 不参与父级测量，
         // 因此行高仍然由 content 决定，面板只是覆盖在内容下面。
         Box(
-            modifier = Modifier.matchParentSize().background(colors.accent),
+            modifier =
+                Modifier
+                    .matchParentSize()
+                    // 原版删除面板用的是平铺的红色纹理 list_edit_remove_background。
+                    .smartisanDrawableBackground(SmartisanDrawables.ListRemoveBackground),
             contentAlignment = Alignment.CenterStart,
         ) {
-            SmartisanText(
-                text = deleteLabel,
-                modifier = Modifier.padding(start = 24.dp),
-                style = typography.button,
-                color = colors.onAccent,
-                maxLines = 1,
+            // 面板上的图标就是原版的 slide_delete（按下换成 slide_delete_down）。
+            SmartisanIcon(
+                res =
+                    if (dragging) {
+                        SmartisanDrawables.SlideDeletePressed
+                    } else {
+                        SmartisanDrawables.SlideDelete
+                    },
+                contentDescription = deleteLabel,
+                modifier = Modifier.padding(start = 24.dp).size(DeleteIconSize),
+                contentScale = ContentScale.Fit,
             )
         }
         Box(
@@ -130,3 +143,6 @@ fun SmartisanSwipeToDelete(
         }
     }
 }
+
+/** 删除面板上图标的尺寸（原版 slide_delete 是 90×90 的 30dp 图标）。 */
+private val DeleteIconSize = 30.dp

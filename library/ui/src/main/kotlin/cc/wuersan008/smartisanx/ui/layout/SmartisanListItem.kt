@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.layout
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -23,6 +24,8 @@ import cc.wuersan008.smartisanx.core.interaction.smartisanClick
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
@@ -47,6 +50,7 @@ fun SmartisanListItem(
     dividerStartIndent: Dp = SmartisanDimens.RowContentStart,
     minHeight: Dp = SmartisanDimens.ListItemMinHeight,
     contentPadding: Dp = SmartisanDimens.RowContentStart,
+    @DrawableRes rowBackgroundRes: Int? = SmartisanDrawables.ListRowSelector,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
 ) {
@@ -56,15 +60,28 @@ fun SmartisanListItem(
     val pressed by interaction.collectSmartisanPressedAsState()
     val click = smartisanClick { onClick?.invoke() }
 
-    val background =
-        when {
-            selected -> colors.selectionBackground
-            pressed && enabled -> colors.surfacePressed
-            else -> Color.Transparent
-        }
     val titleColor = if (enabled) colors.textPrimary else colors.textDisabled
+    // 原版列表行底色由 selector 决定：按下换成按压位图、activated 换成多选底色、
+    // 默认是 surface_card。传 rowBackgroundRes = null 时才退回主题的纯色。
+    val backgroundModifier =
+        if (rowBackgroundRes != null) {
+            Modifier.smartisanDrawableBackground(
+                drawableRes = rowBackgroundRes,
+                enabled = enabled,
+                pressed = pressed && enabled,
+                activated = selected,
+            )
+        } else {
+            Modifier.background(
+                when {
+                    selected -> colors.selectionBackground
+                    pressed && enabled -> colors.surfacePressed
+                    else -> Color.Transparent
+                },
+            )
+        }
 
-    Column(modifier.fillMaxWidth().background(background)) {
+    Column(modifier.fillMaxWidth().then(backgroundModifier)) {
         Row(
             modifier =
                 Modifier.fillMaxWidth()

@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.list
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -44,6 +47,7 @@ fun SmartisanLetterIndexBar(
     activeLetter: Char? = null,
     letterHeight: Dp = 13.dp,
     showOverlay: Boolean = true,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.LetterBarBackground,
 ) {
     if (letters.isEmpty()) return
     val colors = LocalSmartisanColors.current
@@ -66,6 +70,14 @@ fun SmartisanLetterIndexBar(
         modifier =
             modifier
                 .width(SmartisanDimens.LetterIndexBarWidth)
+                // 原版字母栏底色 letters_bar_background（NinePatch，自带夜间变体）。
+                .then(
+                    if (backgroundRes != null) {
+                        Modifier.smartisanDrawableBackground(backgroundRes)
+                    } else {
+                        Modifier
+                    },
+                )
                 .pointerInput(letters, letterHeightPx) {
                     awaitEachGesture {
                         val down = awaitFirstDown()
@@ -116,10 +128,8 @@ fun SmartisanLetterIndexBar(
                         // 气泡贴在字母栏左侧：栏宽一半 + 4dp 间距 + 气泡半径 24dp。
                         .offset(x = -(SmartisanDimens.LetterIndexBarWidth / 2 + 28.dp))
                         .size(48.dp)
-                        .background(
-                            color = colors.textPrimary.copy(alpha = 0.85f),
-                            shape = RoundedCornerShape(8.dp),
-                        ),
+                        // 原版放大气泡用的就是 letters_bar_highlight_icon。
+                        .smartisanDrawableBackground(SmartisanDrawables.LetterBarHighlight),
                 contentAlignment = Alignment.Center,
             ) {
                 SmartisanText(

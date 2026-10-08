@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.list
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,8 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.zIndex
 import kotlin.math.roundToInt
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 
 /**
  * 可拖动排序的纵向列表。
@@ -35,6 +38,7 @@ fun <T> SmartisanReorderableColumn(
     modifier: Modifier = Modifier,
     dragEnabled: Boolean = true,
     onDragIndexChange: (Int?) -> Unit = {},
+    @DrawableRes dragBackgroundRes: Int? = SmartisanDrawables.ListDragBackground,
     content: @Composable (index: Int, item: T, dragging: Boolean) -> Unit,
 ) {
     // 只在手势回调里读取，不需要触发重组，因此用普通 Map 即可。
@@ -113,6 +117,14 @@ fun <T> SmartisanReorderableColumn(
                 modifier =
                     Modifier
                         .zIndex(if (isDragging) 1f else 0f)
+                        // 拖拽中的行用原版 list_drag_bg 作为背景。
+                        .then(
+                            if (isDragging && dragBackgroundRes != null) {
+                                Modifier.smartisanDrawableBackground(dragBackgroundRes)
+                            } else {
+                                Modifier
+                            },
+                        )
                         .graphicsLayer {
                             translationY = if (isDragging) dragDelta else animatedShift
                             shadowElevation = if (isDragging) 8f else 0f

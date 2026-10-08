@@ -52,6 +52,62 @@ object SmartisanDrawables {
     @DrawableRes val DialogConfirmShadow = R.drawable.smartisan_menu_confirm_shadow
 
     // ---- 列表与分组 ----
+    /** 通用列表行 selector：按下换原版按压位图，activated 换多选底色，默认 surface_card。 */
+    @DrawableRes val ListRowSelector = R.drawable.listview_selector
+
+    /** 分组第一行的 selector。 */
+    @DrawableRes val GroupRowTop = R.drawable.group_list_item_bg_top
+
+    /** 分组中间行的 selector。 */
+    @DrawableRes val GroupRowMiddle = R.drawable.group_list_item_bg_mid
+
+    /** 分组最后一行的 selector。 */
+    @DrawableRes val GroupRowBottom = R.drawable.group_list_item_bg_bottom
+
+    /** 分组只有一行时的 selector（带描边）。 */
+    @DrawableRes val GroupRowSingle = R.drawable.group_list_item_bg_single
+
+    /** 分组标题底色。 */
+    @DrawableRes val SectionTitleBackground = R.drawable.list_title_bg
+
+    /** 列表项右侧箭头 selector。 */
+    @DrawableRes val ListItemArrow = R.drawable.selector_list_content_item_arrow
+
+    /** 弹层菜单底色（NinePatch，含夜间变体）。 */
+    @DrawableRes val MenuPopupBackground = R.drawable.pop_up_menu_bg
+
+    /** 弹层菜单投影。 */
+    @DrawableRes val MenuPopupShadow = R.drawable.popup_menu_bg_shadow
+
+    /** 复选框 selector。 */
+    @DrawableRes val CheckboxSelector = R.drawable.check_box_selector
+
+    /** 单选按钮 selector。 */
+    @DrawableRes val RadioSelector = R.drawable.selector_radio_choice
+
+    /** 弹窗中性按钮底色 selector。 */
+    @DrawableRes val DialogButtonNeutral = R.drawable.revone_dialog_button_bg_selector
+
+    /** 弹窗左侧按钮底色 selector。 */
+    @DrawableRes val DialogButtonLeft = R.drawable.revone_dialog_button_left_bg_selector
+
+    /** 弹窗右侧按钮底色 selector。 */
+    @DrawableRes val DialogButtonRight = R.drawable.revone_dialog_button_right_bg_selector
+
+    /** 弹窗按钮之间的竖分隔线。 */
+    @DrawableRes val DialogButtonDivider = R.drawable.revone_button_dialog_vertical_divider
+
+    /** 页面底色（weather 的 list_bg，含夜间变体）。 */
+    @DrawableRes val PageBackground = R.drawable.list_bg
+
+    /** 标题栏刷新图标 selector。 */
+    @DrawableRes val IconRefresh = R.drawable.standard_icon_refresh_selector
+
+    /** 标题栏设置图标 selector。 */
+    @DrawableRes val IconSettings = R.drawable.standard_icon_settings_selector
+
+    /** 标题栏「完成」图标 selector。 */
+    @DrawableRes val IconConfirm = R.drawable.standard_icon_hignlight_confirm_selector
     /** 页面列表底色（weather 的 list_bg，含夜间变体）。 */
     @DrawableRes val ListBackground = R.drawable.list_bg
 
