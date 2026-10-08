@@ -52,7 +52,8 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.graphics.asImageBitmap
+import cc.wuersan008.smartisanx.core.utils.smartisanThemedResources
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.onClick
@@ -387,12 +388,15 @@ private fun SmartisanSwitchContent(
         } else {
             Modifier
         }
-    val mask = ImageBitmap.imageResource(bitmaps.mask)
-    val bottom = ImageBitmap.imageResource(bitmaps.bottom)
-    val frame = ImageBitmap.imageResource(bitmaps.frame)
-    val framePressed = ImageBitmap.imageResource(bitmaps.framePressed)
-    val knob = ImageBitmap.imageResource(bitmaps.knob)
-    val knobPressed = ImageBitmap.imageResource(bitmaps.knobPressed)
+    // 用主题化 Resources 解码位图：应用内切深色时，系统 uiMode 可能仍是浅色，
+    // 直接 imageResource() 会拿到浅色位图，开关就会在深色界面里发白。
+    val resources = smartisanThemedResources()
+    val mask = remember(resources, bitmaps.mask) { resources.bitmap(bitmaps.mask) }
+    val bottom = remember(resources, bitmaps.bottom) { resources.bitmap(bitmaps.bottom) }
+    val frame = remember(resources, bitmaps.frame) { resources.bitmap(bitmaps.frame) }
+    val framePressed = remember(resources, bitmaps.framePressed) { resources.bitmap(bitmaps.framePressed) }
+    val knob = remember(resources, bitmaps.knob) { resources.bitmap(bitmaps.knob) }
+    val knobPressed = remember(resources, bitmaps.knobPressed) { resources.bitmap(bitmaps.knobPressed) }
     Canvas(
         modifier =
             modifier
@@ -606,3 +610,6 @@ fun SmartisanSwitchRow(
     }
 }
 
+/** 从主题化 Resources 解码位图（避免 Drawable 的密度缩放，保持原版像素尺寸）。 */
+private fun android.content.res.Resources.bitmap(@androidx.annotation.DrawableRes res: Int): ImageBitmap =
+    android.graphics.BitmapFactory.decodeResource(this, res).asImageBitmap()
