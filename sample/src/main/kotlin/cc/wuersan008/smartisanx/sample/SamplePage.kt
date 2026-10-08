@@ -1,6 +1,7 @@
 package cc.wuersan008.smartisanx.sample
 
 import androidx.annotation.DrawableRes
+import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 
 /**
  * 示例应用里的页面。

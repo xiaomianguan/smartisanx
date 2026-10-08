@@ -25,6 +25,13 @@ android {
         compose = true
     }
 
+    lint {
+        // 本模块的 drawable 全部从原厂 APK 原样复制，其中一些素材在原版里就只有横屏
+        // 或特定密度变体（例如 drawable-land-xxhdpi/ac.png 没有 base 版本）。
+        // 这是「忠实还原原版资源」的结果，不是缺陷，因此关闭这条检查。
+        disable += "MissingDefaultResource"
+    }
+
     // 允许发布到本地或私有 Maven 仓库：./gradlew publishToMavenLocal
     publishing {
         singleVariant("release") {

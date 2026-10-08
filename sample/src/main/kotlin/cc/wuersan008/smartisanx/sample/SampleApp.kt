@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -43,6 +44,10 @@ fun SampleApp() {
         SystemBarAppearance()
         val colors = LocalSmartisanColors.current
         var page by remember { mutableStateOf<SamplePage?>(null) }
+        // 系统返回键：在子页面时回到首页，与标题栏的返回按钮行为一致；
+        // 已经在首页时 enabled = false，把返回键交还给系统（退出应用）。
+        // 弹窗、底部弹层由各自的 Dialog / 弹层自行消费返回键，不受这里影响。
+        BackHandler(enabled = page != null) { page = null }
         Box(Modifier.fillMaxSize().background(colors.pageBackground)) {
             val current = page
             if (current == null) {

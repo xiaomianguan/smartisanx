@@ -60,7 +60,6 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
                         SmartisanIcon(
                             res = page.icon,
                             contentDescription = null,
-                            tint = colors.textSecondary,
                             size = 24.dp,
                         )
                     },
@@ -68,7 +67,6 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
                         SmartisanIcon(
                             res = SmartisanOriginalIcons.More,
                             contentDescription = null,
-                            tint = colors.textDisabled,
                             size = 18.dp,
                         )
                     },
