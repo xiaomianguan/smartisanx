@@ -111,6 +111,10 @@ Key points:
 
 ## Light and dark mode
 
+> **Dark mode is experimental.** The original Smartisan OS shipped a single light design; dark mode
+> was added by the three revival projects, and only ~19% of the original graphic assets have night
+> variants. See [Theme.md](Theme.md#dark-mode-experimental).
+
 ```kotlin
 val controller = rememberSmartisanThemeController()
 

@@ -67,3 +67,35 @@ fun SampleFootnote(text: String) {
         color = LocalSmartisanColors.current.textDisabled,
     )
 }
+
+/**
+ * 实验性功能提示。
+ *
+ * 用来标注「原版 Smartisan OS 没有、由三个复刻项目或本库新增」的特性。
+ * 目前主要用于深色模式：原版只有浅色一套设计，深色是复刻项目自行补的，
+ * 而且原版图形资源里带夜间变体的只是一小部分。
+ */
+@Composable
+fun ExperimentalNote(
+    title: String,
+    body: String,
+    modifier: Modifier = Modifier,
+) {
+    val colors = LocalSmartisanColors.current
+    val typography = LocalSmartisanTypography.current
+    Column(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
+    ) {
+        SmartisanText(
+            text = "实验性 · $title",
+            style = typography.sectionTitle,
+            color = colors.warning,
+        )
+        SmartisanText(
+            text = body,
+            modifier = Modifier.padding(top = 4.dp),
+            style = typography.caption,
+            color = colors.textTertiary,
+        )
+    }
+}

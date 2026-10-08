@@ -92,6 +92,27 @@ duplicates it has 30 entries.
 
 `isLight` tells you whether the current palette is the light one, which is handy in custom drawing.
 
+## Dark mode (experimental)
+
+> **The original Smartisan OS has no dark mode.**
+
+The dark scheme comes from design work added by the three revival projects: the charcoal palette was
+first calibrated in the Weather revival, the Music revival reused it, and this library packages it
+as `darkSmartisanColors()`.
+
+Dark mode is therefore **experimental**, with two known limitations:
+
+| Limitation | Detail |
+| --- | --- |
+| Incomplete night artwork | Only 194 of 1008 original drawables (~19%) have night variants; the other 814 are light-only and will keep showing light artwork in dark mode |
+| No night colour state lists | There are no night variants under `res/color/` at all, so dialog and menu text colours use their light values; this library adds a night palette for the Clock revival's dialogs and menus |
+
+`SmartisanTheme` writes "is the theme dark" into `LocalSmartisanDarkOverride`, and components resolve
+`drawable-night` / `values-night` against the **app theme** rather than the system uiMode, so assets
+follow an in-app light/dark switch.
+
+If you need the same fidelity as the light theme, treat light as the reference.
+
 ## Text styles
 
 | Name | Size | Weight | Usage |

@@ -24,9 +24,9 @@ All public APIs grouped by package. Every component must be wrapped in `Smartisa
 | `SmartisanTheme(colors, typography, shapes, content)` | Provides the theme, follows the system light/dark setting |
 | `SmartisanTheme(controller, typography, shapes, content)` | Controller-based, switchable at runtime |
 | `rememberSmartisanThemeController(mode)` | Creates a `ThemeController` |
-| `ThemeController.colorSchemeMode` | `System` / `Light` / `Dark` |
+| `ThemeController.colorSchemeMode` | `System` / `Light` / `Dark` (**dark is experimental** — the original had no dark mode) |
 | `ThemeController.isDark()` / `colors()` | Current state |
-| `lightSmartisanColors()` / `darkSmartisanColors()` | Default palettes |
+| `lightSmartisanColors()` / `darkSmartisanColors()` | Default palettes (dark is experimental) |
 | `SmartisanColors` | 30 semantic colors (see [Theme.md](Theme.md)) |
 | `SmartisanTypography` | 12 text styles |
 | `SmartisanShapes` | 7 shapes |

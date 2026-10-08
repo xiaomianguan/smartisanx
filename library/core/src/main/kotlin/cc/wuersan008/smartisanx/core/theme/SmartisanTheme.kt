@@ -12,7 +12,15 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 
-/** 主题模式：跟随系统、始终浅色、始终深色。 */
+/**
+ * 主题模式：跟随系统、始终浅色、始终深色。
+ *
+ * **注意：深色模式是实验性特性。**
+ * 原版 Smartisan OS 只有浅色一套设计，深色由三个复刻项目自行新增；
+ * 而且原版图形资源里只有约 19%（1008 个 drawable 中的 194 个）带夜间变体，
+ * 颜色状态列表则完全没有夜间版本。因此深色下的还原度不如浅色，
+ * 需要完全还原原版观感时请以浅色为准。
+ */
 enum class SmartisanColorSchemeMode {
     /** 跟随系统深浅色设置。 */
     System,
@@ -20,12 +28,18 @@ enum class SmartisanColorSchemeMode {
     /** 始终使用浅色色板。 */
     Light,
 
-    /** 始终使用深色色板。 */
+    /**
+     * 始终使用深色色板。
+     *
+     * 实验性：原版没有深色模式，且部分原版资源没有夜间变体。
+     */
     Dark,
 }
 
 /**
  * 主题控制器，用于在运行时切换深浅色。
+ *
+ * 深色模式是实验性特性，原因见 [SmartisanColorSchemeMode]。
  *
  * ```kotlin
  * val controller = rememberSmartisanThemeController()
@@ -41,7 +55,7 @@ class ThemeController(
     /** 当前主题模式，可直接赋值以切换深浅色。 */
     var colorSchemeMode: SmartisanColorSchemeMode by mutableStateOf(colorSchemeMode)
 
-    /** 当前是否处于深色。 */
+    /** 当前是否处于深色（实验性，见 [SmartisanColorSchemeMode]）。 */
     @Composable
     @ReadOnlyComposable
     fun isDark(): Boolean =

@@ -30,8 +30,10 @@ modules split by responsibility, the demo app as its own module, components grou
   blue multi-select highlighting, charcoal dark mode.
 - **Complete theming system**: semantic colors, text styles, shapes, dimension tokens and motion
   specs, all overridable through `CompositionLocal`.
-- **Light/dark and night visuals**: the dark baseline reuses the charcoal palette already
-  calibrated by the Weather revival (page `#25282D`, title bar `#292C31`, card `#34373C`).
+- **Light/dark and night visuals (dark is experimental)**: the original Smartisan OS shipped a
+  single light design; dark mode was added by the three revival projects. The baseline reuses the
+  charcoal palette already calibrated by the Weather revival (page `#25282D`, title bar `#292C31`,
+  card `#34373C`).
 - **Three original implementations merged into one**: switches, dialogs, title bars, drawable
   painting and press feedback have all been deduplicated.
 - **Mechanical clock components**: dials, time wheels and timer rulers that used to be
@@ -241,6 +243,22 @@ The semantic palette merges the actual colors used by the three projects and dro
   multi-select background `#E5EEFF`, press highlight `#4A69B3`, switch indicator green `#72B27E`.
 - Dark: page `#25282D`, title bar `#292C31`, card `#34373C`, raised surface `#41464D`,
   multi-select background `#26384F`.
+
+### Dark mode (experimental)
+
+**The original Smartisan OS has no dark mode.** This library's dark scheme comes from design work
+added by the three revival projects: the charcoal palette was first calibrated in the Weather
+revival, the Music revival reused it, and this library packages it as `darkSmartisanColors()`.
+
+Dark mode is therefore **experimental**, with two known limitations:
+
+- only a minority of the original graphic assets have night variants: 194 of 1008 drawables
+  (~19%); the remaining 814 are light-only and will keep showing light artwork in dark mode;
+- the colour state lists under `res/color/` have no night versions at all, so dialog and menu text
+  colours fall back to their light values; this library adds a night palette for the Clock revival's
+  dialogs and menus on top of that.
+
+If you need the same fidelity as the light theme, treat light as the reference.
 
 ### Dimensions
 

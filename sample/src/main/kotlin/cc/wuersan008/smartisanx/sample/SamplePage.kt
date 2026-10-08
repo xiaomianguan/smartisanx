@@ -18,7 +18,7 @@ enum class SamplePage(
 ) {
     Theme(
         title = "主题与设计变量",
-        subtitle = "色板、文字样式、形状、深浅色切换",
+        subtitle = "色板、文字样式、形状、深浅色切换（深色为实验性）",
         icon = SmartisanXStatusIcons.Sun,
     ),
     Text(
