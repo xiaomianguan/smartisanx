@@ -264,11 +264,10 @@ SmartisanTheme {
 
 ### 字体
 
-**默认使用锤子原厂字体**：正文 `FZCCHK`，机械数字用 `SmartisanClock` 三档字重，
-字体文件取自原厂 `smartisanos_11.apk` 的 `assets/`。
+**默认使用锤子原厂字体**：正文是 Smartisan OS 的系统字体 `Smartisan Compact CNS`
+（四档字重），机械数字用 `SmartisanClock` 三档字重。
+正文取自坚果 R2 官方 ROM 转储的 `system/system/fonts/`，机械数字取自 `smartisanos_11.apk` 的 `assets/`。
 
-原版界面字体是系统字体 `smartisan-compact-cns`，它只存在于 ROM 的 `/system/fonts/`，
-不在任何 APK 里，因此本库改用同一套系统里能拿到的锤子字体。
 想换字体（系统默认 / 自己的字体 / 只换机械数字）见
 [主题与设计变量](docs/主题与设计变量.md#字体)。
 

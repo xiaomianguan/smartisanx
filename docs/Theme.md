@@ -135,24 +135,32 @@ If you need the same fidelity as the light theme, treat light as the reference.
 
 | Purpose | Font | Source |
 | --- | --- | --- |
-| Body text | `FZCCHK` | `assets/FZCCHK.TTF` in `smartisanos_11.apk` |
-| Mechanical numerals (clock, timer) | `SmartisanClock`, three weights | same, `assets/SmartisanClock*.ttf/otf` |
+| Body text | `Smartisan Compact CNS` (Founder, four weights) | Smartisan nut R2 factory ROM dump, `system/system/fonts/Smartisan_Compact-*.otf` |
+| Mechanical numerals (clock, timer) | `SmartisanClock`, three weights | `assets/SmartisanClock*.ttf/otf` in `smartisanos_11.apk` |
 
 The font files live in `library/core/src/main/res/font/`, wired through `SmartisanFonts.Original`,
 and `SmartisanTheme` applies them to every text style via `withFonts()`.
 
 ### About smartisan-compact-cns
 
-The original Smartisan OS UI font is the system font **smartisan-compact-cns**, which lives in the
-ROM at `/system/fonts/` and is **not inside any APK**. None of the factory resources available here
-(the 12 APKs, `Tool/framework-res.apk`, `Tool/smartisanos_11.apk`) contain it, so the default falls
-back to the Smartisan fonts obtainable from the same system.
+The Smartisan OS UI font is the system font **`Smartisan Compact CNS`**
+(files `Smartisan_Compact-*.otf`, internal family name `Smartisan Compact CNS`, by Founder).
+It lives in the ROM at `/system/fonts/`, not inside an APK - this library takes it from the nut R2
+factory ROM dump: <https://dumps.tadiphone.dev/dumps/smartisan/darwin> -> `system/system/fonts/`.
 
-To switch to the real `smartisan-compact-cns`:
+The ROM ships six weights; four are wired in here (the other two are never referenced):
 
-1. put the file at `library/core/src/main/res/font/smartisan_compact_cns.ttf`
-   (resource names must be lowercase with underscores);
-2. in `SmartisanFonts.Original`, replace `R.font.fzcchk` with `R.font.smartisan_compact_cns`.
+| Compose weight | ROM file | Wired in |
+| --- | --- | --- |
+| `Thin` (100) | `Smartisan_Compact-Thin.otf` | no (unused) |
+| `Light` (300) | `Smartisan_Compact-Light.otf` | yes |
+| `Normal` (400) | `Smartisan_Compact-Regular.otf` | yes |
+| `Medium` (500) | `Smartisan_Compact-Medium.otf` | yes |
+| `Bold` (700) | `Smartisan_Compact-Bold.otf` | yes |
+| `Heavy` (900) | `Smartisan_Compact-Heavy.otf` | no (unused) |
+
+To add Thin or Heavy, drop the file into `library/core/src/main/res/font/` and add one
+`Font(...)` line to `SmartisanFonts.Original`.
 
 ### Using a different font
 

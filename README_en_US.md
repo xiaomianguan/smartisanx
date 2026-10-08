@@ -277,12 +277,12 @@ If you need the same fidelity as the light theme, treat light as the reference.
 
 ### Fonts
 
-**The original Smartisan fonts are used by default**: body text `FZCCHK`, mechanical numerals
-`SmartisanClock` in three weights, taken from `assets/` in the factory `smartisanos_11.apk`.
+**The original Smartisan fonts are used by default**: body text is the Smartisan OS system font
+`Smartisan Compact CNS` (four weights); mechanical numerals use `SmartisanClock` in three weights.
+The body font comes from the nut R2 factory ROM dump (`system/system/fonts/`), the numerals from
+`assets/` in `smartisanos_11.apk`.
 
-The original UI font is the system font `smartisan-compact-cns`, which only exists in the ROM at
-`/system/fonts/` and not inside any APK, so the default falls back to the Smartisan fonts obtainable
-from the same system. To use the system default, your own font, or a different numeral font, see
+To use the system default, your own font, or a different numeral font, see
 [Theme.md](docs/Theme.md#fonts).
 
 ### Page texture and card shadows
