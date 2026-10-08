@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 锤子 framework 的值资源（逐项按需导入）。 -->
+<resources>
+    <color name="chips_error_color">#cc3e39</color>
+    <color name="chips_error_pressed_color">#ffffff</color>
+    <color name="chips_history_color">#666666</color>
+    <color name="chips_hot_color">#cc3e39</color>
+    <color name="chips_light_color">#a9000000</color>
+    <color name="chips_normal_color">#3965cc</color>
+    <color name="chips_pressed_color">#ffffff</color>
+    <color name="chips_recommended_color">#996b3d</color>
+    <color name="chips_shadow_color">#26000000</color>
+    <color name="chips_unidentified_color">#3965cc</color>
+</resources>
