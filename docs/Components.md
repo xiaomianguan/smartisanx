@@ -1,46 +1,46 @@
-# 组件总览
+# Component overview
 
-**中文** · [English](Components.md)
+All public APIs grouped by package. Every component must be wrapped in `SmartisanTheme`.
 
-按包分组列出全部公开 API。所有组件都必须包在 `SmartisanTheme` 内。
+[中文](组件总览.md) · **English**
 
-- [主题与基础能力](#主题与基础能力)
-- [基础组件](#基础组件basic)
-- [控件](#控件control)
-- [布局](#布局layout)
-- [列表交互](#列表交互list)
-- [浮层](#浮层overlay)
-- [时钟](#时钟clock)
-- [图标](#图标icons)
+- [Theme and core capabilities](#theme-and-core-capabilities)
+- [Basic components](#basic-components-basic)
+- [Controls](#controls-control)
+- [Layout](#layout-layout)
+- [List interaction](#list-interaction-list)
+- [Overlays](#overlays-overlay)
+- [Clock](#clock-clock)
+- [Icons](#icons-icons)
 
 ---
 
-## 主题与基础能力
+## Theme and core capabilities
 
 ### `cc.wuersan008.smartisanx.core.theme`
 
-| API | 说明 |
+| API | Description |
 | --- | --- |
-| `SmartisanTheme(colors, typography, shapes, content)` | 提供主题，跟随系统深浅色 |
-| `SmartisanTheme(controller, typography, shapes, content)` | 使用控制器，可运行时切换 |
-| `rememberSmartisanThemeController(mode)` | 创建 `ThemeController` |
+| `SmartisanTheme(colors, typography, shapes, content)` | Provides the theme, follows the system light/dark setting |
+| `SmartisanTheme(controller, typography, shapes, content)` | Controller-based, switchable at runtime |
+| `rememberSmartisanThemeController(mode)` | Creates a `ThemeController` |
 | `ThemeController.colorSchemeMode` | `System` / `Light` / `Dark` |
-| `ThemeController.isDark()` / `colors()` | 当前状态 |
-| `lightSmartisanColors()` / `darkSmartisanColors()` | 取默认色板 |
-| `SmartisanColors` | 30 项语义色（见《主题与设计变量》） |
-| `SmartisanTypography` | 12 种文字样式 |
-| `SmartisanShapes` | 7 种形状 |
-| `SmartisanDimens` | 尺寸常量 |
+| `ThemeController.isDark()` / `colors()` | Current state |
+| `lightSmartisanColors()` / `darkSmartisanColors()` | Default palettes |
+| `SmartisanColors` | 30 semantic colors (see [Theme.md](Theme.md)) |
+| `SmartisanTypography` | 12 text styles |
+| `SmartisanShapes` | 7 shapes |
+| `SmartisanDimens` | Dimension tokens |
 
 ### `cc.wuersan008.smartisanx.core.anim`
 
-| API | 说明 |
+| API | Description |
 | --- | --- |
-| `SmartisanMotion.EaseInOut` | 原版余弦缓入缓出 |
-| `SmartisanMotion.easeInOut(durationMillis)` | 便捷 `TweenSpec` |
-| `SmartisanMotion.PressSpring` / `SettleSpring` / `OffsetSpring` | 弹簧规格 |
-| `SmartisanMotion.switchSettleMillis(position, target)` | 开关落位时长 |
-| `SmartisanMotionSpec` / `LocalSmartisanMotion` | 整体替换动画规格 |
+| `SmartisanMotion.EaseInOut` | The original cosine ease-in-out |
+| `SmartisanMotion.easeInOut(durationMillis)` | Convenience `TweenSpec` |
+| `SmartisanMotion.PressSpring` / `SettleSpring` / `OffsetSpring` | Spring specs |
+| `SmartisanMotion.switchSettleMillis(position, target)` | Switch knob settle duration |
+| `SmartisanMotionSpec` / `LocalSmartisanMotion` | Replace the motion specs wholesale |
 
 ### `cc.wuersan008.smartisanx.core.interaction`
 
@@ -58,8 +58,8 @@
 ): Modifier
 ```
 
-`collectSmartisanPressedAsState` 保证「同一帧内按下又抬起」的快速点击依然可见，
-时长与平台 `ViewConfiguration.getPressedStateDuration()` 一致。
+`collectSmartisanPressedAsState` keeps a "press and release within the same frame" tap visible, and
+uses the same duration as the platform's `ViewConfiguration.getPressedStateDuration()`.
 
 ### `cc.wuersan008.smartisanx.core.utils`
 
@@ -76,12 +76,12 @@ fun Modifier.smartisanProjectedShadow(elevation: Dp = 1.dp, shape: Shape = Recta
 fun smartisanDrawableState(...): IntArray
 ```
 
-用于把应用自己的 selector / NinePatch 画到 Compose 画布上，
-状态映射与布局方向处理与原版 View 行为一致。
+Use these to draw your own selectors / NinePatches on the Compose canvas. State mapping and layout
+direction handling match the original `View` behaviour.
 
 ---
 
-## 基础组件（`basic`）
+## Basic components (`basic`)
 
 ```kotlin
 @Composable fun SmartisanSurface(
@@ -118,13 +118,14 @@ fun smartisanDrawableState(...): IntArray
 @Composable fun SmartisanRowDivider(modifier, startIndent, endIndent)
 ```
 
-`SmartisanText` 有 `String` 与 `AnnotatedString` 两个重载；颜色默认取
-`LocalSmartisanContentColor`（由 `SmartisanSurface` 写入），未设置时回退到 `textPrimary`。
-`SmartisanPixelText` 还原原版 `TextView` 把 dp 字号取整到物理像素的行为。
+`SmartisanText` has both `String` and `AnnotatedString` overloads. Its color defaults to
+`LocalSmartisanContentColor` (written by `SmartisanSurface`) and falls back to `textPrimary` when
+unset. `SmartisanPixelText` reproduces the original `TextView` behaviour of rounding a dp font size
+to whole physical pixels.
 
 ---
 
-## 控件（`control`）
+## Controls (`control`)
 
 ```kotlin
 @Composable fun SmartisanSwitch(
@@ -162,14 +163,16 @@ enum class SmartisanButtonStyle { Accent, Neutral, Text }
 fun smartisanRatingAt(x: Float, width: Float, starCount: Int = 5): Int
 ```
 
-`SmartisanSwitch` 还原了原版开关的全部行为：按压出现投影、松手按余弦缓动淡出、
-按下后可以拖动滑块、落位时长按位移等比换算、松手触发触感反馈。
+`SmartisanSwitch` reproduces all the behaviour of the original switch: a shadow appears on press and
+fades out along a cosine curve on release, the knob can be dragged after pressing, the settle
+duration scales with the travel distance, and a haptic fires on release.
 
-`SmartisanSwitchRow` 把行与开关绑定到同一个状态，点行和点开关只会触发一次回调。
+`SmartisanSwitchRow` binds the row and the switch to a single state, so tapping the row and tapping
+the switch each fire exactly one callback.
 
 ---
 
-## 布局（`layout`）
+## Layout (`layout`)
 
 ```kotlin
 @Composable fun SmartisanScaffold(
@@ -225,16 +228,18 @@ data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val 
 @Composable fun SmartisanEmptyHint(title: String, modifier, description, icon, action)
 ```
 
-要点：
+Notes:
 
-- `SmartisanListItem` 的 `selected = true` 使用原版的浅蓝多选底色 `selectionBackground`，
-  按压时使用 `surfacePressed`，都不使用涟漪。
-- `SmartisanTitleBar` 默认包含状态栏占位；外层已处理 Insets 时传 `includeStatusBar = false`。
-- `SmartisanListItem` 的 `onLongClick` 用于进入多选模式（原版资料库的长按多选）。
+- `SmartisanListItem` with `selected = true` uses the original pale blue multi-select background
+  `selectionBackground`, and `surfacePressed` while pressed. Neither uses a ripple.
+- `SmartisanTitleBar` reserves the status bar by default; pass `includeStatusBar = false` if the
+  surrounding layout already handles insets.
+- `SmartisanListItem`'s `onLongClick` is meant for entering multi-select mode (as the original
+  library screen did on long press).
 
 ---
 
-## 列表交互（`list`）
+## List interaction (`list`)
 
 ```kotlin
 @Composable fun <T> SmartisanReorderableColumn(
@@ -247,24 +252,26 @@ data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val 
 @Composable fun SmartisanSwipeToDelete(
     onDelete: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true,
     directReveal: Dp = 65.dp, maximumTravel: Dp = 360.dp, threshold: Dp = 120.dp,
-    deleteLabel: String = "删除", content: @Composable () -> Unit,
+    deleteLabel: String = "Delete", content: @Composable () -> Unit,
 )
 
 @Composable fun SmartisanLetterIndexBar(
     letters: List<Char>, onLetterSelected: (Char) -> Unit, modifier: Modifier = Modifier,
     activeLetter: Char? = null, letterHeight: Dp = 13.dp, showOverlay: Boolean = true,
 )
-fun smartisanDefaultLetterIndex(): List<Char>   // '#' + A–Z
+fun smartisanDefaultLetterIndex(): List<Char>   // '#' + A-Z
 fun smartisanIndexLetter(name: String): Char
 ```
 
-- `SmartisanReorderableColumn` 使用普通 `Column`，适合设置项、世界时钟这类数量有限的列表；
-  长按后拖动，其余行用弹簧动画让位，松手时只提交一次顺序变更。
-- `SmartisanSwipeToDelete` 的物理参数来自锤子时钟：前 65dp 直接位移，之后 1/5 阻尼，最大 360dp。
+- `SmartisanReorderableColumn` uses a plain `Column`, which suits bounded lists such as settings or
+  world clocks. Long-press to start dragging; other rows spring out of the way and the new order is
+  committed once on release.
+- `SmartisanSwipeToDelete`'s physics come from the Clock revival: the first 65dp move 1:1, further
+  travel is damped to 1/5 speed, and the maximum is 360dp.
 
 ---
 
-## 浮层（`overlay`）
+## Overlays (`overlay`)
 
 ```kotlin
 @Composable fun SmartisanModal(
@@ -290,14 +297,14 @@ fun smartisanIndexLetter(name: String): Char
 
 @Composable fun SmartisanDialog(
     onDismissRequest: () -> Unit, title: String, modifier: Modifier = Modifier,
-    confirmText: String = "确定", dismissText: String? = null,
+    confirmText: String = "OK", dismissText: String? = null,
     confirmEnabled: Boolean = true, onConfirm: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 )
 
 @Composable fun SmartisanConfirmDialog(
     onDismissRequest: () -> Unit, title: String, message: String,
-    confirmText: String = "确定", dismissText: String = "取消", onConfirm: () -> Unit,
+    confirmText: String = "OK", dismissText: String = "Cancel", onConfirm: () -> Unit,
 )
 
 @Composable fun SmartisanMenuDialog(
@@ -322,13 +329,15 @@ fun smartisanIndexLetter(name: String): Char
 )
 ```
 
-- 遮罩默认 0.54，与原版一致。
-- 关闭动画播完后才真正移除窗口，避免原版「窗口先销毁、动画被打断」的问题。
-- `SmartisanSheetScaffold` 适合把弹层挂在页面上而不是独立窗口（例如侧边栏、内嵌面板）。
+- The scrim defaults to 0.54, matching the original.
+- The window is only removed after the exit animation finishes, avoiding the original's problem of
+  the window being destroyed while the animation was still running.
+- `SmartisanSheetScaffold` is for sheets hosted inside the page rather than in their own window
+  (for example a side panel or an embedded surface).
 
 ---
 
-## 时钟（`clock`）
+## Clock (`clock`)
 
 ```kotlin
 @Composable fun SmartisanAnalogClock(
@@ -367,7 +376,7 @@ fun smartisanIndexLetter(name: String): Char
 @Composable fun SmartisanWeekdayPicker(
     selectedDays: Set<DayOfWeek>, onSelectedDaysChange: (Set<DayOfWeek>) -> Unit,
     modifier: Modifier = Modifier,
-    labels: List<String> = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日"),
+    labels: List<String> = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
 )
 
 @Composable fun SmartisanWeekdayChips(
@@ -382,15 +391,19 @@ fun smartisanIndexLetter(name: String): Char
 )
 ```
 
-- `SmartisanAnalogClock` 的秒针带原版的轻微回弹（越界后按弹簧收敛）。
-- `SmartisanRulerPicker` 是横向卡尺（原版 7.1.1 的 `TimerRulerView`），
-  `SmartisanPullRingRuler` 是竖向拉环（原版 6.8.0 的 `Classic680RulerView`），两套计时器手感都保留。
-- `SmartisanWeekdayPicker` 除常规点击外，还支持「按住复选框列纵向拖动，把同一状态刷过经过的每一行」。
-- `SmartisanWorldClockCard` 按城市时区计算当地时间与相对本地的时差。
+- `SmartisanAnalogClock`'s second hand has the original slight rebound (it overshoots, then
+  converges with a spring).
+- `SmartisanRulerPicker` is the horizontal caliper (the 7.1.1 `TimerRulerView`) and
+  `SmartisanPullRingRuler` is the vertical pull ring (the 6.8.0 `Classic680RulerView`); both timer
+  feels are preserved.
+- `SmartisanWeekdayPicker` supports not only tapping but also "hold the checkbox column and drag
+  vertically to sweep the same state across every row you cross".
+- `SmartisanWorldClockCard` computes local time and the offset from the current device zone using
+  the city's `ZoneId`.
 
 ---
 
-## 图标（`icons`）
+## Icons (`icons`)
 
 ```kotlin
 SmartisanXIcons.Back / ChevronRight / ChevronDown / ChevronUp / Close / Check / Add / Remove
@@ -405,4 +418,5 @@ SmartisanXMediaIcons.Volume / VolumeMute / FastForward / Rewind / Lyrics
 SmartisanXClockIcons.Clock / Alarm / Stopwatch / Hourglass / Globe / Bell / SleepTimer / KeepScreenOn
 ```
 
-全部是 24×24 的 `ImageVector`，用 `SmartisanIcon` 的 `tint` 上色，库内不包含位图资源。
+All of them are 24×24 `ImageVector`s, tinted through `SmartisanIcon`'s `tint`. The library ships no
+bitmap assets.

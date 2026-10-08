@@ -2,6 +2,8 @@
 
 锤子风格（Smartisan OS）Jetpack Compose 组件库。
 
+**中文** · [English](README_en_US.md)
+
 `smartisanx` 把三个锤子应用复刻项目里的自定义 UI 组件抽出来、去重、统一 API，
 做成一套可以直接在任意 Android Compose 工程里使用的组件库：
 
@@ -63,12 +65,12 @@ smartisanx/
 
 ## 文档
 
-| 文档 | 内容 |
-| --- | --- |
-| [docs/快速开始.md](docs/快速开始.md) | 环境要求、引入依赖、第一个界面、深浅色、常见问题 |
-| [docs/组件总览.md](docs/组件总览.md) | 全部组件的 API 与参数说明 |
-| [docs/主题与设计变量.md](docs/主题与设计变量.md) | 色板、文字样式、形状、尺寸、动画规格的完整取值 |
-| [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md) | 原文件与 smartisanx 组件的逐项对照、迁移注意事项 |
+| 中文文档 | English | 内容 |
+| --- | --- | --- |
+| [docs/快速开始.md](docs/快速开始.md) | [QuickStart.md](docs/QuickStart.md) | 环境要求、引入依赖、第一个界面、深浅色、常见问题 |
+| [docs/组件总览.md](docs/组件总览.md) | [Components.md](docs/Components.md) | 全部组件的 API 与参数说明 |
+| [docs/主题与设计变量.md](docs/主题与设计变量.md) | [Theme.md](docs/Theme.md) | 色板、文字样式、形状、尺寸、动画规格的完整取值 |
+| [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md) | [Migration.md](docs/Migration.md) | 原文件与 smartisanx 组件的逐项对照、迁移注意事项 |
 
 ## 快速开始
 

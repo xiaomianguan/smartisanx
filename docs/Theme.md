@@ -1,0 +1,163 @@
+# Theme and design tokens
+
+[中文](主题与设计变量.md) · **English**
+
+## Theme entry points
+
+```kotlin
+@Composable
+fun SmartisanTheme(
+    colors: SmartisanColors = defaultSmartisanColors(),   // follows the system
+    typography: SmartisanTypography = SmartisanTypography(),
+    shapes: SmartisanShapes = SmartisanShapes(),
+    content: @Composable () -> Unit,
+)
+
+@Composable
+fun SmartisanTheme(
+    controller: ThemeController,
+    typography: SmartisanTypography = SmartisanTypography(),
+    shapes: SmartisanShapes = SmartisanShapes(),
+    content: @Composable () -> Unit,
+)
+```
+
+The theme is delivered through four `CompositionLocal`s:
+
+| CompositionLocal | Contents |
+| --- | --- |
+| `LocalSmartisanColors` | Semantic palette |
+| `LocalSmartisanTypography` | Text styles |
+| `LocalSmartisanShapes` | Shapes |
+| `LocalSmartisanContentColor` | Default content color (written by `SmartisanSurface`) |
+
+`LocalSmartisanThemeController` additionally exposes the current controller (nullable).
+
+## Palette
+
+`SmartisanColors` merges the semantic colors of the three revival projects; after removing
+duplicates it has 30 entries.
+
+### Surfaces
+
+| Name | Light | Dark | Usage |
+| --- | --- | --- | --- |
+| `pageBackground` | `#FFFFFF` | `#25282D` | Page background |
+| `surface` | `#FFFFFF` | `#34373C` | Cards, lists, dialogs |
+| `surfaceRaised` | `#F7F8F9` | `#41464D` | Raised group background |
+| `surfacePressed` | `#ECECEC` | `#484D54` | Pressed state |
+| `surfaceDisabled` | `#F2F2F2` | `#30343A` | Disabled state |
+| `titleBarBackground` | `#FFFFFF` | `#292C31` | Title bar |
+
+### Dividers
+
+| Name | Light | Dark |
+| --- | --- | --- |
+| `divider` | `#E9E9E9` | `#3A3D42` |
+| `rowDivider` | `#F2F2F2` | `#404348` |
+
+### Text
+
+| Name | Light | Dark | Usage |
+| --- | --- | --- | --- |
+| `textPrimary` | `#CC000000` | `#F2F2F2` | Primary text |
+| `textSecondary` | `#9A000000` | `#D2D3D5` | Secondary text |
+| `textTertiary` | `#66000000` | `#9FA1A4` | Tertiary text, section titles |
+| `textDisabled` | `#4C000000` | `#717377` | Disabled |
+| `textHint` | `#DBDBDB` | `#85878A` | Input hints |
+
+### Accent and status
+
+| Name | Light | Dark | Usage |
+| --- | --- | --- | --- |
+| `accent` | `#E64040` | `#E64040` | Smartisan red, brand accent |
+| `accentPressed` | `#C14352` | `#FF5A5A` | Accent pressed |
+| `accentDisabled` | `#66E64040` | `#66E64040` | Accent disabled |
+| `onAccent` | `#FFFFFF` | `#FFFFFF` | Text on accent |
+| `link` | `#5E80D0` | `#FF7839` | Links, tappable text |
+| `linkPressed` | `#8A8A8A` | `#FF9A6D` | Link pressed |
+| `success` | `#72B27E` | `#72B27E` | Success, switch indicator green |
+| `warning` | `#E65C53` | `#FF7433` | Warning |
+
+### Selection and switch
+
+| Name | Light | Dark | Usage |
+| --- | --- | --- | --- |
+| `selectionBackground` | `#E5EEFF` | `#26384F` | Persistent multi-select background |
+| `pressedHighlight` | `#4A69B3` | `#4A69B3` | Blue list press highlight |
+| `onPressedHighlight` | `#FFFFFF` | `#FFFFFF` | Text on the blue highlight |
+| `switchTrack` / `switchTrackStroke` / `switchKnob` / `switchIndicator` | see source | see source | Switch parts |
+| `scrollbarThumb` | `#33000000` | `#40FFFFFF` | Scrollbar |
+| `scrim` | `#8A000000` | `#99000000` | Overlay scrim |
+
+`isLight` tells you whether the current palette is the light one, which is handy in custom drawing.
+
+## Text styles
+
+| Name | Size | Weight | Usage |
+| --- | --- | --- | --- |
+| `titleBar` | 20sp | Bold | Title bar title |
+| `title` | 20sp | Medium | Page heading |
+| `body` | 15sp | Normal | Body text |
+| `listItemPrimary` | 15sp | Normal | List primary line |
+| `listItemSecondary` | 12.5sp | Normal | List secondary line |
+| `sectionTitle` | 13.5sp | Normal | Section title |
+| `button` | 14sp | Bold | Buttons |
+| `dialogButton` | 17sp | Bold | Dialog actions |
+| `dialogTitle` | 13.5sp | Bold | Dialog title |
+| `caption` | 12sp | Normal | Captions, footers |
+| `numeric` | 15sp | Normal | Tabular numerals (`tnum`) |
+| `displayNumeric` | 48sp | Light | Large clock/timer numerals |
+
+`SmartisanText` defaults its `style` parameter to `body`. You can also read
+`LocalSmartisanTypography.current` and `copy` from it.
+
+## Shapes
+
+| Name | Corner radius |
+| --- | --- |
+| `none` | 0dp (lists, title bars, groups by default) |
+| `extraSmall` | 2dp |
+| `small` | 4dp |
+| `medium` | 8dp |
+| `dialog` | 10dp |
+| `sheet` | 10dp on the top corners |
+| `large` | 16dp |
+
+## Dimension tokens
+
+The important values in `SmartisanDimens` (all in dp):
+
+```
+TitleBarHeight 48        TitleBarShadowHeight 14     TitleBarHorizontalMargin 6
+IconSize 36              ListItemHeight 60           ListItemMinHeight 48
+ListItemHorizontalMargin 12  RowContentStart 18     CheckboxMarginStart 18
+DividerThickness 0.67    ListItemImageSize 48        DialogWidth 308
+DialogTitleHeight 48     DialogButtonHeight 48       DialogCornerRadius 10
+MenuHorizontalMargin 18  MenuButtonTopMargin 18      MenuButtonBottomMargin 24
+MenuActionEdgeMargin 24  MenuActionGap 18            BottomBarHeight 50
+BottomBarIconSize 30     ScrollbarWidth 3            ScrollbarMargin 2
+LetterIndexBarWidth 24   MinimumTouchTarget 48
+```
+
+## Motion specs
+
+`SmartisanMotion`:
+
+| Name | Value | Notes |
+| --- | --- | --- |
+| `EaseInOut` | `cos((t + 1) * PI) / 2 + 0.5` | The original default interpolator |
+| `DurationShort` | 200ms | Presses, tab switches |
+| `DurationMedium` | 300ms | Element enter/exit |
+| `DurationLong` | 400ms | Full-page expand/collapse |
+| `PressedScale` | 1.33f | Title bar icon press scale |
+| `PressSpring` | damping 0.55 / stiffness 800 | Press rebound |
+| `SettleSpring` | low bounce | List displacement, drag settle |
+| `switchSettleMillis` | derived from distance | Switch knob settle duration |
+
+## Overriding and extending
+
+- Colors only: `SmartisanTheme(colors = lightSmartisanColors().copy(accent = ...))`
+- Shapes only: `SmartisanTheme(shapes = SmartisanShapes(medium = RoundedCornerShape(12.dp)))`
+- Per component: almost every component exposes explicit `color` / `size` / `shape` /
+  `contentHeight` parameters. Prefer those over changing the global theme.
