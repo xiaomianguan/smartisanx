@@ -129,6 +129,40 @@ follow an in-app light/dark switch.
 
 If you need the same fidelity as the light theme, treat light as the reference.
 
+### Page and overlay transitions
+
+The timings come from the original APKs' `anim/` resources and the revival projects' implementations,
+not from guesswork:
+
+| Case | Original source | Behaviour |
+| --- | --- | --- |
+| Regular page (exit with back arrow) | Music `PageStackTransition` | New page **slides in from the right**, old page shifts left; 300ms, open `Smooth` = `(1-cos(t*PI))/2`, close `Decelerate` = `1-(1-t)^2` |
+| Modal page (exit with x) | Weather `pop_up_in` / `slide_down_out` | **Slides up from the bottom**; enter `translateY` 100% -> 0, exit 0 -> 109%, both 300ms `decelerate_cubic`; the page underneath stays put (original `fake_anim`) |
+| Centred dialog | Clock `smartisan_modal_enter/exit` | Scale 0.9 -> 1.0 while fading in; 300ms in, 250ms out, `decelerate` / `accelerate` |
+| Bottom menu dialog | Clock `smartisan_menu_enter/exit` | `translateY` 100% -> 0 in 300ms, out in 250ms |
+
+Usage:
+
+```kotlin
+// regular page: slides in from the right
+SmartisanPageTransition(
+    secondary = detail != null,
+    primary = { Home(onOpen = { detail = it }) },
+) {
+    Detail(onBack = { detail = null })
+}
+
+// modal page: slides up from the bottom
+SmartisanModalPageTransition(visible = sheetOpen) {
+    SheetContent()
+}
+```
+
+The easing constants live in `cc.wuersan008.smartisanx.ui.anim`:
+`SmartisanNavigationOpenEasing`, `SmartisanNavigationCloseEasing`,
+`SmartisanDecelerateCubic`, `SmartisanDecelerate`, `SmartisanAccelerate`;
+the duration constant is `SmartisanNavigationDuration` (300ms).
+
 ## Fonts
 
 **The original Smartisan fonts are used by default.**

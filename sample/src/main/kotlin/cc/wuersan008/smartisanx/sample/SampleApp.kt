@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import cc.wuersan008.smartisanx.ui.anim.SmartisanPageTransition
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.activity.compose.BackHandler
@@ -48,13 +50,18 @@ fun SampleApp() {
         // 已经在首页时 enabled = false，把返回键交还给系统（退出应用）。
         // 弹窗、底部弹层由各自的 Dialog / 弹层自行消费返回键，不受这里影响。
         BackHandler(enabled = page != null) { page = null }
+        // 关闭动画期间子页面还要继续画，所以留一份「最后打开过的页面」。
+        var retainedPage by remember { mutableStateOf<SamplePage?>(null) }
+        LaunchedEffect(page) { if (page != null) retainedPage = page }
         Box(Modifier.fillMaxSize().background(colors.pageBackground)) {
-            val current = page
-            if (current == null) {
-                SampleHome(onOpen = { page = it })
-            } else {
+            // 常规页面转场：新页面从右侧滑入、旧页面向左让位，
+            // 与锤子音乐 PageStackTransition 一致（300ms，打开 Smooth、关闭 Decelerate）。
+            SmartisanPageTransition(
+                secondary = page != null,
+                primary = { SampleHome(onOpen = { page = it }) },
+            ) {
                 val back = { page = null }
-                when (current) {
+                when (retainedPage) {
                     SamplePage.Theme -> ThemePage(controller = controller, onBack = back)
                     SamplePage.Text -> TextPage(onBack = back)
                     SamplePage.Icon -> IconPage(onBack = back)
@@ -65,6 +72,7 @@ fun SampleApp() {
                     SamplePage.ListInteraction -> ListInteractionPage(onBack = back)
                     SamplePage.Overlay -> OverlayPage(onBack = back)
                     SamplePage.Clock -> ClockPage(onBack = back)
+                    null -> Unit
                 }
             }
         }

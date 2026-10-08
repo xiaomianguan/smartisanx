@@ -34,6 +34,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import kotlinx.coroutines.delay
+import cc.wuersan008.smartisanx.ui.anim.SmartisanAccelerate
+import cc.wuersan008.smartisanx.ui.anim.SmartisanDecelerate
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
@@ -268,7 +270,9 @@ internal fun rememberSmartisanOverlayProgress(visible: Boolean): Float {
                     durationMillis =
                         if (visible) SmartisanOverlayEnterDurationMillis
                         else SmartisanOverlayExitDurationMillis,
-                    easing = if (visible) FastOutLinearInEasing else LinearOutSlowInEasing,
+                    // 原版：进入用 @android:anim/decelerate_interpolator，
+                    // 退出用 accelerate_interpolator（见 Clock 的 smartisan_menu_enter/exit）。
+                    easing = if (visible) SmartisanDecelerate else SmartisanAccelerate,
                 ),
             label = "smartisan overlay progress",
         )
