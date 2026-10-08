@@ -69,8 +69,8 @@ object SmartisanDimens {
     /** 底部菜单弹窗动作项间距，原版 `smartisan_menu_action_gap`。 */
     val MenuActionGap = 18.dp
 
-    /** 底部标签栏高度，原版 `bottom_bar_height`。 */
-    val BottomBarHeight = 50.dp
+    /** 底部标签栏高度，原版 `smartisan_bottom_bar_height`（锤子音乐 54dp）。 */
+    val BottomBarHeight = 54.dp
 
     /** 底部标签栏图标尺寸，原版 `clock_tab_icon_size`。 */
     val BottomBarIconSize = 30.dp

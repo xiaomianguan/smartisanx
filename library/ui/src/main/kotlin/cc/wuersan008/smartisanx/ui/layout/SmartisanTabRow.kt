@@ -31,8 +31,13 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 /**
  * 锤子风格文字标签页。
  *
- * 对应锤子音乐资料库顶部的分类切换与锤子时钟的世界时钟/闹钟/秒表/计时器切换：
- * 选中项用一级文字色并在下方绘制 2dp 强调色指示条。
+ * **这是本库自有的组件，原版没有对应实现。**
+ * 三个复刻项目里的「标签切换」都是图标式的（锤子音乐底部用 `tabbar_*_selector` 位图，
+ * 见 [SmartisanBottomBar]；锤子时钟底部用 `selector_tab_*`），
+ * 资料库顶部的分类入口也不是文字标签条，而是卡片式入口。
+ *
+ * 因此这里按锤子一贯的视觉语言（一级文字色 + 强调色指示条、无涟漪）实现，
+ * 颜色全部取自主题，不使用原版位图。如果你的界面里需要图标式标签栏，请用 [SmartisanBottomBar]。
  */
 @Composable
 fun SmartisanTabRow(

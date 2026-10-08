@@ -171,6 +171,12 @@ object SmartisanDrawables {
     @DrawableRes val TabStopwatch = R.drawable.selector_tab_stopwatch
     @DrawableRes val TabTimer = R.drawable.selector_tab_timer
     @DrawableRes val TabWorldClock = R.drawable.selector_tab_worldclock
+
+    /** 底部标签栏底色（原版 `sb_repeat_tabbar_bg`，内部平铺 `sb_tabbar_bg`）。 */
+    @DrawableRes val BottomBarBackground = R.drawable.sb_repeat_tabbar_bg
+
+    /** 底部标签栏上方投影（原版 `tab_bar_shadow`）。 */
+    @DrawableRes val BottomBarShadow = R.drawable.tab_bar_shadow
     @DrawableRes val ClockDivider = R.drawable.clock_divider
 
     // ---- 搜索框 ----

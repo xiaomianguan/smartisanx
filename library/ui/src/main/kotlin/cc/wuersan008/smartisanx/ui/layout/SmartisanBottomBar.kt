@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +33,9 @@ import cc.wuersan008.smartisanx.core.interaction.smartisanClick
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
 import cc.wuersan008.smartisanx.ui.basic.SmartisanDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -79,15 +84,34 @@ fun SmartisanBottomBar(
     modifier: Modifier = Modifier,
     includeNavigationBar: Boolean = true,
     showTopDivider: Boolean = true,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomBarBackground,
 ) {
     val colors = LocalSmartisanColors.current
-    Column(modifier.fillMaxWidth().background(colors.surface)) {
-        if (showTopDivider) {
-            SmartisanDivider(color = colors.divider)
+    // 原版：底色是 sb_repeat_tabbar_bg，上方叠一张 tab_bar_shadow 再叠一条 0.67dp 分隔线。
+    val backgroundModifier =
+        if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier.background(colors.surface)
         }
+    val shadowHeight =
+        with(LocalDensity.current) {
+            rememberSmartisanDrawablePainter(SmartisanDrawables.BottomBarShadow)
+                .intrinsicSize.height.toDp()
+        }
+    Box(modifier.fillMaxWidth().then(backgroundModifier)) {
         Row(
             modifier =
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    // 原版把导航栏 insets 作为 Row 的内边距，底色会一起盖住。
+                    .then(
+                        if (includeNavigationBar) {
+                            Modifier.windowInsetsPadding(WindowInsets.navigationBars)
+                        } else {
+                            Modifier
+                        },
+                    )
                     .height(SmartisanDimens.BottomBarHeight),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -101,8 +125,19 @@ fun SmartisanBottomBar(
                 )
             }
         }
-        if (includeNavigationBar) {
-            Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars))
+        if (showTopDivider) {
+            Box(
+                Modifier.align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .height(shadowHeight)
+                    .smartisanDrawableBackground(SmartisanDrawables.BottomBarShadow),
+            )
+            Box(
+                Modifier.align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .height(SmartisanDimens.DividerThickness)
+                    .background(colors.divider),
+            )
         }
     }
 }

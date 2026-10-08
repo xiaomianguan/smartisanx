@@ -16,8 +16,13 @@ import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 /**
  * 锤子风格竖向滚动条。
  *
- * 对应锤子音乐资料库右侧那条细滚动条：宽 3dp、贴右边缘、圆角、半透明。
- * 内容不足一屏时不绘制。
+ * **这是本库自有的组件，原版没有对应位图。**
+ * 锤子音乐的 `SmartisanScrollbar` 读取的是 `android:scrollbarThumbVertical` 属性，
+ * 而应用的样式并没有覆盖它，所以原版实际用的是系统默认滚动条。
+ *
+ * 这里按锤子的视觉语言重新实现：宽 3dp、贴右边缘、圆角、半透明，
+ * 颜色取主题的 `scrollbarThumb`，内容不足一屏时不绘制。
+ * 需要完全一致的观感时，可以直接换回平台的滚动条。
  */
 @Composable
 fun Modifier.smartisanVerticalScrollbar(
