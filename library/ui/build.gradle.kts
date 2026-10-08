@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "top.smartisanx.ui"
+    namespace = "cc.wuersan008.smartisanx.ui"
     compileSdk = 35
 
     defaultConfig {
@@ -61,7 +61,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "top.smartisanx"
+                groupId = "cc.wuersan008.smartisanx"
                 artifactId = "smartisanx-ui"
                 version = "0.1.0"
             }

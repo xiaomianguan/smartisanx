@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "top.smartisanx.sample"
+    namespace = "cc.wuersan008.smartisanx.sample"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "top.smartisanx.sample"
+        applicationId = "cc.wuersan008.smartisanx.sample"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

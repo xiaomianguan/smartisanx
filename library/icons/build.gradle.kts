@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "top.smartisanx.icons"
+    namespace = "cc.wuersan008.smartisanx.icons"
     compileSdk = 35
 
     defaultConfig {
@@ -55,7 +55,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "top.smartisanx"
+                groupId = "cc.wuersan008.smartisanx"
                 artifactId = "smartisanx-icons"
                 version = "0.1.0"
             }

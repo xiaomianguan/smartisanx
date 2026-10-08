@@ -44,19 +44,19 @@
 ```
 smartisanx/
 ├── library/
-│   ├── core/src/main/kotlin/top/smartisanx/core/
+│   ├── core/src/main/kotlin/cc/wuersan008/smartisanx/core/
 │   │   ├── anim/         SmartisanMotion 动画规格
 │   │   ├── interaction/  按压反馈、点击音效、触感
 │   │   ├── theme/        色板、文字样式、形状、尺寸、主题与控制器
 │   │   └── utils/        drawable 绘制、阴影修饰符
-│   ├── ui/src/main/kotlin/top/smartisanx/ui/
+│   ├── ui/src/main/kotlin/cc/wuersan008/smartisanx/ui/
 │   │   ├── basic/        Surface、Text、Icon、Divider
 │   │   ├── control/      开关、复选框、单选、按钮、评分条
 │   │   ├── layout/       标题栏、列表行、分组、标签栏、滚动条、空态
 │   │   ├── list/         拖动排序、侧滑删除、字母索引
 │   │   ├── overlay/      弹窗、菜单弹窗、底部弹层
 │   │   └── clock/        机械表盘、小表盘、时间滚轮、标尺、星期选择
-│   └── icons/src/main/kotlin/top/smartisanx/icons/
+│   └── icons/src/main/kotlin/cc/wuersan008/smartisanx/icons/
 ├── sample/               示例应用
 └── docs/                 中文文档
 ```
@@ -99,8 +99,8 @@ dependencies {
 ./gradlew publishToMavenLocal
 ```
 
-发布坐标：`top.smartisanx:smartisanx-core`、`top.smartisanx:smartisanx-ui`、
-`top.smartisanx:smartisanx-icons`（版本 `0.1.0`）。
+发布坐标：`cc.wuersan008.smartisanx:smartisanx-core`、`cc.wuersan008.smartisanx:smartisanx-ui`、
+`cc.wuersan008.smartisanx:smartisanx-icons`（版本 `0.1.0`）。
 
 ### 2. 包裹主题
 
@@ -148,7 +148,7 @@ SmartisanTheme {
 
 ## 组件总览
 
-### 主题（`top.smartisanx.core.theme`）
+### 主题（`cc.wuersan008.smartisanx.core.theme`）
 
 | 名称 | 说明 |
 | --- | --- |
@@ -159,7 +159,7 @@ SmartisanTheme {
 | `SmartisanShapes` | 直角、2/4/8/10/16dp 圆角 |
 | `SmartisanDimens` | 标题栏、图标、列表、弹窗、底部栏等尺寸常量 |
 
-### 动画与交互（`top.smartisanx.core.anim` / `interaction`）
+### 动画与交互（`cc.wuersan008.smartisanx.core.anim` / `interaction`）
 
 | 名称 | 说明 |
 | --- | --- |
@@ -168,38 +168,38 @@ SmartisanTheme {
 | `collectSmartisanPressedAsState` | 保留同帧快速点击的按压态 |
 | `smartisanClick` / `smartisanHaptic` | 系统点击音效与虚拟按键触感 |
 
-### 基础（`top.smartisanx.ui.basic`）
+### 基础（`cc.wuersan008.smartisanx.ui.basic`）
 
 `SmartisanSurface`、`SmartisanText`、`SmartisanPixelText`、`SmartisanIcon`、
 `SmartisanIconButton`、`SmartisanDivider`、`SmartisanRowDivider`
 
-### 控件（`top.smartisanx.ui.control`）
+### 控件（`cc.wuersan008.smartisanx.ui.control`）
 
 `SmartisanSwitch`、`SmartisanSwitchRow`、`SmartisanCheckbox`、`SmartisanRadioButton`、
 `SmartisanRadioRow`、`SmartisanButton`、`SmartisanTextButton`、`SmartisanRatingBar`
 
-### 布局（`top.smartisanx.ui.layout`）
+### 布局（`cc.wuersan008.smartisanx.ui.layout`）
 
 `SmartisanScaffold`、`SmartisanTitleBar`、`SmartisanTitleBarSurface`、`SmartisanListItem`、
 `SmartisanGroup`、`SmartisanSectionTitle`、`SmartisanCard`、`SmartisanTabRow`、
 `SmartisanBottomBar`、`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`
 
-### 列表交互（`top.smartisanx.ui.list`）
+### 列表交互（`cc.wuersan008.smartisanx.ui.list`）
 
 `SmartisanReorderableColumn`、`SmartisanSwipeToDelete`、`SmartisanLetterIndexBar`
 
-### 浮层（`top.smartisanx.ui.overlay`）
+### 浮层（`cc.wuersan008.smartisanx.ui.overlay`）
 
 `SmartisanModal`、`SmartisanModalWindow`、`SmartisanDialog`、`SmartisanConfirmDialog`、
 `SmartisanDialogTitleBar`、`SmartisanDialogButton`、`SmartisanMenuDialog`、`SmartisanMenuItem`、
 `SmartisanBottomSheet`、`SmartisanSheetScaffold`
 
-### 时钟（`top.smartisanx.ui.clock`）
+### 时钟（`cc.wuersan008.smartisanx.ui.clock`）
 
 `SmartisanAnalogClock`、`SmartisanCompactClock`、`SmartisanTimePicker`、`SmartisanWheelPicker`、
 `SmartisanRulerPicker`、`SmartisanPullRingRuler`、`SmartisanWeekdayPicker`
 
-### 图标（`top.smartisanx.icons`）
+### 图标（`cc.wuersan008.smartisanx.icons`）
 
 `SmartisanXIcons`、`SmartisanXStatusIcons`、`SmartisanXMediaIcons`、`SmartisanXClockIcons`
 

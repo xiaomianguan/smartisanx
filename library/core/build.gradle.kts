@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "top.smartisanx.core"
+    namespace = "cc.wuersan008.smartisanx.core"
     compileSdk = 35
 
     defaultConfig {
@@ -59,7 +59,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "top.smartisanx"
+                groupId = "cc.wuersan008.smartisanx"
                 artifactId = "smartisanx-core"
                 version = "0.1.0"
             }
