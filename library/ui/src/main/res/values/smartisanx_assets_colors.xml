@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  来自三个复刻项目的原始颜色资源。
+
+  这些颜色只被同样来自原始资源的 drawable XML（selector / shape）引用，
+  组件代码本身请使用 SmartisanTheme 的语义色板，不要直接引用这里。
+
+  来源：
+    listview_divider_color / list_divider_color / quickbar_ex_alphabet_text_*
+        —— SmartisanMusic-Revived values/smartisan_tokens.xml
+    app_accent_color / app_page_background
+        —— SmartisanWeather-Revived values/colors.xml
+    smartisan_divider
+        —— SmartisanClock-Revived values/colors.xml
+-->
+<resources>
+    <color name="listview_divider_color">#ebebeb</color>
+    <color name="list_divider_color">@color/listview_divider_color</color>
+    <color name="app_accent_color">#e65c53</color>
+    <color name="app_page_background">#f5f5f5</color>
+    <color name="quickbar_ex_alphabet_text_dark_color">#f0f0f0</color>
+    <color name="quickbar_ex_alphabet_text_light_color">#f5f5f5</color>
+    <color name="quickbar_ex_alphabet_text_pressed_color">#e5e5e5</color>
+    <color name="smartisan_divider">#e6e6e6</color>
+</resources>

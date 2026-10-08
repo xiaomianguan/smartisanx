@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  原始资源颜色在深色模式下的取值。
+
+  来源：
+    listview_divider_color / quickbar_ex_alphabet_text_*
+        —— SmartisanMusic-Revived values-night/smartisan_tokens.xml
+    app_accent_color / app_page_background
+        —— SmartisanWeather-Revived values-night/colors.xml
+
+  注意：锤子天气与锤子音乐原本没有深色模式，这些夜间取值来自两个复刻项目
+  自行校准的炭灰色板（页底 #25282D）。
+-->
+<resources>
+    <color name="listview_divider_color">#3a3d42</color>
+    <color name="app_accent_color">#ff7433</color>
+    <color name="app_page_background">#25282d</color>
+    <color name="quickbar_ex_alphabet_text_dark_color">#35383d</color>
+    <color name="quickbar_ex_alphabet_text_light_color">#3a3d42</color>
+    <color name="quickbar_ex_alphabet_text_pressed_color">#2d3035</color>
+</resources>
