@@ -11,20 +11,13 @@ import cc.wuersan008.smartisanx.core.R
 /**
  * 字体方案。
  *
- * 原版 Smartisan OS 的界面字体是系统字体 **smartisan-compact-cns**，
- * 它位于 ROM 的 `/system/fonts/`，并不在任何一个 APK 里 ——
- * 本项目能拿到的原厂资源（12 个 APK + `framework-res.apk` + `smartisanos_11.apk`）
- * 都不包含它，所以本库改用同一套系统里能拿到的锤子字体作为默认。
- *
- * 想换成真正的 `smartisan-compact-cns`（或任何自己的字体）见下文的用法。
+ * 默认使用 Smartisan OS 的**系统字体 `Smartisan Compact CNS`**
+ * （方正出品，字体内嵌名称为 `Smartisan Compact CNS`，文件名为 `Smartisan_Compact-*.otf`）。
+ * 字体取自坚果 R2 的官方 ROM 转储：
+ * `dumps.tadiphone.dev/dumps/smartisan/darwin` → `system/system/fonts/`。
  */
 enum class SmartisanFontMode {
-    /**
-     * 锤子原厂字体（**默认**）。
-     *
-     * 文字用 `FZCCHK`（方正粗黑宋简体，`smartisanos_11.apk` 的 `assets/FZCCHK.TTF`），
-     * 机械数字用 `SmartisanClock` 三档字重（原版时钟表盘与计时器用的就是它）。
-     */
+    /** 锤子原厂字体（**默认**）。 */
     Original,
 
     /** 跟随系统默认字体，不加载任何字体文件。 */
@@ -47,15 +40,30 @@ class SmartisanFonts(
 ) {
     companion object {
         /**
-         * 锤子原厂字体：正文 `FZCCHK`，机械数字 `SmartisanClock`。
+         * 锤子原厂字体。
          *
-         * 这几个字体文件都取自原厂资源，直接放在 `library/core/src/main/res/font/`。
+         * 正文用系统字体 `Smartisan Compact CNS`，按 ROM 里的字重逐个接入：
+         *
+         * | Compose 字重 | ROM 里的文件 |
+         * | --- | --- |
+         * | `Light` (300) | `Smartisan_Compact-Light.otf` |
+         * | `Normal` (400) | `Smartisan_Compact-Regular.otf` |
+         * | `Medium` (500) | `Smartisan_Compact-Medium.otf` |
+         * | `Bold` (700) | `Smartisan_Compact-Bold.otf` |
+         *
+         * ROM 里还有 `Thin`(100) 与 `Heavy`(900) 两档，本库没有引用到，
+         * 需要时把它们放进 `library/core/src/main/res/font/` 再补进这里即可。
+         *
+         * 机械数字仍用时钟那套 `SmartisanClock`（表盘与计时器原本就是它）。
          */
         val Original: SmartisanFonts =
             SmartisanFonts(
                 text =
                     FontFamily(
-                        Font(R.font.fzcchk, FontWeight.Normal),
+                        Font(R.font.smartisan_compact_light, FontWeight.Light),
+                        Font(R.font.smartisan_compact_regular, FontWeight.Normal),
+                        Font(R.font.smartisan_compact_medium, FontWeight.Medium),
+                        Font(R.font.smartisan_compact_bold, FontWeight.Bold),
                     ),
                 numerals =
                     FontFamily(
