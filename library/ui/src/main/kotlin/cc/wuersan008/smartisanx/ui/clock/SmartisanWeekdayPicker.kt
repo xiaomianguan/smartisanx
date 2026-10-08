@@ -1,6 +1,6 @@
 package cc.wuersan008.smartisanx.ui.clock
 
-import androidx.compose.foundation.Canvas
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -25,45 +25,55 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.R
+import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
+import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchStyle
 import java.time.DayOfWeek
 
 /**
  * smartisanx 的重复日选择器（闹钟「重复」设置）。
  *
- * 复刻自锤子时钟的 `AlarmRepeatDaysView`：七行「周一…周日」+ 行尾复选框。
- * 原实现除了常规点击，还支持**快速选择手势**——在复选框列按下时先决定目标状态
- * （已选则取消、未选则选中），再纵向拖动，把同一状态刷过经过的每一行。
- * 原实现是在 `onTouchEvent` 里处理这件事，这里改为 Compose 的手势检测：
+ * 复刻自锤子时钟的 `AlarmRepeatDaysView`：七行「周一…周日」+ 行尾复选框，
+ * 另有原版中文区才追加的「法定节假日」开关行（默认不显示）。行与复选框都用原版位图：
  *
- * - 行点击（`smartisanClickable`，无涟漪）负责常规切换与无障碍语义；
- * - 复选框列单独挂一个 `pointerInput`：按下即定状态、拖动即刷过经过的行，
- *   并消费事件避免父级列表跟着滚动（对应原版的 `requestDisallowInterceptTouchEvent`）；
- * - 拖动经过的行用 `pressedHighlight` 蓝色底 + `onPressedHighlight` 文字高亮，
- *   与原版行按压态一致；
- * - 选中态是方正的蓝色方块 + 对勾（`pressedHighlight` / `onPressedHighlight`），
- *   未选中态是 `textTertiary` 描边方块。
+ * - 行背景 `alarm_repeat_list_item_bg`（146px @3x = 48.67dp，正好等于原版
+ *   `item_alarm_repeat_day.xml` 的 `48.6667dp` 行高，底部自带 2px 分隔线）；
+ * - 复选框 `alarm_repeat_checkbox_selector`（36dp × 36dp，可见方块 24dp，
+ *   选中 / 按下 / 禁用态都写在 selector 里）；
+ * - 「法定节假日」开关用 [SmartisanSwitchStyle.Repeat]（`alarm_repeat_switch_*`）。
+ *
+ * 手势沿用原版：在复选框列（原版 `CHECKBOX_SIZE_DP + CHECKBOX_END_MARGIN_DP`
+ * = 36dp + 6dp）按下时先决定目标状态（已选则取消、未选则选中），再纵向拖动，
+ * 把同一状态刷过经过的每一行，并消费事件避免父级列表跟着滚动
+ * （对应原版的 `requestDisallowInterceptTouchEvent`）。
+ * 原版用 `duplicateParentState` 把行的按压态交给复选框，所以拖动经过的行只会让
+ * 复选框换成按压位图，行本身不加额外高亮。
  *
  * @param selectedDays 当前选中的星期集合。
  * @param onSelectedDaysChange 选中集合变化回调，始终返回新的集合。
  * @param modifier 外部修饰符。
  * @param labels 七行文案，默认周一到周日。
+ * @param showHolidaySwitch 是否显示原版「法定节假日」开关行（原版只在中文区追加）。
+ * @param followHolidays 「法定节假日」开关的当前状态。
+ * @param onFollowHolidaysChange 「法定节假日」开关的变化回调。
+ * @param holidayLabel 「法定节假日」行的文案。
+ * @param checkboxRes 复选框 selector，默认原版 `alarm_repeat_checkbox_selector`。
+ * @param rowBackgroundRes 行背景位图，默认原版 `alarm_repeat_list_item_bg`。
  */
 @Composable
 fun SmartisanWeekdayPicker(
@@ -71,6 +81,12 @@ fun SmartisanWeekdayPicker(
     onSelectedDaysChange: (Set<DayOfWeek>) -> Unit,
     modifier: Modifier = Modifier,
     labels: List<String> = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日"),
+    showHolidaySwitch: Boolean = false,
+    followHolidays: Boolean = false,
+    onFollowHolidaysChange: (Boolean) -> Unit = {},
+    holidayLabel: String = HolidayRowLabel,
+    @DrawableRes checkboxRes: Int = WeekdayCheckboxSelector,
+    @DrawableRes rowBackgroundRes: Int = WeekdayRowBackground,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -79,20 +95,30 @@ fun SmartisanWeekdayPicker(
     val currentSelection = rememberUpdatedState(selectedDays)
     val currentCallback = rememberUpdatedState(onSelectedDaysChange)
     var pressedDay by remember { mutableIntStateOf(NoDay) }
+    // 原版最后一行与「法定节假日」行用纯色底抹掉分隔线：浅色下取原版
+    // `setBackgroundColor(250, 250, 250)` 的色值，深色下跟随主题，避免整块亮白。
+    val flatRowBackground = if (colors.isLight) WeekdayFlatRowBackground else colors.surface
 
     Column(modifier = modifier.fillMaxWidth()) {
         for (index in 0 until WeekdayCount) {
             val day = DayOfWeek.of(index + 1)
             val selected = day in selectedDays
-            // 常规点击的按压态：行底色换成原版的蓝色高亮，与拖动刷选共用同一套视觉。
             val interactionSource = remember { MutableInteractionSource() }
             val rowPressed by interactionSource.collectSmartisanPressedAsState()
+            // 原版用 `duplicateParentState` 把行的按压态交给复选框，行本身不加高亮。
             val pressed = pressedDay == index || rowPressed
+            // 原版最后一行用纯色底，把行背景位图底部的 2px 分隔线抹掉。
+            val rowBackground =
+                if (index == WeekdayCount - 1) {
+                    Modifier.background(flatRowBackground)
+                } else {
+                    Modifier.smartisanDrawableBackground(rowBackgroundRes)
+                }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(WeekdayRowHeight)
-                    .background(if (pressed) colors.pressedHighlight else Color.Transparent)
+                    .then(rowBackground)
                     .smartisanClickable(
                         interactionSource = interactionSource,
                         role = Role.Checkbox,
@@ -110,14 +136,15 @@ fun SmartisanWeekdayPicker(
                         .weight(1f)
                         .padding(start = SmartisanDimens.RowContentStart),
                     style = typography.listItemPrimary,
-                    color = if (pressed) colors.onPressedHighlight else colors.textPrimary,
+                    color = colors.textPrimary,
                     maxLines = 1,
                 )
                 Box(
+                    // 手势列就是原版的 `CHECKBOX_SIZE_DP + CHECKBOX_END_MARGIN_DP` = 42dp，
+                    // 所以 pointerInput 挂在 padding 之前，可点范围才覆盖整列。
                     modifier = Modifier
                         .width(CheckboxColumnWidth)
                         .fillMaxHeight()
-                        .padding(end = CheckboxEndMargin)
                         .pointerInput(Unit) {
                             // 复选框列内的快速选择：按下定状态，拖动刷过经过的每一行。
                             val rowHeightPx = WeekdayRowHeight.toPx()
@@ -150,12 +177,26 @@ fun SmartisanWeekdayPicker(
                                 }
                                 pressedDay = NoDay
                             }
-                        },
+                        }
+                        .padding(end = CheckboxEndMargin),
                     contentAlignment = Alignment.CenterEnd,
                 ) {
-                    WeekdayCheckbox(selected = selected, pressed = pressed)
+                    WeekdayCheckbox(
+                        selected = selected,
+                        pressed = pressed,
+                        checkboxRes = checkboxRes,
+                    )
                 }
             }
+        }
+        if (showHolidaySwitch) {
+            WeekdayHolidayRow(
+                label = holidayLabel,
+                checked = followHolidays,
+                enabled = selectedDays.isNotEmpty(),
+                rowBackground = flatRowBackground,
+                onCheckedChange = onFollowHolidaysChange,
+            )
         }
     }
 }
@@ -163,8 +204,9 @@ fun SmartisanWeekdayPicker(
 /**
  * 紧凑版重复日选择：七个方正小片，点击切换，适合放在设置行右侧或弹窗里。
  *
- * 与 [SmartisanWeekdayPicker] 共用同一套选中语义（`pressedHighlight` 蓝色底），
+ * 与 [SmartisanWeekdayPicker] 共用同一套选中语义（点一下切换，已选为蓝底白字），
  * 但不提供拖动刷选——小片只有 34dp，纵向拖动会与父级滚动冲突。
+ * 原版没有这种紧凑变体（只有 36dp 的复选框位图），所以这里仍用主题色手绘。
  *
  * @param selectedDays 当前选中的星期集合。
  * @param onSelectedDaysChange 选中集合变化回调。
@@ -211,34 +253,68 @@ fun SmartisanWeekdayChips(
     }
 }
 
-/** 七行选择器的复选框：方正的蓝色方块 + 白色对勾，未选中为描边方块。 */
+/**
+ * 重复日的复选框：直接用原版 `alarm_repeat_checkbox_selector` 位图。
+ *
+ * 原版 `item_alarm_repeat_day.xml` 里是一个 36dp × 36dp 的 `CheckBox`，
+ * `button` 指向这个 selector（选中 / 按下 / 禁用态都在里面）；位图里的可见方块
+ * 只有 24dp，四周留白也由位图自己提供，所以这里按固有尺寸绘制，不做任何缩放。
+ */
 @Composable
-private fun WeekdayCheckbox(selected: Boolean, pressed: Boolean) {
+private fun WeekdayCheckbox(
+    selected: Boolean,
+    pressed: Boolean,
+    @DrawableRes checkboxRes: Int,
+) {
+    SmartisanIcon(
+        res = checkboxRes,
+        contentDescription = null,
+        pressed = pressed,
+        checked = selected,
+        size = CheckboxSize,
+        contentScale = ContentScale.None,
+    )
+}
+
+/**
+ * 原版的「法定节假日」开关行（`item_alarm_repeat_holiday.xml`，原版只在中文区追加）。
+ *
+ * 纯色底、文案左边距 18dp；右侧是原版 `alarm_repeat_switch_*` 位图开关，
+ * 与行右边缘留 8dp。原版在一天都没选时把这一行整体置灰。
+ */
+@Composable
+private fun WeekdayHolidayRow(
+    label: String,
+    checked: Boolean,
+    enabled: Boolean,
+    rowBackground: Color,
+    onCheckedChange: (Boolean) -> Unit,
+) {
     val colors = LocalSmartisanColors.current
-    Canvas(modifier = Modifier.size(CheckboxSize)) {
-        val strokeWidth = CheckboxStroke.toPx()
-        if (selected) {
-            drawRect(color = colors.pressedHighlight)
-            val check = Path().apply {
-                moveTo(size.width * 0.22f, size.height * 0.52f)
-                lineTo(size.width * 0.42f, size.height * 0.72f)
-                lineTo(size.width * 0.78f, size.height * 0.28f)
-            }
-            drawPath(
-                path = check,
-                color = if (pressed) colors.onPressedHighlight else colors.onAccent,
-                style = Stroke(
-                    width = strokeWidth,
-                    cap = StrokeCap.Round,
-                    join = StrokeJoin.Round,
-                ),
-            )
-        } else {
-            drawRect(
-                color = if (pressed) colors.onPressedHighlight else colors.textTertiary,
-                style = Stroke(width = strokeWidth),
-            )
-        }
+    val typography = LocalSmartisanTypography.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(HolidayRowHeight)
+            .background(rowBackground),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SmartisanText(
+            text = label,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = SmartisanDimens.RowContentStart),
+            style = typography.listItemPrimary,
+            color = if (enabled) colors.textPrimary else colors.textDisabled,
+            maxLines = 1,
+        )
+        SmartisanSwitch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.padding(end = HolidaySwitchEndMargin),
+            enabled = enabled,
+            style = SmartisanSwitchStyle.Repeat,
+        )
     }
 }
 
@@ -267,20 +343,40 @@ private const val WeekdayCount = 7
 /** 没有正在按压的行。 */
 private const val NoDay = -1
 
-/** 行高，沿用列表行最小高度 48dp。 */
-private val WeekdayRowHeight = SmartisanDimens.ListItemMinHeight
+/** 行高：原版 `item_alarm_repeat_day.xml` 的 48.6667dp，正好是行背景位图 146px ÷ 3。 */
+private val WeekdayRowHeight = 48.6667.dp
 
-/** 复选框列宽度，原版为 36dp 复选框 + 6dp 右边距，这里给到 48dp 保证可点范围。 */
-private val CheckboxColumnWidth = 48.dp
+/** 复选框边长：原版 `CheckBox` 的 36dp（位图 108px @3x，可见方块 24dp）。 */
+private val CheckboxSize = 36.dp
 
-/** 复选框与行右边缘的间距。 */
-private val CheckboxEndMargin = 12.dp
+/** 复选框与行右边缘的间距，原版 `layout_marginEnd="6dp"`。 */
+private val CheckboxEndMargin = 6.dp
 
-/** 复选框边长。 */
-private val CheckboxSize = 22.dp
+/** 复选框列宽（快速选择手势的可点范围）：原版 `CHECKBOX_SIZE_DP + CHECKBOX_END_MARGIN_DP`。 */
+private val CheckboxColumnWidth = CheckboxSize + CheckboxEndMargin
 
-/** 复选框描边宽度。 */
-private val CheckboxStroke = 1.4.dp
+/** 原版重复日复选框的 selector，即 `item_alarm_repeat_day.xml` 里 `CheckBox` 的 `button`。 */
+@DrawableRes
+private val WeekdayCheckboxSelector = R.drawable.alarm_repeat_checkbox_selector
+
+/** 原版重复日的行背景位图：2px × 146px @3x，`#FAFAFA` 底 + 底部 2px `#EDEDED` 分隔线。 */
+@DrawableRes
+private val WeekdayRowBackground = R.drawable.alarm_repeat_list_item_bg
+
+/** 原版最后一行与「法定节假日」行的纯色底，对应原版 `Color.rgb(250, 250, 250)`。 */
+private val WeekdayFlatRowBackground = Color(0xFFFAFAFA)
+
+/**
+ * 「法定节假日」行的高度：原版 `item_alarm_repeat_holiday.xml` 是 48dp，
+ * 这里取开关画布高度（66dp × 52dp，上下各留 2dp 给投影），免得开关位图被压扁。
+ */
+private val HolidayRowHeight = 52.dp
+
+/** 「法定节假日」开关与行右边缘的间距，原版 `layout_marginEnd="8dp"`。 */
+private val HolidaySwitchEndMargin = 8.dp
+
+/** 「法定节假日」行的默认文案。 */
+private const val HolidayRowLabel = "法定节假日"
 
 /** 紧凑小片边长。 */
 private val ChipSize = 34.dp
