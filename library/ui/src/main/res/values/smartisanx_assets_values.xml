@@ -143,4 +143,18 @@
     <color name="tab_bar_text_press">#9a000000</color>
     <color name="text_shadow_color_enable">#26000000</color>
     <color name="title_or_btn_text_color">#99000000</color>
+    <dimen name="bar_margin_edge">6.0dp</dimen>
+    <dimen name="search_bar_anim_distance">10.0dp</dimen>
+    <dimen name="search_bar_input_editor_text_size">15.0sp</dimen>
+    <dimen name="search_bar_margin_each">12.0dp</dimen>
+    <dimen name="search_bar_margin_search_view">6.0dp</dimen>
+    <dimen name="standard_icon_size">36.0dp</dimen>
+    <dimen name="title_bar_height">48.0dp</dimen>
+    <color name="editor_hint_text_color">#26000000</color>
+    <color name="editor_text_color">#cc000000</color>
+    <style name="StandardIconStyle">
+        <item name="android:layout_width">@dimen/standard_icon_size</item>
+        <item name="android:layout_height">@dimen/standard_icon_size</item>
+        <item name="android:scaleType">center</item>
+    </style>
 </resources>
