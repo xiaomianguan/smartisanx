@@ -7,7 +7,7 @@
 ```kotlin
 @Composable
 fun SmartisanTheme(
-    colors: SmartisanColors = defaultSmartisanColors(),   // follows the system
+    colors: SmartisanColors = lightSmartisanColors(),   // light by default
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
     content: @Composable () -> Unit,
@@ -94,7 +94,23 @@ duplicates it has 30 entries.
 
 ## Dark mode (experimental)
 
-> **The original Smartisan OS has no dark mode.**
+> **The original Smartisan OS has no dark mode, so this library is light by default; dark mode must
+> be opted into.**
+
+`SmartisanTheme` and `rememberSmartisanThemeController` both default to
+`SmartisanColorSchemeMode.Light`. To follow the system or force dark you must pass it explicitly:
+
+```kotlin
+// default: light
+SmartisanTheme { /* ... */ }
+
+// opt-in: follow the system / dark (experimental)
+val controller = rememberSmartisanThemeController(SmartisanColorSchemeMode.System)
+SmartisanTheme(controller) { /* ... */ }
+
+// or with the colors-only overload
+SmartisanTheme(colors = systemSmartisanColors()) { /* ... */ }
+```
 
 The dark scheme comes from design work added by the three revival projects: the charcoal palette was
 first calibrated in the Weather revival, the Music revival reused it, and this library packages it

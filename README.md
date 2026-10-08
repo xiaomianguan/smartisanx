@@ -26,8 +26,9 @@
 - **锤子视觉语言**：方正布局、细线分隔、无涟漪按压反馈、蓝色多选高亮、炭灰深色模式。
 - **完整主题系统**：语义色板、文字样式、形状、尺寸常量、动画规格，全部可通过
   `CompositionLocal` 覆盖。
-- **深浅色与夜间视觉（深色为实验性）**：原版 Smartisan OS 只有浅色一套设计，
-  深色是三个复刻项目自行新增的。基线沿用锤子天气复刻已经校准过的炭灰色板
+- **默认浅色，深色可选（实验性）**：原版 Smartisan OS 只有浅色一套设计，
+  所以本库默认也是浅色；「跟随系统」与「深色」需要开发者显式开启。
+  深色基线沿用锤子天气复刻已经校准过的炭灰色板
   （页底 `#25282D`、标题栏 `#292C31`、卡片 `#34373C`）。
 - **三套原始实现合一**：开关、弹窗、标题栏、drawable 绘制、按压反馈等重复实现已合并。
 - **时钟机械控件**：机械表盘、时间滚轮、计时标尺等原本是 XML + 自定义 View 的组件，
@@ -115,9 +116,10 @@ dependencies {
 ```kotlin
 @Composable
 fun App() {
+    // 默认就是浅色；要跟随系统或深色需显式传入（实验性，见下文）
     val controller = rememberSmartisanThemeController()
     SmartisanTheme(controller) {
-        // controller.colorSchemeMode = SmartisanColorSchemeMode.Dark
+        // controller.colorSchemeMode = SmartisanColorSchemeMode.System
         SmartisanScaffold(
             titleBar = {
                 SmartisanTitleBar(
@@ -232,9 +234,14 @@ SmartisanTheme {
 - 深色：页底 `#25282D`、标题栏 `#292C31`、卡片 `#34373C`、较高表面 `#41464D`、
   多选底色 `#26384F`。
 
-### 深色模式（实验性）
+### 深色模式（实验性，默认不启用）
 
-**原版 Smartisan OS 没有深色模式。** 本库的深色方案来自三个复刻项目的新增设计：
+**原版 Smartisan OS 没有深色模式**，所以本库默认使用浅色：
+`SmartisanTheme` 与 `rememberSmartisanThemeController` 的默认值都是
+`SmartisanColorSchemeMode.Light`。跟随系统与深色必须显式传入，
+并由开发者自行在产品里向用户说明。
+
+深色方案本身来自三个复刻项目的新增设计：
 炭灰色板最早在锤子天气复刻里校准，锤子音乐复刻沿用同一套，本库把它整理成 `darkSmartisanColors()`。
 
 因此深色模式属于**实验性**特性，有两点已知限制：

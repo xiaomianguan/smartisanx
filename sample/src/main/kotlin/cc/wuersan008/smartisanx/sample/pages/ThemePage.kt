@@ -17,16 +17,16 @@ fun ThemePage(controller: ThemeController, onBack: () -> Unit) {
         SampleSectionHeader("深浅色模式")
         SmartisanGroup {
             SmartisanRadioRow(
-                text = "跟随系统",
-                summary = "跟随系统时，深色同样属于实验性功能",
-                selected = controller.colorSchemeMode == SmartisanColorSchemeMode.System,
-                onClick = { controller.colorSchemeMode = SmartisanColorSchemeMode.System },
-            )
-            SmartisanRadioRow(
-                text = "浅色",
-                summary = "原版 Smartisan OS 的原始设计",
+                text = "浅色（默认）",
+                summary = "原版 Smartisan OS 的原始设计，也是本库默认值",
                 selected = controller.colorSchemeMode == SmartisanColorSchemeMode.Light,
                 onClick = { controller.colorSchemeMode = SmartisanColorSchemeMode.Light },
+            )
+            SmartisanRadioRow(
+                text = "跟随系统（实验性）",
+                summary = "系统处于深色时会切到实验性的深色方案",
+                selected = controller.colorSchemeMode == SmartisanColorSchemeMode.System,
+                onClick = { controller.colorSchemeMode = SmartisanColorSchemeMode.System },
             )
             SmartisanRadioRow(
                 text = "深色（实验性）",
@@ -36,11 +36,12 @@ fun ThemePage(controller: ThemeController, onBack: () -> Unit) {
             )
         }
         ExperimentalNote(
-            title = "深色模式是实验性功能",
-            body = "原版 Smartisan OS 只有浅色一套设计，深色是三个复刻项目自行新增的。" +
-                "本库沿用了这套深色方案，但原版图形资源里只有约 19% 带夜间变体" +
-                "（1008 个 drawable 里 194 个），颜色状态列表则完全没有夜间版本，" +
-                "因此深色下部分组件的质感会与原版浅色不一致，属于已知限制。",
+            title = "深色模式是实验性功能，默认不启用",
+            body = "本库默认使用浅色，与原版 Smartisan OS 一致；" +
+                "「跟随系统」与「深色」需要由开发者显式选择，并由你自己在产品里向用户说明。" +
+                "原因是原版只有浅色一套设计，深色由三个复刻项目自行新增，" +
+                "而且原版图形资源里只有约 19% 带夜间变体（1008 个 drawable 里 194 个），" +
+                "颜色状态列表则完全没有夜间版本，深色下的质感会与原版浅色不一致。",
         )
 
         SampleSectionHeader("语义色板")

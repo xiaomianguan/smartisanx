@@ -111,29 +111,33 @@ Key points:
 
 ## Light and dark mode
 
-> **Dark mode is experimental.** The original Smartisan OS shipped a single light design; dark mode
-> was added by the three revival projects, and only ~19% of the original graphic assets have night
-> variants. See [Theme.md](Theme.md#dark-mode-experimental).
+**This library is light by default**, matching the original Smartisan OS.
+
+"Follow the system" and "dark" are **experimental** and must be opted into explicitly, with a
+notice to your own users — the original shipped a single light design, dark mode was added by the
+three revival projects, and only ~19% of the original graphic assets have night variants.
+See [Theme.md](Theme.md#dark-mode-experimental).
 
 ```kotlin
-val controller = rememberSmartisanThemeController()
+// default: light, nothing to do
+SmartisanTheme { /* ... */ }
 
-// Follow the system (default)
-controller.colorSchemeMode = SmartisanColorSchemeMode.System
+// opt-in: follow the system / dark (experimental)
+val controller = rememberSmartisanThemeController(SmartisanColorSchemeMode.System)
+SmartisanTheme(controller) { /* ... */ }
 
-// Force light
-controller.colorSchemeMode = SmartisanColorSchemeMode.Light
-
-// Force dark
-controller.colorSchemeMode = SmartisanColorSchemeMode.Dark
+// switch at runtime
+controller.colorSchemeMode = SmartisanColorSchemeMode.Light  // default
+controller.colorSchemeMode = SmartisanColorSchemeMode.System // follow system (experimental)
+controller.colorSchemeMode = SmartisanColorSchemeMode.Dark   // dark (experimental)
 ```
 
-If you only ever want to follow the system, you can skip the controller entirely:
+You can also use the colours-only overload without a controller:
 
 ```kotlin
-SmartisanTheme {
-    // follows the system light/dark setting automatically
-}
+SmartisanTheme(colors = lightSmartisanColors()) { /* ... */ }   // default
+SmartisanTheme(colors = systemSmartisanColors()) { /* ... */ }  // follow system (experimental)
+SmartisanTheme(colors = darkSmartisanColors()) { /* ... */ }    // dark (experimental)
 ```
 
 It is a good idea to switch the system bar icons at the same time:

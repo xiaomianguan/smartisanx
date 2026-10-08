@@ -30,10 +30,10 @@ modules split by responsibility, the demo app as its own module, components grou
   blue multi-select highlighting, charcoal dark mode.
 - **Complete theming system**: semantic colors, text styles, shapes, dimension tokens and motion
   specs, all overridable through `CompositionLocal`.
-- **Light/dark and night visuals (dark is experimental)**: the original Smartisan OS shipped a
-  single light design; dark mode was added by the three revival projects. The baseline reuses the
-  charcoal palette already calibrated by the Weather revival (page `#25282D`, title bar `#292C31`,
-  card `#34373C`).
+- **Light by default, dark optional (experimental)**: the original Smartisan OS shipped a single
+  light design, so this library defaults to light too; "follow the system" and "dark" must be opted
+  into explicitly. The dark baseline reuses the charcoal palette already calibrated by the Weather
+  revival (page `#25282D`, title bar `#292C31`, card `#34373C`).
 - **Three original implementations merged into one**: switches, dialogs, title bars, drawable
   painting and press feedback have all been deduplicated.
 - **Mechanical clock components**: dials, time wheels and timer rulers that used to be
@@ -244,11 +244,16 @@ The semantic palette merges the actual colors used by the three projects and dro
 - Dark: page `#25282D`, title bar `#292C31`, card `#34373C`, raised surface `#41464D`,
   multi-select background `#26384F`.
 
-### Dark mode (experimental)
+### Dark mode (experimental, off by default)
 
-**The original Smartisan OS has no dark mode.** This library's dark scheme comes from design work
-added by the three revival projects: the charcoal palette was first calibrated in the Weather
-revival, the Music revival reused it, and this library packages it as `darkSmartisanColors()`.
+**The original Smartisan OS has no dark mode**, so this library is light by default:
+`SmartisanTheme` and `rememberSmartisanThemeController` both default to
+`SmartisanColorSchemeMode.Light`. Following the system and forcing dark must be passed explicitly,
+and it is up to you to tell your own users about it.
+
+The dark scheme itself comes from design work added by the three revival projects: the charcoal
+palette was first calibrated in the Weather revival, the Music revival reused it, and this library
+packages it as `darkSmartisanColors()`.
 
 Dark mode is therefore **experimental**, with two known limitations:
 

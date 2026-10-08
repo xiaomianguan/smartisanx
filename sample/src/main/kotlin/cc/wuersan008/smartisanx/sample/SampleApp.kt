@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
+import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanTheme
 import cc.wuersan008.smartisanx.core.theme.ThemeController
 import cc.wuersan008.smartisanx.core.theme.rememberSmartisanThemeController
@@ -34,7 +35,9 @@ import cc.wuersan008.smartisanx.sample.pages.ThemePage
  */
 @Composable
 fun SampleApp() {
-    val controller = rememberSmartisanThemeController()
+    // 库默认就是浅色（与原版一致）；这里显式写出，方便读者知道默认值是什么。
+    // 想体验实验性的深色方案，可在主题页切换到「跟随系统」或「深色」。
+    val controller = rememberSmartisanThemeController(SmartisanColorSchemeMode.Light)
     SmartisanTheme(controller) {
         SystemBarAppearance()
         val colors = LocalSmartisanColors.current
