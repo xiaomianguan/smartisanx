@@ -45,12 +45,13 @@ fun rememberSmartisanDrawablePainter(
     checked: Boolean = false,
     activated: Boolean = false,
 ): Painter {
-    val context = LocalContext.current
-    val configuration = LocalConfiguration.current
+    // 关键：按 smartisanx 主题（而不是系统 uiMode）解析 drawable，
+    // 否则应用内切到深色时，drawable-night 里的夜间素材不会被选中。
+    val resources = smartisanThemedResources()
     val painter =
-        remember(context, configuration, drawableRes) {
+        remember(resources, drawableRes) {
             val drawable =
-                requireNotNull(ContextCompat.getDrawable(context, drawableRes)) {
+                requireNotNull(resources.getDrawable(drawableRes, null)) {
                     "找不到 drawable 资源：$drawableRes"
                 }
             DrawablePainterOwner(drawable.mutate()).painter

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 三个复刻项目原始资源（drawable/layout）引用到的值资源，自动收集。 -->
+<resources>
+    <string name="alarm_add">新建闹钟</string>
+    <string name="alarm_edit">编辑闹钟</string>
+    <string name="alarm_editor_close">关闭</string>
+    <string name="alarm_editor_label">标签</string>
+    <string name="alarm_editor_new_alarm">新建闹钟</string>
+    <string name="alarm_editor_repeat">重复</string>
+    <string name="alarm_editor_ringtone">铃声</string>
+    <string name="alarm_editor_save">保存闹钟</string>
+    <string name="alarm_empty">无闹钟</string>
+    <string name="alarm_label_clear">清除标签</string>
+    <string name="alarm_repeat_follow_holidays">跟随法定节假、调休日</string>
+    <string name="alarm_ringing_slide_to_dismiss">向上划关闭闹钟</string>
+    <string name="alarm_ringing_snooze">小睡</string>
+    <string name="ringtone_picker_back">返回</string>
+    <string name="ringtone_picker_title">铃声</string>
+    <string name="stopwatch_empty_hint">点击开始计时</string>
+    <string name="stopwatch_hold_hint">长按此处复制或分享打点记录</string>
+    <string name="stopwatch_lap">打点</string>
+    <string name="stopwatch_reset">复位</string>
+    <string name="stopwatch_start">开始</string>
+    <string name="stopwatch_start_stop">开关</string>
+    <string name="tab_alarm">闹钟</string>
+    <string name="tab_stopwatch">秒表</string>
+    <string name="tab_timer">计时器</string>
+    <string name="tab_world_clock">世界时钟</string>
+    <string name="timer_680_ruler_content_description">下拉设置计时时长</string>
+    <string name="timer_alert_confirm">确定</string>
+    <string name="timer_alert_title">提醒</string>
+    <string name="timer_hint">拖动滑轮开始计时</string>
+    <string name="timer_reset">复位</string>
+    <string name="timer_start">开始</string>
+    <string name="timer_style_classic">经典拉环</string>
+    <string name="timer_style_modern">新版滑尺</string>
+    <string name="timer_style_picker_content_description">选择计时器样式</string>
+    <string name="timer_zero">00:00</string>
+    <string name="weather_text_00">晴</string>
+    <string name="weather_widget_preview_aqi">空气质量 42 优</string>
+    <string name="weather_widget_preview_city">北京</string>
+    <string name="weather_widget_preview_low_high">18° / 29°</string>
+    <string name="weather_widget_preview_temperature">25°</string>
+    <string name="weather_widget_preview_update">10:24 更新</string>
+    <string name="weather_widget_refresh_content_description">刷新天气</string>
+    <string name="world_clock_add">添加</string>
+    <string name="world_clock_added">（已添加）</string>
+    <string name="world_clock_alphabet_index">城市首字母索引</string>
+    <string name="world_clock_close_picker">关闭</string>
+    <string name="world_clock_edit">编辑</string>
+    <string name="world_clock_local_time">本地时间</string>
+    <string name="world_clock_reorder">拖动排序</string>
+    <string name="world_clock_search_empty">无搜索结果</string>
+    <string name="world_clock_search_hint">搜索城市</string>
+</resources>

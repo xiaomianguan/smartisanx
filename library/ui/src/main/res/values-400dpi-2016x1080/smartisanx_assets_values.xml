@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 三个复刻项目原始资源（drawable/layout）引用到的值资源，自动收集。 -->
+<resources>
+    <dimen name="list_preload_height">-296dp</dimen>
+</resources>

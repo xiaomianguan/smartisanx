@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 三个复刻项目原始资源（drawable/layout）引用到的值资源，自动收集。 -->
+<resources>
+    <dimen name="classic_timer_680_bottom_controls_height">160dp</dimen>
+    <dimen name="classic_timer_680_button_gap">28dp</dimen>
+    <dimen name="classic_timer_680_highlight_margin_end">7dp</dimen>
+    <dimen name="classic_timer_680_ruler_animation_margin_end">1.5dp</dimen>
+    <dimen name="classic_timer_680_ruler_height">550dp</dimen>
+    <dimen name="classic_timer_680_ruler_margin_end">1.5dp</dimen>
+</resources>

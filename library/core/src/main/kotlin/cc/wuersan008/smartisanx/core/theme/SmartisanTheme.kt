@@ -64,6 +64,16 @@ fun rememberSmartisanThemeController(
 ): ThemeController =
     remember(colorSchemeMode) { ThemeController(colorSchemeMode) }
 
+/**
+ * 当前 smartisanx 主题是否为深色；`null` 表示未包裹主题、跟随系统。
+ *
+ * 原版图形资源的夜间变体放在 `drawable-night` / `values-night`，
+ * 而 Android 只按系统 uiMode 选择。应用内切换深浅色时两者可能不一致，
+ * 组件据此强制按应用主题解析资源（见 `smartisanThemedResources`）。
+ */
+val LocalSmartisanDarkOverride: ProvidableCompositionLocal<Boolean?> =
+    staticCompositionLocalOf { null }
+
 /** 由 [SmartisanTheme] 提供的当前控制器。 */
 val LocalSmartisanThemeController: ProvidableCompositionLocal<ThemeController?> =
     staticCompositionLocalOf { null }
@@ -95,6 +105,7 @@ fun SmartisanTheme(
         LocalSmartisanColors provides colors,
         LocalSmartisanTypography provides typography,
         LocalSmartisanShapes provides shapes,
+        LocalSmartisanDarkOverride provides !colors.isLight,
         content = content,
     )
 }
@@ -114,6 +125,7 @@ fun SmartisanTheme(
         LocalSmartisanColors provides colors,
         LocalSmartisanTypography provides typography,
         LocalSmartisanShapes provides shapes,
+        LocalSmartisanDarkOverride provides !colors.isLight,
         LocalSmartisanThemeController provides controller,
         content = content,
     )
