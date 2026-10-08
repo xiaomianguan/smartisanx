@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 三个复刻项目原始资源引用到的值资源，自动收集。 -->
+<resources>
+    <color name="app_accent_pressed_color">#ff8a52</color>
+    <color name="app_card_outline_color">#990b0c0e</color>
+    <color name="app_divider_color">#404348</color>
+    <color name="app_surface_color">#34373c</color>
+    <color name="app_surface_disabled_color">#303338</color>
+    <color name="app_surface_pressed_color">#484d54</color>
+    <color name="app_surface_raised_color">#41464d</color>
+    <color name="app_tertiary_text_color">#9fa1a4</color>
+    <color name="list_item_first_line">#f2f2f2</color>
+    <color name="list_item_second_line">#9fa1a4</color>
+    <color name="title_bar_icon_disabled">#717377</color>
+    <color name="title_bar_icon_normal">#d2d3d5</color>
+    <color name="title_bar_icon_pressed">#ff7433</color>
+    <color name="title_color">#f2f2f2</color>
+    <color name="title_down_color">#d2d3d5</color>
+    <color name="weather_alert_card_outline_color">#990b0c0e</color>
+    <color name="weather_bg_color_end_foggy">#30343a</color>
+    <color name="weather_bg_color_end_haze">#302f34</color>
+    <color name="weather_bg_color_end_rain">#28313c</color>
+    <color name="weather_bg_color_end_snow">#303944</color>
+    <color name="weather_bg_color_end_standstorm">#373129</color>
+    <color name="weather_bg_color_end_sunny">#2b3442</color>
+    <color name="weather_bg_color_start_foggy">#272b30</color>
+    <color name="weather_bg_color_start_haze">#26262b</color>
+    <color name="weather_bg_color_start_rain">#20252d</color>
+    <color name="weather_bg_color_start_snow">#242a31</color>
+    <color name="weather_bg_color_start_standstorm">#292722</color>
+    <color name="weather_bg_color_start_sunny">#22272e</color>
+    <color name="weather_top_card_scrim">#66000000</color>
+</resources>
