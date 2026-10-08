@@ -178,8 +178,10 @@ No. `SmartisanScaffold` is just a convenience combination of "title bar + conten
 Every component can be used on its own.
 
 **Q: Does the library ship assets from the original APKs?**
-No. All icons are vector paths and every texture (shadows, projections, ruler ticks, clock faces)
-is drawn by Compose.
+Yes, deliberately. Smartisan's style is skeuomorphic and its texture comes from NinePatches,
+bitmaps and selectors, so `library/ui/src/main/res/` uses the original artwork recovered by the
+three revival projects (481 files). The vector icon set (`SmartisanXIcons` and friends) is only for
+cases where no original asset exists. See "Asset sources and licensing" in the README.
 
 **Q: Why not use Material's `Switch` / `Button`?**
 Smartisan's switches, buttons and dialogs have their own visuals and feel (draggable knob, shrink

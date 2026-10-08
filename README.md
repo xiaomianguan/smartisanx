@@ -14,9 +14,10 @@
 项目结构参考 [compose-miuix-ui/miuix](https://github.com/compose-miuix-ui/miuix)：
 按职责拆分模块、示例应用独立成模块、组件按功能分包。
 
-> 本库不包含任何来自原版 APK 的位图、NinePatch 或字体资源。
-> 所有图标都是 24×24 的矢量路径，所有质感都由 Compose 绘制，
-> 因此可以自由用于你自己的项目。
+> **本库包含原始图形资源。** 锤子风格是拟物设计，质感来自 NinePatch、位图与 selector，
+> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（481 个文件，含夜间与多密度变体），
+> 而不是用 Compose 重新画一遍。这些素材的知识产权归原权利人所有，
+> 使用前请先阅读[资源来源与授权](#资源来源与授权)。
 
 ## 特性
 
@@ -30,6 +31,8 @@
 - **三套原始实现合一**：开关、弹窗、标题栏、drawable 绘制、按压反馈等重复实现已合并。
 - **时钟机械控件**：机械表盘、时间滚轮、计时标尺等原本是 XML + 自定义 View 的组件，
   这里全部用 Compose Canvas 重写。
+- **原始图形资源**：标题栏、开关、弹窗、列表行、分组卡片、机械表盘、标尺等
+  全部使用原版素材，夜间模式也有对应的原版资源，不是简单反色。
 - **简体中文文档**：所有 KDoc、示例与说明均为简体中文。
 
 ## 模块
@@ -244,6 +247,40 @@ SmartisanTheme {
 锤子原版的按压反馈是切换按压态资源、位移或缩放，而不是 Material 涟漪。
 因此库内所有可点组件都使用 `indication = null`，并自行绘制按压态。
 
+## 资源来源与授权
+
+### 资源清单
+
+`library/ui/src/main/res/` 下共 **481** 个图形资源文件，全部来自三个复刻项目：
+
+| 来源 | 文件数 | 内容 |
+| --- | --- | --- |
+| [SmartisanMusic-Revived](https://github.com/Mangi-11/SmartisanMusic-Revived) | 190 | 标题栏底色与投影、标题栏图标 selector、开关位图、弹窗与菜单底色、
+列表行与分组卡片 selector、复选框与单选 selector、评分星、底部标签栏图标、弹层菜单底色 |
+| [SmartisanWeather-Revived](https://github.com/Mangi-11/SmartisanWeather-Revived) | 23 | 页面底纹 `list_bg`、标题栏图标 selector、红色长按钮 selector、城市项 selector |
+| [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived) | 268 | 大/小机械表盘与指针、刻度与数字、响铃耳朵帧序列、时间滚轮、
+计时器卡尺与刻度、6.8.0 拉环 30 帧序列、秒表按钮、字母索引栏、侧滑删除面板 |
+
+资源按原始文件名与原始限定符目录（`drawable-night`、`drawable-xxhdpi` 等）原样保留，
+只做了两处处理：
+
+1. 三个仓库里同名同内容（或仅排版不同）的 XML selector 只保留一份；
+2. 音乐与天气各有一张 `title_bar_shadow`，保留了音乐的 NinePatch 版本（可横向拉伸）。
+
+另外把 selector 引用到的 8 个颜色与 1 个 `<drawable>` 补进了
+`values/smartisanx_assets_colors.xml`（含 `values-night`）。
+
+### 授权说明
+
+- 这些图形资源是 **Smartisan OS 原版素材**，由三个复刻项目从原厂 APK 中提取与还原，
+  知识产权归锤子科技及相关权利人所有。
+- 三个复刻项目以学习、研究与保留旧软件体验为目的公开了这些素材；
+  本库同样只应被用于学习、研究与个人项目，**请勿用于商业用途**。
+- 如果你的项目需要商用，请把组件里的 `@DrawableRes` 参数替换成你自己的素材，
+  或者把 `SmartisanDrawables` 指向你自己的资源；组件的所有资源入口都是可替换的参数。
+- 组件代码（Kotlin）与图形资源（PNG/NinePatch/XML）是两部分，
+  只保留代码、移除 `library/ui/src/main/res/drawable*` 即可得到一套不含原版素材的纯 Compose 实现。
+
 ## 组件去重说明
 
 三个复刻项目各自实现过一批功能相同的组件，本库把它们合并为唯一实现：
@@ -277,7 +314,9 @@ SmartisanTheme {
   - [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived)（锤子时钟复刻）
 
   本库的色板、尺寸、动画曲线、按压反馈、弹窗比例、列表让位逻辑、机械表盘与标尺手感，
-  都来自这三个项目对原版 Smartisan OS 的还原工作。没有这些复刻，就没有这套组件库。
+  都来自这三个项目对原版 Smartisan OS 的还原工作。
+  `library/ui/src/main/res/` 下的全部图形资源（NinePatch、位图、selector）也直接取自这三个仓库，
+  没有这些复刻，就没有这套组件库。
 
 - **[People-11](https://github.com/People-11)** —— SmartisanOS_APP_Port 项目的作者。
   三个复刻项目都基于该项目提供的原厂 APK 进行逆向分析，本库的视觉基准同样间接来自这里。
@@ -295,8 +334,10 @@ SmartisanTheme {
 
 - 本项目是非官方项目，与锤子科技、字节跳动及 Smartisan 品牌权利人无关。
 - Smartisan OS、相关商标与原始视觉设计的知识产权归原权利人所有。
-- 本库不包含、也不分发任何来自原版 APK 的位图、NinePatch、字体或音频资源；
-  所有绘制均由 Compose 代码完成。
+- 本库**包含**三个复刻项目从原版 APK 还原的图形资源（位图、NinePatch、selector）。
+  这些素材的知识产权归锤子科技及相关权利人所有，本库只是沿用三个复刻项目已经公开的还原成果，
+  并未主张任何权利，详见[资源来源与授权](#资源来源与授权)。
+- 本库不含原版 APK 的字体与音频资源。
 - 本库仅供学习、研究与个人项目使用，请勿用于商业用途或侵犯他人权利的场景。
 
 ## 许可证

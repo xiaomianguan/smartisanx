@@ -15,9 +15,12 @@ modules split by responsibility, the demo app as its own module, components grou
 
 [中文](README.md) · **English**
 
-> This library contains no bitmaps, NinePatches, or fonts from the original APKs.
-> Every icon is a 24×24 vector path and every surface is drawn by Compose,
-> so you are free to use it in your own projects.
+> **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
+> its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
+> in Compose, the library uses the assets the three revival projects recovered from the original
+> APKs (481 files, including night-mode and per-density variants).
+> Those assets belong to their respective rights holders; please read
+> [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
 ## Features
 
@@ -33,6 +36,9 @@ modules split by responsibility, the demo app as its own module, components grou
   painting and press feedback have all been deduplicated.
 - **Mechanical clock components**: dials, time wheels and timer rulers that used to be
   XML + custom `View`s are reimplemented entirely on the Compose Canvas.
+- **Original graphic assets**: title bars, switches, dialogs, list rows, group cards, mechanical
+  dials and rulers all use the original artwork, with real night-mode variants rather than
+  simple colour inversion.
 - **Simplified Chinese docs first**: the primary docs are Chinese; this file and the
   `docs/*.md` English pages are translations of them.
 
@@ -255,6 +261,44 @@ Smartisan's press feedback swaps pressed-state resources, offsets or scales — 
 ripple. Every tappable component in this library therefore uses `indication = null` and draws its
 own pressed state.
 
+## Asset sources and licensing
+
+### Inventory
+
+Every graphic asset under `library/ui/src/main/res/` — **481 files** — comes from one of the three
+revival projects:
+
+| Source | Files | Contents |
+| --- | --- | --- |
+| [SmartisanMusic-Revived](https://github.com/Mangi-11/SmartisanMusic-Revived) | 190 | Title bar background and shadow, title bar icon selectors, switch bitmaps, dialog and menu backgrounds, list row and group card selectors, checkbox and radio selectors, rating stars, bottom tab icons, popup menu backgrounds |
+| [SmartisanWeather-Revived](https://github.com/Mangi-11/SmartisanWeather-Revived) | 23 | Page texture `list_bg`, title bar icon selectors, red long-button selector, city item selectors |
+| [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived) | 268 | Large and small mechanical dials with hands, tick marks and numerals, ringing ear frame sequence, time wheels, timer caliper and scale, the 6.8.0 pull-ring 30-frame sequence, stopwatch buttons, letter index bar, swipe-delete panel |
+
+Assets keep their original file names and qualifier directories (`drawable-night`,
+`drawable-xxhdpi`, and so on). Only two adjustments were made:
+
+1. XML selectors that were identical (or differed only in formatting) across repos were kept once;
+2. Music and Weather each had a `title_bar_shadow`; the Music NinePatch version was kept because it
+   stretches horizontally.
+
+In addition, the 8 colours and 1 `<drawable>` referenced by those selectors were added to
+`values/smartisanx_assets_colors.xml` (with a `values-night` counterpart).
+
+### Licensing
+
+- These assets are **original Smartisan OS artwork**, extracted and restored from factory APKs by
+  the three revival projects. The intellectual property belongs to Smartisan Technology and the
+  relevant rights holders.
+- The three revival projects publish these assets for learning, research and preserving the
+  experience of legacy software. This library should likewise be used only for learning, research
+  and personal projects — **not commercially**.
+- If you need this for commercial work, replace the `@DrawableRes` parameters with your own assets,
+  or point `SmartisanDrawables` at your own resources. Every asset entry point in the components is
+  a replaceable parameter.
+- The Kotlin component code and the graphic assets are separate concerns: delete
+  `library/ui/src/main/res/drawable*` and you are left with a pure-Compose implementation that
+  ships none of the original artwork.
+
 ## Deduplication notes
 
 The three revival projects each implemented a set of equivalent components. This library merges
@@ -291,7 +335,9 @@ the source of every component in this library:
 
   The palette, dimensions, easing curves, press feedback, dialog proportions, list displacement
   logic and the feel of the mechanical dials and rulers all come from these three projects'
-  restoration of the original Smartisan OS. Without them there would be no component library.
+  restoration of the original Smartisan OS. Every graphic asset under
+  `library/ui/src/main/res/` is taken directly from these three repositories as well.
+  Without them there would be no component library.
 
 - **[People-11](https://github.com/People-11)** — author of the SmartisanOS_APP_Port project.
   All three revival projects reverse-engineered factory APKs provided by that project, and this
@@ -315,8 +361,11 @@ the source of every component in this library:
   owners of the Smartisan brand.
 - Smartisan OS, related trademarks and the original visual design belong to their respective
   rights holders.
-- This library does not contain or distribute any bitmap, NinePatch, font or audio asset from the
-  original APKs; all rendering is done by Compose code.
+- This library **does contain** graphic assets (bitmaps, NinePatches, selectors) restored from the
+  original APKs by the three revival projects. That artwork belongs to Smartisan Technology and the
+  relevant rights holders; this library merely reuses work those projects already published and
+  claims no rights over it. See [Asset sources and licensing](#asset-sources-and-licensing).
+- This library contains no fonts or audio from the original APKs.
 - It is intended for learning, research and personal projects. Do not use it commercially or in
   ways that infringe on the rights of others.
 

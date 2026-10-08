@@ -418,5 +418,34 @@ SmartisanXMediaIcons.Volume / VolumeMute / FastForward / Rewind / Lyrics
 SmartisanXClockIcons.Clock / Alarm / Stopwatch / Hourglass / Globe / Bell / SleepTimer / KeepScreenOn
 ```
 
-All of them are 24×24 `ImageVector`s, tinted through `SmartisanIcon`'s `tint`. The library ships no
-bitmap assets.
+All of them are 24×24 `ImageVector`s, tinted through `SmartisanIcon`'s `tint`.
+
+This vector set is for cases where **no original asset exists** (custom screens, custom actions).
+Title bars, switches, dialogs, list rows and clock faces use the original bitmaps by default — see
+the asset index below.
+
+## Asset index
+
+Original graphic assets are referenced through three objects, all in
+`cc.wuersan008.smartisanx.ui.asset`:
+
+| Object | Contents |
+| --- | --- |
+| `SmartisanDrawables` | Title bar, dialogs, menus, list rows, group cards, checkbox, rating, switch, letter bar, tab bar, search field |
+| `SmartisanClockDrawables` | Large/small dials, hands and shadows, ticks and numerals, alarm ears, ringing-card clock, time wheels |
+| `SmartisanTimerDrawables` | Timer caliper, 6.8.0 pull-ring frame sequence, stopwatch buttons, repeat-day switch, clock list rows |
+
+Usage matches the vector icons, except the assets carry their own pressed/disabled states:
+
+```kotlin
+// Title bar icon (the selector handles its own states)
+SmartisanIcon(res = SmartisanDrawables.IconBack, contentDescription = "Back")
+
+// As a background (NinePatch stretches automatically)
+Modifier.smartisanDrawableBackground(SmartisanDrawables.GroupRowSingle)
+
+// Assets that must be drawn at their intrinsic size, like dials
+SmartisanIntrinsicImage(res = SmartisanClockDrawables.Face)
+```
+
+Every `@DrawableRes` parameter is replaceable — pass your own resource id to swap the artwork.

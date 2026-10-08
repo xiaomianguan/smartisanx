@@ -83,18 +83,20 @@ Every Clock component is a `View` subclass. This library rewrites them in Compos
 
 ## 2. Main differences when migrating
 
-### 1. No more `R.drawable.*` dependency
+### 1. The `R.drawable.*` assets now live in the library
 
-The original implementations leaned heavily on selectors, NinePatches and bitmaps under
-`R.drawable`. smartisanx draws everything with Compose instead, which means:
+The selectors, NinePatches and bitmaps the original implementations relied on have **all been
+copied into `library/ui/src/main/res/`**, so your app no longer maintains them:
 
-- you no longer need to ship anything under `res/drawable-*`;
-- there is no more paired maintenance of `values-night` / `drawable-night`;
-- colors, corner radii and shadows all come from the theme and adapt to light/dark automatically.
+- assets keep their original file names and qualifier directories (`drawable-night`,
+  `drawable-xxhdpi`, and so on);
+- light/dark handling comes from the original night variants rather than a hand-written palette;
+- components reference assets through `SmartisanDrawables` / `SmartisanClockDrawables` /
+  `SmartisanTimerDrawables` instead of scattered `R.drawable.*` calls.
 
-If you really do need your own drawable (for example an in-app brand icon), you can still use
-`rememberSmartisanDrawablePainter` and `Modifier.smartisanDrawableBackground`; they keep selector
-state handling and NinePatch stretching intact.
+If you want your own artwork, every asset entry point is a replaceable `@DrawableRes` parameter.
+You can also use `rememberSmartisanDrawablePainter` and `Modifier.smartisanDrawableBackground`
+directly; they keep selector state handling and NinePatch stretching intact.
 
 ### 2. Components no longer read `R.dimen.*`
 
