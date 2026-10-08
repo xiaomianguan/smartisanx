@@ -100,9 +100,15 @@ fun ControlPage(onBack: () -> Unit) {
             }
         }
 
+        // 原版 APK 里直接移植过来的控件，单独成文件，见 OriginalControlSections.kt。
+        OriginalControlSections()
+
         SampleFootnote(
             "开关合并了锤子音乐的 Compose 开关与锤子时钟的两套自定义 View 开关；" +
-                "复选框与评分条来自锤子音乐；按钮合并了锤子音乐的红色收缩按钮与锤子天气的操作按钮。",
+                "复选框与评分条来自锤子音乐；按钮合并了锤子音乐的红色收缩按钮与锤子天气的操作按钮；" +
+                "分段按钮组、计算器按键、数字滚轮、页面指示器、环形下载进度与提示条来自原厂 APK 的" +
+                "自定义 View（ButtonTabGroup / HammerButton / SmartisanNumberPicker / IndicatorView / " +
+                "DownloadProgressView / TipsView，见 docs/原版应用组件清单.md）。",
         )
     }
 }

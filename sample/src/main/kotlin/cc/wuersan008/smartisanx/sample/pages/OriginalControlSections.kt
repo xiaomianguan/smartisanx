@@ -1,0 +1,248 @@
+package cc.wuersan008.smartisanx.sample.pages
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
+import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.sample.SampleSectionHeader
+import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
+import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.SmartisanButton
+import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
+import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
+import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroupItem
+import cc.wuersan008.smartisanx.ui.control.SmartisanHammerButton
+import cc.wuersan008.smartisanx.ui.control.SmartisanHammerButtonStyle
+import cc.wuersan008.smartisanx.ui.control.SmartisanNumberPicker
+import cc.wuersan008.smartisanx.ui.control.SmartisanPageIndicator
+import cc.wuersan008.smartisanx.ui.control.SmartisanProgressIndicator
+import cc.wuersan008.smartisanx.ui.control.SmartisanProgressState
+import cc.wuersan008.smartisanx.ui.control.SmartisanTips
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+
+/**
+ * 基础控件页里「原版控件移植」这一段。
+ *
+ * 单独成文件是为了和 [ControlPage] 里自研控件的段落分开，方便逐个对照原版类。
+ */
+@Composable
+fun OriginalControlSections() {
+    ButtonTabGroupSection()
+    HammerButtonSection()
+    NumberPickerSection()
+    PageIndicatorSection()
+    ProgressIndicatorSection()
+    TipsSection()
+}
+
+/** 分段按钮组：原版 `smartisanos.widget.ButtonTabGroup`。 */
+@Composable
+private fun ButtonTabGroupSection() {
+    var selected by remember { mutableIntStateOf(0) }
+    var gapped by remember { mutableIntStateOf(1) }
+    SampleSectionHeader("分段按钮组（ButtonTabGroup）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            // 连续分段：首 / 中 / 尾三段圆角不同，相邻分段按原版负边距互相压住。
+            SmartisanButtonTabGroup(
+                items = listOf("全部", "今天", "已完成"),
+                selectedIndex = selected,
+                onSelectedChange = { selected = it },
+            )
+            SmartisanText(
+                text = "连续三段（selector_small_btn_filter_left / _middle / _right），当前第 ${selected + 1} 段",
+                modifier = Modifier.padding(top = 12.dp),
+                style = LocalSmartisanTypography.current.caption,
+                color = LocalSmartisanColors.current.textTertiary,
+            )
+            // 有间距：每个分段独立底图，走 selector_small_btn_standard。
+            SmartisanButtonTabGroup(
+                items = listOf("日", "周", "月"),
+                selectedIndex = gapped,
+                onSelectedChange = { gapped = it },
+                hasGap = true,
+                modifier = Modifier.padding(top = 16.dp),
+            )
+            // 带图标 + 禁用项。
+            SmartisanButtonTabGroup(
+                items =
+                    listOf(
+                        SmartisanButtonTabGroupItem("添加", SmartisanOriginalIcons.Add),
+                        SmartisanButtonTabGroupItem("完成", SmartisanOriginalIcons.Complete),
+                        SmartisanButtonTabGroupItem("删除", SmartisanOriginalIcons.Delete),
+                    ),
+                selectedIndex = 0,
+                onSelectedChange = {},
+                disabledIndices = setOf(2),
+                modifier = Modifier.padding(top = 16.dp),
+            )
+        }
+    }
+}
+
+/** 计算器按键：原版 `com.smartisanos.calculator.HammerButton`。 */
+@Composable
+private fun HammerButtonSection() {
+    var pressedTimes by remember { mutableIntStateOf(0) }
+    SampleSectionHeader("计算器按键（HammerButton）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SmartisanHammerButton(
+                    iconRes = SmartisanOriginalIcons.Add,
+                    onClick = { pressedTimes++ },
+                    style = SmartisanHammerButtonStyle.White,
+                    contentDescription = "加",
+                    modifier = Modifier.size(64.dp),
+                )
+                SmartisanHammerButton(
+                    iconRes = SmartisanOriginalIcons.Delete,
+                    onClick = { pressedTimes++ },
+                    style = SmartisanHammerButtonStyle.Grey,
+                    contentDescription = "删除（长按连发）",
+                    // 原版删除键：按下 500ms 后开始连发，之后每 150ms 一次。
+                    onRepeat = { pressedTimes++ },
+                    modifier = Modifier.size(64.dp),
+                )
+                SmartisanHammerButton(
+                    iconRes = SmartisanOriginalIcons.Settings,
+                    onClick = { pressedTimes++ },
+                    style = SmartisanHammerButtonStyle.Black,
+                    highlighted = true,
+                    contentDescription = "设置（带高亮角标）",
+                    modifier = Modifier.size(64.dp),
+                )
+                SmartisanHammerButton(
+                    iconRes = SmartisanOriginalIcons.Confirm,
+                    onClick = { pressedTimes++ },
+                    style = SmartisanHammerButtonStyle.Equal,
+                    contentDescription = "等号",
+                    modifier = Modifier.size(64.dp),
+                )
+            }
+            SmartisanText(
+                text = "按键触发 $pressedTimes 次；按住删除键会按原版节奏连发",
+                modifier = Modifier.padding(top = 12.dp),
+                style = LocalSmartisanTypography.current.caption,
+                color = LocalSmartisanColors.current.textTertiary,
+            )
+        }
+    }
+}
+
+/** 数字滚轮：原版 `SmartisanNumberPicker` / `SmartisanNumberPickerEx`。 */
+@Composable
+private fun NumberPickerSection() {
+    var minute by remember { mutableIntStateOf(30) }
+    SampleSectionHeader("数字滚轮（NumberPicker）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                SmartisanNumberPicker(
+                    value = minute,
+                    onValueChange = { minute = it },
+                    minValue = 0,
+                    maxValue = 59,
+                    formatter = { "%02d".format(it) },
+                    unit = "分",
+                    modifier = Modifier.size(width = 120.dp, height = 200.dp),
+                )
+                SmartisanText(
+                    text = "循环滚动（原版 setWrapSelectorWheel），当前值 $minute",
+                    modifier = Modifier.padding(start = 16.dp),
+                    style = LocalSmartisanTypography.current.listItemSecondary,
+                    color = LocalSmartisanColors.current.textTertiary,
+                )
+            }
+        }
+    }
+}
+
+/** 页面指示器：原版 `smartisanos.app.IndicatorView`。 */
+@Composable
+private fun PageIndicatorSection() {
+    var page by remember { mutableIntStateOf(0) }
+    val pageCount = 5
+    SampleSectionHeader("页面指示器（IndicatorView）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                SmartisanPageIndicator(pageCount = pageCount, currentPage = page)
+            }
+            SmartisanText(
+                text = "第 ${page + 1} 页 / 共 $pageCount 页",
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                style = LocalSmartisanTypography.current.caption,
+                color = LocalSmartisanColors.current.textTertiary,
+            )
+            Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SmartisanButton(
+                    text = "上一页",
+                    onClick = { page = (page - 1 + pageCount) % pageCount },
+                    style = SmartisanButtonStyle.Neutral,
+                )
+                SmartisanButton(
+                    text = "下一页",
+                    onClick = { page = (page + 1) % pageCount },
+                    style = SmartisanButtonStyle.Neutral,
+                )
+            }
+        }
+    }
+}
+
+/** 环形下载进度：原版 `smartisanos.widget.DownloadProgressView`。 */
+@Composable
+private fun ProgressIndicatorSection() {
+    SampleSectionHeader("环形下载进度（DownloadProgressView）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // 原版四种状态：1 下载中、2 已暂停、3 失败 / 重试、4 处理中（每帧转 5°）。
+                SmartisanProgressIndicator(progress = 42, state = SmartisanProgressState.Download)
+                SmartisanProgressIndicator(progress = 42, state = SmartisanProgressState.Pause)
+                SmartisanProgressIndicator(progress = 42, state = SmartisanProgressState.Retry)
+                SmartisanProgressIndicator(progress = 42, state = SmartisanProgressState.Processing)
+            }
+            SmartisanText(
+                text = "下载中 / 已暂停 / 失败 / 处理中（状态切换时图标 300ms 淡入淡出）",
+                modifier = Modifier.padding(top = 12.dp),
+                style = LocalSmartisanTypography.current.caption,
+                color = LocalSmartisanColors.current.textTertiary,
+            )
+        }
+    }
+}
+
+/** 轻量提示条：原版 `smartisanos.widget.TipsView`。 */
+@Composable
+private fun TipsSection() {
+    SampleSectionHeader("轻量提示条（TipsView）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth()) {
+            SmartisanTips("同步后会覆盖本地内容，请先确认。")
+            SmartisanTips(
+                "这是一条比较长的提示，用来演示原版 onLayout 的行为：文字超过一行时自动从居中改为左对齐，" +
+                    "与原版 setGravity(getLineCount() > 1 ? LEFT : CENTER) 完全一致。",
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}

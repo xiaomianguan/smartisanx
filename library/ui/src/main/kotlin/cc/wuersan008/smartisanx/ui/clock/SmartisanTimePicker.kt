@@ -70,6 +70,9 @@ import kotlin.math.abs
  * @param visibleCount 可见行数，偶数会被向上取整为奇数，至少 3 行。
  * @param itemHeight 单行高度。
  * @param showSelectionLines 是否绘制选中行上下两条参考线；外部已铺原版背景位图时传 false。
+ * @param wrap 是否循环滚动（首尾相接）。开启后内容会被重复三份、始终停在中间那份，
+ *   滚出中间那份时原地跳回一份——因为三份内容完全相同，画面不会有跳变。
+ *   对应原版 `SmartisanNumberPicker#setWrapSelectorWheel(true)`。
  */
 @Composable
 fun SmartisanWheelPicker(
@@ -80,6 +83,7 @@ fun SmartisanWheelPicker(
     visibleCount: Int = 5,
     itemHeight: Dp = 40.dp,
     showSelectionLines: Boolean = true,
+    wrap: Boolean = false,
 ) {
     if (items.isEmpty()) return
     val colors = LocalSmartisanColors.current
@@ -89,6 +93,11 @@ fun SmartisanWheelPicker(
     val rows = visibleCount.coerceAtLeast(MinVisibleCount).let { if (it % 2 == 0) it + 1 else it }
     val halfRows = rows / 2
     val safeIndex = selectedIndex.coerceIn(0, items.lastIndex)
+    // 循环模式：把内容重复 3 份、停在中间那份；滚出中间那份后原地跳回一份（内容完全相同，视觉无跳变）。
+    val loops = if (wrap && items.size > 1) 3 else 1
+    val virtualItems = if (loops > 1) List(loops) { items }.flatten() else items
+    val baseIndex = if (loops > 1) items.size else 0
+    val initialVirtualIndex = baseIndex + safeIndex
 
     // 首尾各放一个半视口高的占位项，让第一项与最后一项也能停在视口正中；
     // 不使用 contentPadding 是因为「滚到第 i 项」与「第 i 项居中」在带内边距时
@@ -96,7 +105,7 @@ fun SmartisanWheelPicker(
     val spacerHeight = itemHeight * halfRows
     val spacerPx = with(LocalDensity.current) { spacerHeight.roundToPx() }
     val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = safeIndex + 1,
+        initialFirstVisibleItemIndex = initialVirtualIndex + 1,
         initialFirstVisibleItemScrollOffset = -spacerPx,
     )
     // 中心吸附：视口正中始终对齐某一整项（含首尾项，因为占位项中心不会比整项更靠近中心）。
@@ -105,16 +114,33 @@ fun SmartisanWheelPicker(
         snapPosition = SnapPosition.Center,
     )
 
-    // 列表下标 0 与 items.size + 1 是占位项，真实项下标 = 列表下标 - 1。
-    val centeredListIndex by remember(listState, safeIndex) {
-        derivedStateOf { listState.smartisanCenteredIndex(safeIndex + 1) }
+    // 列表下标 0 与 itemCount + 1 是占位项，真实项下标 = 列表下标 - 1。
+    val centeredListIndex by remember(listState, initialVirtualIndex) {
+        derivedStateOf { listState.smartisanCenteredIndex(initialVirtualIndex + 1) }
     }
-    val centeredIndex = (centeredListIndex - 1).coerceIn(0, items.lastIndex)
+    val centeredVirtualIndex = centeredListIndex - 1
+    val centeredIndex = centeredVirtualIndex.smartisanLogicalIndex(baseIndex, items.size)
 
-    // 外部改选中项 → 平滑滚到对应行（此时该项正好居中，不会与吸附互相打架）。
+    // 外部改选中项 → 平滑滚到「当前这一份」里的对应行（此时该项正好居中，不会与吸附互相打架）。
     LaunchedEffect(safeIndex) {
         if (safeIndex != centeredIndex) {
-            listState.animateScrollToItem(safeIndex + 1, scrollOffset = -spacerPx)
+            val targetVirtualIndex = centeredVirtualIndex - centeredIndex + safeIndex
+            listState.animateScrollToItem(targetVirtualIndex + 1, scrollOffset = -spacerPx)
+        }
+    }
+    // 循环模式：滚停后若已离开中间那一份，就原地跳回一份（内容相同，画面不跳）。
+    LaunchedEffect(listState, loops, items.size) {
+        if (loops <= 1) return@LaunchedEffect
+        snapshotFlow { listState.isScrollInProgress }.collect { scrolling ->
+            if (scrolling) return@collect
+            val virtualIndex = listState.smartisanCenteredIndex(initialVirtualIndex + 1) - 1
+            when {
+                virtualIndex < items.size ->
+                    listState.scrollToItem(virtualIndex + items.size + 1, scrollOffset = -spacerPx)
+                virtualIndex >= items.size * 2 ->
+                    listState.scrollToItem(virtualIndex - items.size + 1, scrollOffset = -spacerPx)
+                else -> Unit
+            }
         }
     }
     // 内部滚动 → 等惯性结束再上报，避免快速滚动时连续回调。
@@ -156,7 +182,7 @@ fun SmartisanWheelPicker(
             item(key = TopSpacerKey) {
                 Spacer(modifier = Modifier.height(spacerHeight))
             }
-            itemsIndexed(items, key = { index, _ -> index }) { index, label ->
+            itemsIndexed(virtualItems, key = { index, _ -> index }) { index, label ->
                 val fraction by remember(index, items.size) {
                     derivedStateOf { listState.smartisanCenteredFraction(index + 1) }
                 }
@@ -176,7 +202,7 @@ fun SmartisanWheelPicker(
                         // 上下行渐隐：alpha 只影响绘制，不触发重新布局。
                         .graphicsLayer { alpha = MinItemAlpha + (1f - MinItemAlpha) * fraction }
                         .smartisanClickable {
-                            onSelectedIndexChange(index)
+                            onSelectedIndexChange(index.smartisanLogicalIndex(baseIndex, items.size))
                             scope.launch {
                                 listState.animateScrollToItem(index + 1, scrollOffset = -spacerPx)
                             }
@@ -307,6 +333,17 @@ private fun LazyListState.smartisanCenteredFraction(index: Int): Float {
     if (halfViewport <= 0f) return 0f
     val distance = abs(item.offset + item.size / 2f - viewportCenter)
     return (1f - distance / halfViewport).coerceIn(0f, 1f)
+}
+
+/**
+ * 把虚拟列表下标折算成调用方的逻辑下标。
+ *
+ * 循环模式（[SmartisanWheelPicker] 的 `wrap`）下内容被重复了 3 份，
+ * 中间那一份的起始下标是 `baseIndex`；非循环模式 `baseIndex` 为 0，结果就是原下标。
+ */
+private fun Int.smartisanLogicalIndex(baseIndex: Int, count: Int): Int {
+    if (count <= 0) return 0
+    return (((this - baseIndex) % count) + count) % count
 }
 
 /** 距离视口中心最近的一项下标，即当前选中行。 */

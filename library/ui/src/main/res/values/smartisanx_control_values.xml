@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  控件移植时用到的原版值资源。
+
+  这些条目来自原版 APK 的 values/ 目录，被同样导入本库的样式（style）间接引用，
+  或者被 Compose 组件直接读取（例如 SmartisanTips 的左右内边距）。
+
+  来源：
+    semi_small_text_size / group_list_section_title_padding / tips_or_section_title_text_color
+        —— 锤子日历 8.1.2 values/dimens.xml、values/colors.xml
+           （被 styles.xml 的 TipsViewAppearance 引用）
+    sos_smartisanos_dimen_* / sos_smartisanos_color_*
+        —— 锤子邮件 7.1.0 values/dimens.xml、values/colors.xml
+           （被 styles.xml 的 sos_smartisanos_style_TipsViewAppearance 引用，取值与日历一致）
+-->
+<resources>
+    <dimen name="semi_small_text_size">13.5sp</dimen>
+    <dimen name="group_list_section_title_padding">30.0dp</dimen>
+    <color name="tips_or_section_title_text_color">#80000000</color>
+    <dimen name="sos_smartisanos_dimen_semi_small_text_size">13.5sp</dimen>
+    <dimen name="sos_smartisanos_dimen_group_list_section_title_padding">30.0dp</dimen>
+    <color name="sos_smartisanos_color_tips_or_section_title_text_color">#80000000</color>
+</resources>

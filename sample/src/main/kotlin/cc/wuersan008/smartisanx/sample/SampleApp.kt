@@ -21,6 +21,7 @@ import cc.wuersan008.smartisanx.sample.pages.ButtonPage
 import cc.wuersan008.smartisanx.sample.pages.ClockPage
 import cc.wuersan008.smartisanx.sample.pages.ControlPage
 import cc.wuersan008.smartisanx.sample.pages.IconPage
+import cc.wuersan008.smartisanx.sample.pages.InputPage
 import cc.wuersan008.smartisanx.sample.pages.LayoutPage
 import cc.wuersan008.smartisanx.sample.pages.ListInteractionPage
 import cc.wuersan008.smartisanx.sample.pages.OverlayPage
@@ -54,6 +55,7 @@ fun SampleApp() {
                     SamplePage.Icon -> IconPage(onBack = back)
                     SamplePage.Button -> ButtonPage(onBack = back)
                     SamplePage.Control -> ControlPage(onBack = back)
+                    SamplePage.Input -> InputPage(onBack = back)
                     SamplePage.Layout -> LayoutPage(onBack = back)
                     SamplePage.ListInteraction -> ListInteractionPage(onBack = back)
                     SamplePage.Overlay -> OverlayPage(onBack = back)

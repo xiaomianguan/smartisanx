@@ -65,8 +65,9 @@ smartisanx/
 │   │   └── utils/        Drawable painting, shadow modifiers
 │   ├── ui/src/main/kotlin/cc/wuersan008/smartisanx/ui/
 │   │   ├── basic/        Surface, Text, Icon, Divider
-│   │   ├── control/      Switch, checkbox, radio, button, rating bar
-│   │   ├── layout/       Title bar, list item, group, tab row, scrollbar, empty state
+│   │   ├── control/      Switch, checkbox, radio, button, rating bar, segmented group, number picker
+│   │   ├── input/        Search bar, password field, clearable field, auto-fit and justified text
+│   │   ├── layout/       Title bar, list item, group, tab row, scrollbar, empty state, flow layout
 │   │   ├── list/         Drag-to-reorder, swipe-to-delete, letter index
 │   │   ├── overlay/      Dialogs, menu dialog, bottom sheet
 │   │   └── clock/        Analog dial, compact dial, time wheels, rulers, weekday picker
@@ -193,13 +194,21 @@ SmartisanTheme {
 ### Controls (`cc.wuersan008.smartisanx.ui.control`)
 
 `SmartisanSwitch`, `SmartisanSwitchRow`, `SmartisanCheckbox`, `SmartisanRadioButton`,
-`SmartisanRadioRow`, `SmartisanButton`, `SmartisanTextButton`, `SmartisanRatingBar`
+`SmartisanRadioRow`, `SmartisanButton`, `SmartisanTextButton`, `SmartisanRatingBar`,
+`SmartisanButtonTabGroup`, `SmartisanHammerButton`, `SmartisanNumberPicker`,
+`SmartisanPageIndicator`, `SmartisanProgressIndicator`, `SmartisanTips`
+
+### Input (`cc.wuersan008.smartisanx.ui.input`)
+
+`SmartisanSearchBar`, `SmartisanAutoFitText`, `SmartisanJustifyText`,
+`SmartisanPasswordField`, `SmartisanClearableField`, `SmartisanInputDefaults`
 
 ### Layout (`cc.wuersan008.smartisanx.ui.layout`)
 
 `SmartisanScaffold`, `SmartisanTitleBar`, `SmartisanTitleBarSurface`, `SmartisanListItem`,
 `SmartisanGroup`, `SmartisanSectionTitle`, `SmartisanCard`, `SmartisanTabRow`,
-`SmartisanBottomBar`, `Modifier.smartisanVerticalScrollbar`, `SmartisanEmptyHint`
+`SmartisanBottomBar`, `Modifier.smartisanVerticalScrollbar`, `SmartisanEmptyHint`,
+`SmartisanFlowLayout`
 
 ### List interaction (`cc.wuersan008.smartisanx.ui.list`)
 
@@ -231,7 +240,8 @@ interactive demos:
 ```
 
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
-buttons, controls, layout and lists, list interaction, overlays, clock and mechanical controls.
+buttons, controls, text and input, layout and lists, list interaction, overlays, clock and
+mechanical controls.
 
 ## Design notes
 

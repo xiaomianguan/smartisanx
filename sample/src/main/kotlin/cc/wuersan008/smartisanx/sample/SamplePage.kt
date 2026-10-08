@@ -38,12 +38,17 @@ enum class SamplePage(
     ),
     Control(
         title = "基础控件",
-        subtitle = "开关、复选框、单选、评分条",
+        subtitle = "开关、复选框、单选、评分条、分段按钮组、数字滚轮",
         icon = SmartisanXStatusIcons.Info,
+    ),
+    Input(
+        title = "文本与输入",
+        subtitle = "搜索栏、自动缩字与两端对齐文本、密码框、可清空输入框",
+        icon = SmartisanXIcons.Search,
     ),
     Layout(
         title = "布局与列表",
-        subtitle = "标题栏、列表行、分组、标签栏、滚动条、空态",
+        subtitle = "标题栏、列表行、分组、标签栏、滚动条、空态、流式布局",
         icon = SmartisanXMediaIcons.Queue,
     ),
     ListInteraction(

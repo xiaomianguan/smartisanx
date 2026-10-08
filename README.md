@@ -58,8 +58,9 @@ smartisanx/
 │   │   └── utils/        drawable 绘制、阴影修饰符
 │   ├── ui/src/main/kotlin/cc/wuersan008/smartisanx/ui/
 │   │   ├── basic/        Surface、Text、Icon、Divider
-│   │   ├── control/      开关、复选框、单选、按钮、评分条
-│   │   ├── layout/       标题栏、列表行、分组、标签栏、滚动条、空态
+│   │   ├── control/      开关、复选框、单选、按钮、评分条、分段按钮组、数字滚轮
+│   │   ├── input/        搜索栏、密码框、可清空输入框、自动缩字与两端对齐文本
+│   │   ├── layout/       标题栏、列表行、分组、标签栏、滚动条、空态、流式布局
 │   │   ├── list/         拖动排序、侧滑删除、字母索引
 │   │   ├── overlay/      弹窗、菜单弹窗、底部弹层
 │   │   └── clock/        机械表盘、小表盘、时间滚轮、标尺、星期选择
@@ -184,13 +185,21 @@ SmartisanTheme {
 ### 控件（`cc.wuersan008.smartisanx.ui.control`）
 
 `SmartisanSwitch`、`SmartisanSwitchRow`、`SmartisanCheckbox`、`SmartisanRadioButton`、
-`SmartisanRadioRow`、`SmartisanButton`、`SmartisanTextButton`、`SmartisanRatingBar`
+`SmartisanRadioRow`、`SmartisanButton`、`SmartisanTextButton`、`SmartisanRatingBar`、
+`SmartisanButtonTabGroup`、`SmartisanHammerButton`、`SmartisanNumberPicker`、
+`SmartisanPageIndicator`、`SmartisanProgressIndicator`、`SmartisanTips`
+
+### 输入（`cc.wuersan008.smartisanx.ui.input`）
+
+`SmartisanSearchBar`、`SmartisanAutoFitText`、`SmartisanJustifyText`、
+`SmartisanPasswordField`、`SmartisanClearableField`、`SmartisanInputDefaults`
 
 ### 布局（`cc.wuersan008.smartisanx.ui.layout`）
 
 `SmartisanScaffold`、`SmartisanTitleBar`、`SmartisanTitleBarSurface`、`SmartisanListItem`、
 `SmartisanGroup`、`SmartisanSectionTitle`、`SmartisanCard`、`SmartisanTabRow`、
-`SmartisanBottomBar`、`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`
+`SmartisanBottomBar`、`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`、
+`SmartisanFlowLayout`
 
 ### 列表交互（`cc.wuersan008.smartisanx.ui.list`）
 
@@ -221,7 +230,7 @@ SmartisanTheme {
 ```
 
 示例应用的分页与组件分组一一对应：主题与设计变量、文字、图标、按钮、基础控件、
-布局与列表、列表交互、浮层、时钟与机械控件。
+文本与输入、布局与列表、列表交互、浮层、时钟与机械控件。
 
 ## 设计说明
 

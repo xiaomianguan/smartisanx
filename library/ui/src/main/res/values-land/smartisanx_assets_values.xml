@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 原版 APK 资源引用到的值资源，自动收集。 -->
+<resources>
+    <integer name="highlight_padding_right">24</integer>
+    <integer name="highlight_padding_top">30</integer>
+</resources>

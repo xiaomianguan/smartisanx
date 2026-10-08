@@ -7,6 +7,7 @@ All public APIs grouped by package. Every component must be wrapped in `Smartisa
 - [Theme and core capabilities](#theme-and-core-capabilities)
 - [Basic components](#basic-components-basic)
 - [Controls](#controls-control)
+- [Input](#input-input)
 - [Layout](#layout-layout)
 - [List interaction](#list-interaction-list)
 - [Overlays](#overlays-overlay)
@@ -161,6 +162,57 @@ enum class SmartisanButtonStyle { Accent, Neutral, Text }
     starCount: Int = 5, enabled: Boolean = true, starSize: Dp = 24.dp,
 )
 fun smartisanRatingAt(x: Float, width: Float, starCount: Int = 5): Int
+
+data class SmartisanButtonTabGroupItem(val text: String, val iconRes: Int? = null)
+
+@Composable fun SmartisanButtonTabGroup(
+    items: List<SmartisanButtonTabGroupItem>, selectedIndex: Int, onSelectedChange: (Int) -> Unit,
+    modifier: Modifier = Modifier, hasGap: Boolean = false, alwaysKeepClickListen: Boolean = false,
+    itemWidth: Dp? = null, disabledIndices: Set<Int> = emptySet(), contentColor: Color = Color.Unspecified,
+)
+@Composable fun SmartisanButtonTabGroup(items: List<String>, ...same, without icons...)
+
+enum class SmartisanHammerButtonStyle { White, Grey, Black, GreyFocus, BlackFocus, DigitZero, Equal }
+
+@Composable fun SmartisanHammerButton(
+    iconRes: Int, onClick: () -> Unit, modifier: Modifier = Modifier,
+    style: SmartisanHammerButtonStyle = SmartisanHammerButtonStyle.White,
+    highlighted: Boolean = false, onRepeat: (() -> Unit)? = null,
+    contentDescription: String? = null, iconPadding: PaddingValues = PaddingValues(...),
+)
+
+@Composable fun SmartisanNumberPicker(
+    value: Int, onValueChange: (Int) -> Unit, modifier: Modifier = Modifier,
+    minValue: Int = 0, maxValue: Int = 9, wrap: Boolean = true,
+    formatter: (Int) -> String = { it.toString() }, unit: String? = null,
+    visibleCount: Int = 5, itemHeight: Dp = 40.dp, showSelectionLines: Boolean = true,
+    unitColor: Color = Color.Unspecified, hapticFeedbackOnChange: Boolean = true,
+)
+
+data class SmartisanPageIndicatorIcon(val normalRes: Int, val selectedRes: Int)
+
+@Composable fun SmartisanPageIndicator(
+    pageCount: Int, currentPage: Int, modifier: Modifier = Modifier, radius: Dp = 2.dp,
+    pageColor: Color = Color.Unspecified, selectedColor: Color = Color.Unspecified,
+    icons: List<SmartisanPageIndicatorIcon> = emptyList(), contentDescription: String? = null,
+)
+
+enum class SmartisanProgressState { Download, Pause, Retry, Processing }
+
+@Composable fun SmartisanProgressIndicator(
+    progress: Int, modifier: Modifier = Modifier,
+    state: SmartisanProgressState = SmartisanProgressState.Download,
+    size: Dp = 36.dp, innerCircleRadius: Dp = 15.dp,
+    backRingWidth: Dp = 2.dp, foreRingWidth: Dp = 1.3333334.dp,
+    backProgressStartColor: Color = Color.Unspecified, backProgressEndColor: Color = Color.Unspecified,
+    foreProgressStartColor: Color = Color.Unspecified, foreProgressEndColor: Color = Color.Unspecified,
+    failedProgressColor: Color = Color.Unspecified,
+)
+
+@Composable fun SmartisanTips(
+    text: String, modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified, showShadow: Boolean = true,
+)
 ```
 
 `SmartisanSwitch` reproduces all the behaviour of the original switch: a shadow appears on press and
@@ -169,6 +221,118 @@ duration scales with the travel distance, and a haptic fires on release.
 
 `SmartisanSwitchRow` binds the row and the switch to a single state, so tapping the row and tapping
 the switch each fire exactly one callback.
+
+### Ported original controls
+
+These components come straight from the custom views of the stock APKs; the bitmaps, shadows, animation
+durations and interpolators are copied from the originals:
+
+| Component | Original class | Apps using it |
+| --- | --- | --- |
+| `SmartisanButtonTabGroup` | `smartisanos.widget.ButtonTabGroup` | Calendar, Messages, Music, Notes, Recorder (5) |
+| `SmartisanNumberPicker` | `SmartisanNumberPicker` / `SmartisanNumberPickerEx` | Clock, Music (2) |
+| `SmartisanPageIndicator` | `smartisanos.app.IndicatorView` | Calendar, Notes (2) |
+| `SmartisanProgressIndicator` | `smartisanos.widget.DownloadProgressView` | Calendar, Mail (2) |
+| `SmartisanTips` | `smartisanos.widget.TipsView` | Calendar, Mail (2) |
+| `SmartisanHammerButton` | `com.smartisanos.calculator.HammerButton` | Calculator (1) |
+
+`SmartisanNumberPicker` does not reimplement the wheel: it reuses `SmartisanWheelPicker` (which gained the
+original's cyclic scrolling `wrap` in this change) and only adds the original's min/max range, formatter and
+highlighted unit suffix semantics.
+
+`SmartisanButtonTabGroup` uses the original `selector_small_btn_filter_left / _middle / _right` and
+`selector_small_btn_standard` bitmaps, overlaps adjacent segments by the original
+`button_tab_group_each_gap = 6dp`, and takes its text shadow from `color/filter_button_text_shadow_colors`.
+
+`SmartisanHammerButton` gets its press offset from the original selectors themselves (the pressed bitmap is
+inset by about 1dp), draws the highlight badge at the original `highlight_padding_right / top` (portrait and
+landscape differ), and repeats on long press at the original `500ms` delay then `150ms` intervals.
+
+Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
+**Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp
+radius, all overridable per parameter.
+
+---
+
+## Input (`input`)
+
+```kotlin
+@Composable fun SmartisanSearchBar(
+    query: String, onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier, expanded: Boolean = false,
+    onExpandedChange: (Boolean) -> Unit = {}, placeholder: String = "",
+    onCancel: () -> Unit = {}, onSearchIconClick: () -> Unit = {}, onSearch: () -> Unit = {},
+    filterIconRes: Int? = null, onFilterClick: () -> Unit = {},
+    secondaryFilterText: String? = null, onSecondaryFilterClick: () -> Unit = {},
+    showLeftIcon: Boolean = true, showShadow: Boolean = true, enabled: Boolean = true,
+    autoFocus: Boolean = true, withAnimation: Boolean = true,
+    onAnimationStart: (() -> Unit)? = null, onAnimationEnd: (() -> Unit)? = null,
+    fieldHeight: Dp = SmartisanInputDefaults.FieldHeight,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    keyboardActions: KeyboardActions? = null,
+)
+
+@Composable fun SmartisanAutoFitText(
+    text: String, modifier: Modifier = Modifier,
+    style: TextStyle = LocalSmartisanTypography.current.body, color: Color = Color.Unspecified,
+    minFontSize: TextUnit = 12.sp, maxFontSize: TextUnit = TextUnit.Unspecified,
+    maxLines: Int = 1, overflow: TextOverflow = TextOverflow.Clip, textAlign: TextAlign? = null,
+)
+
+@Composable fun SmartisanJustifyText(
+    text: String, modifier: Modifier = Modifier,
+    style: TextStyle = LocalSmartisanTypography.current.body, color: Color = Color.Unspecified,
+    indentFirstLine: Boolean = true,
+)
+
+@Composable fun SmartisanPasswordField(
+    value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier,
+    placeholder: String = "", enabled: Boolean = true, revealPassword: Boolean = false,
+    onRevealPasswordChange: (Boolean) -> Unit = {}, singleLine: Boolean = true,
+    textStyle: TextStyle = LocalSmartisanTypography.current.body.copy(fontSize = 15.sp),
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Password, imeAction = ImeAction.Done,
+    ),
+    keyboardActions: KeyboardActions? = null,
+    eyePaddingEnd: Dp = SmartisanInputDefaults.EyePaddingEnd,
+)
+
+@Composable fun SmartisanClearableField(
+    value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier,
+    placeholder: String = "", enabled: Boolean = true, singleLine: Boolean = true,
+    showClearOnlyWhenFocused: Boolean = true, onClear: (() -> Unit)? = null,
+    textStyle: TextStyle = LocalSmartisanTypography.current.body.copy(fontSize = 15.sp),
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    keyboardActions: KeyboardActions? = null,
+    clearIconRes: Int = R.drawable.quick_icon_delete,
+    clearIconSize: Dp = SmartisanInputDefaults.QuickDeleteIconSize,
+    clearPaddingEnd: Dp = SmartisanInputDefaults.QuickDeletePaddingEnd,
+    animateClearIcon: Boolean = true,
+)
+
+object SmartisanInputDefaults
+```
+
+### Ported original input components
+
+| Component | Original class | Apps in the original |
+| --- | --- | --- |
+| `SmartisanSearchBar` | `smartisanos.widget.SearchBar` | Messages, Calendar, Clock, Gallery, Music, Notes, Recorder (7) |
+| `SmartisanAutoFitText` | `smartisanos.widget.FontFitTextView` | Calendar, Messages, Notes (3) |
+| `SmartisanJustifyText` | `smartisanos.tablet.widget.SmartisanJustifyTextView` | Music (1) |
+| `SmartisanPasswordField` | `smartisanos.widget.PasswordEditText` | Calendar, Mail, Music (3) |
+| `SmartisanClearableField` | `smartisanos.widget.QuickDeleteEditText` | Calendar, Mail (2) |
+
+Notes:
+
+- `SmartisanSearchBar` is 48dp tall (the original `title_bar_height`) with a 32dp edit area backed by the original NinePatch `search_field` (`search_bar_edit_bg_selector`, disabled `search_field_disabled`); the leading icon is `search_bar_left_icon` (24×30dp), the clear button `text_clear_btn` (30dp) and the cancel / filter buttons 36dp (the original `standard_icon_size`); the gaps come from `bar_margin_edge` 6dp, `search_bar_margin_search_view` 6dp and `search_bar_margin_each` 12dp.
+- The expand / collapse animation copies the original `SearchBar.startAnimation(boolean)`: the edit area yields over 300ms when expanding and after a 100ms delay over 200ms when collapsing; the cancel button moves by `search_bar_anim_distance` (10dp) and fades in after 100ms when expanding, with no delay when collapsing — 200ms each, using the original `DecelerateInterpolator(1.5f)`; the filter container does the opposite.
+- `SmartisanAutoFitText` reproduces the original `refitText` binary search with `TextMeasurer`: measure the line, and if it does not fit, bisect between `mFitMinSize` (12sp) and the current size with a 0.5px tolerance, then shrink once more against the available height.
+- `SmartisanJustifyText` redraws line by line: every line except the last one, empty lines and lines ending in a newline is spread by `(line width − natural width) / (characters − 1)`; a two-space paragraph indent is never stretched.
+- `SmartisanPasswordField` uses the original one-shot frame animation `pwd_eye_open_close_anim` (16 frames × 16ms, taken from Music); the total duration follows the original formula and the plain text / mask switch happens at **half** the animation.
+- `SmartisanClearableField` keeps the original `quick_icon_delete` icon and shows it only when the text is non-empty **and** the field is focused (the original `updateDrawableVisibility`).
+- The clear button is drawn by a single shared implementation, `SmartisanClearIcon`, used by both the search bar and the clearable field.
+- The original cursor is the 9-patch `edittext_cursor_bbackground`; Compose's `cursorBrush` only accepts a `Brush`, so the theme `accent` color is used instead. The original text / hint colors are `editor_text_color` (#cc000000) and `editor_hint_text_color` (#26000000); the theme `textPrimary` / `textHint` semantic colors are used instead.
 
 ---
 
@@ -226,6 +390,11 @@ data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val 
 @Composable fun Modifier.smartisanVerticalScrollbar(state: LazyListState, width, margin, color): Modifier
 
 @Composable fun SmartisanEmptyHint(title: String, modifier, description, icon, action)
+
+@Composable fun SmartisanFlowLayout(
+    modifier: Modifier = Modifier, itemSpacing: Dp = 0.dp, lineSpacing: Dp = 0.dp,
+    content: @Composable () -> Unit,
+)
 ```
 
 Notes:
@@ -236,6 +405,10 @@ Notes:
   surrounding layout already handles insets.
 - `SmartisanListItem`'s `onLongClick` is meant for entering multi-select mode (as the original
   library screen did on long press).
+- `SmartisanFlowLayout` is ported from the original `smartisanos.widget.letters.SurnameFlowLayout`
+  (the surname picker popup in Calendar, Clock, Messages and Music): children are laid out left to
+  right and wrap once the container width is exceeded, with each row as tall as its tallest child.
+  The original spaced children with their own margins, so `itemSpacing` / `lineSpacing` default to `0.dp`.
 
 ---
 
@@ -431,7 +604,7 @@ Original graphic assets are referenced through three objects, all in
 
 | Object | Contents |
 | --- | --- |
-| `SmartisanDrawables` | Title bar, dialogs, menus, list rows, group cards, checkbox, rating, switch, letter bar, tab bar, search field |
+| `SmartisanDrawables` | Title bar, dialogs, menus, list rows, group cards, checkbox, rating, switch, letter bar, tab bar, search field, segmented button group, calculator keys, circular download progress |
 | `SmartisanClockDrawables` | Large/small dials, hands and shadows, ticks and numerals, alarm ears, ringing-card clock, time wheels |
 | `SmartisanTimerDrawables` | Timer caliper, 6.8.0 pull-ring frame sequence, stopwatch buttons, repeat-day switch, clock list rows |
 

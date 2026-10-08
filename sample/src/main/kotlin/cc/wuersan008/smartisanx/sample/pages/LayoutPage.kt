@@ -145,10 +145,14 @@ fun LayoutPage(onBack: () -> Unit) {
         SampleSectionHeader("空态")
         EmptyHintSection()
 
+        // 原版 APK 里直接移植过来的布局，单独成文件，见 OriginalLayoutSections.kt。
+        OriginalLayoutSections()
+
         SampleFootnote(
             "标题栏合并了锤子音乐的 SmartisanTitleBar 与锤子天气的 WeatherTitleBar；" +
                 "列表行合并了锤子音乐的资料库行与锤子天气的城市行；" +
-                "滚动条来自锤子音乐资料库右侧的细滚动条。",
+                "滚动条来自锤子音乐资料库右侧的细滚动条；" +
+                "流式布局来自原版 smartisanos.widget.letters.SurnameFlowLayout。",
         )
     }
 }

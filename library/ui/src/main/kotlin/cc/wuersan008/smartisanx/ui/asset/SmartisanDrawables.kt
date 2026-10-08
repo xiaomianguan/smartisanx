@@ -183,4 +183,72 @@ object SmartisanDrawables {
     @DrawableRes val SearchField = R.drawable.search_field
     @DrawableRes val SearchFieldDisabled = R.drawable.search_field_disabled
     @DrawableRes val SearchFieldSelector = R.drawable.search_bar_edit_bg_selector
+    // ---- 分段按钮组（原版 smartisanos.widget.ButtonTabGroup） ----
+    /** 连续分段的首段底图 selector，原版 `selector_small_btn_filter_left`。 */
+    @DrawableRes val ButtonTabGroupFilterLeft = R.drawable.selector_small_btn_filter_left
+
+    /** 连续分段的中间段底图 selector，原版 `selector_small_btn_filter_middle`。 */
+    @DrawableRes val ButtonTabGroupFilterMiddle = R.drawable.selector_small_btn_filter_middle
+
+    /** 连续分段的尾段底图 selector，原版 `selector_small_btn_filter_right`。 */
+    @DrawableRes val ButtonTabGroupFilterRight = R.drawable.selector_small_btn_filter_right
+
+    /** 有间距分段（每个按钮独立底图）的 selector，原版 `selector_small_btn_standard`。 */
+    @DrawableRes val ButtonTabGroupStandard = R.drawable.selector_small_btn_standard
+
+    // ---- 计算器按键（原版 com.smartisanos.calculator.HammerButton） ----
+    /** 白色按键底图 selector，原版 `cal_selector_btn_white`。 */
+    @DrawableRes val CalculatorButtonWhite = R.drawable.cal_selector_btn_white
+
+    /** 灰色按键底图 selector，原版 `cal_selector_btn_grey`。 */
+    @DrawableRes val CalculatorButtonGrey = R.drawable.cal_selector_btn_grey
+
+    /** 黑色按键底图 selector，原版 `cal_selector_btn_black`。 */
+    @DrawableRes val CalculatorButtonBlack = R.drawable.cal_selector_btn_black
+
+    /** 灰色按键（带焦点态）底图 selector，原版 `cal_selector_btn_grey_focus`。 */
+    @DrawableRes val CalculatorButtonGreyFocus = R.drawable.cal_selector_btn_grey_focus
+
+    /** 黑色按键（带焦点态）底图 selector，原版 `cal_selector_btn_black_focus`。 */
+    @DrawableRes val CalculatorButtonBlackFocus = R.drawable.cal_selector_btn_black_focus
+
+    /** 数字 0 键（双宽）底图 selector，原版 `selector_digit_0`。 */
+    @DrawableRes val CalculatorButtonDigitZero = R.drawable.selector_digit_0
+
+    /** 等号键（红色，双高）底图 selector，原版 `selector_amount`。 */
+    @DrawableRes val CalculatorButtonEqual = R.drawable.selector_amount
+
+    /** 按键高亮角标，原版 `focus`（HammerButton 的 `onDraw` 把它画在右上角）。 */
+    @DrawableRes val CalculatorKeyHighlight = R.drawable.focus
+
+    // ---- 环形下载进度（原版 smartisanos.widget.DownloadProgressView） ----
+    /** 状态 1：下载中。 */
+    @DrawableRes val ProgressStateDownload = R.drawable.sos_smartisanos_drawable_circular_progress_download
+
+    /** 状态 2：已暂停。 */
+    @DrawableRes val ProgressStatePause = R.drawable.sos_smartisanos_drawable_circular_progress_pause
+
+    /** 状态 3：失败 / 重试。 */
+    @DrawableRes val ProgressStateRetry = R.drawable.sos_smartisanos_drawable_circular_progress_redo
+
+    /** 状态 4：处理中（每帧旋转 5°）。 */
+    @DrawableRes val ProgressStateProcessing = R.drawable.sos_smartisanos_drawable_circular_progress_processing
+
+    // ---- 搜索栏（原版 smartisanos.widget.SearchBar） ----
+    /** 搜索栏编辑区底图 selector（含禁用态），原版 `search_bar_edit_bg_selector`。 */
+    @DrawableRes val SearchBarEditBackground = R.drawable.search_bar_edit_bg_selector
+
+    /** 搜索栏左侧放大镜 selector，原版 `search_bar_left_icon_selector`。 */
+    @DrawableRes val SearchBarLeftIcon = R.drawable.search_bar_left_icon_selector
+
+    /** 搜索栏收起态右侧的筛选按钮 selector，原版 `sorting_icon_selector`。 */
+    @DrawableRes val SearchBarSorting = R.drawable.sorting_icon_selector
+
+    /** 搜索栏展开态的取消按钮 selector，原版 `standard_icon_cancel_selector`。 */
+    @DrawableRes val SearchBarCancel = R.drawable.standard_icon_cancel_selector
+
+    // ---- 可清空输入框（原版 smartisanos.widget.QuickDeleteEditText） ----
+    /** 一键清空按钮 selector，原版 `quick_icon_delete`（含按下态）。 */
+    @DrawableRes val QuickDeleteIcon = R.drawable.quick_icon_delete
+
 }

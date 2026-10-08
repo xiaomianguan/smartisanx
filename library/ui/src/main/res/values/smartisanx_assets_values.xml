@@ -157,4 +157,60 @@
         <item name="android:layout_height">@dimen/standard_icon_size</item>
         <item name="android:scaleType">center</item>
     </style>
+    <dimen name="editor_horizontal_margin">12.0dp</dimen>
+    <dimen name="editor_small_vertical_margin">6.0dp</dimen>
+
+    <dimen name="menu_dialog_item_text_size">18.0sp</dimen>
+    <style name="EditorTextStyle">
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textSize">15.0sp</item>
+        <item name="android:textColor">@color/editor_text_color</item>
+        <item name="android:textColorHint">@color/editor_hint_text_color</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_marginLeft">@dimen/editor_horizontal_margin</item>
+        <item name="android:layout_marginTop">@dimen/editor_small_vertical_margin</item>
+        <item name="android:layout_marginRight">@dimen/editor_horizontal_margin</item>
+        <item name="android:layout_marginBottom">@dimen/editor_small_vertical_margin</item>
+    </style>
+    <integer name="sos_smartisanos_integer_eyeAnimDuration">16</integer>
+    <dimen name="action_button_icon_inset_left">9.0dp</dimen>
+    <dimen name="action_button_icon_inset_right">7.0dp</dimen>
+    <dimen name="bar_and_bottom_sheet_extra_space">54.0px</dimen>
+    <dimen name="bar_divider_height">0.6700001dp</dimen>
+    <dimen name="bottom_bar_shadow_height">11.0dp</dimen>
+    <dimen name="button_tab_group_each_gap">6.0dp</dimen>
+    <dimen name="filter_tab_big_width">80.0dp</dimen>
+    <dimen name="filter_tab_normal_width">61.0dp</dimen>
+    <dimen name="filter_tab_special_width">71.0dp</dimen>
+    <dimen name="filter_tab_with_drawable_width">108.0dp</dimen>
+    <dimen name="title_bar_shadow_height">14.0dp</dimen>
+    <style name="TipsViewAppearance">
+        <item name="android:textSize">@dimen/semi_small_text_size</item>
+        <item name="android:textColor">@color/tips_or_section_title_text_color</item>
+        <item name="android:paddingLeft">@dimen/group_list_section_title_padding</item>
+        <item name="android:paddingRight">@dimen/group_list_section_title_padding</item>
+        <item name="android:shadowColor">#2dffffff</item>
+        <item name="android:shadowDy">2.0</item>
+        <item name="android:shadowRadius">0.1</item>
+    </style>
+    <style name="sos_smartisanos_style_TipsViewAppearance">
+        <item name="android:textSize">@dimen/sos_smartisanos_dimen_semi_small_text_size</item>
+        <item name="android:textColor">@color/sos_smartisanos_color_tips_or_section_title_text_color</item>
+        <item name="android:paddingLeft">@dimen/sos_smartisanos_dimen_group_list_section_title_padding</item>
+        <item name="android:paddingRight">@dimen/sos_smartisanos_dimen_group_list_section_title_padding</item>
+        <item name="android:shadowColor">#2dffffff</item>
+        <item name="android:shadowDy">2.0</item>
+        <item name="android:shadowRadius">0.1</item>
+    </style>
+    <dimen name="number_picker_text_padding">10.0dp</dimen>
+    <dimen name="smartisan_numberpicker_hightlight_suffix_font_size">12.0sp</dimen>
+    <dimen name="smartisan_numberpicker_hightlight_suffix_margin">12.0dp</dimen>
+    <color name="calander_date_pick_select_day_color">#5079d9</color>
+    <integer name="highlight_padding_right">30</integer>
+    <color name="sos_smartisanos_color_def_back_progress_end_color">#5076ff</color>
+    <integer name="highlight_padding_top">16</integer>
+    <color name="sos_smartisanos_color_def_back_progress_start_color">#608aff</color>
+    <color name="sos_smartisanos_color_def_failed_progress_color">#26000000</color>
+    <color name="sos_smartisanos_color_def_fore_progress_end_color">#33ffffff</color>
+    <color name="sos_smartisanos_color_def_fore_progress_start_color">#33ffffff</color>
 </resources>
