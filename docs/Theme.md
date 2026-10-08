@@ -129,6 +129,60 @@ follow an in-app light/dark switch.
 
 If you need the same fidelity as the light theme, treat light as the reference.
 
+## Page texture and card shadows
+
+Smartisan screens are not flat: **the whole page is a fine vertical-stripe linen texture**, and content
+sits in **cards with an outward shadow**. Neither is done with Compose `elevation` or a flat colour —
+both come from original bitmaps.
+
+### Texture
+
+`common_bg` is a 270×270 pale grey stripe pattern. The original tiles it through two wrapper drawables:
+
+| Resource | Contents | Used by |
+| --- | --- | --- |
+| `list_bg` | `<bitmap src="@drawable/common_bg" tileMode="repeat"/>` | Weather pages, night window background |
+| `account_background` | same | Music shell, settings pages, playback queue |
+
+In this library that is `SmartisanDrawables.PageBackground` (= `list_bg`).
+`SmartisanScaffold` tiles it full-screen by default; pass `backgroundRes = null` for a flat colour.
+
+### Card shadow
+
+A card is **two layers**:
+
+| Layer | Resource | Purpose |
+| --- | --- | --- |
+| Content | `group_list_item_bg_top` / `_mid` / `_bottom` / `_single` | The row's own corners, border and pressed state |
+| Shadow | `list_content_item_top_shadow` / `_middle_shadow` / `_bottom_shadow` / `_single_shadow` | A nine-patch drawn expanded by its own padding |
+
+Draw order is shadow first, then content. The shadow expands **outwards** by its nine-patch padding,
+so the projection lands **outside** the control's bounds — exactly what the original `ShadowDrawable`
+does.
+
+API:
+
+```kotlin
+// low level: pick the background and shadow yourself
+Modifier.smartisanShadowBackground(backgroundRes, shadowRes)
+
+// high level: paired automatically by position
+SmartisanGroupItem(SmartisanGroupRowPosition.Top, "First row")
+SmartisanCard(backgroundRes = ..., shadowRes = ...) { /* ... */ }
+```
+
+### Margin
+
+Because the projection is drawn outside the bounds, rows and groups must leave margin or the shadow
+gets clipped:
+
+| Name | Original resource | Value |
+| --- | --- | --- |
+| `SmartisanDimens.ListItemHorizontalMargin` | `list_item_left_right_margin` | 12dp |
+| `SmartisanDimens.ListItemVerticalGap` | `list_item_vertical_gap` | 14dp |
+
+`SmartisanGroup` already uses both.
+
 ## Text styles
 
 | Name | Size | Weight | Usage |

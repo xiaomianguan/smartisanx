@@ -67,6 +67,23 @@ object SmartisanDrawables {
     /** 分组只有一行时的 selector（带描边）。 */
     @DrawableRes val GroupRowSingle = R.drawable.group_list_item_bg_single
 
+    /**
+     * 卡片投影 9-patch（分组首行）。
+     *
+     * 锤子的卡片不是用 Compose 的 elevation，而是「内容底图 + 向外扩张的阴影 9-patch」两层；
+     * 阴影的扩张量由 9-patch 自己的 padding 决定，见 `Modifier.smartisanShadowBackground`。
+     */
+    @DrawableRes val GroupRowTopShadow = R.drawable.list_content_item_top_shadow
+
+    /** 卡片投影 9-patch（分组中间行）。 */
+    @DrawableRes val GroupRowMiddleShadow = R.drawable.list_content_item_middle_shadow
+
+    /** 卡片投影 9-patch（分组末行）。 */
+    @DrawableRes val GroupRowBottomShadow = R.drawable.list_content_item_bottom_shadow
+
+    /** 卡片投影 9-patch（单行分组）。 */
+    @DrawableRes val GroupRowSingleShadow = R.drawable.list_content_item_single_shadow
+
     /** 分组标题底色。 */
     @DrawableRes val SectionTitleBackground = R.drawable.list_title_bg
 

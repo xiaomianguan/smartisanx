@@ -30,6 +30,12 @@ object SmartisanDimens {
     /** 列表行左右外边距，原版 `list_item_left_right_margin`。 */
     val ListItemHorizontalMargin = 12.dp
 
+    /** 分组之间 / 分组上下的间距，原版 `list_item_vertical_gap`（锤子音乐 14dp）。
+     *
+     * 原版把这个间距留给卡片投影，投影会画在行边界之外。
+     */
+    val ListItemVerticalGap = 14.dp
+
     /** 列表内容起始位置，原版 `settings_row_content_margin_start`。 */
     val RowContentStart = 18.dp
 

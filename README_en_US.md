@@ -275,6 +275,34 @@ Dark mode is therefore **experimental**, with two known limitations:
 
 If you need the same fidelity as the light theme, treat light as the reference.
 
+### Page texture and card shadows
+
+Smartisan screens are not flat: **the whole page is a fine vertical-stripe linen texture**, and content
+sits in **cards with an outward shadow**.
+
+- The texture is `common_bg` (a 270×270 pale grey stripe pattern). The original tiles it full-screen
+  via `list_bg` / `account_background` with `tileMode="repeat"`. `SmartisanScaffold` uses it by
+  default; pass `backgroundRes = null` to fall back to a flat colour.
+- Cards do **not** use Compose elevation. They are **two layers: a content nine-patch plus a shadow
+  nine-patch that expands outwards** — content via `group_list_item_bg_top/mid/bottom/single`,
+  shadow via `list_content_item_top/middle/bottom/single_shadow`. The shadow expands by its own
+  nine-patch padding, so the projection lands **outside** the control's bounds.
+  The implementation is `Modifier.smartisanShadowBackground(backgroundRes, shadowRes)`.
+- Because the projection is drawn outside, rows and groups need margin: the original uses
+  `list_item_left_right_margin` (12dp) horizontally and `list_item_vertical_gap` (14dp) vertically,
+  exposed here as `SmartisanDimens.ListItemHorizontalMargin` / `ListItemVerticalGap`.
+
+```kotlin
+SmartisanScaffold {                       // textured by default
+    SmartisanGroup {
+        // picks the matching original background + shadow for the position
+        SmartisanGroupItem(SmartisanGroupRowPosition.Top, "First row")
+        SmartisanGroupItem(SmartisanGroupRowPosition.Middle, "Middle row")
+        SmartisanGroupItem(SmartisanGroupRowPosition.Bottom, "Last row")
+    }
+}
+```
+
 ### Dimensions
 
 Key dimensions follow the original resources: title bar 48dp, icon 36dp, list row minimum height

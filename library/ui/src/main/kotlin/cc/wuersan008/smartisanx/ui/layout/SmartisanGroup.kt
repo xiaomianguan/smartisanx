@@ -16,6 +16,8 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.core.utils.smartisanShadowBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -60,7 +62,8 @@ fun SmartisanGroup(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = horizontalMargin, vertical = 6.dp)
+                // 纵向留白是原版的 list_item_vertical_gap，投影要落在行边界之外。
+                .padding(horizontal = horizontalMargin, vertical = SmartisanDimens.ListItemVerticalGap)
                 .background(color = color, shape = shape),
         content = content,
     )
@@ -79,16 +82,30 @@ fun SmartisanGroupDivider(
  * 卡片容器。
  *
  * 用于天气卡片、专辑卡片这类有描边和圆角的块。
+ *
+ * 传 [backgroundRes] + [shadowRes] 时使用原版的「内容底图 + 向外投影」两层结构
+ * （见 `Modifier.smartisanShadowBackground`），此时 [color] 与 [shape] 不再生效；
+ * 投影会画在卡片边界之外，所以调用方要留出外边距。
  */
 @Composable
 fun SmartisanCard(
     modifier: Modifier = Modifier,
     shape: Shape = LocalSmartisanShapes.current.medium,
     color: Color = LocalSmartisanColors.current.surface,
+    @DrawableRes backgroundRes: Int? = null,
+    @DrawableRes shadowRes: Int? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val backgroundModifier =
+        if (backgroundRes != null && shadowRes != null) {
+            Modifier.smartisanShadowBackground(backgroundRes, shadowRes)
+        } else if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier.background(color = color, shape = shape)
+        }
     Column(
-        modifier = modifier.fillMaxWidth().background(color = color, shape = shape),
+        modifier = modifier.fillMaxWidth().then(backgroundModifier),
         content = content,
     )
 }
@@ -112,6 +129,20 @@ enum class SmartisanGroupRowPosition {
     /** 分组最后一行。 */
     Bottom,
 }
+
+/**
+ * 取该位置对应的原版卡片投影 9-patch。
+ *
+ * 与 [smartisanGroupRowBackground] 配对使用，还原原版「底图 + 向外投影」的卡片质感。
+ */
+@DrawableRes
+fun smartisanGroupRowShadow(position: SmartisanGroupRowPosition): Int =
+    when (position) {
+        SmartisanGroupRowPosition.Single -> SmartisanDrawables.GroupRowSingleShadow
+        SmartisanGroupRowPosition.Top -> SmartisanDrawables.GroupRowTopShadow
+        SmartisanGroupRowPosition.Middle -> SmartisanDrawables.GroupRowMiddleShadow
+        SmartisanGroupRowPosition.Bottom -> SmartisanDrawables.GroupRowBottomShadow
+    }
 
 /** 取该位置对应的原版分组底图。 */
 @DrawableRes
@@ -152,6 +183,7 @@ fun SmartisanGroupItem(
         selected = selected,
         showDivider = showDivider,
         rowBackgroundRes = smartisanGroupRowBackground(position),
+        rowShadowRes = smartisanGroupRowShadow(position),
         onClick = onClick,
         onLongClick = onLongClick,
     )

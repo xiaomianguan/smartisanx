@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 
 /**
  * 锤子风格页面骨架。
@@ -24,11 +25,12 @@ fun SmartisanScaffold(
     titleBar: (@Composable () -> Unit)? = null,
     bottomBar: (@Composable () -> Unit)? = null,
     containerColor: Color = LocalSmartisanColors.current.pageBackground,
-    @DrawableRes backgroundRes: Int? = null,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.PageBackground,
     content: @Composable () -> Unit,
 ) {
-    // 传 backgroundRes 时使用原版页面底纹（例如 SmartisanDrawables.PageBackground，
-    // 锤子天气那张平铺纹理），否则用主题的 pageBackground 纯色。
+    // 默认就是原版页面底纹：common_bg 是一张 270×270 的细竖条纹布纹，
+    // 原版通过 list_bg / account_background 以 tileMode=repeat 平铺满屏。
+    // 传 null 则退回主题的 pageBackground 纯色。
     val backgroundModifier =
         if (backgroundRes != null) {
             Modifier.smartisanDrawableBackground(backgroundRes)

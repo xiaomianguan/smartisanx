@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
@@ -31,7 +32,9 @@ fun SamplePageScaffold(
     actions: List<SmartisanTitleBarAction> = emptyList(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(modifier.fillMaxSize()) {
+    // 原版页面底纹：common_bg 是一张 270×270 的细竖条纹布纹，
+    // 原版通过 list_bg / account_background 以 tileMode=repeat 平铺满屏。
+    Column(modifier.fillMaxSize().smartisanDrawableBackground(SmartisanDrawables.PageBackground)) {
         SmartisanTitleBar(
             title = title,
             // 原版标题栏图标资源：selector 自带按下 / 禁用态，按压还会放大 1.33 倍。

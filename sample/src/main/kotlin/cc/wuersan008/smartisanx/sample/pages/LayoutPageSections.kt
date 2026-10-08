@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBar
@@ -32,11 +33,33 @@ import cc.wuersan008.smartisanx.ui.layout.smartisanVerticalScrollbar
 fun CardSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
+    // 原版卡片：内容底图 + 向外扩张的阴影 9-patch 两层。
+    SmartisanCard(
+        backgroundRes = SmartisanDrawables.GroupRowSingle,
+        shadowRes = SmartisanDrawables.GroupRowSingleShadow,
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            SmartisanText(
+                text = "SmartisanCard（原版底图 + 投影）",
+                style = typography.listItemPrimary,
+                color = colors.textPrimary,
+            )
+            SmartisanText(
+                text = "内容底图是 group_list_item_bg_single，投影是 list_content_item_single_shadow；" +
+                    "投影按 9-patch 的 padding 向外扩张，画在卡片边界之外。",
+                modifier = Modifier.padding(top = 4.dp),
+                style = typography.listItemSecondary,
+                color = colors.textTertiary,
+            )
+        }
+    }
+
+    // 纯 Compose 卡片（不用原版素材时的退路）。
     SmartisanCard {
         Column(Modifier.padding(16.dp)) {
-            SmartisanText("SmartisanCard", style = typography.listItemPrimary, color = colors.textPrimary)
+            SmartisanText("SmartisanCard（纯色退路）", style = typography.listItemPrimary, color = colors.textPrimary)
             SmartisanText(
-                text = "带圆角与描边的卡片容器，适合天气、专辑这类块状内容。",
+                text = "不传 backgroundRes 时使用主题的 surface 纯色与圆角。",
                 modifier = Modifier.padding(top = 4.dp),
                 style = typography.listItemSecondary,
                 color = colors.textTertiary,

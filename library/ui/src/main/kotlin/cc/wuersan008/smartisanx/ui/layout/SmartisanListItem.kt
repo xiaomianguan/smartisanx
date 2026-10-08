@@ -25,6 +25,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.core.utils.smartisanShadowBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -51,6 +52,7 @@ fun SmartisanListItem(
     minHeight: Dp = SmartisanDimens.ListItemMinHeight,
     contentPadding: Dp = SmartisanDimens.RowContentStart,
     @DrawableRes rowBackgroundRes: Int? = SmartisanDrawables.ListRowSelector,
+    @DrawableRes rowShadowRes: Int? = null,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
 ) {
@@ -64,7 +66,17 @@ fun SmartisanListItem(
     // 原版列表行底色由 selector 决定：按下换成按压位图、activated 换成多选底色、
     // 默认是 surface_card。传 rowBackgroundRes = null 时才退回主题的纯色。
     val backgroundModifier =
-        if (rowBackgroundRes != null) {
+        if (rowBackgroundRes != null && rowShadowRes != null) {
+            // 原版卡片：内容底图 + 向外扩张的阴影 9-patch（投影落在控件边界之外，
+            // 所以调用方需要给行留出外边距）。
+            Modifier.smartisanShadowBackground(
+                backgroundRes = rowBackgroundRes,
+                shadowRes = rowShadowRes,
+                enabled = enabled,
+                pressed = pressed && enabled,
+                activated = selected,
+            )
+        } else if (rowBackgroundRes != null) {
             Modifier.smartisanDrawableBackground(
                 drawableRes = rowBackgroundRes,
                 enabled = enabled,

@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.icons.SmartisanXIcons
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -27,7 +29,11 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 fun SampleHome(onOpen: (SamplePage) -> Unit) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .smartisanDrawableBackground(SmartisanDrawables.PageBackground),
+    ) {
         SmartisanTitleBar(title = "smartisanx 组件示例")
         Column(
             modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),

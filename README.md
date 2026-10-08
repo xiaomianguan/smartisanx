@@ -262,6 +262,33 @@ SmartisanTheme {
 
 如果你需要与浅色同等的还原度，请以浅色为准。
 
+### 页面底纹与卡片投影
+
+锤子应用的页面不是纯色底：**整页是一张细竖条纹布纹**，内容放在**带向外投影的卡片**里。
+
+- 底纹是 `common_bg`（270×270 的浅灰细竖条纹），原版通过 `list_bg` / `account_background`
+  以 `tileMode="repeat"` 平铺满屏。`SmartisanScaffold` 默认就用它，
+  传 `backgroundRes = null` 可退回纯色。
+- 卡片不是 Compose 的 elevation 阴影，而是**「内容底图 + 向外扩张的阴影 9-patch」两层**：
+  内容底图用 `group_list_item_bg_top/mid/bottom/single`，
+  阴影用 `list_content_item_top/middle/bottom/single_shadow`，
+  阴影按自己的 9-patch padding 向四周扩张，因此投影落在控件边界**之外**。
+  对应实现是 `Modifier.smartisanShadowBackground(backgroundRes, shadowRes)`。
+- 因为投影画在边界外，行与分组需要留出边距：原版是左右 `list_item_left_right_margin`(12dp)、
+  上下 `list_item_vertical_gap`(14dp)，本库对应 `SmartisanDimens.ListItemHorizontalMargin`
+  与 `SmartisanDimens.ListItemVerticalGap`。
+
+```kotlin
+SmartisanScaffold {                       // 默认已带平铺底纹
+    SmartisanGroup {
+        // 自动配好该位置的原版底图与投影
+        SmartisanGroupItem(SmartisanGroupRowPosition.Top, "第一行")
+        SmartisanGroupItem(SmartisanGroupRowPosition.Middle, "中间行")
+        SmartisanGroupItem(SmartisanGroupRowPosition.Bottom, "最后一行")
+    }
+}
+```
+
 ### 尺寸
 
 关键尺寸沿用原版资源：标题栏 48dp、图标 36dp、列表行最小高度 48dp、分隔线 0.67dp、
