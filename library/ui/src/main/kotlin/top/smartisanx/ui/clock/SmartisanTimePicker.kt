@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -77,21 +78,32 @@ fun SmartisanWheelPicker(
     val halfRows = rows / 2
     val safeIndex = selectedIndex.coerceIn(0, items.lastIndex)
 
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = safeIndex)
-    // 中心吸附：SnapPosition.Center 与下面的 contentPadding 配合，
-    // 使「下标 i 落在首行且偏移为 0」正好等于「第 i 项位于视口正中」。
+    // 首尾各放一个半视口高的占位项，让第一项与最后一项也能停在视口正中；
+    // 不使用 contentPadding 是因为「滚到第 i 项」与「第 i 项居中」在带内边距时
+    // 语义不一致，占位项 + 负偏移的写法与框架的 Start 语义完全对齐、不依赖实现细节。
+    val spacerHeight = itemHeight * halfRows
+    val spacerPx = with(LocalDensity.current) { spacerHeight.roundToPx() }
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex = safeIndex + 1,
+        initialFirstVisibleItemScrollOffset = -spacerPx,
+    )
+    // 中心吸附：视口正中始终对齐某一整项（含首尾项，因为占位项中心不会比整项更靠近中心）。
     val flingBehavior = rememberSnapFlingBehavior(
         lazyListState = listState,
         snapPosition = SnapPosition.Center,
     )
 
-    val centeredIndex by remember(listState) {
-        derivedStateOf { listState.smartisanCenteredIndex(safeIndex) }
+    // 列表下标 0 与 items.size + 1 是占位项，真实项下标 = 列表下标 - 1。
+    val centeredListIndex by remember(listState, safeIndex) {
+        derivedStateOf { listState.smartisanCenteredIndex(safeIndex + 1) }
     }
+    val centeredIndex = (centeredListIndex - 1).coerceIn(0, items.lastIndex)
 
     // 外部改选中项 → 平滑滚到对应行（此时该项正好居中，不会与吸附互相打架）。
     LaunchedEffect(safeIndex) {
-        if (safeIndex != centeredIndex) listState.animateScrollToItem(safeIndex)
+        if (safeIndex != centeredIndex) {
+            listState.animateScrollToItem(safeIndex + 1, scrollOffset = -spacerPx)
+        }
     }
     // 内部滚动 → 等惯性结束再上报，避免快速滚动时连续回调。
     LaunchedEffect(centeredIndex) {
@@ -100,7 +112,6 @@ fun SmartisanWheelPicker(
             onSelectedIndexChange(centeredIndex)
         }
     }
-}
 
     Box(
         modifier = modifier
@@ -127,12 +138,14 @@ fun SmartisanWheelPicker(
         LazyColumn(
             state = listState,
             flingBehavior = flingBehavior,
-            contentPadding = PaddingValues(vertical = itemHeight * halfRows),
             modifier = Modifier.fillMaxWidth(),
         ) {
-            itemsIndexed(items) { index, label ->
+            item(key = TopSpacerKey) {
+                Spacer(modifier = Modifier.height(spacerHeight))
+            }
+            itemsIndexed(items, key = { index, _ -> index }) { index, label ->
                 val fraction by remember(index, items.size) {
-                    derivedStateOf { listState.smartisanCenteredFraction(index) }
+                    derivedStateOf { listState.smartisanCenteredFraction(index + 1) }
                 }
                 val style = typography.numeric.copy(
                     fontSize = lerp(ItemFontSize, SelectedItemFontSize, fraction),
@@ -148,15 +161,20 @@ fun SmartisanWheelPicker(
                         .fillMaxWidth()
                         .height(itemHeight)
                         // 上下行渐隐：alpha 只影响绘制，不触发重新布局。
-                        .graphicsLayer { alpha = lerp(MinItemAlpha, 1f, fraction) }
+                        .graphicsLayer { alpha = MinItemAlpha + (1f - MinItemAlpha) * fraction }
                         .smartisanClickable {
                             onSelectedIndexChange(index)
-                            scope.launch { listState.animateScrollToItem(index) }
+                            scope.launch {
+                                listState.animateScrollToItem(index + 1, scrollOffset = -spacerPx)
+                            }
                         },
                     contentAlignment = Alignment.Center,
                 ) {
                     SmartisanText(text = label, style = style, maxLines = 1)
                 }
+            }
+            item(key = BottomSpacerKey) {
+                Spacer(modifier = Modifier.height(spacerHeight))
             }
         }
     }
@@ -300,6 +318,12 @@ private const val MinItemAlpha = 0.15f
 
 /** 最少可见行数。 */
 private const val MinVisibleCount = 3
+
+/** 顶部占位项的 key。 */
+private const val TopSpacerKey = "smartisan-wheel-top-spacer"
+
+/** 底部占位项的 key。 */
+private const val BottomSpacerKey = "smartisan-wheel-bottom-spacer"
 
 /** 时间滚轮的固定行高，原版 `SmartisanTimePickerView` 的 40dp 行高。 */
 private val TimePickerItemHeight = 40.dp

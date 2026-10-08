@@ -76,7 +76,7 @@ fun SmartisanMenuDialog(
     val colors = LocalSmartisanColors.current
     val controller = rememberSmartisanOverlayController(onDismissRequest)
     val progress = rememberSmartisanOverlayProgress(controller.visible)
-    val dismiss = controller.requestDismiss
+    val dismiss = controller::requestDismiss
     CompositionLocalProvider(LocalSmartisanMenuDismiss provides dismiss) {
         SmartisanModal(
             onDismissRequest = dismiss,

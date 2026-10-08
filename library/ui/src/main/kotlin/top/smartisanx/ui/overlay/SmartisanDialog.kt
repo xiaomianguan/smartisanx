@@ -23,6 +23,7 @@ import top.smartisanx.core.interaction.smartisanHaptic
 import top.smartisanx.core.theme.LocalSmartisanColors
 import top.smartisanx.core.theme.LocalSmartisanTypography
 import top.smartisanx.core.theme.SmartisanDimens
+import top.smartisanx.ui.basic.SmartisanText
 
 /**
  * 居中弹窗的标题栏与按钮，以及由它们拼出的弹窗。
@@ -151,7 +152,6 @@ private fun SmartisanDialogTextButton(
         )
     }
 }
-
 
 /**
  * 弹窗底部按钮：高 48dp、17sp 加粗、单行居中。

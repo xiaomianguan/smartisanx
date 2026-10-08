@@ -152,7 +152,7 @@ fun SmartisanModalWindow(
     val shapes = LocalSmartisanShapes.current
     val controller = rememberSmartisanOverlayController(onDismissRequest)
     val progress = rememberSmartisanOverlayProgress(controller.visible)
-    val dismiss = controller.requestDismiss
+    val dismiss = controller::requestDismiss
     SmartisanModal(
         onDismissRequest = dismiss,
         bottom = false,

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
@@ -128,7 +129,7 @@ fun SmartisanCompactClock(
             )
         }
         // 原版小表盘只标 12 与 3，这里保持一致；过小的表盘不再标数字，避免糊在一起。
-        if (side >= NumeralMinSizePx) {
+        if (side >= NumeralMinSize.toPx()) {
             listOf(12 to 0f, 3 to 90f).forEach { (value, degrees) ->
                 val layout = textMeasurer.measure(text = value.toString(), style = numeralStyle)
                 val anchor = smartisanClockPolar(center, dialRadius * NumeralRadiusRatio, degrees)
@@ -252,8 +253,8 @@ private const val NumeralRadiusRatio = 0.62f
 /** 数字字号占直径的比例。 */
 private const val NumeralSizeRatio = 0.16f
 
-/** 小于该像素尺寸时不再绘制数字。 */
-private const val NumeralMinSizePx = 34f
+/** 小于该尺寸时不再绘制数字，避免糊成一团。 */
+private val NumeralMinSize = 34.dp
 
 /** 时针长度比例，取自原版 `alarm_ringing_hour_hand` 的 6.9/8 锚点。 */
 private const val HourHandLengthRatio = 0.42f

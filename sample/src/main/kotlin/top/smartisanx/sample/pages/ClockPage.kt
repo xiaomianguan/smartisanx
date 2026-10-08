@@ -102,10 +102,21 @@ fun ClockPage(onBack: () -> Unit) {
         SampleSectionHeader("通用滚轮")
         WheelPickerSection()
 
+        SampleSectionHeader("计时标尺")
+        RulerPickerSection()
+
+        SampleSectionHeader("重复日选择")
+        WeekdayPickerSection()
+
+        SampleSectionHeader("世界时钟卡片")
+        WorldClockSection()
+
         SampleFootnote(
             "这些组件用 Compose Canvas 重写了锤子时钟的自定义 View：" +
                 "AnalogClockHandsView（机械表盘）、CompactAlarmClockView（小表盘）、" +
-                "SmartisanTimePickerView（三列时间滚轮）。原版使用 XML + View，本库改为纯 Compose 实现。",
+                "SmartisanTimePickerView（三列时间滚轮）、TimerRulerView（横向卡尺）、" +
+                "Classic680RulerView（竖向拉环）、AlarmRepeatDaysView（重复日）、" +
+                "SmallWorldClockView（世界时钟小表盘）。原版使用 XML + View，本库改为纯 Compose 实现。",
         )
     }
 }

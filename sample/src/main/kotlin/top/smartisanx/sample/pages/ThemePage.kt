@@ -7,7 +7,7 @@ import top.smartisanx.sample.SampleFootnote
 import top.smartisanx.sample.SamplePageScaffold
 import top.smartisanx.sample.SampleSectionHeader
 import top.smartisanx.ui.layout.SmartisanGroup
-import top.smartisanx.ui.layout.SmartisanRadioRow
+import top.smartisanx.ui.control.SmartisanRadioRow
 
 /** 主题页：展示色板、文字样式、形状，并提供深浅色切换。 */
 @Composable
