@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Delete</string>
+    <string name="smartisan_cancel">Kanselahin</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">I-clear</string>
+    <string name="smartisan_filter">I-filter</string>
+    <string name="smartisan_search">Maghanap</string>
+    <string name="smartisan_page_indicator">Pahina %1$d ng %2$d</string>
+    <string name="smartisan_holiday">Mga pampublikong holiday</string>
+    <string name="smartisan_tomorrow">Bukas</string>
+    <string name="smartisan_yesterday">Kahapon</string>
+    <string name="smartisan_days_after">Sa %1$d araw</string>
+    <string name="smartisan_days_before">%1$d araw ang nakalipas</string>
+    <string name="smartisan_same_as_local">Katulad ng lokal na oras</string>
+    <string name="smartisan_faster">Mas maaga sa lokal na oras nang</string>
+    <string name="smartisan_slower">Mas huli sa lokal na oras nang</string>
+    <string name="smartisan_hours">%1$d oras</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

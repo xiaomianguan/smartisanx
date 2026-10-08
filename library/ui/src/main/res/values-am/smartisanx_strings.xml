@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">ሰርዝ</string>
+    <string name="smartisan_cancel">ሰርዝ</string>
+    <string name="smartisan_confirm">እሺ</string>
+    <string name="smartisan_clear">አጽዳ</string>
+    <string name="smartisan_filter">አጣራ</string>
+    <string name="smartisan_search">ፈልግ</string>
+    <string name="smartisan_page_indicator">ገጽ %1$d ከ%2$d</string>
+    <string name="smartisan_holiday">የሕዝብ በዓላት</string>
+    <string name="smartisan_tomorrow">ነገ</string>
+    <string name="smartisan_yesterday">ትናንት</string>
+    <string name="smartisan_days_after">በ%1$d ቀናት ውስጥ</string>
+    <string name="smartisan_days_before">ከ%1$d ቀናት በፊት</string>
+    <string name="smartisan_same_as_local">ከአካባቢ ሰዓት ጋር አንድ ነው</string>
+    <string name="smartisan_faster">ከአካባቢ ሰዓት ይቀድማል</string>
+    <string name="smartisan_slower">ከአካባቢ ሰዓት ይዘገያል</string>
+    <string name="smartisan_hours">%1$d ሰዓት</string>
+    <string name="smartisan_minutes">%1$d ደቂቃ</string>
+</resources>

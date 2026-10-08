@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Ezabatu</string>
+    <string name="smartisan_cancel">Utzi</string>
+    <string name="smartisan_confirm">Ados</string>
+    <string name="smartisan_clear">Garbitu</string>
+    <string name="smartisan_filter">Iragazi</string>
+    <string name="smartisan_search">Bilatu</string>
+    <string name="smartisan_page_indicator">%1$d / %2$d orria</string>
+    <string name="smartisan_holiday">Jai publikoak</string>
+    <string name="smartisan_tomorrow">Bihar</string>
+    <string name="smartisan_yesterday">Atzo</string>
+    <string name="smartisan_days_after">%1$d egun barru</string>
+    <string name="smartisan_days_before">Duela %1$d egun</string>
+    <string name="smartisan_same_as_local">Ordu lokalaren berdina</string>
+    <string name="smartisan_faster">Ordu lokala baino aurrerago</string>
+    <string name="smartisan_slower">Ordu lokala baino atzerago</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

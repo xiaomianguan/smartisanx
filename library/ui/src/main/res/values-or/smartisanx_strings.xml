@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">ବିଲୋପ କରନ୍ତୁ</string>
+    <string name="smartisan_cancel">ବାତିଲ କରନ୍ତୁ</string>
+    <string name="smartisan_confirm">ଠିକ୍‌ଛି</string>
+    <string name="smartisan_clear">ସଫା କରନ୍ତୁ</string>
+    <string name="smartisan_filter">ଫିଲ୍ଟର</string>
+    <string name="smartisan_search">ଖୋଜନ୍ତୁ</string>
+    <string name="smartisan_page_indicator">ପୃଷ୍ଠା %1$d / %2$d</string>
+    <string name="smartisan_holiday">ସରକାରୀ ଛୁଟି</string>
+    <string name="smartisan_tomorrow">ଆସନ୍ତାକାଲି</string>
+    <string name="smartisan_yesterday">ଗତକାଲି</string>
+    <string name="smartisan_days_after">%1$d ଦିନରେ</string>
+    <string name="smartisan_days_before">%1$d ଦିନ ପୂର୍ବେ</string>
+    <string name="smartisan_same_as_local">ସ୍ଥାନୀୟ ସମୟ ପରି</string>
+    <string name="smartisan_faster">ସ୍ଥାନୀୟ ସମୟରୁ ଆଗରେ</string>
+    <string name="smartisan_slower">ସ୍ଥାନୀୟ ସମୟରୁ ପଛରେ</string>
+    <string name="smartisan_hours">%1$d ଘ</string>
+    <string name="smartisan_minutes">%1$d ମି</string>
+</resources>

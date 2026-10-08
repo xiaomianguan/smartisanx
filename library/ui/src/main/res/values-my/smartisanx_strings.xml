@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">ဖျက်ရန်</string>
+    <string name="smartisan_cancel">ပယ်ဖျက်ရန်</string>
+    <string name="smartisan_confirm">အိုကေ</string>
+    <string name="smartisan_clear">ရှင်းလင်းရန်</string>
+    <string name="smartisan_filter">စစ်ထုတ်ရန်</string>
+    <string name="smartisan_search">ရှာဖွေရန်</string>
+    <string name="smartisan_page_indicator">စာမျက်နှာ %1$d / %2$d</string>
+    <string name="smartisan_holiday">အစိုးရရုံးပိတ်ရက်</string>
+    <string name="smartisan_tomorrow">မနက်ဖြန်</string>
+    <string name="smartisan_yesterday">မနေ့က</string>
+    <string name="smartisan_days_after">%1$d ရက်အတွင်း</string>
+    <string name="smartisan_days_before">%1$d ရက်က</string>
+    <string name="smartisan_same_as_local">ဒေသစံတော်ချိန်နှင့် တူ</string>
+    <string name="smartisan_faster">ဒေသစံတော်ချိန်ထက် စော</string>
+    <string name="smartisan_slower">ဒေသစံတော်ချိန်ထက် နောက်ကျ</string>
+    <string name="smartisan_hours">%1$d နာရီ</string>
+    <string name="smartisan_minutes">%1$d မိနစ်</string>
+</resources>

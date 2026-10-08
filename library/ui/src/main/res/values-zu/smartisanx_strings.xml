@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Susa</string>
+    <string name="smartisan_cancel">Khansela</string>
+    <string name="smartisan_confirm">Kulungile</string>
+    <string name="smartisan_clear">Sula</string>
+    <string name="smartisan_filter">Hlunga</string>
+    <string name="smartisan_search">Sesha</string>
+    <string name="smartisan_page_indicator">Ikhasi %1$d kwezingu-%2$d</string>
+    <string name="smartisan_holiday">Amaholide omphakathi</string>
+    <string name="smartisan_tomorrow">Kusasa</string>
+    <string name="smartisan_yesterday">Izolo</string>
+    <string name="smartisan_days_after">Ngezinsuku ezingu-%1$d</string>
+    <string name="smartisan_days_before">Ezinsukwini ezingu-%1$d ezedlule</string>
+    <string name="smartisan_same_as_local">Kuyafana nesikhathi sasendaweni</string>
+    <string name="smartisan_faster">Ngaphambi kwesikhathi sasendaweni nge-</string>
+    <string name="smartisan_slower">Ngemuva kwesikhathi sasendaweni nge-</string>
+    <string name="smartisan_hours">amahora angu-%1$d</string>
+    <string name="smartisan_minutes">amaminithi angu-%1$d</string>
+</resources>

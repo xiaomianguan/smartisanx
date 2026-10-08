@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Sil</string>
+    <string name="smartisan_cancel">İptal</string>
+    <string name="smartisan_confirm">Tamam</string>
+    <string name="smartisan_clear">Temizle</string>
+    <string name="smartisan_filter">Filtrele</string>
+    <string name="smartisan_search">Ara</string>
+    <string name="smartisan_page_indicator">Sayfa %1$d / %2$d</string>
+    <string name="smartisan_holiday">Resmî tatiller</string>
+    <string name="smartisan_tomorrow">Yarın</string>
+    <string name="smartisan_yesterday">Dün</string>
+    <string name="smartisan_days_after">%1$d gün içinde</string>
+    <string name="smartisan_days_before">%1$d gün önce</string>
+    <string name="smartisan_same_as_local">Yerel saatle aynı</string>
+    <string name="smartisan_faster">Yerel saatten ileri</string>
+    <string name="smartisan_slower">Yerel saatten geri</string>
+    <string name="smartisan_hours">%1$d sa</string>
+    <string name="smartisan_minutes">%1$d dk</string>
+</resources>

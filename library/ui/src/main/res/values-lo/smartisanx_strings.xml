@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">ລຶບ</string>
+    <string name="smartisan_cancel">ຍົກເລີກ</string>
+    <string name="smartisan_confirm">ຕົກລົງ</string>
+    <string name="smartisan_clear">ລຶບລ້າງ</string>
+    <string name="smartisan_filter">ກັ່ນຕອງ</string>
+    <string name="smartisan_search">ຄົ້ນຫາ</string>
+    <string name="smartisan_page_indicator">ໜ້າ %1$d ຈາກ %2$d</string>
+    <string name="smartisan_holiday">ວັນພັກລັດຖະການ</string>
+    <string name="smartisan_tomorrow">ມື້ອື່ນ</string>
+    <string name="smartisan_yesterday">ມື້ວານ</string>
+    <string name="smartisan_days_after">ໃນອີກ %1$d ວັນ</string>
+    <string name="smartisan_days_before">%1$d ວັນກ່ອນ</string>
+    <string name="smartisan_same_as_local">ຄືກັບເວລາທ້ອງຖິ່ນ</string>
+    <string name="smartisan_faster">ໄວກວ່າເວລາທ້ອງຖິ່ນ</string>
+    <string name="smartisan_slower">ຊ້າກວ່າເວລາທ້ອງຖິ່ນ</string>
+    <string name="smartisan_hours">%1$d ຊມ</string>
+    <string name="smartisan_minutes">%1$d ນທ</string>
+</resources>

@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
+import androidx.compose.ui.res.stringResource
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
-import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
 /**
@@ -115,7 +116,7 @@ fun SmartisanClearableField(
 
         SmartisanClearIcon(
             iconRes = clearIconRes,
-            contentDescription = "清除",
+            contentDescription = stringResource(R.string.smartisan_clear),
             onClick = {
                 onValueChange("")
                 onClear?.invoke()

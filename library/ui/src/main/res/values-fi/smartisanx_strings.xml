@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Poista</string>
+    <string name="smartisan_cancel">Peruuta</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Tyhjennä</string>
+    <string name="smartisan_filter">Suodata</string>
+    <string name="smartisan_search">Haku</string>
+    <string name="smartisan_page_indicator">Sivu %1$d / %2$d</string>
+    <string name="smartisan_holiday">Viralliset vapaapäivät</string>
+    <string name="smartisan_tomorrow">Huomenna</string>
+    <string name="smartisan_yesterday">Eilen</string>
+    <string name="smartisan_days_after">%1$d päivän päästä</string>
+    <string name="smartisan_days_before">%1$d päivää sitten</string>
+    <string name="smartisan_same_as_local">Sama kuin paikallinen aika</string>
+    <string name="smartisan_faster">Paikallista aikaa edellä</string>
+    <string name="smartisan_slower">Paikallista aikaa jäljessä</string>
+    <string name="smartisan_hours">%1$d t</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

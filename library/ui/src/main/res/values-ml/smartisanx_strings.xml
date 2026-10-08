@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">ഇല്ലാതാക്കുക</string>
+    <string name="smartisan_cancel">റദ്ദാക്കുക</string>
+    <string name="smartisan_confirm">ശരി</string>
+    <string name="smartisan_clear">മായ്ക്കുക</string>
+    <string name="smartisan_filter">ഫിൽട്ടർ</string>
+    <string name="smartisan_search">തിരയുക</string>
+    <string name="smartisan_page_indicator">പേജ് %1$d / %2$d</string>
+    <string name="smartisan_holiday">പൊതു അവധികൾ</string>
+    <string name="smartisan_tomorrow">നാളെ</string>
+    <string name="smartisan_yesterday">ഇന്നലെ</string>
+    <string name="smartisan_days_after">%1$d ദിവസത്തിൽ</string>
+    <string name="smartisan_days_before">%1$d ദിവസം മുമ്പ്</string>
+    <string name="smartisan_same_as_local">പ്രാദേശിക സമയത്തിന് തുല്യം</string>
+    <string name="smartisan_faster">പ്രാദേശിക സമയത്തിന് മുന്നിൽ</string>
+    <string name="smartisan_slower">പ്രാദേശിക സമയത്തിന് പിന്നിൽ</string>
+    <string name="smartisan_hours">%1$d മ</string>
+    <string name="smartisan_minutes">%1$d മി</string>
+</resources>

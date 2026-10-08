@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">מחק</string>
+    <string name="smartisan_cancel">ביטול</string>
+    <string name="smartisan_confirm">אישור</string>
+    <string name="smartisan_clear">נקה</string>
+    <string name="smartisan_filter">סינון</string>
+    <string name="smartisan_search">חיפוש</string>
+    <string name="smartisan_page_indicator">עמוד %1$d מתוך %2$d</string>
+    <string name="smartisan_holiday">חגים ציבוריים</string>
+    <string name="smartisan_tomorrow">מחר</string>
+    <string name="smartisan_yesterday">אתמול</string>
+    <string name="smartisan_days_after">בעוד %1$d ימים</string>
+    <string name="smartisan_days_before">לפני %1$d ימים</string>
+    <string name="smartisan_same_as_local">זהה לשעה המקומית</string>
+    <string name="smartisan_faster">מקדים את השעה המקומית ב־</string>
+    <string name="smartisan_slower">מאחר את השעה המקומית ב־</string>
+    <string name="smartisan_hours">%1$d שע׳</string>
+    <string name="smartisan_minutes">%1$d דק׳</string>
+</resources>

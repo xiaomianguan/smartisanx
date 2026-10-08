@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">លុប</string>
+    <string name="smartisan_cancel">បោះបង់</string>
+    <string name="smartisan_confirm">យល់ព្រម</string>
+    <string name="smartisan_clear">សម្អាត</string>
+    <string name="smartisan_filter">តម្រង</string>
+    <string name="smartisan_search">ស្វែងរក</string>
+    <string name="smartisan_page_indicator">ទំព័រ %1$d នៃ %2$d</string>
+    <string name="smartisan_holiday">ថ្ងៃឈប់សម្រាក</string>
+    <string name="smartisan_tomorrow">ស្អែក</string>
+    <string name="smartisan_yesterday">ម្សិលមិញ</string>
+    <string name="smartisan_days_after">ក្នុង %1$d ថ្ងៃ</string>
+    <string name="smartisan_days_before">%1$d ថ្ងៃមុន</string>
+    <string name="smartisan_same_as_local">ដូចពេលវេលាក្នុងស្រុក</string>
+    <string name="smartisan_faster">លឿនជាងពេលវេលាក្នុងស្រុក</string>
+    <string name="smartisan_slower">យឺតជាងពេលវេលាក្នុងស្រុក</string>
+    <string name="smartisan_hours">%1$d ម៉ោង</string>
+    <string name="smartisan_minutes">%1$d នាទី</string>
+</resources>

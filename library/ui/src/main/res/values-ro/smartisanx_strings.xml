@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Șterge</string>
+    <string name="smartisan_cancel">Anulează</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Golește</string>
+    <string name="smartisan_filter">Filtrează</string>
+    <string name="smartisan_search">Caută</string>
+    <string name="smartisan_page_indicator">Pagina %1$d din %2$d</string>
+    <string name="smartisan_holiday">Sărbători legale</string>
+    <string name="smartisan_tomorrow">Mâine</string>
+    <string name="smartisan_yesterday">Ieri</string>
+    <string name="smartisan_days_after">Peste %1$d zile</string>
+    <string name="smartisan_days_before">Acum %1$d zile</string>
+    <string name="smartisan_same_as_local">La fel ca ora locală</string>
+    <string name="smartisan_faster">Înaintea orei locale cu</string>
+    <string name="smartisan_slower">În urma orei locale cu</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

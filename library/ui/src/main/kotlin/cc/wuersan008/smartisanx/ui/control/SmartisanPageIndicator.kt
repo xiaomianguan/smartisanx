@@ -42,6 +42,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
 import kotlin.math.roundToInt
@@ -100,12 +102,15 @@ fun SmartisanPageIndicator(
     // 原版 measureLong / measureShort：整块宽高都由半径与页数算出（末尾 +1 是原版的取整补偿）。
     val widthPx = (radiusPx * 4f * count - radiusPx * 2f + 1f).roundToInt()
     val heightPx = (radiusPx * 4f + 1f).roundToInt()
+    // 文案要先在 composable 作用域里取好，semantics 块里不能调 stringResource。
+    val resolvedDescription =
+        contentDescription ?: stringResource(R.string.smartisan_page_indicator, page + 1, count)
     Canvas(
         modifier =
             modifier
                 .smartisanIndicatorSize(widthPx, heightPx)
                 .semantics {
-                    this.contentDescription = contentDescription ?: "第 ${page + 1} 页，共 $count 页"
+                    this.contentDescription = resolvedDescription
                 },
     ) {
         val spacing = radiusPx * 4f

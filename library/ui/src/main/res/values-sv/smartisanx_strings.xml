@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Ta bort</string>
+    <string name="smartisan_cancel">Avbryt</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Rensa</string>
+    <string name="smartisan_filter">Filtrera</string>
+    <string name="smartisan_search">Sök</string>
+    <string name="smartisan_page_indicator">Sida %1$d av %2$d</string>
+    <string name="smartisan_holiday">Allmänna helgdagar</string>
+    <string name="smartisan_tomorrow">I morgon</string>
+    <string name="smartisan_yesterday">I går</string>
+    <string name="smartisan_days_after">Om %1$d dagar</string>
+    <string name="smartisan_days_before">För %1$d dagar sedan</string>
+    <string name="smartisan_same_as_local">Samma som lokal tid</string>
+    <string name="smartisan_faster">Före lokal tid med</string>
+    <string name="smartisan_slower">Efter lokal tid med</string>
+    <string name="smartisan_hours">%1$d tim</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

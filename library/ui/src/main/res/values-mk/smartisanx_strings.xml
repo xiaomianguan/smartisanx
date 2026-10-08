@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Избриши</string>
+    <string name="smartisan_cancel">Откажи</string>
+    <string name="smartisan_confirm">Во ред</string>
+    <string name="smartisan_clear">Исчисти</string>
+    <string name="smartisan_filter">Филтер</string>
+    <string name="smartisan_search">Пребарај</string>
+    <string name="smartisan_page_indicator">Страница %1$d од %2$d</string>
+    <string name="smartisan_holiday">Државни празници</string>
+    <string name="smartisan_tomorrow">Утре</string>
+    <string name="smartisan_yesterday">Вчера</string>
+    <string name="smartisan_days_after">За %1$d дена</string>
+    <string name="smartisan_days_before">Пред %1$d дена</string>
+    <string name="smartisan_same_as_local">Исто како локалното време</string>
+    <string name="smartisan_faster">Пред локалното време за</string>
+    <string name="smartisan_slower">По локалното време за</string>
+    <string name="smartisan_hours">%1$d ч</string>
+    <string name="smartisan_minutes">%1$d мин</string>
+</resources>

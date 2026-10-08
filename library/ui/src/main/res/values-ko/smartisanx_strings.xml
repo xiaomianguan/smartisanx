@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">삭제</string>
+    <string name="smartisan_cancel">취소</string>
+    <string name="smartisan_confirm">확인</string>
+    <string name="smartisan_clear">지우기</string>
+    <string name="smartisan_filter">필터</string>
+    <string name="smartisan_search">검색</string>
+    <string name="smartisan_page_indicator">%2$d페이지 중 %1$d페이지</string>
+    <string name="smartisan_holiday">공휴일</string>
+    <string name="smartisan_tomorrow">내일</string>
+    <string name="smartisan_yesterday">어제</string>
+    <string name="smartisan_days_after">%1$d일 후</string>
+    <string name="smartisan_days_before">%1$d일 전</string>
+    <string name="smartisan_same_as_local">현지 시간과 같음</string>
+    <string name="smartisan_faster">현지 시간보다 빠름</string>
+    <string name="smartisan_slower">현지 시간보다 느림</string>
+    <string name="smartisan_hours">%1$d시간</string>
+    <string name="smartisan_minutes">%1$d분</string>
+</resources>

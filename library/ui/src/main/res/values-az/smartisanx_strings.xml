@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Sil</string>
+    <string name="smartisan_cancel">Ləğv et</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Təmizlə</string>
+    <string name="smartisan_filter">Filtrlə</string>
+    <string name="smartisan_search">Axtar</string>
+    <string name="smartisan_page_indicator">Səhifə %1$d / %2$d</string>
+    <string name="smartisan_holiday">Rəsmi tətillər</string>
+    <string name="smartisan_tomorrow">Sabah</string>
+    <string name="smartisan_yesterday">Dünən</string>
+    <string name="smartisan_days_after">%1$d gün ərzində</string>
+    <string name="smartisan_days_before">%1$d gün əvvəl</string>
+    <string name="smartisan_same_as_local">Yerli vaxtla eyni</string>
+    <string name="smartisan_faster">Yerli vaxtdan irəlidə</string>
+    <string name="smartisan_slower">Yerli vaxtdan geridə</string>
+    <string name="smartisan_hours">%1$d saat</string>
+    <string name="smartisan_minutes">%1$d dəq</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">நீக்கு</string>
+    <string name="smartisan_cancel">ரத்துசெய்</string>
+    <string name="smartisan_confirm">சரி</string>
+    <string name="smartisan_clear">அழி</string>
+    <string name="smartisan_filter">வடிகட்டு</string>
+    <string name="smartisan_search">தேடு</string>
+    <string name="smartisan_page_indicator">பக்கம் %1$d / %2$d</string>
+    <string name="smartisan_holiday">பொது விடுமுறைகள்</string>
+    <string name="smartisan_tomorrow">நாளை</string>
+    <string name="smartisan_yesterday">நேற்று</string>
+    <string name="smartisan_days_after">%1$d நாட்களில்</string>
+    <string name="smartisan_days_before">%1$d நாட்களுக்கு முன்</string>
+    <string name="smartisan_same_as_local">உள்ளூர் நேரத்தைப் போலவே</string>
+    <string name="smartisan_faster">உள்ளூர் நேரத்தை விட முன்னே</string>
+    <string name="smartisan_slower">உள்ளூர் நேரத்தை விட பின்னே</string>
+    <string name="smartisan_hours">%1$d மணி</string>
+    <string name="smartisan_minutes">%1$d நிமி</string>
+</resources>

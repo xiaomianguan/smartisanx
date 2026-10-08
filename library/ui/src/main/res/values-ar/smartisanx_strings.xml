@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">حذف</string>
+    <string name="smartisan_cancel">إلغاء</string>
+    <string name="smartisan_confirm">موافق</string>
+    <string name="smartisan_clear">مسح</string>
+    <string name="smartisan_filter">تصفية</string>
+    <string name="smartisan_search">بحث</string>
+    <string name="smartisan_page_indicator">الصفحة %1$d من %2$d</string>
+    <string name="smartisan_holiday">العطلات الرسمية</string>
+    <string name="smartisan_tomorrow">غدًا</string>
+    <string name="smartisan_yesterday">أمس</string>
+    <string name="smartisan_days_after">بعد %1$d يوم</string>
+    <string name="smartisan_days_before">قبل %1$d يوم</string>
+    <string name="smartisan_same_as_local">مطابق للتوقيت المحلي</string>
+    <string name="smartisan_faster">متقدم عن التوقيت المحلي بـ</string>
+    <string name="smartisan_slower">متأخر عن التوقيت المحلي بـ</string>
+    <string name="smartisan_hours">%1$d س</string>
+    <string name="smartisan_minutes">%1$d د</string>
+</resources>

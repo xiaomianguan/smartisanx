@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">刪除</string>
+    <string name="smartisan_cancel">取消</string>
+    <string name="smartisan_confirm">確定</string>
+    <string name="smartisan_clear">清除</string>
+    <string name="smartisan_filter">篩選</string>
+    <string name="smartisan_search">搜尋</string>
+    <string name="smartisan_page_indicator">第 %1$d 頁，共 %2$d 頁</string>
+    <string name="smartisan_holiday">國定假日</string>
+    <string name="smartisan_tomorrow">明天</string>
+    <string name="smartisan_yesterday">昨天</string>
+    <string name="smartisan_days_after">%1$d 天後</string>
+    <string name="smartisan_days_before">%1$d 天前</string>
+    <string name="smartisan_same_as_local">與本地時間相同</string>
+    <string name="smartisan_faster">比本地時間快</string>
+    <string name="smartisan_slower">比本地時間慢</string>
+    <string name="smartisan_hours">%1$d 小時</string>
+    <string name="smartisan_minutes">%1$d 分鐘</string>
+</resources>

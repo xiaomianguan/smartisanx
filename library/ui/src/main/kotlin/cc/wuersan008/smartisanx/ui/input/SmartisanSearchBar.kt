@@ -45,11 +45,12 @@ import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClick
 import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
+import androidx.compose.ui.res.stringResource
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
-import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarShadow
@@ -246,7 +247,7 @@ fun SmartisanSearchBar(
                 ) {
                     SmartisanIcon(
                         res = filterIconRes,
-                        contentDescription = "筛选",
+                        contentDescription = stringResource(R.string.smartisan_filter),
                         enabled = enabled,
                         pressed = filterPressed,
                         size = SmartisanInputDefaults.IconSize,
@@ -418,7 +419,7 @@ fun SmartisanSearchBar(
                 if (query.isNotEmpty()) {
                     SmartisanClearIcon(
                         iconRes = R.drawable.selector_small_icon_btn_text_clear,
-                        contentDescription = "清除",
+                        contentDescription = stringResource(R.string.smartisan_clear),
                         onClick = { onQueryChange("") },
                         enabled = enabled,
                     )
@@ -451,7 +452,7 @@ fun SmartisanSearchBar(
                 ) {
                     SmartisanIcon(
                         res = R.drawable.standard_icon_cancel_selector,
-                        contentDescription = "取消",
+                        contentDescription = stringResource(R.string.smartisan_cancel),
                         enabled = enabled,
                         pressed = cancelPressed,
                         size = SmartisanInputDefaults.IconSize,

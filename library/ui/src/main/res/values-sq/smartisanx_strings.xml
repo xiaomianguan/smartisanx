@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Fshi</string>
+    <string name="smartisan_cancel">Anulo</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Pastro</string>
+    <string name="smartisan_filter">Filtro</string>
+    <string name="smartisan_search">Kërko</string>
+    <string name="smartisan_page_indicator">Faqja %1$d nga %2$d</string>
+    <string name="smartisan_holiday">Festat zyrtare</string>
+    <string name="smartisan_tomorrow">Nesër</string>
+    <string name="smartisan_yesterday">Dje</string>
+    <string name="smartisan_days_after">Pas %1$d ditësh</string>
+    <string name="smartisan_days_before">%1$d ditë më parë</string>
+    <string name="smartisan_same_as_local">Njësoj si ora lokale</string>
+    <string name="smartisan_faster">Përpara orës lokale me</string>
+    <string name="smartisan_slower">Pas orës lokale me</string>
+    <string name="smartisan_hours">%1$d orë</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Kustuta</string>
+    <string name="smartisan_cancel">Loobu</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Tühjenda</string>
+    <string name="smartisan_filter">Filtreeri</string>
+    <string name="smartisan_search">Otsi</string>
+    <string name="smartisan_page_indicator">Leht %1$d / %2$d</string>
+    <string name="smartisan_holiday">Riigipühad</string>
+    <string name="smartisan_tomorrow">Homme</string>
+    <string name="smartisan_yesterday">Eile</string>
+    <string name="smartisan_days_after">%1$d päeva pärast</string>
+    <string name="smartisan_days_before">%1$d päeva eest</string>
+    <string name="smartisan_same_as_local">Sama mis kohalik aeg</string>
+    <string name="smartisan_faster">Kohalikust ajast ees</string>
+    <string name="smartisan_slower">Kohalikust ajast maas</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

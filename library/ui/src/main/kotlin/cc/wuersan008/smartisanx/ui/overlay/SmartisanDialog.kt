@@ -34,11 +34,12 @@ import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
+import androidx.compose.ui.res.stringResource
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
-import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -186,7 +187,7 @@ fun SmartisanDialogTitleBar(
         if (onConfirm != null) {
             SmartisanDialogTitleBarIcon(
                 res = SmartisanDrawables.IconCancel,
-                contentDescription = "取消",
+                contentDescription = stringResource(R.string.smartisan_cancel),
                 onClick = onDismiss,
                 modifier = Modifier.align(Alignment.CenterStart),
             )
@@ -195,7 +196,8 @@ fun SmartisanDialogTitleBar(
             res =
                 if (onConfirm == null) SmartisanDrawables.IconCancel
                 else SmartisanDrawables.IconComplete,
-            contentDescription = if (onConfirm == null) "取消" else "确定",
+            contentDescription =
+                if (onConfirm == null) stringResource(R.string.smartisan_cancel) else stringResource(R.string.smartisan_confirm),
             onClick = onConfirm ?: onDismiss,
             modifier = Modifier.align(Alignment.CenterEnd),
             enabled = onConfirm == null || confirmEnabled,
@@ -374,7 +376,7 @@ fun SmartisanDialog(
     onDismissRequest: () -> Unit,
     title: String,
     modifier: Modifier = Modifier,
-    confirmText: String = "确定",
+    confirmText: String? = null,
     dismissText: String? = null,
     confirmEnabled: Boolean = true,
     onConfirm: () -> Unit,
@@ -386,7 +388,8 @@ fun SmartisanDialog(
         dismiss()
         onConfirm()
     }
-    val cancelText = dismissText ?: "取消"
+    val cancelText = dismissText ?: stringResource(R.string.smartisan_cancel)
+    val confirmLabel = confirmText ?: stringResource(R.string.smartisan_confirm)
     SmartisanModalWindow(onDismissRequest = onDismissRequest, modifier = modifier) {
         // 标题：48dp 高、18sp 加粗、居中（原版 smartisan_modal_title）。
         Box(
@@ -430,7 +433,7 @@ fun SmartisanDialog(
                         .background(colorResource(R.color.smartisan_modal_border)),
             )
             SmartisanDialogButton(
-                text = confirmText,
+                text = confirmLabel,
                 onClick = confirm,
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 enabled = confirmEnabled,
@@ -464,8 +467,8 @@ fun SmartisanConfirmDialog(
     onDismissRequest: () -> Unit,
     title: String,
     message: String,
-    confirmText: String = "确定",
-    dismissText: String = "取消",
+    confirmText: String? = null,
+    dismissText: String? = null,
     onConfirm: () -> Unit,
 ) {
     SmartisanDialog(

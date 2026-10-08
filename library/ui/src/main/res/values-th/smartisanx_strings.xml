@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">ลบ</string>
+    <string name="smartisan_cancel">ยกเลิก</string>
+    <string name="smartisan_confirm">ตกลง</string>
+    <string name="smartisan_clear">ล้าง</string>
+    <string name="smartisan_filter">ตัวกรอง</string>
+    <string name="smartisan_search">ค้นหา</string>
+    <string name="smartisan_page_indicator">หน้า %1$d จาก %2$d</string>
+    <string name="smartisan_holiday">วันหยุดราชการ</string>
+    <string name="smartisan_tomorrow">พรุ่งนี้</string>
+    <string name="smartisan_yesterday">เมื่อวาน</string>
+    <string name="smartisan_days_after">อีก %1$d วัน</string>
+    <string name="smartisan_days_before">%1$d วันที่แล้ว</string>
+    <string name="smartisan_same_as_local">เหมือนเวลาท้องถิ่น</string>
+    <string name="smartisan_faster">เร็วกว่าเวลาท้องถิ่น</string>
+    <string name="smartisan_slower">ช้ากว่าเวลาท้องถิ่น</string>
+    <string name="smartisan_hours">%1$d ชม.</string>
+    <string name="smartisan_minutes">%1$d นาที</string>
+</resources>

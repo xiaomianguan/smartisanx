@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">తొలగించు</string>
+    <string name="smartisan_cancel">రద్దు చేయి</string>
+    <string name="smartisan_confirm">సరే</string>
+    <string name="smartisan_clear">క్లియర్</string>
+    <string name="smartisan_filter">ఫిల్టర్</string>
+    <string name="smartisan_search">వెతుకు</string>
+    <string name="smartisan_page_indicator">పేజీ %1$d / %2$d</string>
+    <string name="smartisan_holiday">ప్రజా సెలవులు</string>
+    <string name="smartisan_tomorrow">రేపు</string>
+    <string name="smartisan_yesterday">నిన్న</string>
+    <string name="smartisan_days_after">%1$d రోజుల్లో</string>
+    <string name="smartisan_days_before">%1$d రోజుల క్రితం</string>
+    <string name="smartisan_same_as_local">స్థానిక సమయం వలె</string>
+    <string name="smartisan_faster">స్థానిక సమయం కంటే ముందు</string>
+    <string name="smartisan_slower">స్థానిక సమయం కంటే వెనుక</string>
+    <string name="smartisan_hours">%1$d గం</string>
+    <string name="smartisan_minutes">%1$d ని</string>
+</resources>

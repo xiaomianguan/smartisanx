@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Vee</string>
+    <string name="smartisan_cancel">Kanselleer</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Maak skoon</string>
+    <string name="smartisan_filter">Filtreer</string>
+    <string name="smartisan_search">Soek</string>
+    <string name="smartisan_page_indicator">Bladsy %1$d van %2$d</string>
+    <string name="smartisan_holiday">Openbare vakansiedae</string>
+    <string name="smartisan_tomorrow">Môre</string>
+    <string name="smartisan_yesterday">Gister</string>
+    <string name="smartisan_days_after">Oor %1$d dae</string>
+    <string name="smartisan_days_before">%1$d dae gelede</string>
+    <string name="smartisan_same_as_local">Dieselfde as plaaslike tyd</string>
+    <string name="smartisan_faster">Voor op plaaslike tyd met</string>
+    <string name="smartisan_slower">Agter plaaslike tyd met</string>
+    <string name="smartisan_hours">%1$d u</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

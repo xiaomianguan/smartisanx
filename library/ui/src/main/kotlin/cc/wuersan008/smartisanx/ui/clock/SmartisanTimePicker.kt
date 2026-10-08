@@ -261,7 +261,15 @@ fun SmartisanTimePicker(
     val minuteLabels = remember(step) {
         (0 until MINUTES_PER_HOUR step step).map { it.toString().padStart(2, '0') }
     }
-    val periodLabels = remember { listOf(PeriodAm, PeriodPm) }
+    // 上午 / 下午用平台自带的 amPmStrings：它对每种语言都已经本地化好了，
+    // 不需要库里再维护一份。
+    val periodLabels = remember {
+        val amPm = java.text.DateFormatSymbols().amPmStrings
+        listOf(
+            amPm.getOrElse(PeriodAmIndex) { "AM" },
+            amPm.getOrElse(PeriodPmIndex) { "PM" },
+        )
+    }
 
     val safeHour = hour.mod(HOURS_PER_DAY)
     val safeMinute = minute.coerceIn(0, MINUTES_PER_HOUR - 1)
@@ -382,10 +390,10 @@ private const val BottomSpacerKey = "smartisan-wheel-bottom-spacer"
 private val TimePickerItemHeight = 40.dp
 
 /** 上午文案。 */
-private const val PeriodAm = "上午"
+private const val PeriodAmIndex = 0
 
 /** 下午文案。 */
-private const val PeriodPm = "下午"
+private const val PeriodPmIndex = 1
 
 /** 上午下午列相对小时列的宽度权重：原版按列数等分宽度（`width / columns`），所以是 1f。 */
 private const val PeriodColumnWeight = 1f

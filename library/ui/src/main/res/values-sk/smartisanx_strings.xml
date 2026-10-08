@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Odstrániť</string>
+    <string name="smartisan_cancel">Zrušiť</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Vymazať</string>
+    <string name="smartisan_filter">Filtrovať</string>
+    <string name="smartisan_search">Hľadať</string>
+    <string name="smartisan_page_indicator">Strana %1$d z %2$d</string>
+    <string name="smartisan_holiday">Štátne sviatky</string>
+    <string name="smartisan_tomorrow">Zajtra</string>
+    <string name="smartisan_yesterday">Včera</string>
+    <string name="smartisan_days_after">O %1$d dní</string>
+    <string name="smartisan_days_before">Pred %1$d dňami</string>
+    <string name="smartisan_same_as_local">Rovnaké ako miestny čas</string>
+    <string name="smartisan_faster">Pred miestnym časom o</string>
+    <string name="smartisan_slower">Za miestnym časom o</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

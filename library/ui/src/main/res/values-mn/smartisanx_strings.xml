@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Устгах</string>
+    <string name="smartisan_cancel">Цуцлах</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Цэвэрлэх</string>
+    <string name="smartisan_filter">Шүүлт</string>
+    <string name="smartisan_search">Хайх</string>
+    <string name="smartisan_page_indicator">%1$d / %2$d хуудас</string>
+    <string name="smartisan_holiday">Нийтийн амралтын өдөр</string>
+    <string name="smartisan_tomorrow">Маргааш</string>
+    <string name="smartisan_yesterday">Өчигдөр</string>
+    <string name="smartisan_days_after">%1$d хоногийн дараа</string>
+    <string name="smartisan_days_before">%1$d хоногийн өмнө</string>
+    <string name="smartisan_same_as_local">Орон нутгийн цагтай ижил</string>
+    <string name="smartisan_faster">Орон нутгийн цагаас түрүүлж</string>
+    <string name="smartisan_slower">Орон нутгийн цагаас хоцорч</string>
+    <string name="smartisan_hours">%1$d ц</string>
+    <string name="smartisan_minutes">%1$d мин</string>
+</resources>

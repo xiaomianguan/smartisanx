@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Выдаліць</string>
+    <string name="smartisan_cancel">Скасаваць</string>
+    <string name="smartisan_confirm">ОК</string>
+    <string name="smartisan_clear">Ачысціць</string>
+    <string name="smartisan_filter">Фільтр</string>
+    <string name="smartisan_search">Пошук</string>
+    <string name="smartisan_page_indicator">Старонка %1$d з %2$d</string>
+    <string name="smartisan_holiday">Дзяржаўныя святы</string>
+    <string name="smartisan_tomorrow">Заўтра</string>
+    <string name="smartisan_yesterday">Учора</string>
+    <string name="smartisan_days_after">Праз %1$d дзён</string>
+    <string name="smartisan_days_before">%1$d дзён таму</string>
+    <string name="smartisan_same_as_local">Як мясцовы час</string>
+    <string name="smartisan_faster">Наперадзе мясцовага часу на</string>
+    <string name="smartisan_slower">Адстае ад мясцовага часу на</string>
+    <string name="smartisan_hours">%1$d гадз</string>
+    <string name="smartisan_minutes">%1$d хв</string>
+</resources>

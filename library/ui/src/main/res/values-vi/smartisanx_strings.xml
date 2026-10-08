@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Xóa</string>
+    <string name="smartisan_cancel">Hủy</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Xóa</string>
+    <string name="smartisan_filter">Bộ lọc</string>
+    <string name="smartisan_search">Tìm kiếm</string>
+    <string name="smartisan_page_indicator">Trang %1$d / %2$d</string>
+    <string name="smartisan_holiday">Ngày lễ</string>
+    <string name="smartisan_tomorrow">Ngày mai</string>
+    <string name="smartisan_yesterday">Hôm qua</string>
+    <string name="smartisan_days_after">Sau %1$d ngày</string>
+    <string name="smartisan_days_before">%1$d ngày trước</string>
+    <string name="smartisan_same_as_local">Giống giờ địa phương</string>
+    <string name="smartisan_faster">Nhanh hơn giờ địa phương</string>
+    <string name="smartisan_slower">Chậm hơn giờ địa phương</string>
+    <string name="smartisan_hours">%1$d giờ</string>
+    <string name="smartisan_minutes">%1$d phút</string>
+</resources>

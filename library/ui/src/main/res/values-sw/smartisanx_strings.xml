@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Futa</string>
+    <string name="smartisan_cancel">Ghairi</string>
+    <string name="smartisan_confirm">Sawa</string>
+    <string name="smartisan_clear">Futa</string>
+    <string name="smartisan_filter">Chuja</string>
+    <string name="smartisan_search">Tafuta</string>
+    <string name="smartisan_page_indicator">Ukurasa %1$d kati ya %2$d</string>
+    <string name="smartisan_holiday">Sikukuu za umma</string>
+    <string name="smartisan_tomorrow">Kesho</string>
+    <string name="smartisan_yesterday">Jana</string>
+    <string name="smartisan_days_after">Baada ya siku %1$d</string>
+    <string name="smartisan_days_before">Siku %1$d zilizopita</string>
+    <string name="smartisan_same_as_local">Sawa na saa ya ndani</string>
+    <string name="smartisan_faster">Mbele ya saa ya ndani kwa</string>
+    <string name="smartisan_slower">Nyuma ya saa ya ndani kwa</string>
+    <string name="smartisan_hours">saa %1$d</string>
+    <string name="smartisan_minutes">dakika %1$d</string>
+</resources>

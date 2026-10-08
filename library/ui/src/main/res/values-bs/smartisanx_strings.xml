@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Izbriši</string>
+    <string name="smartisan_cancel">Otkaži</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Očisti</string>
+    <string name="smartisan_filter">Filtriraj</string>
+    <string name="smartisan_search">Traži</string>
+    <string name="smartisan_page_indicator">Stranica %1$d od %2$d</string>
+    <string name="smartisan_holiday">Državni praznici</string>
+    <string name="smartisan_tomorrow">Sutra</string>
+    <string name="smartisan_yesterday">Jučer</string>
+    <string name="smartisan_days_after">Za %1$d dana</string>
+    <string name="smartisan_days_before">Prije %1$d dana</string>
+    <string name="smartisan_same_as_local">Isto kao lokalno vrijeme</string>
+    <string name="smartisan_faster">Ispred lokalnog vremena za</string>
+    <string name="smartisan_slower">Iza lokalnog vremena za</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

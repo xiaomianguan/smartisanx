@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
@@ -74,9 +76,11 @@ fun SmartisanWorldClockCard(
 
     val dayDelta = ChronoUnit.DAYS.between(localDate, cityDate).toInt()
     val dateText = dayHint(dayDelta) +
-        cityDate.monthValue.toString() + "月" +
-        cityDate.dayOfMonth.toString() + "日 " +
-        WeekdayLabels[cityDate.dayOfWeek.value - 1]
+        // 日期用平台自带的本地化格式，星期也用平台的显示名，
+        // 这样每种语言都自动正确，库里不需要维护一份。
+        java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
+            .format(java.util.Date.from(cityDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())) +
+        " " + cityDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
 
     val diffMinutes =
         (zone.rules.getOffset(now).totalSeconds - localZone.rules.getOffset(now).totalSeconds) / 60
@@ -156,30 +160,32 @@ fun SmartisanWorldClockCard(
 }
 
 /** 「昨天 / 今天 / 明天 / N 天前」提示，空字符串表示就是本地当天。 */
+@Composable
 private fun dayHint(dayDelta: Int): String = when {
     dayDelta == 0 -> ""
-    dayDelta == 1 -> "明天 "
-    dayDelta == -1 -> "昨天 "
-    dayDelta > 1 -> "${dayDelta} 天后 "
-    else -> "${-dayDelta} 天前 "
+    dayDelta == 1 -> stringResource(R.string.smartisan_tomorrow) + " "
+    dayDelta == -1 -> stringResource(R.string.smartisan_yesterday) + " "
+    dayDelta > 1 -> stringResource(R.string.smartisan_days_after, dayDelta) + " "
+    else -> stringResource(R.string.smartisan_days_before, -dayDelta) + " "
 }
 
 /** 与本地时差的文案，按小时 / 分钟拆分，支持半小时时区。 */
+@Composable
 private fun offsetText(diffMinutes: Int): String {
-    if (diffMinutes == 0) return "与本地时间相同"
-    val direction = if (diffMinutes > 0) "快" else "慢"
+    if (diffMinutes == 0) return stringResource(R.string.smartisan_same_as_local)
+    val direction =
+        if (diffMinutes > 0) stringResource(R.string.smartisan_faster) else stringResource(R.string.smartisan_slower)
     val absolute = abs(diffMinutes)
     val hours = absolute / 60
     val minutes = absolute % 60
     return buildString {
-        append("比本地").append(direction)
-        if (hours > 0) append(' ').append(hours).append(" 小时")
-        if (minutes > 0) append(' ').append(minutes).append(" 分钟")
+        append(direction)
+        if (hours > 0) append(' ').append(hours).append(" " + stringResource(R.string.smartisan_hours, hours))
+        if (minutes > 0) append(' ').append(minutes).append(" " + stringResource(R.string.smartisan_minutes, minutes))
     }
 }
 
 /** 周一到周日的短名，与 [SmartisanWeekdayPicker] 的默认标签一致。 */
-private val WeekdayLabels = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
 
 /** 小表盘直径，原版世界时钟行表盘为 60dp，列表行内使用 40dp 更紧凑。 */
 private val ClockSize = 40.dp

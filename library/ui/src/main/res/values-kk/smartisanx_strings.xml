@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Жою</string>
+    <string name="smartisan_cancel">Болдырмау</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Тазалау</string>
+    <string name="smartisan_filter">Сүзгі</string>
+    <string name="smartisan_search">Іздеу</string>
+    <string name="smartisan_page_indicator">%1$d / %2$d бет</string>
+    <string name="smartisan_holiday">Мемлекеттік мерекелер</string>
+    <string name="smartisan_tomorrow">Ертең</string>
+    <string name="smartisan_yesterday">Кеше</string>
+    <string name="smartisan_days_after">%1$d күннен кейін</string>
+    <string name="smartisan_days_before">%1$d күн бұрын</string>
+    <string name="smartisan_same_as_local">Жергілікті уақытпен бірдей</string>
+    <string name="smartisan_faster">Жергілікті уақыттан озық</string>
+    <string name="smartisan_slower">Жергілікті уақыттан кейін</string>
+    <string name="smartisan_hours">%1$d сағ</string>
+    <string name="smartisan_minutes">%1$d мин</string>
+</resources>

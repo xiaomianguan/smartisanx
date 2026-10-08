@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">წაშლა</string>
+    <string name="smartisan_cancel">გაუქმება</string>
+    <string name="smartisan_confirm">კარგი</string>
+    <string name="smartisan_clear">გასუფთავება</string>
+    <string name="smartisan_filter">ფილტრი</string>
+    <string name="smartisan_search">ძებნა</string>
+    <string name="smartisan_page_indicator">გვერდი %1$d / %2$d</string>
+    <string name="smartisan_holiday">სახალხო დღესასწაულები</string>
+    <string name="smartisan_tomorrow">ხვალ</string>
+    <string name="smartisan_yesterday">გუშინ</string>
+    <string name="smartisan_days_after">%1$d დღეში</string>
+    <string name="smartisan_days_before">%1$d დღის წინ</string>
+    <string name="smartisan_same_as_local">ადგილობრივი დროის იგივე</string>
+    <string name="smartisan_faster">ადგილობრივ დროზე წინ</string>
+    <string name="smartisan_slower">ადგილობრივ დროზე უკან</string>
+    <string name="smartisan_hours">%1$d სთ</string>
+    <string name="smartisan_minutes">%1$d წთ</string>
+</resources>

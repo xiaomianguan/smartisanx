@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Dzēst</string>
+    <string name="smartisan_cancel">Atcelt</string>
+    <string name="smartisan_confirm">Labi</string>
+    <string name="smartisan_clear">Notīrīt</string>
+    <string name="smartisan_filter">Filtrs</string>
+    <string name="smartisan_search">Meklēt</string>
+    <string name="smartisan_page_indicator">%1$d. lpp. no %2$d</string>
+    <string name="smartisan_holiday">Svētku dienas</string>
+    <string name="smartisan_tomorrow">Rīt</string>
+    <string name="smartisan_yesterday">Vakar</string>
+    <string name="smartisan_days_after">Pēc %1$d dienām</string>
+    <string name="smartisan_days_before">Pirms %1$d dienām</string>
+    <string name="smartisan_same_as_local">Tāds pats kā vietējais laiks</string>
+    <string name="smartisan_faster">Vietējais laiks priekšā par</string>
+    <string name="smartisan_slower">Vietējais laiks atpaliek par</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

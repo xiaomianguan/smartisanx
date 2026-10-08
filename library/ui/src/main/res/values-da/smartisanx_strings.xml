@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Slet</string>
+    <string name="smartisan_cancel">Annuller</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Ryd</string>
+    <string name="smartisan_filter">Filtrér</string>
+    <string name="smartisan_search">Søg</string>
+    <string name="smartisan_page_indicator">Side %1$d af %2$d</string>
+    <string name="smartisan_holiday">Offentlige helligdage</string>
+    <string name="smartisan_tomorrow">I morgen</string>
+    <string name="smartisan_yesterday">I går</string>
+    <string name="smartisan_days_after">Om %1$d dage</string>
+    <string name="smartisan_days_before">%1$d dage siden</string>
+    <string name="smartisan_same_as_local">Samme som lokal tid</string>
+    <string name="smartisan_faster">Foran lokal tid med</string>
+    <string name="smartisan_slower">Bag lokal tid med</string>
+    <string name="smartisan_hours">%1$d t</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

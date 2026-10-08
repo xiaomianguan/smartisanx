@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">削除</string>
+    <string name="smartisan_cancel">キャンセル</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">クリア</string>
+    <string name="smartisan_filter">絞り込み</string>
+    <string name="smartisan_search">検索</string>
+    <string name="smartisan_page_indicator">%2$d ページ中 %1$d ページ</string>
+    <string name="smartisan_holiday">祝日</string>
+    <string name="smartisan_tomorrow">明日</string>
+    <string name="smartisan_yesterday">昨日</string>
+    <string name="smartisan_days_after">%1$d 日後</string>
+    <string name="smartisan_days_before">%1$d 日前</string>
+    <string name="smartisan_same_as_local">現地時間と同じ</string>
+    <string name="smartisan_faster">現地時間より進んでいます</string>
+    <string name="smartisan_slower">現地時間より遅れています</string>
+    <string name="smartisan_hours">%1$d 時間</string>
+    <string name="smartisan_minutes">%1$d 分</string>
+</resources>

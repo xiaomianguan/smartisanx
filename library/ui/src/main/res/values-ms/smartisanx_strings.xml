@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Padam</string>
+    <string name="smartisan_cancel">Batal</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Kosongkan</string>
+    <string name="smartisan_filter">Tapis</string>
+    <string name="smartisan_search">Cari</string>
+    <string name="smartisan_page_indicator">Halaman %1$d daripada %2$d</string>
+    <string name="smartisan_holiday">Cuti umum</string>
+    <string name="smartisan_tomorrow">Esok</string>
+    <string name="smartisan_yesterday">Semalam</string>
+    <string name="smartisan_days_after">Dalam %1$d hari</string>
+    <string name="smartisan_days_before">%1$d hari lalu</string>
+    <string name="smartisan_same_as_local">Sama dengan waktu tempatan</string>
+    <string name="smartisan_faster">Lebih awal daripada waktu tempatan</string>
+    <string name="smartisan_slower">Lebih lewat daripada waktu tempatan</string>
+    <string name="smartisan_hours">%1$d j</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

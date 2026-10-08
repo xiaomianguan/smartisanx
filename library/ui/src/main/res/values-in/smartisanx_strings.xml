@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Hapus</string>
+    <string name="smartisan_cancel">Batal</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Hapus</string>
+    <string name="smartisan_filter">Filter</string>
+    <string name="smartisan_search">Cari</string>
+    <string name="smartisan_page_indicator">Halaman %1$d dari %2$d</string>
+    <string name="smartisan_holiday">Hari libur nasional</string>
+    <string name="smartisan_tomorrow">Besok</string>
+    <string name="smartisan_yesterday">Kemarin</string>
+    <string name="smartisan_days_after">%1$d hari lagi</string>
+    <string name="smartisan_days_before">%1$d hari lalu</string>
+    <string name="smartisan_same_as_local">Sama dengan waktu lokal</string>
+    <string name="smartisan_faster">Lebih cepat dari waktu lokal</string>
+    <string name="smartisan_slower">Lebih lambat dari waktu lokal</string>
+    <string name="smartisan_hours">%1$d j</string>
+    <string name="smartisan_minutes">%1$d mnt</string>
+</resources>

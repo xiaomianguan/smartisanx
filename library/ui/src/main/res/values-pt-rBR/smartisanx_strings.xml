@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Excluir</string>
+    <string name="smartisan_cancel">Cancelar</string>
+    <string name="smartisan_confirm">OK</string>
+    <string name="smartisan_clear">Limpar</string>
+    <string name="smartisan_filter">Filtrar</string>
+    <string name="smartisan_search">Pesquisar</string>
+    <string name="smartisan_page_indicator">Página %1$d de %2$d</string>
+    <string name="smartisan_holiday">Feriados nacionais</string>
+    <string name="smartisan_tomorrow">Amanhã</string>
+    <string name="smartisan_yesterday">Ontem</string>
+    <string name="smartisan_days_after">Em %1$d dias</string>
+    <string name="smartisan_days_before">Há %1$d dias</string>
+    <string name="smartisan_same_as_local">Igual ao horário local</string>
+    <string name="smartisan_faster">Adiantado em relação ao horário local</string>
+    <string name="smartisan_slower">Atrasado em relação ao horário local</string>
+    <string name="smartisan_hours">%1$d h</string>
+    <string name="smartisan_minutes">%1$d min</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Ջնջել</string>
+    <string name="smartisan_cancel">Չեղարկել</string>
+    <string name="smartisan_confirm">Լավ</string>
+    <string name="smartisan_clear">Մաքրել</string>
+    <string name="smartisan_filter">Զտել</string>
+    <string name="smartisan_search">Որոնել</string>
+    <string name="smartisan_page_indicator">Էջ %1$d / %2$d</string>
+    <string name="smartisan_holiday">Պետական տոներ</string>
+    <string name="smartisan_tomorrow">Վաղը</string>
+    <string name="smartisan_yesterday">Երեկ</string>
+    <string name="smartisan_days_after">%1$d օրից</string>
+    <string name="smartisan_days_before">%1$d օր առաջ</string>
+    <string name="smartisan_same_as_local">Նույնը, ինչ տեղական ժամը</string>
+    <string name="smartisan_faster">Տեղական ժամից առաջ</string>
+    <string name="smartisan_slower">Տեղական ժամից հետո</string>
+    <string name="smartisan_hours">%1$d ժ</string>
+    <string name="smartisan_minutes">%1$d ր</string>
+</resources>

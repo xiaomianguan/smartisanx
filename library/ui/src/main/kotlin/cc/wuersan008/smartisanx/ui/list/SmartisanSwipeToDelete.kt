@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
+import androidx.compose.ui.res.stringResource
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
@@ -46,10 +48,12 @@ fun SmartisanSwipeToDelete(
     directReveal: Dp = 65.dp,
     maximumTravel: Dp = 360.dp,
     threshold: Dp = 120.dp,
-    deleteLabel: String = "删除",
+    deleteLabel: String? = null,
     content: @Composable () -> Unit,
 ) {
     val colors = LocalSmartisanColors.current
+    // 默认取本地化文案；调用方传值即可覆盖。
+    val resolvedDeleteLabel = deleteLabel ?: stringResource(R.string.smartisan_delete)
     val typography = LocalSmartisanTypography.current
     val density = LocalDensity.current
     val directPx = with(density) { directReveal.toPx() }
@@ -86,7 +90,7 @@ fun SmartisanSwipeToDelete(
                     } else {
                         SmartisanDrawables.SlideDelete
                     },
-                contentDescription = deleteLabel,
+                contentDescription = resolvedDeleteLabel,
                 modifier = Modifier.padding(start = 24.dp).size(DeleteIconSize),
                 contentScale = ContentScale.Fit,
             )

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="smartisan_delete">Eyða</string>
+    <string name="smartisan_cancel">Hætta við</string>
+    <string name="smartisan_confirm">Í lagi</string>
+    <string name="smartisan_clear">Hreinsa</string>
+    <string name="smartisan_filter">Sía</string>
+    <string name="smartisan_search">Leita</string>
+    <string name="smartisan_page_indicator">Síða %1$d af %2$d</string>
+    <string name="smartisan_holiday">Opinberir frídagar</string>
+    <string name="smartisan_tomorrow">Á morgun</string>
+    <string name="smartisan_yesterday">Í gær</string>
+    <string name="smartisan_days_after">Eftir %1$d daga</string>
+    <string name="smartisan_days_before">Fyrir %1$d dögum</string>
+    <string name="smartisan_same_as_local">Sama og staðartími</string>
+    <string name="smartisan_faster">Á undan staðartíma um</string>
+    <string name="smartisan_slower">Á eftir staðartíma um</string>
+    <string name="smartisan_hours">%1$d klst</string>
+    <string name="smartisan_minutes">%1$d mín</string>
+</resources>
