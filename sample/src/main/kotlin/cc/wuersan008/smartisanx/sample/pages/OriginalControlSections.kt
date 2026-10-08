@@ -24,6 +24,9 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroupItem
+import cc.wuersan008.smartisanx.ui.control.SmartisanSmoothSeekBar
+import androidx.compose.runtime.mutableFloatStateOf
+import kotlin.math.roundToInt
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanNumberPicker
@@ -42,6 +45,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 fun OriginalControlSections() {
     ButtonTabGroupSection()
     CalculatorButtonSection()
+    SmoothSeekBarSection()
     NumberPickerSection()
     PageIndicatorSection()
     ProgressIndicatorSection()
@@ -139,6 +143,46 @@ private fun CalculatorButtonSection() {
                 style = LocalSmartisanTypography.current.caption,
                 color = LocalSmartisanColors.current.textTertiary,
             )
+        }
+    }
+}
+
+/** 滑杆：framework 的 `smartisanos.widget.SmoothSeekBar`。 */
+@Composable
+private fun SmoothSeekBarSection() {
+    var brightness by remember { mutableFloatStateOf(0.6f) }
+    var volume by remember { mutableFloatStateOf(0.3f) }
+    var stepped by remember { mutableFloatStateOf(0.5f) }
+    SampleSectionHeader("滑杆（framework SmoothSeekBar）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
+            SmartisanText(
+                text = "亮度  ${(brightness * 100).roundToInt()}%",
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            SmartisanSmoothSeekBar(value = brightness, onValueChange = { brightness = it })
+            SmartisanText(
+                text = "音量  ${(volume * 100).roundToInt()}%",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            SmartisanSmoothSeekBar(value = volume, onValueChange = { volume = it })
+            SmartisanText(
+                text = "按 10 档吸附  ${(stepped * 10).roundToInt()}",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            SmartisanSmoothSeekBar(value = stepped, onValueChange = { stepped = it }, steps = 10)
+            SmartisanText(
+                text = "禁用态",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            SmartisanSmoothSeekBar(value = 0.4f, onValueChange = {}, enabled = false)
         }
     }
 }
