@@ -11,4 +11,20 @@
     <color name="chips_recommended_color">#996b3d</color>
     <color name="chips_shadow_color">#26000000</color>
     <color name="chips_unidentified_color">#3965cc</color>
+
+    <!--
+      日期 / 时间选择器（framework `res/values/colors.xml`、`res/values/dimens.xml`）。
+      普通版（SmartisanDatePicker / SmartisanTimePicker）与 Ex 版各一套文字色；
+      日历「一天」视图的选中色复用 smartisanx_assets_values.xml 里的
+      calander_date_pick_select_day_color。
+    -->
+    <color name="date_pick_normal_day_color">#ffb3b3b5</color>
+    <color name="date_pick_select_day_color">#ff55585c</color>
+    <color name="date_pick_ex_normal_day_color">#4c000000</color>
+    <color name="date_pick_ex_select_day_color">#9a000000</color>
+    <color name="date_time_picker_divider_bg">#0c000000</color>
+    <dimen name="date_time_picker_height">220.0dp</dimen>
+    <dimen name="time_picker_height">128.0dp</dimen>
+    <dimen name="time_picker_width">360.0dp</dimen>
+    <dimen name="smartisan_datepicker_divider_width">2.0px</dimen>
 </resources>
