@@ -235,9 +235,6 @@ object SmartisanDrawables {
     /** 等号键（红色，双高）底图 selector，原版 `selector_amount`。 */
     @DrawableRes val CalculatorButtonEqual = R.drawable.selector_amount
 
-    /** 按键高亮角标，原版 `focus`（HammerButton 的 `onDraw` 把它画在右上角）。 */
-    @DrawableRes val CalculatorKeyHighlight = R.drawable.focus
-
     // ---- 环形下载进度（原版 smartisanos.widget.DownloadProgressView） ----
     /** 状态 1：下载中。 */
     @DrawableRes val ProgressStateDownload = R.drawable.sos_smartisanos_drawable_circular_progress_download

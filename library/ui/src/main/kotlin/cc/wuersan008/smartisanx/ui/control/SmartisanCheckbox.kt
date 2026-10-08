@@ -16,12 +16,14 @@ package cc.wuersan008.smartisanx.ui.control
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -31,7 +33,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
-import cc.wuersan008.smartisanx.core.interaction.smartisanClick
+import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 
@@ -91,11 +93,11 @@ fun SmartisanCheckbox(
 ) {
     val interaction: MutableInteractionSource = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
-    val click = smartisanClick {}
+    val haptic = smartisanHaptic()
     val interactive = enabled && onCheckedChange != null
-    SmartisanIcon(
-        res = selectorRes,
-        contentDescription = null,
+    // 点击目标放在外层 Box 上：图标退化成纯展示的叶子节点，
+    // 不会有机会吃掉手势，命中区域也稳定是 CheckboxHitSize。
+    Box(
         modifier =
             modifier
                 .size(CheckboxHitSize)
@@ -106,11 +108,21 @@ fun SmartisanCheckbox(
                     enabled = interactive,
                     role = Role.Checkbox,
                 ) { value ->
-                    click()
+                    haptic()
                     onCheckedChange?.invoke(value)
                 },
-        enabled = enabled,
-        pressed = pressed,
-        checked = checked,
-    )
+        contentAlignment = Alignment.Center,
+    ) {
+        SmartisanIcon(
+            res = selectorRes,
+            contentDescription = null,
+            enabled = enabled,
+            pressed = pressed,
+            checked = checked,
+            modifier = Modifier.size(CheckboxMarkSize),
+        )
+    }
 }
+
+/** 复选框图案本身的尺寸（命中框比它大，见 [CheckboxHitSize]）。 */
+private val CheckboxMarkSize = 24.dp

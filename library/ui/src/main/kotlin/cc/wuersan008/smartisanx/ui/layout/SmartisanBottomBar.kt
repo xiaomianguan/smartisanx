@@ -53,7 +53,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * SmartisanBottomBarItem(label = "歌曲", iconRes = SmartisanOriginalIcons.TabSong)
  *
  * // 自定义矢量图标（原版没有对应素材时才用）
- * SmartisanBottomBarItem(icon = SmartisanXMediaIcons.Queue, label = "音乐")
+ * SmartisanBottomBarItem(icon = SmartisanOriginalIcons.TabSong, label = "音乐")
  * ```
  */
 @Immutable

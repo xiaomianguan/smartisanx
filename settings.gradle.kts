@@ -37,7 +37,6 @@ dependencyResolutionManagement {
 // 组件库
 include(":library:core")
 include(":library:ui")
-include(":library:icons")
 
 // 示例应用
 include(":sample")

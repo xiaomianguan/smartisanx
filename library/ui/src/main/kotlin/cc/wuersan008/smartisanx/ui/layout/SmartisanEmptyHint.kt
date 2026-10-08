@@ -32,7 +32,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * SmartisanEmptyHint(title = "还没有歌曲", iconRes = SmartisanOriginalIcons.EmptySong)
  *
  * // 自定义矢量图标（原版没有对应素材时才用）
- * SmartisanEmptyHint(title = "还没有内容", icon = SmartisanXIcons.Menu)
+ * SmartisanEmptyHint(title = "还没有内容", icon = SmartisanOriginalIcons.EmptyFolder)
  * ```
  */
 @Composable

@@ -24,8 +24,8 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroupItem
-import cc.wuersan008.smartisanx.ui.control.SmartisanHammerButton
-import cc.wuersan008.smartisanx.ui.control.SmartisanHammerButtonStyle
+import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButton
+import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanNumberPicker
 import cc.wuersan008.smartisanx.ui.control.SmartisanPageIndicator
 import cc.wuersan008.smartisanx.ui.control.SmartisanProgressIndicator
@@ -41,7 +41,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 @Composable
 fun OriginalControlSections() {
     ButtonTabGroupSection()
-    HammerButtonSection()
+    CalculatorButtonSection()
     NumberPickerSection()
     PageIndicatorSection()
     ProgressIndicatorSection()
@@ -95,40 +95,40 @@ private fun ButtonTabGroupSection() {
 
 /** 计算器按键：原版 `com.smartisanos.calculator.HammerButton`。 */
 @Composable
-private fun HammerButtonSection() {
+private fun CalculatorButtonSection() {
     var pressedTimes by remember { mutableIntStateOf(0) }
-    SampleSectionHeader("计算器按键（HammerButton）")
+    SampleSectionHeader("计算器按键（原版 com.smartisanos.calculator.HammerButton）")
     SmartisanGroup {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                SmartisanHammerButton(
+                SmartisanCalculatorButton(
                     iconRes = SmartisanOriginalIcons.Add,
                     onClick = { pressedTimes++ },
-                    style = SmartisanHammerButtonStyle.White,
+                    style = SmartisanCalculatorButtonStyle.White,
                     contentDescription = "加",
                     modifier = Modifier.size(64.dp),
                 )
-                SmartisanHammerButton(
+                SmartisanCalculatorButton(
                     iconRes = SmartisanOriginalIcons.Delete,
                     onClick = { pressedTimes++ },
-                    style = SmartisanHammerButtonStyle.Grey,
+                    style = SmartisanCalculatorButtonStyle.Grey,
                     contentDescription = "删除（长按连发）",
                     // 原版删除键：按下 500ms 后开始连发，之后每 150ms 一次。
                     onRepeat = { pressedTimes++ },
                     modifier = Modifier.size(64.dp),
                 )
-                SmartisanHammerButton(
+                SmartisanCalculatorButton(
                     iconRes = SmartisanOriginalIcons.Settings,
                     onClick = { pressedTimes++ },
-                    style = SmartisanHammerButtonStyle.Black,
+                    style = SmartisanCalculatorButtonStyle.Black,
                     highlighted = true,
                     contentDescription = "设置（带高亮角标）",
                     modifier = Modifier.size(64.dp),
                 )
-                SmartisanHammerButton(
+                SmartisanCalculatorButton(
                     iconRes = SmartisanOriginalIcons.Confirm,
                     onClick = { pressedTimes++ },
-                    style = SmartisanHammerButtonStyle.Equal,
+                    style = SmartisanCalculatorButtonStyle.Equal,
                     contentDescription = "等号",
                     modifier = Modifier.size(64.dp),
                 )

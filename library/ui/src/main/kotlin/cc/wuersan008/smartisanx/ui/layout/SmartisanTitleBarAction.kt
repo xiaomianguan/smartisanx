@@ -14,8 +14,6 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
  * // 原版图形资源（推荐，selector 自带按下 / 禁用态）
  * SmartisanTitleBarAction(SmartisanDrawables.IconBack, "返回") { back() }
  *
- * // 自定义矢量图标
- * SmartisanTitleBarAction(SmartisanXIcons.Back, "返回") { back() }
  * ```
  */
 @Immutable

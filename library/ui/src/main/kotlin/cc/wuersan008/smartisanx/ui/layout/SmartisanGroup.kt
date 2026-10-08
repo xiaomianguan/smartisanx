@@ -47,14 +47,20 @@ fun SmartisanSectionTitle(
 /**
  * 分组容器。
  *
- * 原版把一组设置项放在同一张白底卡片里，卡片之间留出间距；
- * 深色模式下卡片是 `surface`（炭灰 `#34373C`）。
+ * **默认是透明的**，这一点很关键：原版的分组本身不画底色，
+ * 卡片的白底、圆角与投影全部由每一行自己的 nine-patch 提供，
+ * 分组之间露出的正是页面的细条纹底纹。
+ *
+ * 如果给分组画上一层不透明底色，会出现两个问题：
+ * 条纹底纹被盖住；行的圆角与白底混在一起，看上去就没有圆角了。
+ *
+ * 需要整块底色时显式传 [color]。
  */
 @Composable
 fun SmartisanGroup(
     modifier: Modifier = Modifier,
     shape: Shape = LocalSmartisanShapes.current.none,
-    color: Color = LocalSmartisanColors.current.surface,
+    color: Color = Color.Transparent,
     horizontalMargin: Dp = SmartisanDimens.ListItemHorizontalMargin,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -64,7 +70,13 @@ fun SmartisanGroup(
                 .fillMaxWidth()
                 // 纵向留白是原版的 list_item_vertical_gap，投影要落在行边界之外。
                 .padding(horizontal = horizontalMargin, vertical = SmartisanDimens.ListItemVerticalGap)
-                .background(color = color, shape = shape),
+                .then(
+                    if (color != Color.Transparent) {
+                        Modifier.background(color = color, shape = shape)
+                    } else {
+                        Modifier
+                    },
+                ),
         content = content,
     )
 }

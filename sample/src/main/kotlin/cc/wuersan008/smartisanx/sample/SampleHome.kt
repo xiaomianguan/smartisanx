@@ -13,9 +13,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
-import cc.wuersan008.smartisanx.icons.SmartisanXIcons
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
@@ -58,7 +58,7 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
                     summary = page.subtitle,
                     leading = {
                         SmartisanIcon(
-                            imageVector = page.icon,
+                            res = page.icon,
                             contentDescription = null,
                             tint = colors.textSecondary,
                             size = 24.dp,
@@ -66,7 +66,7 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
                     },
                     trailing = {
                         SmartisanIcon(
-                            imageVector = SmartisanXIcons.ChevronRight,
+                            res = SmartisanOriginalIcons.More,
                             contentDescription = null,
                             tint = colors.textDisabled,
                             size = 18.dp,

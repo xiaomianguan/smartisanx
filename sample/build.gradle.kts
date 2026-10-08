@@ -43,7 +43,6 @@ kotlin {
 dependencies {
     implementation(project(":library:core"))
     implementation(project(":library:ui"))
-    implementation(project(":library:icons"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
