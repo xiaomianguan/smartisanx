@@ -84,6 +84,7 @@ smartisanx/
 | [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md) | [Migration.md](docs/Migration.md) | 原文件与 smartisanx 组件的逐项对照、迁移注意事项 |
 | [docs/组件核对记录.md](docs/组件核对记录.md) | [ComponentVerification.md](docs/ComponentVerification.md) | 逐个组件与原版核对的结果、已知差异 |
 | [docs/原版应用组件清单.md](docs/原版应用组件清单.md) | — | 12 个原厂 APK 的反编译清单与差距分析 |
+| [docs/固件组件清单.md](docs/固件组件清单.md) | — | 坚果 R2 完整固件的应用清单与尚未移植的组件 |
 
 ## 快速开始
 

@@ -91,6 +91,7 @@ smartisanx/
 | [Theme.md](docs/Theme.md) | Full values for colors, text styles, shapes, dimensions and motion |
 | [Migration.md](docs/Migration.md) | File-by-file mapping from the three revival projects, migration notes |
 | [ComponentVerification.md](docs/ComponentVerification.md) | Per-component comparison against the originals, known differences |
+| [固件组件清单.md](docs/固件组件清单.md) | Firmware app inventory and components not yet ported (Chinese only) |
 
 Chinese originals: [docs/快速开始.md](docs/快速开始.md) · [docs/组件总览.md](docs/组件总览.md) ·
 [docs/主题与设计变量.md](docs/主题与设计变量.md) · [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md)
