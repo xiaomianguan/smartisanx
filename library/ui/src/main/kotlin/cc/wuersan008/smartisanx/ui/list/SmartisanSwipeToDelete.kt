@@ -38,7 +38,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
  * 用 Compose 重写了锤子时钟的 `SmartisanSwipeDeleteRow`（`custom/SmartisanSwipeDeleteRow.kt`
  * 与 `SmartisanSwipeDeleteMotion.kt`）：
  * 向物理右侧滑动时，前 65dp 为 1:1 直接位移，之后按 1/5 速度阻尼，最大 360dp；
- * 松手后超过阈值则删除，否则回弹归位。
+ * 松手后超过阈值（原版 `OPEN_THRESHOLD_DP` = 50dp）则删除，否则回弹归位。
  */
 @Composable
 fun SmartisanSwipeToDelete(
@@ -47,7 +47,7 @@ fun SmartisanSwipeToDelete(
     enabled: Boolean = true,
     directReveal: Dp = 65.dp,
     maximumTravel: Dp = 360.dp,
-    threshold: Dp = 120.dp,
+    threshold: Dp = 50.dp,
     deleteLabel: String? = null,
     content: @Composable () -> Unit,
 ) {

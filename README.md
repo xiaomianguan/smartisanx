@@ -15,7 +15,7 @@
 按职责拆分模块、示例应用独立成模块、组件按功能分包。
 
 > **本库包含原始图形资源。** 锤子风格是拟物设计，质感来自 NinePatch、位图与 selector，
-> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（1382 个文件，含夜间与多密度变体），
+> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（10257 个文件，含夜间与多密度变体），
 > 而不是用 Compose 重新画一遍。这些素材的知识产权归原权利人所有，
 > 使用前请先阅读[资源来源与授权](#资源来源与授权)。
 
@@ -35,6 +35,11 @@
   这里全部用 Compose Canvas 重写。
 - **原始图形资源**：标题栏、开关、弹窗、列表行、分组卡片、机械表盘、标尺等
   全部使用原版素材，夜间模式也有对应的原版资源，不是简单反色。
+- **多语言**：库内所有用户可见文案都已资源化，并翻译为 AOSP 支持的 80 种语言；
+  开发者不需要进库就能支持任意语言。
+- **原版转场**：常规页面右侧滑入、模态页面底部滑入，参数取自原版 `anim/` 与复刻项目。
+- **全部原版素材**：图形资源取自 12 个原厂 APK，字体取自坚果 R2 官方 ROM 转储；
+  全部 PNG 已用 oxipng 无损压缩。
 - **简体中文文档**：所有 KDoc、示例与说明均为简体中文。
 
 ## 模块
@@ -77,6 +82,8 @@ smartisanx/
 | [docs/组件总览.md](docs/组件总览.md) | [Components.md](docs/Components.md) | 全部组件的 API 与参数说明 |
 | [docs/主题与设计变量.md](docs/主题与设计变量.md) | [Theme.md](docs/Theme.md) | 色板、文字样式、形状、尺寸、动画规格的完整取值 |
 | [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md) | [Migration.md](docs/Migration.md) | 原文件与 smartisanx 组件的逐项对照、迁移注意事项 |
+| [docs/组件核对记录.md](docs/组件核对记录.md) | [ComponentVerification.md](docs/ComponentVerification.md) | 逐个组件与原版核对的结果、已知差异 |
+| [docs/原版应用组件清单.md](docs/原版应用组件清单.md) | — | 12 个原厂 APK 的反编译清单与差距分析 |
 
 ## 快速开始
 
@@ -318,15 +325,12 @@ SmartisanScaffold {                       // 默认已带平铺底纹
 
 ### 资源清单
 
-`library/ui/src/main/res/` 下共 **1382** 个图形资源与颜色状态列表文件，全部来自三个复刻项目：
+`library/ui/src/main/res/` 下共 **10257** 个资源文件，来源分两部分：
 
 | 来源 | 文件数 | 内容 |
 | --- | --- | --- |
-| [SmartisanMusic-Revived](https://github.com/Mangi-11/SmartisanMusic-Revived) | 607 | 标题栏底色与投影、标题栏图标 selector、开关位图、弹窗与菜单底色、
-列表行与分组卡片 selector、复选框与单选 selector、评分星、底部标签栏图标、弹层菜单底色 |
-| [SmartisanWeather-Revived](https://github.com/Mangi-11/SmartisanWeather-Revived) | 414 | 页面底纹 `list_bg`、标题栏图标 selector、红色长按钮 selector、城市项 selector |
-| [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived) | 359 | 大/小机械表盘与指针、刻度与数字、响铃耳朵帧序列、时间滚轮、
-计时器卡尺与刻度、6.8.0 拉环 30 帧序列、秒表按钮、字母索引栏、侧滑删除面板 |
+| [People-11/SmartisanOS_APP_Port](https://github.com/People-11/SmartisanOS_APP_Port) 的 12 个原厂 APK | 8875 | 全部 `drawable*` / `mipmap*`：标题栏、开关、弹窗、列表与分组、复选框与单选、评分星、标签栏、表盘与指针、标尺与滚轮、字母索引、侧滑删除面板等 |
+| 三个复刻项目 | 1382 | 三个项目自身补充与校准过的素材（页面底纹、图标 selector、城市项等） |
 
 资源按原始文件名与原始限定符目录（`drawable-night`、`drawable-xxhdpi` 等）原样保留，
 只做了两处处理：

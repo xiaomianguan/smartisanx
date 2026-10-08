@@ -18,7 +18,7 @@ modules split by responsibility, the demo app as its own module, components grou
 > **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
 > its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
 > in Compose, the library uses the assets the three revival projects recovered from the original
-> APKs (1382 files, including night-mode and per-density variants).
+> APKs (10257 files, including night-mode and per-density variants).
 > Those assets belong to their respective rights holders; please read
 > [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
@@ -41,6 +41,12 @@ modules split by responsibility, the demo app as its own module, components grou
 - **Original graphic assets**: title bars, switches, dialogs, list rows, group cards, mechanical
   dials and rulers all use the original artwork, with real night-mode variants rather than
   simple colour inversion.
+- **Localisation**: every user-visible string is a resource, translated into the 80 locales AOSP
+  ships, so developers support any language without touching the library.
+- **Original transitions**: regular pages slide in from the right, modal pages slide up from the
+  bottom, with timings taken from the original `anim/` resources and the revival projects.
+- **All the original assets**: graphics from the 12 factory APKs, fonts from the nut R2 factory ROM
+  dump; every PNG losslessly optimised with oxipng.
 - **Simplified Chinese docs first**: the primary docs are Chinese; this file and the
   `docs/*.md` English pages are translations of them.
 
@@ -84,6 +90,7 @@ smartisanx/
 | [Components.md](docs/Components.md) | API and parameters for every component |
 | [Theme.md](docs/Theme.md) | Full values for colors, text styles, shapes, dimensions and motion |
 | [Migration.md](docs/Migration.md) | File-by-file mapping from the three revival projects, migration notes |
+| [ComponentVerification.md](docs/ComponentVerification.md) | Per-component comparison against the originals, known differences |
 
 Chinese originals: [docs/快速开始.md](docs/快速开始.md) · [docs/组件总览.md](docs/组件总览.md) ·
 [docs/主题与设计变量.md](docs/主题与设计变量.md) · [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md)
@@ -336,14 +343,12 @@ own pressed state.
 
 ### Inventory
 
-Every graphic asset and colour state list under `library/ui/src/main/res/` — **1382 files** — comes
-from one of the three revival projects:
+`library/ui/src/main/res/` holds **10257** resource files, from two sources:
 
 | Source | Files | Contents |
 | --- | --- | --- |
-| [SmartisanMusic-Revived](https://github.com/Mangi-11/SmartisanMusic-Revived) | 607 | Title bar background and shadow, title bar icon selectors, switch bitmaps, dialog and menu backgrounds, list row and group card selectors, checkbox and radio selectors, rating stars, bottom tab icons, popup menu backgrounds |
-| [SmartisanWeather-Revived](https://github.com/Mangi-11/SmartisanWeather-Revived) | 414 | Page texture `list_bg`, title bar icon selectors, red long-button selector, city item selectors |
-| [SmartisanClock-Revived](https://github.com/Mangi-11/SmartisanClock-Revived) | 359 | Large and small mechanical dials with hands, tick marks and numerals, ringing ear frame sequence, time wheels, timer caliper and scale, the 6.8.0 pull-ring 30-frame sequence, stopwatch buttons, letter index bar, swipe-delete panel |
+| The 12 factory APKs from [People-11/SmartisanOS_APP_Port](https://github.com/People-11/SmartisanOS_APP_Port) | 8875 | Every `drawable*` / `mipmap*`: title bars, switches, dialogs, list rows and group cards, checkbox and radio, rating stars, tab bars, clock dials and hands, rulers and wheels, letter index, swipe-delete panel |
+| The three revival projects | 1382 | Assets the projects themselves added or calibrated (page texture, icon selectors, city items) |
 
 Assets keep their original file names and qualifier directories (`drawable-night`,
 `drawable-xxhdpi`, and so on). Only two adjustments were made:

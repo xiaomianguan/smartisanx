@@ -9,7 +9,13 @@ import androidx.compose.ui.unit.dp
  * 去重后统一放在这里，方便使用方按需覆盖（组件本身都提供显式参数）。
  */
 object SmartisanDimens {
-    /** 标题栏高度，原版 `title_bar_height`。 */
+    /**
+     * 标题栏高度。
+     *
+     * 原版三个应用的取值并不一致：锤子音乐是 `title_bar_height` = 50dp，
+     * 锤子天气与锤子时钟都是 48dp。本库取 48dp（三个里有两个），
+     * 需要音乐那套 50dp 时直接传 `contentHeight = 50.dp` 即可。
+     */
     val TitleBarHeight = 48.dp
 
     /** 标题栏下方投影高度，原版 `title_bar_shadow_height`。 */
