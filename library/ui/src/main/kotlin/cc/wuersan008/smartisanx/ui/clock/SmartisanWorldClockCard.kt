@@ -17,6 +17,9 @@ import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import androidx.compose.ui.graphics.Color
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanSurface
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import java.time.Instant
@@ -67,8 +70,7 @@ fun SmartisanWorldClockCard(
     val cityTime = now.atZone(zone)
     val cityDate = cityTime.toLocalDate()
     val localDate = now.atZone(localZone).toLocalDate()
-    val night = cityTime.hour >= NightStartHour || cityTime.hour < NightEndHour
-    val dialColor = if (night) colors.surfaceRaised else colors.surface
+    // 小表盘会按城市当地小时自动切换日间/夜间底图，这里不需要再算颜色。
 
     val dayDelta = ChronoUnit.DAYS.between(localDate, cityDate).toInt()
     val dateText = dayHint(dayDelta) +
@@ -96,7 +98,11 @@ fun SmartisanWorldClockCard(
         Modifier
     }
 
-    SmartisanSurface(modifier = modifier.fillMaxWidth(), color = colors.surface) {
+    // 原版世界时钟的行背景就是 list_devider_bg（拖拽时换成 list_drag_bg）。
+    SmartisanSurface(
+        modifier = modifier.fillMaxWidth().smartisanDrawableBackground(SmartisanDrawables.ListDivider),
+        color = Color.Transparent,
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,7 +120,6 @@ fun SmartisanWorldClockCard(
                 second = cityTime.second,
                 showSecondHand = showSecondHand,
                 size = ClockSize,
-                dialColor = dialColor,
             )
             Spacer(modifier = Modifier.width(SmartisanDimens.GroupRowPadding))
             Column(modifier = Modifier.weight(1f)) {

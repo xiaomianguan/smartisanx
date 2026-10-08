@@ -22,4 +22,12 @@
     <color name="quickbar_ex_alphabet_text_light_color">#f5f5f5</color>
     <color name="quickbar_ex_alphabet_text_pressed_color">#e5e5e5</color>
     <color name="smartisan_divider">#e6e6e6</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="list_selection_background">#E5EEFF</color>
+    <color name="playing_queue_color">#ffffff</color>
+    <color name="song_index_text_color">#4d000000</color>
+    <color name="surface_card">#ffffff</color>
+
+    <!-- 原版把菜单项底色写成 values 里的 <drawable>，revone_menu_list_selector 会引用它。 -->
+    <drawable name="menu_list_item_normal">#ffffff</drawable>
 </resources>

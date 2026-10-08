@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.layout
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,46 +12,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
-import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
-import cc.wuersan008.smartisanx.ui.basic.SmartisanIconButton
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
-
-/**
- * 标题栏动作项。
- *
- * 合并了锤子音乐的 `SmartisanTitleBarAction` 与锤子天气的 `WeatherIconButton`：
- * 两者都是「36dp 图标 + 1.33 倍按压放大 + 按压态颜色」。
- */
-@Immutable
-data class SmartisanTitleBarAction(
-    /** 图标。 */
-    val icon: ImageVector,
-    /** 无障碍描述。 */
-    val contentDescription: String,
-    /** 点击回调。 */
-    val onClick: () -> Unit,
-    /** 是否可用，禁用时使用 `textDisabled` 颜色。 */
-    val enabled: Boolean = true,
-)
 
 /**
  * 锤子风格标题栏。
  *
- * 视觉来自锤子音乐 `SmartisanTitleBar` 与锤子天气 `WeatherTitleBar`（两者布局一致，
- * 这里合并为一个实现）：左右 6dp 留白、36dp 图标、20sp 加粗居中标题、
- * 下方 14dp 渐变投影、可选状态栏占位。
+ * 视觉来自锤子音乐的 `SmartisanTitleBar` 与锤子天气的 `WeatherTitleBar`（两者布局一致，已合并）：
+ * - 底色使用原版 NinePatch `titlebar_bg`（自带夜间变体）；
+ * - 下方 14dp 使用原版 `title_bar_shadow`；
+ * - 左右 6dp 留白、36dp 图标位、20sp 加粗居中标题；
+ * - 图标按压放大 1.33 倍并切换 selector 的按下态。
+ *
+ * 如果要做纯色标题栏（不想要原版质感），把 [backgroundRes] 设为 `null`，
+ * 组件会退回主题的 `titleBarBackground` 颜色。
  */
 @Composable
 fun SmartisanTitleBar(
@@ -63,6 +47,7 @@ fun SmartisanTitleBar(
     includeStatusBar: Boolean = true,
     showShadow: Boolean = true,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
     centerContent: (@Composable () -> Unit)? = null,
 ) {
     val colors = LocalSmartisanColors.current
@@ -70,8 +55,14 @@ fun SmartisanTitleBar(
     val leftActions = listOfNotNull(navigationIcon) + navigationActions
     val rightActions = listOfNotNull(action) + actions
     val hasIcons = leftActions.isNotEmpty() || rightActions.isNotEmpty()
+    val backgroundModifier =
+        if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier.background(colors.titleBarBackground)
+        }
 
-    Column(modifier.fillMaxWidth().background(colors.titleBarBackground)) {
+    Column(modifier.fillMaxWidth().then(backgroundModifier)) {
         if (includeStatusBar) {
             Box(Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars))
         }
@@ -113,39 +104,17 @@ fun SmartisanTitleBar(
     }
 }
 
-/** 标题栏下方的渐变投影。 */
+/** 标题栏下方的原版投影（NinePatch，含夜间变体）。 */
 @Composable
 fun SmartisanTitleBarShadow(
     modifier: Modifier = Modifier,
     height: Dp = SmartisanDimens.TitleBarShadowHeight,
+    @DrawableRes shadowRes: Int = SmartisanDrawables.TitleBarShadow,
 ) {
     Box(
         modifier
             .fillMaxWidth()
             .height(height)
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0x14000000), Color.Transparent),
-                ),
-            ),
+            .smartisanDrawableBackground(shadowRes),
     )
-}
-
-/** 单个标题栏图标按钮。 */
-@Composable
-private fun SmartisanTitleBarIcon(item: SmartisanTitleBarAction) {
-    val colors = LocalSmartisanColors.current
-    SmartisanIconButton(
-        onClick = item.onClick,
-        enabled = item.enabled,
-        size = SmartisanDimens.IconSize,
-        contentDescription = item.contentDescription,
-    ) {
-        SmartisanIcon(
-            imageVector = item.icon,
-            contentDescription = item.contentDescription,
-            tint = if (item.enabled) colors.textSecondary else colors.textDisabled,
-            size = 24.dp,
-        )
-    }
 }

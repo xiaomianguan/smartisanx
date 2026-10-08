@@ -18,4 +18,10 @@
     <color name="quickbar_ex_alphabet_text_dark_color">#35383d</color>
     <color name="quickbar_ex_alphabet_text_light_color">#3a3d42</color>
     <color name="quickbar_ex_alphabet_text_pressed_color">#2d3035</color>
+    <color name="list_selection_background">#26384F</color>
+    <color name="playing_queue_color">#25282d</color>
+    <color name="song_index_text_color">#85878a</color>
+    <color name="surface_card">#34373c</color>
+
+    <drawable name="menu_list_item_normal">#34373c</drawable>
 </resources>
