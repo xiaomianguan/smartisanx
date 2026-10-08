@@ -61,6 +61,15 @@ smartisanx/
 └── docs/                 中文文档
 ```
 
+## 文档
+
+| 文档 | 内容 |
+| --- | --- |
+| [docs/快速开始.md](docs/快速开始.md) | 环境要求、引入依赖、第一个界面、深浅色、常见问题 |
+| [docs/组件总览.md](docs/组件总览.md) | 全部组件的 API 与参数说明 |
+| [docs/主题与设计变量.md](docs/主题与设计变量.md) | 色板、文字样式、形状、尺寸、动画规格的完整取值 |
+| [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md) | 原文件与 smartisanx 组件的逐项对照、迁移注意事项 |
+
 ## 快速开始
 
 ### 1. 添加依赖
@@ -83,6 +92,15 @@ dependencies {
 ```
 
 最低要求：`minSdk 26`、Kotlin 2.x、Compose BOM 2025.05.01 及以上。
+
+如果不想用源码依赖，也可以先发布到本地 Maven 再引用：
+
+```bash
+./gradlew publishToMavenLocal
+```
+
+发布坐标：`top.smartisanx:smartisanx-core`、`top.smartisanx:smartisanx-ui`、
+`top.smartisanx:smartisanx-icons`（版本 `0.1.0`）。
 
 ### 2. 包裹主题
 

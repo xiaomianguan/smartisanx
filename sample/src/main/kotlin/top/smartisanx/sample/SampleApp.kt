@@ -16,6 +16,7 @@ import top.smartisanx.core.theme.LocalSmartisanColors
 import top.smartisanx.core.theme.SmartisanTheme
 import top.smartisanx.core.theme.ThemeController
 import top.smartisanx.core.theme.rememberSmartisanThemeController
+import top.smartisanx.sample.pages.ButtonPage
 import top.smartisanx.sample.pages.ClockPage
 import top.smartisanx.sample.pages.ControlPage
 import top.smartisanx.sample.pages.IconPage
@@ -48,7 +49,7 @@ fun SampleApp() {
                     SamplePage.Theme -> ThemePage(controller = controller, onBack = back)
                     SamplePage.Text -> TextPage(onBack = back)
                     SamplePage.Icon -> IconPage(onBack = back)
-                    SamplePage.Button -> ControlPage(onBack = back)
+                    SamplePage.Button -> ButtonPage(onBack = back)
                     SamplePage.Control -> ControlPage(onBack = back)
                     SamplePage.Layout -> LayoutPage(onBack = back)
                     SamplePage.ListInteraction -> ListInteractionPage(onBack = back)

@@ -20,13 +20,10 @@ import top.smartisanx.sample.SampleFootnote
 import top.smartisanx.sample.SamplePageScaffold
 import top.smartisanx.sample.SampleSectionHeader
 import top.smartisanx.ui.basic.SmartisanText
-import top.smartisanx.ui.control.SmartisanButton
-import top.smartisanx.ui.control.SmartisanButtonStyle
 import top.smartisanx.ui.control.SmartisanCheckbox
 import top.smartisanx.ui.control.SmartisanRatingBar
 import top.smartisanx.ui.control.SmartisanSwitch
 import top.smartisanx.ui.control.SmartisanSwitchRow
-import top.smartisanx.ui.control.SmartisanTextButton
 import top.smartisanx.ui.layout.SmartisanGroup
 import top.smartisanx.ui.basic.SmartisanRowDivider
 
@@ -87,35 +84,6 @@ fun ControlPage(onBack: () -> Unit) {
                 SmartisanCheckbox(checked = false, onCheckedChange = {})
                 SmartisanCheckbox(checked = true, enabled = false, onCheckedChange = {})
                 SmartisanText("选中 / 未选中 / 禁用", style = typography.caption, color = colors.textTertiary)
-            }
-        }
-
-        SampleSectionHeader("按钮")
-        SmartisanGroup {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                SmartisanButton("强调按钮", onClick = {}, modifier = Modifier.fillMaxWidth())
-                SmartisanButton(
-                    text = "中性按钮",
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    style = SmartisanButtonStyle.Neutral,
-                )
-                SmartisanButton(
-                    text = "禁用按钮",
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false,
-                )
-                SmartisanButton(
-                    text = "加载中",
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    loading = true,
-                )
-                SmartisanTextButton(text = "文字按钮", onClick = {})
             }
         }
 
