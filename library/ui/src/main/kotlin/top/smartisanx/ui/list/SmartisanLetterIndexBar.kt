@@ -6,7 +6,8 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -89,21 +91,30 @@ fun SmartisanLetterIndexBar(
         ) {
             letters.forEach { letter ->
                 val isActive = letter == activeLetter
-                SmartisanText(
-                    text = letter.toString(),
-                    modifier = Modifier.width(SmartisanDimens.LetterIndexBarWidth),
-                    style = typography.caption.copy(fontSize = 10.sp),
-                    color = if (isActive) colors.accent else colors.textTertiary,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    maxLines = 1,
-                )
+                // 每个字母占用固定高度，索引换算才与手指位置严格对应。
+                Box(
+                    modifier =
+                        Modifier
+                            .width(SmartisanDimens.LetterIndexBarWidth)
+                            .height(letterHeight),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    SmartisanText(
+                        text = letter.toString(),
+                        style = typography.caption.copy(fontSize = 10.sp),
+                        color = if (isActive) colors.accent else colors.textTertiary,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                    )
+                }
             }
         }
         if (showOverlay && dragging && dragIndex in letters.indices) {
             Box(
                 modifier =
                     Modifier.align(Alignment.Center)
-                        .padding(end = SmartisanDimens.LetterIndexBarWidth)
+                        // 气泡贴在字母栏左侧：栏宽一半 + 4dp 间距 + 气泡半径 24dp。
+                        .offset(x = -(SmartisanDimens.LetterIndexBarWidth / 2 + 28.dp))
                         .size(48.dp)
                         .background(
                             color = colors.textPrimary.copy(alpha = 0.85f),

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -107,7 +108,8 @@ private fun SmartisanTab(
         Box(
             Modifier
                 .padding(top = 6.dp)
-                .fillMaxWidth(0.5f)
+                // 固定宽度：标签栏横向滚动时 Column 宽度由内容决定，fillMaxWidth 不生效。
+                .width(20.dp)
                 .height(2.dp)
                 .background(
                     color = colors.accent.copy(alpha = indicatorAlpha),

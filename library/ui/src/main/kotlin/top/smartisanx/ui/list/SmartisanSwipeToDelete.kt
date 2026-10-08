@@ -5,9 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -66,17 +64,15 @@ fun SmartisanSwipeToDelete(
     val displayedOffset = if (dragging) dragOffset else settle.value
 
     Box(modifier) {
+        // 删除面板由内容决定整体尺寸：matchParentSize 不参与父级测量，
+        // 因此行高仍然由 content 决定，面板只是覆盖在内容下面。
         Box(
-            modifier =
-                Modifier
-                    .align(Alignment.CenterStart)
-                    .width(with(density) { (maximumPx * 0.25f).toDp() })
-                    .fillMaxHeight()
-                    .background(colors.accent),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.matchParentSize().background(colors.accent),
+            contentAlignment = Alignment.CenterStart,
         ) {
             SmartisanText(
                 text = deleteLabel,
+                modifier = Modifier.padding(start = 24.dp),
                 style = typography.button,
                 color = colors.onAccent,
                 maxLines = 1,
@@ -85,7 +81,6 @@ fun SmartisanSwipeToDelete(
         Box(
             modifier =
                 Modifier
-                    .fillMaxSize()
                     .graphicsLayer { translationX = displayedOffset }
                     .then(
                         if (enabled) {
