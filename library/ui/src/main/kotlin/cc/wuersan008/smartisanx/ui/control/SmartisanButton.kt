@@ -8,14 +8,16 @@
  * - 锤子天气（Compose）`ui/components/WeatherComponents.kt` 的 `WeatherButton`：
  *   48dp 高、左右 12dp 内边距、加粗文字、按下切换按压态颜色。
  *
- * 原实现依赖 9-patch 与 selector，这里用 Compose 重画：
- * 强调色按钮取 `accent` / `accentPressed` / `accentDisabled`，
- * 中性按钮取 `surface` / `surfacePressed` + `divider` 描边，文字按钮取 `link` / `linkPressed`。
- * 按压反馈是「缩放 + 投影变化」，不使用涟漪。
+ * 强调色按钮直接使用原版 nine-patch selector：底图是 `shrink_long_btn_red_selector`，
+ * 投影是 `shadow_button_shrink_shadow_selector`，常态 / 按下 / 禁用三态由 `enabled`、
+ * `pressed` 交给 drawable 自动切换，不再用 `accentPressed` 这类手绘换色；
+ * 中性按钮没有对应的原版底图，仍取 `surface` / `surfacePressed` + `divider` 描边，
+ * 文字按钮取 `link` / `linkPressed`。按压反馈保留轻微缩放，不使用涟漪。
  */
 package cc.wuersan008.smartisanx.ui.control
 
-import androidx.compose.animation.core.animateDpAsState
+import android.graphics.Rect
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -35,18 +37,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
@@ -55,7 +62,9 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
-import cc.wuersan008.smartisanx.core.utils.smartisanProjectedShadow
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
 /** 按钮的三种样式。 */
@@ -70,14 +79,95 @@ enum class SmartisanButtonStyle {
     Text,
 }
 
-/** 按下时的收缩比例：原版按钮按下后 9-patch 内边距变大，视觉上整体收缩。 */
+/** 按下时的收缩比例：底图本身已由原版 selector 切换，这里再补一点轻微收缩。 */
 private const val ButtonPressedScale = 0.96f
-
-/** 按钮常态投影高度，对应原版按钮下方约 4dp 的柔和投影。 */
-private val ButtonElevation = 2.dp
 
 /** 按钮左右内边距，取自锤子天气 `WeatherButton`。 */
 private val ButtonHorizontalPadding = 12.dp
+
+/**
+ * 原版按钮的「底图 + 投影」两层背景。
+ *
+ * 对应锤子音乐 `ui/components/ShadowDrawable.kt`：投影 nine-patch 自带内边距，
+ * 原版把投影的绘制范围按内边距向四周外扩（溢出控件本身的范围，不影响布局），
+ * 底图再覆盖在控件自身的范围上。
+ *
+ * 两层都会接收 [enabled] / [pressed]，所以原版 selector 的常态 / 按下态 / 禁用态
+ * 会同时作用于底图与投影（按下态的原版投影比常态更收敛）。
+ *
+ * @param backgroundRes 底图 selector，例如 `shrink_long_btn_red_selector`。
+ * @param shadowRes 投影 selector，例如 `shadow_button_shrink_shadow_selector`。
+ */
+@Composable
+internal fun Modifier.smartisanShadowedDrawableBackground(
+    @DrawableRes backgroundRes: Int,
+    @DrawableRes shadowRes: Int,
+    enabled: Boolean = true,
+    pressed: Boolean = false,
+): Modifier {
+    val context = LocalContext.current
+    val shadowPainter =
+        rememberSmartisanDrawablePainter(shadowRes, enabled = enabled, pressed = pressed)
+    val backgroundPainter =
+        rememberSmartisanDrawablePainter(backgroundRes, enabled = enabled, pressed = pressed)
+    // 投影的厚度就是 nine-patch 的内边距，直接读 drawable 的真实像素值。
+    val insets = remember(context, shadowRes) {
+        Rect().also { ContextCompat.getDrawable(context, shadowRes)?.getPadding(it) }
+    }
+    return drawBehind {
+        translate(-insets.left.toFloat(), -insets.top.toFloat()) {
+            with(shadowPainter) {
+                draw(
+                    Size(
+                        width = size.width + insets.left + insets.right,
+                        height = size.height + insets.top + insets.bottom,
+                    )
+                )
+            }
+        }
+        with(backgroundPainter) { draw(size) }
+    }
+}
+
+/**
+ * 解析原版按钮的「底图 + 投影」背景。
+ *
+ * 底图为 null 时返回 null，调用方回退到主题色；只给底图时会自动补上配套的投影
+ * （`shrink_long_btn_red_selector` → `shadow_button_shrink_shadow_selector`，
+ * `smartisan_menu_confirm_background` → `smartisan_menu_confirm_shadow`）。
+ *
+ * @param showShadow 是否绘制投影，设为 false 时只画底图。
+ */
+@Composable
+internal fun rememberSmartisanDrawableButtonBackground(
+    @DrawableRes backgroundRes: Int?,
+    @DrawableRes shadowRes: Int? = null,
+    showShadow: Boolean = true,
+    enabled: Boolean = true,
+    pressed: Boolean = false,
+): Modifier? {
+    if (backgroundRes == null) return null
+    val resolvedShadowRes =
+        if (showShadow) shadowRes ?: smartisanPairedShadowRes(backgroundRes) else null
+    return if (resolvedShadowRes != null) {
+        Modifier.smartisanShadowedDrawableBackground(
+            backgroundRes = backgroundRes,
+            shadowRes = resolvedShadowRes,
+            enabled = enabled,
+            pressed = pressed,
+        )
+    } else {
+        Modifier.smartisanDrawableBackground(backgroundRes, enabled = enabled, pressed = pressed)
+    }
+}
+
+/** 原版成对的「底图 → 投影」资源；没有配套投影时返回 null。 */
+private fun smartisanPairedShadowRes(@DrawableRes backgroundRes: Int): Int? =
+    when (backgroundRes) {
+        SmartisanDrawables.DialogButtonAccent -> SmartisanDrawables.DialogButtonAccentShadow
+        SmartisanDrawables.DialogConfirmBackground -> SmartisanDrawables.DialogConfirmShadow
+        else -> null
+    }
 
 /** 加载指示器直径。 */
 private val ButtonSpinnerSize = 16.dp
@@ -127,9 +217,13 @@ private fun SmartisanButtonSpinner(
 }
 
 /**
- * 按钮的公共实现：颜色、缩放、投影与加载态都在这里统一处理。
+ * 按钮的公共实现：底图、颜色、缩放与加载态都在这里统一处理。
  *
  * @param contentColorOverride 仅文字按钮使用；为 `Color.Unspecified` 时按样式取默认色。
+ * @param backgroundRes 原版底图；为 null 时强调色按钮取 `shrink_long_btn_red_selector`，
+ *   其余样式回退到主题色。
+ * @param shadowRes 原版投影；为 null 时按底图自动配对。
+ * @param showShadow 是否绘制原版投影。
  */
 @Composable
 private fun SmartisanButtonSurface(
@@ -140,6 +234,9 @@ private fun SmartisanButtonSurface(
     loading: Boolean,
     style: SmartisanButtonStyle,
     contentColorOverride: Color,
+    @DrawableRes backgroundRes: Int?,
+    @DrawableRes shadowRes: Int?,
+    showShadow: Boolean,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -155,31 +252,33 @@ private fun SmartisanButtonSurface(
             animationSpec = SmartisanMotion.easeInOut(SmartisanMotion.DurationShort),
             label = "smartisan button press scale",
         )
-    val elevation by
-        animateDpAsState(
-            targetValue =
-                if (style == SmartisanButtonStyle.Accent && !pressActive) ButtonElevation else 0.dp,
-            animationSpec = SmartisanMotion.easeInOut(SmartisanMotion.DurationShort),
-            label = "smartisan button press elevation",
+    // 强调色按钮默认使用原版红色收缩按钮的底图与投影。
+    val resolvedBackgroundRes =
+        backgroundRes
+            ?: if (style == SmartisanButtonStyle.Accent) SmartisanDrawables.DialogButtonAccent
+            else null
+    val drawableBackground =
+        rememberSmartisanDrawableButtonBackground(
+            backgroundRes = resolvedBackgroundRes,
+            shadowRes = shadowRes,
+            showShadow = showShadow,
+            enabled = enabled,
+            pressed = pressActive,
         )
-    val background =
-        when (style) {
-            SmartisanButtonStyle.Accent ->
-                when {
-                    !enabled -> colors.accentDisabled
-                    pressActive -> colors.accentPressed
-                    else -> colors.accent
-                }
-
-            SmartisanButtonStyle.Neutral ->
-                when {
-                    !enabled -> colors.surfaceDisabled
-                    pressActive -> colors.surfacePressed
-                    else -> colors.surface
-                }
-
-            SmartisanButtonStyle.Text -> Color.Transparent
+    // 中性按钮没有对应的原版底图，仍按主题色绘制。
+    val neutralBackground =
+        when {
+            !enabled -> colors.surfaceDisabled
+            pressActive -> colors.surfacePressed
+            else -> colors.surface
         }
+    val backgroundModifier =
+        drawableBackground
+            ?: if (style == SmartisanButtonStyle.Neutral) {
+                Modifier.background(color = neutralBackground, shape = shape)
+            } else {
+                Modifier
+            }
     val contentColor =
         when {
             contentColorOverride != Color.Unspecified ->
@@ -204,10 +303,9 @@ private fun SmartisanButtonSurface(
                     scaleX = scale
                     scaleY = scale
                 }
-                .smartisanProjectedShadow(elevation = elevation, shape = shape)
-                .background(color = background, shape = shape)
+                .then(backgroundModifier)
                 .then(
-                    if (style == SmartisanButtonStyle.Neutral) {
+                    if (style == SmartisanButtonStyle.Neutral && drawableBackground == null) {
                         Modifier.border(
                             border = BorderStroke(SmartisanDimens.DividerThickness, colors.divider),
                             shape = shape,
@@ -251,6 +349,9 @@ private fun SmartisanButtonSurface(
  * ```
  *
  * @param loading 加载中：显示自绘旋转指示器，并暂时屏蔽点击。
+ * @param backgroundRes 原版底图；为 null 时强调色样式使用 `shrink_long_btn_red_selector`。
+ * @param shadowRes 原版投影；为 null 时按底图自动配对。
+ * @param showShadow 是否绘制原版投影。
  */
 @Composable
 fun SmartisanButton(
@@ -260,6 +361,9 @@ fun SmartisanButton(
     enabled: Boolean = true,
     style: SmartisanButtonStyle = SmartisanButtonStyle.Accent,
     loading: Boolean = false,
+    @DrawableRes backgroundRes: Int? = null,
+    @DrawableRes shadowRes: Int? = null,
+    showShadow: Boolean = true,
 ) {
     SmartisanButtonSurface(
         text = text,
@@ -269,6 +373,9 @@ fun SmartisanButton(
         loading = loading,
         style = style,
         contentColorOverride = Color.Unspecified,
+        backgroundRes = backgroundRes,
+        shadowRes = shadowRes,
+        showShadow = showShadow,
     )
 }
 
@@ -293,6 +400,9 @@ fun SmartisanTextButton(
         loading = false,
         style = SmartisanButtonStyle.Text,
         contentColorOverride = color,
+        backgroundRes = null,
+        shadowRes = null,
+        showShadow = false,
     )
 }
 

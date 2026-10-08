@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.icons.SmartisanXIcons
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.icons.SmartisanXStatusIcons
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
@@ -16,6 +17,8 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
@@ -39,10 +42,10 @@ fun LayoutPage(onBack: () -> Unit) {
                 SmartisanTitleBar(
                     title = "带返回与动作",
                     modifier = Modifier.fillMaxWidth(),
-                    navigationIcon = SmartisanTitleBarAction(SmartisanXIcons.Back, "返回", onClick = {}),
+                    navigationIcon = SmartisanTitleBarAction(SmartisanDrawables.IconBack, "返回", onClick = {}),
                     actions =
                         listOf(
-                            SmartisanTitleBarAction(SmartisanXIcons.Search, "搜索", onClick = {}),
+                            SmartisanTitleBarAction(SmartisanDrawables.IconSearch, "搜索", onClick = {}),
                             SmartisanTitleBarAction(SmartisanXIcons.More, "更多", onClick = {}),
                         ),
                     includeStatusBar = false,
@@ -52,10 +55,10 @@ fun LayoutPage(onBack: () -> Unit) {
                 SmartisanTitleBar(
                     title = "禁用动作",
                     modifier = Modifier.fillMaxWidth(),
-                    navigationIcon = SmartisanTitleBarAction(SmartisanXIcons.Back, "返回", onClick = {}),
+                    navigationIcon = SmartisanTitleBarAction(SmartisanDrawables.IconBack, "返回", onClick = {}),
                     action =
                         SmartisanTitleBarAction(
-                            icon = SmartisanXIcons.Add,
+                            iconRes = SmartisanDrawables.IconAdd,
                             contentDescription = "新增",
                             onClick = {},
                             enabled = false,
@@ -103,12 +106,38 @@ fun LayoutPage(onBack: () -> Unit) {
             SmartisanListItem(title = "禁用态", summary = "不可点击", enabled = false)
         }
 
-        SampleSectionHeader("分组与卡片")
+        SampleSectionHeader("分组卡片（原版底图）")
+        // SmartisanGroupItem 会按位置挑原版分组底图：top / middle / bottom / single，
+        // 每张都自带圆角、描边与按压态。
         SmartisanGroup {
-            SmartisanListItem(title = "分组内的行", summary = "SmartisanGroup 提供卡片底色与左右外边距")
-            SmartisanRowDivider()
-            SmartisanListItem(title = "分组内的第二行")
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Top,
+                title = "第一行 group_list_item_bg_top",
+                summary = "顶部行有上圆角",
+                onClick = {},
+            )
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
+                title = "中间行 group_list_item_bg_mid",
+                onClick = {},
+            )
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Bottom,
+                title = "最后一行 group_list_item_bg_bottom",
+                summary = "底部行有下圆角",
+                onClick = {},
+            )
         }
+        SmartisanGroup {
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Single,
+                title = "单独一行 group_list_item_bg_single",
+                summary = "单行分组带完整描边",
+                onClick = {},
+            )
+        }
+
+        SampleSectionHeader("卡片")
         CardSection()
 
         SampleSectionHeader("标签栏与底部栏")

@@ -5,8 +5,12 @@
  * 与锤子音乐（Compose）的 `selector_radio_choice`：细圆环 + 选中时环内的实心圆点，
  * 选中与未选中的比例与原版位图一致（圆点直径约为外环的 0.31）。
  *
- * 原实现依赖位图，这里用 Canvas 重画；颜色取自主题：选中用 `accent` / `accentPressed`，
- * 未选中圆环用 `divider`，禁用时整体降到 30% 透明度（与原版禁用位图一致）。
+ * 原版没有随本库的图形资源一起导入独立的单选素材：
+ * `ringtone_picker_radio_normal/pressed/disabled.png` 不在 `library/ui/src/main/res` 里，
+ * 音乐里的 `selector_radio_choice` 实际是一枚「对勾」选择指示图（`btn_selected_on_*`），
+ * 并不是「圆环 + 圆点」的单选按钮，所以这里按原版 `ringtone_picker_radio_*` 的几何手绘。
+ * 颜色取自主题：选中用 `accent` / `accentPressed`，未选中圆环用 `divider`，
+ * 禁用时整体降到 30% 透明度（与原版禁用位图一致）。
  */
 package cc.wuersan008.smartisanx.ui.control
 

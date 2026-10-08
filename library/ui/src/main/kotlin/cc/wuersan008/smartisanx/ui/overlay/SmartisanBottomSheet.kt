@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanDivider
 
 /**
@@ -56,7 +59,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanDivider
  *         onDismissRequest = { sheetVisible = false },
  *         title = "选择音质",
  *     ) {
- *         SmartisanMenuItem("标准", showDivider = false) { pick(0) }
+ *         SmartisanMenuItem("标准", showDivider = false, onClick = { pick(0) })
  *     }
  * }
  * ```
@@ -64,6 +67,8 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanDivider
  * @param onDismissRequest 关闭回调（点击遮罩、返回键、标题栏取消，均在退场动画之后触发）。
  * @param modifier 作用于弹层面板。
  * @param title 标题；为 null 时不显示标题栏。
+ * @param backgroundRes 面板底色；默认用原版 `menu_dialog_background`（含夜间变体），
+ *   传 null 时退回色板的 `surface`。
  * @param content 弹层内容，纵向排列，留白由调用方控制（标题栏自带 48dp 高度与分隔线）。
  */
 @Composable
@@ -71,6 +76,7 @@ fun SmartisanBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.MenuDialogBackground,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = LocalSmartisanColors.current
@@ -78,6 +84,12 @@ fun SmartisanBottomSheet(
     val controller = rememberSmartisanOverlayController(onDismissRequest)
     val progress = rememberSmartisanOverlayProgress(controller.visible)
     val dismiss = controller::requestDismiss
+    val backgroundModifier =
+        if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier.background(colors.surface)
+        }
     SmartisanModal(
         onDismissRequest = dismiss,
         bottom = true,
@@ -92,7 +104,7 @@ fun SmartisanBottomSheet(
                         translationY = (1f - progress) * size.height
                     }
                     .clip(shapes.sheet)
-                    .background(colors.surface),
+                    .then(backgroundModifier),
         ) {
             if (title != null) {
                 SmartisanDialogTitleBar(title = title, onDismiss = dismiss)
@@ -102,7 +114,6 @@ fun SmartisanBottomSheet(
         }
     }
 }
-
 
 /**
  * 页面内嵌的弹层脚手架：遮罩 + 贴底面板，自己管理进场与退场动画。
@@ -118,7 +129,7 @@ fun SmartisanBottomSheet(
  *         onDismissRequest = { sheetVisible = false },
  *         title = "选择音质",
  *     ) {
- *         SmartisanMenuItem("标准", showDivider = false) { pick(0) }
+ *         SmartisanMenuItem("标准", showDivider = false, onClick = { pick(0) })
  *     }
  * }
  * ```
@@ -130,6 +141,8 @@ fun SmartisanBottomSheet(
  * @param modifier 作用于整个弹层容器。
  * @param title 标题；为 null 时不显示标题栏。
  * @param scrimColor 遮罩颜色，默认取色板的 `scrim`。
+ * @param backgroundRes 面板底色；默认用原版 `menu_dialog_background`（含夜间变体），
+ *   传 null 时退回色板的 `surface`。
  * @param content 弹层内容，纵向排列。
  */
 @Composable
@@ -139,10 +152,17 @@ fun SmartisanSheetScaffold(
     modifier: Modifier = Modifier,
     title: String? = null,
     scrimColor: Color = LocalSmartisanColors.current.scrim,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.MenuDialogBackground,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = LocalSmartisanColors.current
     val shapes = LocalSmartisanShapes.current
+    val backgroundModifier =
+        if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier.background(colors.surface)
+        }
     // 首帧不可见，之后跟随 visible；退场时 AnimatedVisibility 会继续持有内容直到动画结束。
     val transition = remember { MutableTransitionState(false) }
     transition.targetState = visible
@@ -202,7 +222,7 @@ fun SmartisanSheetScaffold(
                                     fadeOut(tween(SmartisanOverlayExitDurationMillis)),
                         )
                         .clip(shapes.sheet)
-                        .background(colors.surface)
+                        .then(backgroundModifier)
                         // 吃掉面板上的点击，避免穿透到遮罩把弹层关掉。
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },

@@ -2,15 +2,15 @@
  * 基础控件：锤子风格五星评分条。
  *
  * 复刻自锤子音乐（Compose）`ui/components/SmartisanRatingBar.kt`：
- * 原版用 `score_empty` / `score_full` 两张位图平铺（金色实心星 + 浅色空星），
+ * 原版用 `score_empty` / `score_full` 两张位图横向平铺（金色实心星 + 未选中的小圆点），
  * 按住后可以左右拖动连续选分，松手时才提交一次评分，垂直滚动会取消拖动且不改分。
  *
- * 这里用 Canvas 画五角星（不再依赖位图）：实心星取 `accent`，空星取 `textHint`，
- * 禁用时分别降到 `accentDisabled` / `textDisabled`；
- * 「越过 40% 即选中该星」的判定与原版一致（见 [smartisanRatingAt]）。
+ * 这里同样直接使用这两张原版位图（93px @3x，每颗星占 31dp），按格子宽度等比缩放后居中绘制，
+ * 不再手绘五角星；「越过 40% 即选中该星」的判定与原版一致（见 [smartisanRatingAt]）。
  */
 package cc.wuersan008.smartisanx.ui.control
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -29,8 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -38,16 +41,14 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
-import kotlin.math.PI
-import kotlin.math.cos
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.math.sin
 
-/** 五角星内接圆与外接圆的半径比。 */
-private const val StarInnerRatio = 0.40f
+/** 禁用时的整体透明度，与原版 `accentDisabled`（0x66 ≈ 0.4）一致。 */
+private const val RatingDisabledAlpha = 0.4f
 
 /**
  * 计算某个横坐标对应的评分（纯函数，便于单元测试）。
@@ -65,19 +66,24 @@ fun smartisanRatingAt(x: Float, width: Float, starCount: Int = 5): Int {
     }
 }
 
-/** 以 (radius, radius) 为中心、外接圆半径为 [radius] 的五角星路径。 */
-private fun starPath(radius: Float): Path {
-    val path = Path()
-    val inner = radius * StarInnerRatio
-    for (index in 0 until 10) {
-        val angle = (-90.0 + index * 36.0) * PI / 180.0
-        val r = if (index % 2 == 0) radius else inner
-        val x = radius + (r * cos(angle)).toFloat()
-        val y = radius + (r * sin(angle)).toFloat()
-        if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
+/**
+ * 在一颗星自己的格子里居中绘制评分位图。
+ *
+ * 原版把 `score_full` / `score_empty` 按固有尺寸横向平铺（每颗星占 93px @3x = 31dp），
+ * 这里保持宽高比缩放到格子宽度后居中；格子宽度等于位图宽度时就是 1:1 绘制。
+ * 位图没有固有尺寸（例如被换成了纯色 shape）时直接跳过，避免出现 NaN 尺寸。
+ */
+private fun DrawScope.drawRatingStar(painter: Painter, left: Float, cell: Float, height: Float) {
+    val intrinsic = painter.intrinsicSize
+    val intrinsicWidth = intrinsic.width
+    val intrinsicHeight = intrinsic.height
+    if (!(cell > 0f) || !(intrinsicWidth > 0f) || !(intrinsicHeight > 0f)) return
+    val scale = min(cell / intrinsicWidth, height / intrinsicHeight)
+    val starWidth = intrinsicWidth * scale
+    val starHeight = intrinsicHeight * scale
+    translate(left = left + (cell - starWidth) / 2f, top = (height - starHeight) / 2f) {
+        with(painter) { draw(Size(starWidth, starHeight)) }
     }
-    path.close()
-    return path
 }
 
 /**
@@ -89,7 +95,11 @@ private fun starPath(radius: Float): Path {
  * ```
  *
  * @param onRatingChange 传 `null` 时只展示评分，不响应手势。
- * @param starSize 单颗星的直径；控件高度不会低于 `SmartisanDimens.MinimumTouchTarget`。
+ * @param starSize 单颗星所在格子的宽度（也就是星距）；控件高度不会低于
+ *   `SmartisanDimens.MinimumTouchTarget`。原版每颗星占 93px @3x = 31dp，位图按格子宽度
+ *   等比缩放后居中绘制，想 1:1 还原原版尺寸可以传 `starSize = 31.dp`。
+ * @param fullRes 选中星的位图，默认是原版 `score_full`。
+ * @param emptyRes 未选中星的位图，默认是原版 `score_empty`。
  */
 @Composable
 fun SmartisanRatingBar(
@@ -99,8 +109,9 @@ fun SmartisanRatingBar(
     starCount: Int = 5,
     enabled: Boolean = true,
     starSize: Dp = 24.dp,
+    @DrawableRes fullRes: Int = SmartisanDrawables.ScoreFull,
+    @DrawableRes emptyRes: Int = SmartisanDrawables.ScoreEmpty,
 ) {
-    val colors = LocalSmartisanColors.current
     val stars = starCount.coerceAtLeast(1)
     val interactive = enabled && onRatingChange != null
     // 拖动过程中的本地预览值，松手时才提交一次评分。
@@ -109,6 +120,8 @@ fun SmartisanRatingBar(
     val latestRating = rememberUpdatedState(onRatingChange)
     val latestValue = rememberUpdatedState(rating)
     val preview by previewState
+    val fullPainter = rememberSmartisanDrawablePainter(fullRes, enabled = enabled)
+    val emptyPainter = rememberSmartisanDrawablePainter(emptyRes, enabled = enabled)
     LaunchedEffect(rating, stars) {
         if (!trackingState.value) previewState.intValue = rating.coerceIn(0, stars)
     }
@@ -119,6 +132,7 @@ fun SmartisanRatingBar(
                     width = starSize * stars,
                     height = starSize.coerceAtLeast(SmartisanDimens.MinimumTouchTarget),
                 )
+                .graphicsLayer { alpha = if (enabled) 1f else RatingDisabledAlpha }
                 .clipToBounds()
                 .semantics {
                     progressBarRangeInfo =
@@ -150,15 +164,13 @@ fun SmartisanRatingBar(
                 ),
     ) {
         val cell = size.width / stars
-        val radius = min(cell, size.height) / 2f
-        val path = starPath(radius)
-        val filledColor = if (enabled) colors.accent else colors.accentDisabled
-        val emptyColor = if (enabled) colors.textHint else colors.textDisabled
         for (index in 0 until stars) {
-            val centerX = cell * (index + 0.5f)
-            translate(left = centerX - radius, top = size.height / 2f - radius) {
-                drawPath(path = path, color = if (index < preview) filledColor else emptyColor)
-            }
+            drawRatingStar(
+                painter = if (index < preview) fullPainter else emptyPainter,
+                left = cell * index,
+                cell = cell,
+                height = size.height,
+            )
         }
     }
 }

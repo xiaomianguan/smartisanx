@@ -1,19 +1,19 @@
 /**
  * 基础控件：锤子风格开关。
  *
- * 合并了两个复刻项目里的重复实现：
- * - 锤子音乐（Compose）`ui/components/SmartisanSwitch.kt`：`switch_ex_*` 位图开关的几何、
+ * 合并了两个复刻项目里的重复实现，并直接使用它们还原的原版位图：
+ * - 锤子音乐（Compose）`ui/components/SmartisanSwitch.kt`：`switch_ex_*` 位图开关的叠放顺序、
  *   按下后拖动滑块、松开后投影按余弦缓动淡出、以及按「每 350px 用 88/3 毫秒」换算的落位时长；
- * - 锤子时钟（XML + 自定义 View）`custom/SmartisanSwitchView.kt` 与 `custom/SmartisanSwitchExView.kt`：
- *   浅灰轨道 + 描边 + 白色滑块的几何、开启时轨道左端的绿色指示点、松手落位与触感反馈。
+ * - 锤子时钟（XML + 自定义 View）`custom/SmartisanSwitchExView.kt`：闹钟重复日开关用的
+ *   `alarm_repeat_switch_*` 位图、按下出现投影、松手落位与触感反馈。
  *
- * 原实现依赖 `switch_ex_*.png` / `alarm_repeat_switch_*.png` 位图与 `ValueAnimator`，
- * 这里改为 Compose `Canvas` + `Animatable` 重画：
- * 颜色取自主题（`switchTrack` / `switchTrackStroke` / `switchKnob` / `switchIndicator`），
- * 尺寸取自 `SmartisanDimens`，落位时长取自 `SmartisanMotion.switchSettleMillis`。
+ * 绘制顺序与原版完全一致：遮罩 → 轨道底色（用 `SrcIn` 裁进遮罩形状）→ 外框 → 按下外框（投影层）→
+ * 滑块。六张位图由 [SmartisanSwitchStyle] 选择，也可以用 `@DrawableRes` 参数逐张替换。
+ * 禁用时整体降到 191/255（原版透明度），落位时长取自 [SmartisanMotion.switchSettleMillis]。
  */
 package cc.wuersan008.smartisanx.ui.control
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -43,14 +43,16 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.onClick
@@ -58,6 +60,8 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -69,43 +73,89 @@ import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.asset.SmartisanTimerDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
-/** 开关画布尺寸（含投影），对应原版阴影图 66dp × 48dp。 */
-private val SwitchCanvasWidth = SmartisanDimens.SwitchShadowWidth
+/** 外框与遮罩位图的宽度：原版 198px @3x = 66dp。 */
+private val SwitchBitmapWidth = SmartisanDimens.SwitchShadowWidth
 
-/** 开关画布高度。 */
-private val SwitchCanvasHeight = SmartisanDimens.SwitchShadowHeight
+/** 外框与遮罩位图的高度：原版 144px @3x = 48dp。 */
+private val SwitchBitmapHeight = SmartisanDimens.SwitchShadowHeight
 
-/** 轨道宽度。 */
-private val SwitchTrackWidth = SmartisanDimens.SwitchWidth
+/** 滑块行程：原版滑动层比外框宽 88/3 dp，也就是滑块可以移动的距离。 */
+private val SwitchKnobTravel = (88f / 3f).dp
 
-/** 轨道高度。 */
-private val SwitchTrackHeight = SmartisanDimens.SwitchHeight
+/** 滑动层（轨道底色与滑块位图）的宽度：原版 286px @3x。 */
+private val SwitchMovingWidth = SwitchBitmapWidth + SwitchKnobTravel
 
-/** 滑块直径。 */
-private val SwitchKnobSize = SmartisanDimens.SwitchKnobSize
+/** 位图在画布上下各留 2dp，与原版 66dp × 52dp 的画布一致。 */
+private val SwitchCanvasInset = 2.dp
 
-/** 滑块行程：轨道宽度减去滑块直径，对应原版的 88/3 dp。 */
-private val SwitchKnobTravel = SwitchTrackWidth - SwitchKnobSize
+/** 画布宽度，与位图同宽。 */
+private val SwitchCanvasWidth = SwitchBitmapWidth
 
-/** 轨道描边宽度，取自锤子时钟 `SmartisanSwitchView` 的 0.6dp。 */
-private val SwitchTrackStrokeWidth = 0.6.dp
+/** 画布高度：48dp 的位图加上下各 2dp。 */
+private val SwitchCanvasHeight = SwitchBitmapHeight + SwitchCanvasInset * 2
 
-/** 开启指示点半径，取自锤子时钟 `SmartisanSwitchView` 的 4.4dp。 */
-private val SwitchIndicatorRadius = 4.4.dp
+/**
+ * 开关位图风格。
+ *
+ * 两种风格共用同一套外框 / 遮罩 / 滑块素材（原版即如此），只有轨道底色不同。
+ */
+enum class SmartisanSwitchStyle {
+    /** 音乐：原版 `switch_ex_*` 位图，浅灰轨道。 */
+    Music,
 
-/** 开启指示点圆心距轨道左边缘的距离，取自锤子时钟 `SmartisanSwitchView` 的 9dp。 */
-private val SwitchIndicatorInset = 9.dp
+    /** 时钟闹钟重复日：原版 `alarm_repeat_switch_*` 位图，绿色轨道。 */
+    Repeat,
+}
 
-/** 滑块自带的一层淡投影强度。 */
-private const val SwitchKnobShadowBase = 0.10f
+/**
+ * 一套开关位图。
+ *
+ * 六张图与 [SmartisanSwitchStyle] 一一对应；调用方可以用 [SmartisanSwitch] 的 `@DrawableRes`
+ * 参数逐张替换，用于换皮或适配别的原版素材。
+ */
+private class SmartisanSwitchBitmaps(
+    @DrawableRes val bottom: Int,
+    @DrawableRes val mask: Int,
+    @DrawableRes val frame: Int,
+    @DrawableRes val framePressed: Int,
+    @DrawableRes val knob: Int,
+    @DrawableRes val knobPressed: Int,
+)
 
-/** 按压时叠加的投影强度，松开后淡出到 0。 */
-private const val SwitchKnobShadowPressed = 0.26f
+/** 音乐开关的六张位图：轨道底色、遮罩、外框、按下外框、滑块、按下滑块。 */
+private val MusicSwitchBitmaps =
+    SmartisanSwitchBitmaps(
+        bottom = SmartisanDrawables.SwitchBottom,
+        mask = SmartisanDrawables.SwitchMask,
+        frame = SmartisanDrawables.SwitchFrame,
+        framePressed = SmartisanDrawables.SwitchFramePressed,
+        knob = SmartisanDrawables.SwitchKnob,
+        knobPressed = SmartisanDrawables.SwitchKnobPressed,
+    )
 
-/** 禁用时整体透明度，原版为 191/255。 */
+/** 时钟闹钟重复日开关的六张位图。 */
+private val RepeatSwitchBitmaps =
+    SmartisanSwitchBitmaps(
+        bottom = SmartisanTimerDrawables.RepeatSwitchBottomGreen,
+        mask = SmartisanTimerDrawables.RepeatSwitchMask,
+        frame = SmartisanTimerDrawables.RepeatSwitchFrame,
+        framePressed = SmartisanTimerDrawables.RepeatSwitchFramePressed,
+        knob = SmartisanTimerDrawables.RepeatSwitchKnob,
+        knobPressed = SmartisanTimerDrawables.RepeatSwitchKnobPressed,
+    )
+
+/** 取某个风格对应的默认位图。 */
+private fun SmartisanSwitchStyle.defaultBitmaps(): SmartisanSwitchBitmaps =
+    when (this) {
+        SmartisanSwitchStyle.Music -> MusicSwitchBitmaps
+        SmartisanSwitchStyle.Repeat -> RepeatSwitchBitmaps
+    }
 
 /**
  * 开关的状态机。
@@ -303,17 +353,14 @@ private const val SwitchDisabledAlpha = 0.75f
 /** 投影淡出时长，与原版 `PRESSED_FADE_OUT_MS` 同量级。 */
 private const val SwitchShadowFadeMillis = 200
 
-/** 投影颜色：原版投影是低透明度黑色。 */
-private val SwitchKnobShadowColor = Color.Black
-
 /**
  * 开关本体。
  *
- * 绘制顺序与原版一致：轨道填充 → 轨道描边 → 开启指示点 → 滑块投影 → 白色滑块。
- * 手势：按下时投影出现，随后可以左右拖动滑块，松手按
- * [smartisanSwitchDragTarget] 判定目标状态，并用
- * [SmartisanMotion.switchSettleMillis] 计算落位时长。
+ * 绘制顺序与原版一致：遮罩 → 轨道底色（用 `SrcIn` 裁进遮罩形状）→ 外框 → 按下外框（投影层）→
+ * 滑块。手势：按下时投影出现，随后可以左右拖动滑块，松手按 [smartisanSwitchDragTarget] 判定
+ * 目标状态，并用 [SmartisanMotion.switchSettleMillis] 计算落位时长。
  *
+ * @param bitmaps 这一颗开关使用的六张位图。
  * @param exposeSemantics 是否对外暴露开关语义。放进设置行时由行提供语义，这里传 false。
  */
 @Composable
@@ -322,9 +369,9 @@ private fun SmartisanSwitchContent(
     enabled: Boolean,
     state: SmartisanSwitchState,
     modifier: Modifier,
+    bitmaps: SmartisanSwitchBitmaps,
     exposeSemantics: Boolean = true,
 ) {
-    val colors = LocalSmartisanColors.current
     val currentChecked by rememberUpdatedState(checked)
     val semanticsModifier =
         if (exposeSemantics) {
@@ -340,6 +387,12 @@ private fun SmartisanSwitchContent(
         } else {
             Modifier
         }
+    val mask = ImageBitmap.imageResource(bitmaps.mask)
+    val bottom = ImageBitmap.imageResource(bitmaps.bottom)
+    val frame = ImageBitmap.imageResource(bitmaps.frame)
+    val framePressed = ImageBitmap.imageResource(bitmaps.framePressed)
+    val knob = ImageBitmap.imageResource(bitmaps.knob)
+    val knobPressed = ImageBitmap.imageResource(bitmaps.knobPressed)
     Canvas(
         modifier =
             modifier
@@ -378,59 +431,39 @@ private fun SmartisanSwitchContent(
                     }
                 },
     ) {
-        val trackWidth = SwitchTrackWidth.toPx()
-        val trackHeight = SwitchTrackHeight.toPx()
-        val trackLeft = (size.width - trackWidth) / 2f
-        val trackTop = (size.height - trackHeight) / 2f
-        val trackRadius = trackHeight / 2f
-        val knobRadius = SwitchKnobSize.toPx() / 2f
-        val knobCenter =
-            Offset(
-                x = trackLeft + knobRadius + SwitchKnobTravel.toPx() * state.position,
-                y = size.height / 2f,
-            )
-        drawRoundRect(
-            color = colors.switchTrack,
-            topLeft = Offset(trackLeft, trackTop),
-            size = Size(trackWidth, trackHeight),
-            cornerRadius = CornerRadius(trackRadius, trackRadius),
+        // 位图按整数像素对齐，与原版一致。
+        val bitmapWidth = SwitchBitmapWidth.roundToPx()
+        val bitmapHeight = SwitchBitmapHeight.roundToPx()
+        val movingWidth = SwitchMovingWidth.roundToPx()
+        val top = SwitchCanvasInset.roundToPx()
+        // 开启时滑动层贴左（滑块停在轨道右端），关闭时整体左移一个行程。
+        val shift = (-SwitchKnobTravel.toPx() * (1f - state.position)).roundToInt()
+        // 原版把这几张图叠在同一个离屏层里，轨道底色用 SrcIn 裁进遮罩形状。
+        drawIntoCanvas { canvas -> canvas.saveLayer(Rect(Offset.Zero, size), Paint()) }
+        drawImage(mask, dstOffset = IntOffset(0, top), dstSize = IntSize(bitmapWidth, bitmapHeight))
+        drawImage(
+            bottom,
+            dstOffset = IntOffset(shift, top),
+            dstSize = IntSize(movingWidth, bitmapHeight),
+            blendMode = BlendMode.SrcIn,
         )
-        val strokeWidth = SwitchTrackStrokeWidth.toPx()
-        drawRoundRect(
-            color = colors.switchTrackStroke,
-            topLeft = Offset(trackLeft + strokeWidth / 2f, trackTop + strokeWidth / 2f),
-            size = Size(trackWidth - strokeWidth, trackHeight - strokeWidth),
-            cornerRadius =
-                CornerRadius(trackRadius - strokeWidth / 2f, trackRadius - strokeWidth / 2f),
-            style = Stroke(width = strokeWidth),
-        )
-        // 锤子时钟 SmartisanSwitchView：开启时在轨道左端画一个绿色指示点，
-        // 滑块停在左侧时会把它盖住，因此只有开启状态才看得到。
-        if (checked || state.position > 0.5f) {
-            drawCircle(
-                color = colors.switchIndicator,
-                radius = SwitchIndicatorRadius.toPx(),
-                center = Offset(trackLeft + SwitchIndicatorInset.toPx(), size.height / 2f),
+        drawImage(frame, dstOffset = IntOffset(0, top), dstSize = IntSize(bitmapWidth, bitmapHeight))
+        // 按下时叠上投影层，松手后按余弦缓动淡出。
+        if (state.shadowAlpha > 0f) {
+            drawImage(
+                framePressed,
+                dstOffset = IntOffset(0, top),
+                dstSize = IntSize(bitmapWidth, bitmapHeight),
+                alpha = state.shadowAlpha,
             )
         }
-        val shadowStrength = SwitchKnobShadowBase + SwitchKnobShadowPressed * state.shadowAlpha
-        val shadowRadius = knobRadius * 1.7f
-        val shadowCenter = Offset(knobCenter.x, knobCenter.y + 1.dp.toPx())
-        drawCircle(
-            brush =
-                Brush.radialGradient(
-                    colors =
-                        listOf(
-                            SwitchKnobShadowColor.copy(alpha = shadowStrength),
-                            Color.Transparent,
-                        ),
-                    center = shadowCenter,
-                    radius = shadowRadius,
-                ),
-            radius = shadowRadius,
-            center = shadowCenter,
+        // 投影满值时换用按下滑块，随后随投影一起淡出（与原版判断一致）。
+        drawImage(
+            if (state.shadowAlpha >= 1f) knobPressed else knob,
+            dstOffset = IntOffset(shift, top),
+            dstSize = IntSize(movingWidth, bitmapHeight),
         )
-        drawCircle(color = colors.switchKnob, radius = knobRadius, center = knobCenter)
+        drawIntoCanvas { canvas -> canvas.restore() }
     }
 }
 
@@ -442,7 +475,25 @@ private fun SmartisanSwitchContent(
  * SmartisanSwitch(checked = on, onCheckedChange = { on = it })
  * ```
  *
+ * 位图来自原版：默认 [SmartisanSwitchStyle.Music] 用音乐 `switch_ex_*`，
+ * [SmartisanSwitchStyle.Repeat] 用时钟闹钟重复日的 `alarm_repeat_switch_*`。
+ *
+ * ```kotlin
+ * SmartisanSwitch(
+ *     checked = on,
+ *     onCheckedChange = { on = it },
+ *     style = SmartisanSwitchStyle.Repeat,
+ * )
+ * ```
+ *
  * @param hapticsEnabled 松手后状态确实发生变化时，是否触发触感反馈。
+ * @param style 位图风格；两种风格共用同一套外框 / 遮罩 / 滑块素材，只有轨道底色不同。
+ * @param bottomRes 轨道底色位图，默认取 [style] 对应的原版素材。
+ * @param maskRes 遮罩位图，决定轨道底色的形状。
+ * @param frameRes 外框位图。
+ * @param framePressedRes 按下时的外框位图，自带投影。
+ * @param knobRes 滑块位图，自带一层淡投影。
+ * @param knobPressedRes 按下时的滑块位图，投影更重。
  */
 @Composable
 fun SmartisanSwitch(
@@ -451,13 +502,32 @@ fun SmartisanSwitch(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     hapticsEnabled: Boolean = true,
+    style: SmartisanSwitchStyle = SmartisanSwitchStyle.Music,
+    @DrawableRes bottomRes: Int = style.defaultBitmaps().bottom,
+    @DrawableRes maskRes: Int = style.defaultBitmaps().mask,
+    @DrawableRes frameRes: Int = style.defaultBitmaps().frame,
+    @DrawableRes framePressedRes: Int = style.defaultBitmaps().framePressed,
+    @DrawableRes knobRes: Int = style.defaultBitmaps().knob,
+    @DrawableRes knobPressedRes: Int = style.defaultBitmaps().knobPressed,
 ) {
     val state = rememberSmartisanSwitchState(checked, enabled, hapticsEnabled, onCheckedChange)
+    val bitmaps =
+        remember(bottomRes, maskRes, frameRes, framePressedRes, knobRes, knobPressedRes) {
+            SmartisanSwitchBitmaps(
+                bottom = bottomRes,
+                mask = maskRes,
+                frame = frameRes,
+                framePressed = framePressedRes,
+                knob = knobRes,
+                knobPressed = knobPressedRes,
+            )
+        }
     SmartisanSwitchContent(
         checked = checked,
         enabled = enabled,
         state = state,
         modifier = modifier,
+        bitmaps = bitmaps,
     )
 }
 
@@ -467,6 +537,8 @@ fun SmartisanSwitch(
  * 行与开关共用同一个 [SmartisanSwitchState]，并且开关的指针手势会消费事件，
  * 所以「点行」和「点开关」只会触发一次 [onCheckedChange]。
  * 按压时整行切换为 `surfacePressed`，不使用涟漪。
+ *
+ * @param style 开关的位图风格，默认与 [SmartisanSwitch] 相同。
  */
 @Composable
 fun SmartisanSwitchRow(
@@ -476,12 +548,14 @@ fun SmartisanSwitchRow(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     summary: String? = null,
+    style: SmartisanSwitchStyle = SmartisanSwitchStyle.Music,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     val state = rememberSmartisanSwitchState(checked, enabled, true, onCheckedChange)
+    val bitmaps = remember(style) { style.defaultBitmaps() }
     Row(
         modifier =
             modifier
@@ -526,6 +600,7 @@ fun SmartisanSwitchRow(
             enabled = enabled,
             state = state,
             modifier = Modifier,
+            bitmaps = bitmaps,
             exposeSemantics = false,
         )
     }

@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
-import cc.wuersan008.smartisanx.icons.SmartisanXIcons
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
@@ -34,9 +34,10 @@ fun SamplePageScaffold(
     Column(modifier.fillMaxSize()) {
         SmartisanTitleBar(
             title = title,
+            // 原版标题栏图标资源：selector 自带按下 / 禁用态，按压还会放大 1.33 倍。
             navigationIcon =
                 SmartisanTitleBarAction(
-                    icon = SmartisanXIcons.Back,
+                    iconRes = SmartisanDrawables.IconBack,
                     contentDescription = "返回",
                     onClick = onBack,
                 ),

@@ -2,6 +2,7 @@ package cc.wuersan008.smartisanx.ui.overlay
 
 import android.view.Gravity
 import android.view.WindowManager
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -35,6 +36,8 @@ import kotlinx.coroutines.delay
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.R
 
 /**
  * 浮层组件组的窗口外壳。
@@ -122,7 +125,8 @@ fun SmartisanModal(
 
 /**
  * 居中弹窗外壳：宽度固定为 [SmartisanDimens.DialogWidth]，圆角取自
- * [cc.wuersan008.smartisanx.core.theme.SmartisanShapes.dialog]，底色为色板的 `surface`，
+ * [cc.wuersan008.smartisanx.core.theme.SmartisanShapes.dialog]（原版 10dp），
+ * 底色是原版通用弹窗底图 `common_bg`（NinePatch，自带夜间变体），
  * 进出场动画是原版 `smartisan_modal_enter` / `smartisan_modal_exit` 的「0.9 → 1.0 缩放 + 淡入淡出」。
  *
  * 关闭请求会先播放退场动画，动画结束后才回调 [onDismissRequest]，调用方直接用它控制组合即可：
@@ -139,6 +143,7 @@ fun SmartisanModal(
  * @param onDismissRequest 退场动画播放完毕后的关闭回调。
  * @param modifier 作用于弹窗面板。
  * @param dimAmount 窗口背后的遮罩浓度，原版为 0.54。
+ * @param backgroundRes 弹窗底色；默认用原版通用底图 `common_bg`，传 null 时退回色板的 `surface`。
  * @param content 弹窗内容，纵向排列；组件已裁剪圆角，底部按钮可以直接铺满。
  */
 @Composable
@@ -146,6 +151,7 @@ fun SmartisanModalWindow(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     dimAmount: Float = 0.54f,
+    @DrawableRes backgroundRes: Int? = R.drawable.common_bg,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = LocalSmartisanColors.current
@@ -153,6 +159,12 @@ fun SmartisanModalWindow(
     val controller = rememberSmartisanOverlayController(onDismissRequest)
     val progress = rememberSmartisanOverlayProgress(controller.visible)
     val dismiss = controller::requestDismiss
+    val backgroundModifier =
+        if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier.background(colors.surface)
+        }
     SmartisanModal(
         onDismissRequest = dismiss,
         bottom = false,
@@ -171,7 +183,7 @@ fun SmartisanModalWindow(
                             alpha = progress
                         }
                         .clip(shapes.dialog)
-                        .background(colors.surface),
+                        .then(backgroundModifier),
                 content = content,
             )
         }

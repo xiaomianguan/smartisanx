@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.ui.overlay
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,10 @@ import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.rememberSmartisanDrawableButtonBackground
 
 /**
  * 居中弹窗的标题栏与按钮，以及由它们拼出的弹窗。
@@ -34,8 +38,10 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  *   标题栏左右文字按钮的排布，以及「红色长按钮 / 通栏确认按钮」的按压反馈。
  *
  * 合并点：两个项目各自实现了一份「标题栏 + 底部按钮」的弹窗骨架（一份用 XML + Dialog，
- * 一份用 Compose + drawable），这里合并成一套纯 Compose 实现，颜色与尺寸全部走主题与
- * [SmartisanDimens]，不再依赖 drawable 资源。
+ * 一份用 Compose + drawable），这里合并成一套 Compose 实现：标题栏底色用原版
+ * `bottom_sheet_title_bar_bg`，确认按钮用原版 `shrink_long_btn_red_selector` /
+ * `smartisan_menu_confirm_background` 及各自的投影 selector，尺寸与文字颜色仍走
+ * [SmartisanDimens] 与主题色板。
  */
 
 /** 标题栏左右文字按钮的宽度，保证至少 48dp 的可点区域。 */
@@ -62,6 +68,8 @@ private val DialogContentVerticalPadding = 16.dp
  * @param onConfirm 确认回调；为 null 时不显示左侧「取消」，右侧改为「取消」。
  * @param confirmEnabled 「确定」按钮是否可用，禁用时用 `textDisabled` 绘制。
  * @param modifier 作用于标题栏容器。
+ * @param backgroundRes 标题栏底色；默认用原版 `bottom_sheet_title_bar_bg`
+ *   （NinePatch，自带夜间变体），传 null 时退回透明底。
  */
 @Composable
 fun SmartisanDialogTitleBar(
@@ -70,11 +78,22 @@ fun SmartisanDialogTitleBar(
     onConfirm: (() -> Unit)? = null,
     confirmEnabled: Boolean = true,
     modifier: Modifier = Modifier,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomSheetTitleBarBackground,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
+    val backgroundModifier =
+        if (backgroundRes != null) {
+            Modifier.smartisanDrawableBackground(backgroundRes)
+        } else {
+            Modifier
+        }
     Box(
-        modifier = modifier.fillMaxWidth().height(SmartisanDimens.DialogTitleHeight),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(SmartisanDimens.DialogTitleHeight)
+                .then(backgroundModifier),
     ) {
         SmartisanText(
             text = title,
@@ -156,15 +175,19 @@ private fun SmartisanDialogTextButton(
 /**
  * 弹窗底部按钮：高 48dp、17sp 加粗、单行居中。
  *
- * [accent] 为 true 时是原版的红色长按钮（强调色底 + `onAccent` 文字），
- * 否则是表面色底 + `textPrimary` 文字。按压时切换底色（`accentPressed` / `surfacePressed`），
- * 不使用涟漪，并附带系统点击音与触感反馈。
+ * [accent] 为 true 时使用原版红色长按钮底图（`shrink_long_btn_red_selector`）与投影
+ * （`shadow_button_shrink_shadow_selector`），常态 / 按下 / 禁用三态由 selector 自动切换，
+ * 文字取 `onAccent`；否则是表面色底 + `textPrimary` 文字。不使用涟漪，
+ * 并附带系统点击音与触感反馈。
  *
  * @param text 按钮文字。
  * @param onClick 点击回调。
  * @param modifier 作用于按钮容器，通常配合 `fillMaxWidth()` 或 `weight(1f)` 使用。
- * @param enabled 是否可用，禁用时使用 `accentDisabled` / `surfaceDisabled` 底色。
+ * @param enabled 是否可用，禁用态同样交给原版 selector。
  * @param accent 是否使用强调色实底样式。
+ * @param backgroundRes 原版底图；为 null 时强调色样式取 `shrink_long_btn_red_selector`。
+ * @param shadowRes 原版投影；为 null 时按底图自动配对。
+ * @param showShadow 是否绘制原版投影。
  */
 @Composable
 fun SmartisanDialogButton(
@@ -173,19 +196,33 @@ fun SmartisanDialogButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     accent: Boolean = true,
+    @DrawableRes backgroundRes: Int? = null,
+    @DrawableRes shadowRes: Int? = null,
+    showShadow: Boolean = true,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     val haptic = smartisanHaptic()
-    val background =
+    // 强调色按钮走原版底图 + 投影 selector，按下态由 drawable 自己切换。
+    val drawableBackground =
+        rememberSmartisanDrawableButtonBackground(
+            backgroundRes =
+                backgroundRes ?: if (accent) SmartisanDrawables.DialogButtonAccent else null,
+            shadowRes = shadowRes,
+            showShadow = showShadow,
+            enabled = enabled,
+            pressed = pressed,
+        )
+    // 中性按钮没有对应的原版底图，仍按主题色绘制。
+    val neutralBackground =
         when {
-            !enabled -> if (accent) colors.accentDisabled else colors.surfaceDisabled
-            pressed -> if (accent) colors.accentPressed else colors.surfacePressed
-            accent -> colors.accent
+            !enabled -> colors.surfaceDisabled
+            pressed -> colors.surfacePressed
             else -> colors.surface
         }
+    val backgroundModifier = drawableBackground ?: Modifier.background(neutralBackground)
     val textColor =
         when {
             !enabled -> if (accent) colors.onAccent else colors.textDisabled
@@ -196,7 +233,7 @@ fun SmartisanDialogButton(
         modifier =
             modifier
                 .height(SmartisanDimens.DialogButtonHeight)
-                .background(background)
+                .then(backgroundModifier)
                 .smartisanClickable(interactionSource = interaction, enabled = enabled) {
                     haptic()
                     onClick()
@@ -218,8 +255,10 @@ fun SmartisanDialogButton(
  * 居中弹窗：标题栏 + 内容 + 底部按钮，结构与尺寸对齐锤子时钟的 `SmartisanModalDialog`。
  *
  * 底部按钮有两种排布：
- * - [dismissText] 为 null（默认）：只显示一个通栏确认按钮，对齐锤子音乐的删除确认弹层；
- * - [dismissText] 非 null：显示「取消 | 确定」两个等宽按钮，中间一条 1px 分隔线，对齐锤子时钟。
+ * - [dismissText] 为 null（默认）：只显示一个通栏确认按钮，使用原版
+ *   `smartisan_menu_confirm_background` / `smartisan_menu_confirm_shadow`；
+ * - [dismissText] 非 null：显示「取消 | 确定」两个等宽按钮，中间一条 1px 分隔线，
+ *   对齐锤子时钟，其中「确定」使用原版 `shrink_long_btn_red_selector`。
  *
  * 确认时先关闭弹窗再执行 [onConfirm]，与原版 `dismiss()` 之后再执行动作的顺序一致。
  *
@@ -282,11 +321,14 @@ fun SmartisanDialog(
             content()
         }
         if (dismissText == null) {
+            // 通栏确认按钮用原版锤子时钟菜单弹窗的确认底图与投影。
             SmartisanDialogButton(
                 text = confirmText,
                 onClick = confirm,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = confirmEnabled,
+                backgroundRes = SmartisanDrawables.DialogConfirmBackground,
+                shadowRes = SmartisanDrawables.DialogConfirmShadow,
             )
         } else {
             Row(
