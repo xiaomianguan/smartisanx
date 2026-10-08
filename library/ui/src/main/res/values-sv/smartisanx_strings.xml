@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Efter lokal tid med</string>
     <string name="smartisan_hours">%1$d tim</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Vald</string>
+    <string name="smartisan_unselected">Inte vald</string>
 </resources>

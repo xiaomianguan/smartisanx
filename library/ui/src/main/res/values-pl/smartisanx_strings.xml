@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Za czasem lokalnym o</string>
     <string name="smartisan_hours">%1$d godz.</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Wybrano</string>
+    <string name="smartisan_unselected">Nie wybrano</string>
 </resources>

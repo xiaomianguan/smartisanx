@@ -17,4 +17,6 @@
     <string name="smartisan_slower">સ્થાનિક સમયથી પાછળ</string>
     <string name="smartisan_hours">%1$d ક</string>
     <string name="smartisan_minutes">%1$d મિ</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

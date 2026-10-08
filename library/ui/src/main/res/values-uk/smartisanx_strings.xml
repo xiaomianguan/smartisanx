@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Відстає від місцевого часу на</string>
     <string name="smartisan_hours">%1$d год</string>
     <string name="smartisan_minutes">%1$d хв</string>
+    <string name="smartisan_selected">Вибрано</string>
+    <string name="smartisan_unselected">Не вибрано</string>
 </resources>

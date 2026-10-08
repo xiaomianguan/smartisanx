@@ -17,4 +17,6 @@
     <string name="smartisan_slower">දේශීය වේලාවට වඩා පිටුපසින්</string>
     <string name="smartisan_hours">පැය %1$d</string>
     <string name="smartisan_minutes">මිනිත්තු %1$d</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

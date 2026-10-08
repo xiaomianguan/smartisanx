@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Nyuma ya saa ya ndani kwa</string>
     <string name="smartisan_hours">saa %1$d</string>
     <string name="smartisan_minutes">dakika %1$d</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

@@ -17,4 +17,6 @@
     <string name="smartisan_slower">ადგილობრივ დროზე უკან</string>
     <string name="smartisan_hours">%1$d სთ</string>
     <string name="smartisan_minutes">%1$d წთ</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

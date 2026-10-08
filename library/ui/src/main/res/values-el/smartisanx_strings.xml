@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Πίσω από την τοπική ώρα κατά</string>
     <string name="smartisan_hours">%1$d ώ</string>
     <string name="smartisan_minutes">%1$d λ</string>
+    <string name="smartisan_selected">Επιλεγμένο</string>
+    <string name="smartisan_unselected">Μη επιλεγμένο</string>
 </resources>

@@ -17,4 +17,6 @@
     <string name="smartisan_slower">உள்ளூர் நேரத்தை விட பின்னே</string>
     <string name="smartisan_hours">%1$d மணி</string>
     <string name="smartisan_minutes">%1$d நிமி</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

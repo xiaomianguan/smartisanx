@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Vietinis laikas atsilieka</string>
     <string name="smartisan_hours">%1$d val.</string>
     <string name="smartisan_minutes">%1$d min.</string>
+    <string name="smartisan_selected">Pasirinkta</string>
+    <string name="smartisan_unselected">Nepasirinkta</string>
 </resources>

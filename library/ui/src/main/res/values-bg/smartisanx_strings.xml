@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Назад спрямо местното време с</string>
     <string name="smartisan_hours">%1$d ч</string>
     <string name="smartisan_minutes">%1$d мин</string>
+    <string name="smartisan_selected">Избрано</string>
+    <string name="smartisan_unselected">Не е избрано</string>
 </resources>

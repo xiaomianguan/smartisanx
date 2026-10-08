@@ -17,4 +17,6 @@
     <string name="smartisan_slower">ସ୍ଥାନୀୟ ସମୟରୁ ପଛରେ</string>
     <string name="smartisan_hours">%1$d ଘ</string>
     <string name="smartisan_minutes">%1$d ମି</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

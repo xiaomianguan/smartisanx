@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Iza lokalnog vremena za</string>
     <string name="smartisan_hours">%1$d h</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Odabrano</string>
+    <string name="smartisan_unselected">Nije odabrano</string>
 </resources>

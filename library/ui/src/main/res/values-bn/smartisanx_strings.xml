@@ -17,4 +17,6 @@
     <string name="smartisan_slower">স্থানীয় সময়ের চেয়ে পিছিয়ে</string>
     <string name="smartisan_hours">%1$d ঘ</string>
     <string name="smartisan_minutes">%1$d মি</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

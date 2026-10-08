@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Paikallista aikaa jäljessä</string>
     <string name="smartisan_hours">%1$d t</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Valittu</string>
+    <string name="smartisan_unselected">Ei valittu</string>
 </resources>

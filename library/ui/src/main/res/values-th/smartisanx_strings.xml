@@ -17,4 +17,6 @@
     <string name="smartisan_slower">ช้ากว่าเวลาท้องถิ่น</string>
     <string name="smartisan_hours">%1$d ชม.</string>
     <string name="smartisan_minutes">%1$d นาที</string>
+    <string name="smartisan_selected">เลือกแล้ว</string>
+    <string name="smartisan_unselected">ยังไม่เลือก</string>
 </resources>

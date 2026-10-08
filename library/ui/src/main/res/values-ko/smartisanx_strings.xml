@@ -17,4 +17,6 @@
     <string name="smartisan_slower">현지 시간보다 느림</string>
     <string name="smartisan_hours">%1$d시간</string>
     <string name="smartisan_minutes">%1$d분</string>
+    <string name="smartisan_selected">선택됨</string>
+    <string name="smartisan_unselected">선택 안 됨</string>
 </resources>

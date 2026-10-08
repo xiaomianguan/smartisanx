@@ -17,4 +17,6 @@
     <string name="smartisan_slower">現地時間より遅れています</string>
     <string name="smartisan_hours">%1$d 時間</string>
     <string name="smartisan_minutes">%1$d 分</string>
+    <string name="smartisan_selected">選択済み</string>
+    <string name="smartisan_unselected">未選択</string>
 </resources>

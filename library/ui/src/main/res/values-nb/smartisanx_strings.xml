@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Bak lokaltid med</string>
     <string name="smartisan_hours">%1$d t</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Valgt</string>
+    <string name="smartisan_unselected">Ikke valgt</string>
 </resources>

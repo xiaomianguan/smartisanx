@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Տեղական ժամից հետո</string>
     <string name="smartisan_hours">%1$d ժ</string>
     <string name="smartisan_minutes">%1$d ր</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

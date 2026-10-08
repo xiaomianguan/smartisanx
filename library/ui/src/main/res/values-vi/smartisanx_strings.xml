@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Chậm hơn giờ địa phương</string>
     <string name="smartisan_hours">%1$d giờ</string>
     <string name="smartisan_minutes">%1$d phút</string>
+    <string name="smartisan_selected">Đã chọn</string>
+    <string name="smartisan_unselected">Chưa chọn</string>
 </resources>

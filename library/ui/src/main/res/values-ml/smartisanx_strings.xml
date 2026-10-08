@@ -17,4 +17,6 @@
     <string name="smartisan_slower">പ്രാദേശിക സമയത്തിന് പിന്നിൽ</string>
     <string name="smartisan_hours">%1$d മ</string>
     <string name="smartisan_minutes">%1$d മി</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

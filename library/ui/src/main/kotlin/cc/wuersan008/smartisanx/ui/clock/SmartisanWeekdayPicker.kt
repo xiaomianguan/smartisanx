@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
@@ -80,16 +81,22 @@ fun SmartisanWeekdayPicker(
     selectedDays: Set<DayOfWeek>,
     onSelectedDaysChange: (Set<DayOfWeek>) -> Unit,
     modifier: Modifier = Modifier,
-    labels: List<String> = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日"),
+    labels: List<String>? = null,
     showHolidaySwitch: Boolean = false,
     followHolidays: Boolean = false,
     onFollowHolidaysChange: (Boolean) -> Unit = {},
-    holidayLabel: String = HolidayRowLabel,
+    holidayLabel: String? = null,
     @DrawableRes checkboxRes: Int = WeekdayCheckboxSelector,
     @DrawableRes rowBackgroundRes: Int = WeekdayRowBackground,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
+    // 文案在 composable 作用域里取好：semantics 块里不能调 stringResource。
+    // 星期名用平台自带的显示名，80 多种语言都自动正确。
+    val selectedDescription = stringResource(R.string.smartisan_selected)
+    val unselectedDescription = stringResource(R.string.smartisan_unselected)
+    val resolvedLabels = labels ?: remember { defaultWeekdayLabels() }
+    val resolvedHolidayLabel = holidayLabel ?: stringResource(R.string.smartisan_holiday)
     // 手势协程不能因为父级状态变化而重启（否则拖动会被打断），
     // 所以用 rememberUpdatedState 读取最新值，pointerInput 的 key 保持稳定。
     val currentSelection = rememberUpdatedState(selectedDays)
@@ -126,12 +133,12 @@ fun SmartisanWeekdayPicker(
                         onSelectedDaysChange(selectedDays.toggle(day))
                     }
                     .semantics {
-                        stateDescription = if (selected) SelectedDescription else UnselectedDescription
+                        stateDescription = if (selected) selectedDescription else unselectedDescription
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SmartisanText(
-                    text = labels.getOrElse(index) { "" },
+                    text = resolvedLabels.getOrElse(index) { "" },
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = SmartisanDimens.RowContentStart),
@@ -191,7 +198,7 @@ fun SmartisanWeekdayPicker(
         }
         if (showHolidaySwitch) {
             WeekdayHolidayRow(
-                label = holidayLabel,
+                label = resolvedHolidayLabel,
                 checked = followHolidays,
                 enabled = selectedDays.isNotEmpty(),
                 rowBackground = flatRowBackground,
@@ -220,6 +227,8 @@ fun SmartisanWeekdayChips(
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
+    val selectedDescription = stringResource(R.string.smartisan_selected)
+    val unselectedDescription = stringResource(R.string.smartisan_unselected)
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -238,12 +247,12 @@ fun SmartisanWeekdayChips(
                     )
                     .smartisanClickable { onSelectedDaysChange(selectedDays.toggle(day)) }
                     .semantics {
-                        stateDescription = if (selected) SelectedDescription else UnselectedDescription
+                        stateDescription = if (selected) selectedDescription else unselectedDescription
                     },
                 contentAlignment = Alignment.Center,
             ) {
                 SmartisanText(
-                    text = ChipLabels.getOrElse(index) { "" },
+                    text = chipLabels().getOrElse(index) { "" },
                     style = typography.listItemSecondary,
                     color = if (selected) colors.onPressedHighlight else colors.textSecondary,
                     maxLines = 1,
@@ -375,8 +384,6 @@ private val HolidayRowHeight = 52.dp
 /** 「法定节假日」开关与行右边缘的间距，原版 `layout_marginEnd="8dp"`。 */
 private val HolidaySwitchEndMargin = 8.dp
 
-/** 「法定节假日」行的默认文案。 */
-private const val HolidayRowLabel = "法定节假日"
 
 /** 紧凑小片边长。 */
 private val ChipSize = 34.dp
@@ -384,13 +391,20 @@ private val ChipSize = 34.dp
 /** 紧凑小片描边宽度。 */
 private val ChipStroke = 1.dp
 
-/** 紧凑小片的短文案。 */
-private val ChipLabels = listOf("一", "二", "三", "四", "五", "六", "日")
+/**
+ * 默认的星期文案（周一…周日），用平台自带的短显示名。
+ *
+ * 这样每种语言都自动正确，库里不需要再维护一份星期表。
+ */
+private fun defaultWeekdayLabels(): List<String> =
+    java.time.DayOfWeek.entries.map {
+        it.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
+    }
 
-/** 无障碍：已选择。 */
-private const val SelectedDescription = "已选择"
-
-/** 无障碍：未选择。 */
-private const val UnselectedDescription = "未选择"
+/** 紧凑小片的短文案（一…日），用平台的单字显示名。 */
+private fun chipLabels(): List<String> =
+    java.time.DayOfWeek.entries.map {
+        it.getDisplayName(java.time.format.TextStyle.NARROW, java.util.Locale.getDefault())
+    }
 
 

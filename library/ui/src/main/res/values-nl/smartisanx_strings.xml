@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Achter op lokale tijd met</string>
     <string name="smartisan_hours">%1$d u</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Geselecteerd</string>
+    <string name="smartisan_unselected">Niet geselecteerd</string>
 </resources>

@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Ortszeit hinterher um</string>
     <string name="smartisan_hours">%1$d Std.</string>
     <string name="smartisan_minutes">%1$d Min.</string>
+    <string name="smartisan_selected">Ausgewählt</string>
+    <string name="smartisan_unselected">Nicht ausgewählt</string>
 </resources>

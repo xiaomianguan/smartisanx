@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Lebih lewat daripada waktu tempatan</string>
     <string name="smartisan_hours">%1$d j</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Dipilih</string>
+    <string name="smartisan_unselected">Tidak dipilih</string>
 </resources>

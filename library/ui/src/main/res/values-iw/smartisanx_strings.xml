@@ -17,4 +17,6 @@
     <string name="smartisan_slower">מאחר את השעה המקומית ב־</string>
     <string name="smartisan_hours">%1$d שע׳</string>
     <string name="smartisan_minutes">%1$d דק׳</string>
+    <string name="smartisan_selected">נבחר</string>
+    <string name="smartisan_unselected">לא נבחר</string>
 </resources>

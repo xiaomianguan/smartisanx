@@ -17,4 +17,6 @@
     <string name="smartisan_slower">متأخر عن التوقيت المحلي بـ</string>
     <string name="smartisan_hours">%1$d س</string>
     <string name="smartisan_minutes">%1$d د</string>
+    <string name="smartisan_selected">محدد</string>
+    <string name="smartisan_unselected">غير محدد</string>
 </resources>

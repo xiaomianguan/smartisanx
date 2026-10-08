@@ -17,4 +17,6 @@
     <string name="smartisan_slower">En retard sur l\'heure locale de</string>
     <string name="smartisan_hours">%1$d h</string>
     <string name="smartisan_minutes">%1$d min</string>
+    <string name="smartisan_selected">Sélectionné</string>
+    <string name="smartisan_unselected">Non sélectionné</string>
 </resources>

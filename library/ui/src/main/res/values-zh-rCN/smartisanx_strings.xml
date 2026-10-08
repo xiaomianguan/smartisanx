@@ -17,4 +17,6 @@
     <string name="smartisan_slower">比本地时间慢</string>
     <string name="smartisan_hours">%1$d 小时</string>
     <string name="smartisan_minutes">%1$d 分钟</string>
+    <string name="smartisan_selected">已选择</string>
+    <string name="smartisan_unselected">未选择</string>
 </resources>

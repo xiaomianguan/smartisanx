@@ -17,4 +17,6 @@
     <string name="smartisan_slower">స్థానిక సమయం కంటే వెనుక</string>
     <string name="smartisan_hours">%1$d గం</string>
     <string name="smartisan_minutes">%1$d ని</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

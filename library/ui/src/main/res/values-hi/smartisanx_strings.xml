@@ -17,4 +17,6 @@
     <string name="smartisan_slower">स्थानीय समय से पीछे</string>
     <string name="smartisan_hours">%1$d घं</string>
     <string name="smartisan_minutes">%1$d मि</string>
+    <string name="smartisan_selected">चयनित</string>
+    <string name="smartisan_unselected">अचयनित</string>
 </resources>

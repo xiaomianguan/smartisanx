@@ -17,4 +17,6 @@
     <string name="smartisan_slower">ဒေသစံတော်ချိန်ထက် နောက်ကျ</string>
     <string name="smartisan_hours">%1$d နာရီ</string>
     <string name="smartisan_minutes">%1$d မိနစ်</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

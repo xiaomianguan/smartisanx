@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Helyi idő mögött ennyivel:</string>
     <string name="smartisan_hours">%1$d ó</string>
     <string name="smartisan_minutes">%1$d perc</string>
+    <string name="smartisan_selected">Kijelölve</string>
+    <string name="smartisan_unselected">Nincs kijelölve</string>
 </resources>

@@ -17,4 +17,6 @@
     <string name="smartisan_slower">ຊ້າກວ່າເວລາທ້ອງຖິ່ນ</string>
     <string name="smartisan_hours">%1$d ຊມ</string>
     <string name="smartisan_minutes">%1$d ນທ</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>

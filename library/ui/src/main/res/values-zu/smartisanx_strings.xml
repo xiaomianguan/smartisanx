@@ -17,4 +17,6 @@
     <string name="smartisan_slower">Ngemuva kwesikhathi sasendaweni nge-</string>
     <string name="smartisan_hours">amahora angu-%1$d</string>
     <string name="smartisan_minutes">amaminithi angu-%1$d</string>
+    <string name="smartisan_selected">Selected</string>
+    <string name="smartisan_unselected">Not selected</string>
 </resources>
