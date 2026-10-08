@@ -177,3 +177,117 @@ fun SmartisanCompactClock(
         drawCircle(color = colors.accent, radius = dialRadius * CenterDotRatio, center = center)
     }
 }
+
+/** 绘制小表盘指针：先画一层偏移的投影，再画指针本体，对应原版的 `*_shadow` 位图。 */
+private fun DrawScope.drawCompactHand(
+    center: Offset,
+    degrees: Float,
+    length: Float,
+    tail: Float,
+    width: Float,
+    color: Color,
+    shadowColor: Color,
+    shadowOffset: Float,
+) {
+    val shadowShift = smartisanClockPolar(Offset.Zero, shadowOffset, degrees + 90f)
+    drawLine(
+        color = shadowColor,
+        start = smartisanClockPolar(center, tail, degrees + 180f) + shadowShift,
+        end = smartisanClockPolar(center, length, degrees) + shadowShift,
+        strokeWidth = width,
+        cap = StrokeCap.Round,
+    )
+    drawClockHand(
+        center = center,
+        degrees = degrees,
+        length = length,
+        tail = tail,
+        width = width,
+        color = color,
+    )
+}
+
+/** 每秒对应的角度。 */
+private const val DEGREES_PER_SECOND = 6f
+
+/** 每分对应的角度。 */
+private const val DEGREES_PER_MINUTE = 6f
+
+/** 每小时对应的角度。 */
+private const val DEGREES_PER_HOUR = 30f
+
+/** 表盘一圈的小时数。 */
+private const val HOURS_PER_CYCLE = 12
+
+/** 一小时内的分钟数。 */
+private const val MINUTES_PER_HOUR = 60f
+
+/** 一分钟内的秒数。 */
+private const val SECONDS_PER_MINUTE = 60f
+
+/** 指针走动的弹簧刚度。 */
+private const val HandSpringStiffness = 120f
+
+/** 指针投影透明度，原版 `*_shadow` 位图约 25% 不透明度。 */
+private const val ShadowAlpha = 0.25f
+
+/** 指针投影偏移占表盘直径的比例，对应原版 6dp / 188dp 的阴影位移。 */
+private const val ShadowOffsetRatio = 0.02f
+
+/** 圆环描边占直径的比例。 */
+private const val RingWidthRatio = 0.02f
+
+/** 刻度线宽比例。 */
+private const val TickWidthRatio = 0.015f
+
+/** 刻度起点比例。 */
+private const val HourTickStartRatio = 0.84f
+
+/** 刻度终点比例。 */
+private const val HourTickEndRatio = 0.94f
+
+/** 数字距圆心比例。 */
+private const val NumeralRadiusRatio = 0.62f
+
+/** 数字字号占直径的比例。 */
+private const val NumeralSizeRatio = 0.16f
+
+/** 小于该像素尺寸时不再绘制数字。 */
+private const val NumeralMinSizePx = 34f
+
+/** 时针长度比例，取自原版 `alarm_ringing_hour_hand` 的 6.9/8 锚点。 */
+private const val HourHandLengthRatio = 0.42f
+
+/** 时针线宽比例。 */
+private const val HourHandWidthRatio = 0.11f
+
+/** 分针长度比例，取自原版 7.2/8 锚点。 */
+private const val MinuteHandLengthRatio = 0.62f
+
+/** 分针线宽比例。 */
+private const val MinuteHandWidthRatio = 0.07f
+
+/** 秒针长度比例，取自原版 6.5/8 锚点。 */
+private const val SecondHandLengthRatio = 0.78f
+
+/** 秒针线宽比例。 */
+private const val SecondHandWidthRatio = 0.03f
+
+/** 时针尾巴比例。 */
+private const val HourHandTailRatio = 0.12f
+
+/** 分针尾巴比例。 */
+private const val MinuteHandTailRatio = 0.18f
+
+/** 秒针尾巴比例。 */
+private const val SecondHandTailRatio = 0.22f
+
+/** 中心轴外层圆比例。 */
+private const val CenterCapRatio = 0.1f
+
+/** 中心轴内层圆比例。 */
+private const val CenterDotRatio = 0.045f
+
+/** 最小描边像素。 */
+private const val MinStrokePx = 1f
+
