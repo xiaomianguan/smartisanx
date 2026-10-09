@@ -117,9 +117,9 @@ private const val SuffixYear = "年"
 private const val SuffixMonth = "月"
 private const val SuffixDay = "日"
 
-/** 中文下「时 / 分」的单位后缀，原版 `R.string.date_time_picker_hour` / `_minute`；时间选择器也用它。 */
-internal const val SuffixHour = "时"
-internal const val SuffixMinute = "分"
+/** 中文下「时 / 分」的单位后缀，原版 `R.string.date_time_picker_hour` / `_minute`。 */
+private const val SuffixHour = "时"
+private const val SuffixMinute = "分"
 
 /** 日期时间的格式化，原版 `SmartisanDateTimePicker.DATE_FORMAT = "yyyy/MM/dd"`。 */
 private const val DateTimeFormatPattern = "yyyy/MM/dd"
@@ -456,7 +456,7 @@ fun SmartisanDatePicker(
                 when (field) {
                     DateFieldYear ->
                         SmartisanPickerColumn(
-                            value = if (resolvedYear == SmartisanUnsetYear) unsetColumnValue else resolvedYear,
+                            value = if (allowUnsetYear && resolvedYear == SmartisanUnsetYear) unsetColumnValue else resolvedYear,
                             minValue = if (allowUnsetYear) unsetColumnValue else lowYear,
                             maxValue = highYear,
                             onValueChange = { value ->
@@ -655,6 +655,11 @@ fun SmartisanDateTimePicker(
     val hour = currentCalendar.get(Calendar.HOUR_OF_DAY)
     val minute = currentCalendar.get(Calendar.MINUTE)
     val dayFormatter = remember(locale) { SimpleDateFormat(DateTimeFormatPattern, locale) }
+    // 日期列的候选值可能上万条，把 formatter 记下来，避免每次重组都重建整列文案。
+    val dayColumnFormatter =
+        remember(dayFormatter, baseMillis) {
+            { index: Int -> dayFormatter.format(baseMillis + index * MillisPerDay) }
+        }
     val (normalColor, selectedColor) = smartisanPickerTextColors(SmartisanPickerVariant.Enhanced)
     SmartisanPickerColors(normal = normalColor, selected = selectedColor) {
         SmartisanPickerRow(
@@ -672,7 +677,7 @@ fun SmartisanDateTimePicker(
                     onDateTimeChange(smartisanDateTimeMillis(baseMillis, index, hour, minute))
                 },
                 modifier = Modifier.weight(1f),
-                formatter = { index -> dayFormatter.format(baseMillis + index * MillisPerDay) },
+                formatter = dayColumnFormatter,
                 visibleCount = visibleCount,
                 itemHeight = itemHeight,
             )
@@ -805,7 +810,7 @@ private fun smartisanMonthLabels(locale: Locale): List<String> {
  * @param context 用来读当前区域设置。
  */
 private fun smartisanDateFieldOrder(context: Context): List<Char> {
-    val order = DateFormat.getDateFormatOrder(context).toList()
+    val order = runCatching { DateFormat.getDateFormatOrder(context).toList() }.getOrElse { emptyList() }
     val valid = order.size == DefaultDateFieldOrder.size && order.all { field -> field in DefaultDateFieldOrder }
     return if (valid) order else DefaultDateFieldOrder
 }

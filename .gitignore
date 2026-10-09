@@ -12,3 +12,6 @@ local.properties
 /build
 /library/*/build
 /sample/build
+
+# 队友在本地缓存的 framework 反编译产物
+/.fwcache

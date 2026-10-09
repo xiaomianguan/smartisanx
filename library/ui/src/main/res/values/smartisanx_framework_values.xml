@@ -27,4 +27,40 @@
     <dimen name="time_picker_height">128.0dp</dimen>
     <dimen name="time_picker_width">360.0dp</dimen>
     <dimen name="smartisan_datepicker_divider_width">2.0px</dimen>
+
+
+    <!--
+      空态（framework `smartisanos.widget.SmartisanBlankView`、
+      `res/layout/blank_view.xml`、`res/values/dimens.xml`）。
+    -->
+    <dimen name="blank_view_vertical_margin">40.0dp</dimen>
+    <dimen name="blankview_actionbtn_margintop">84.0dp</dimen>
+    <dimen name="small_blank_image_size">60.0dp</dimen>
+
+    <!--
+      跑马灯标题（framework `smartisanos.widget.SmartisanMarqueeView`、
+      `res/layout/marquee_title_center_layout.xml`、`res/values/styles.xml` 的
+      `TitleTextStyle` / `SubTitleTextStyle`）。
+    -->
+    <color name="smartisan_button_normal_text_color">#666666</color>
+    <color name="sub_title_text_color">#4c000000</color>
+    <dimen name="title_bar_title_text_size">20.0sp</dimen>
+    <dimen name="item_sub_title_size">10.0sp</dimen>
+    <dimen name="marquee_title_margin_top">8.8dp</dimen>
+    <dimen name="marquee_subtitle_margin_top">-0.4dp</dimen>
+
+    <!--
+      环形进度（framework `smartisanos.widget.CircleProgressView` /
+      `CircleProgressPopup`、`res/values/dimens.xml` 与 `res/values/colors.xml`）。
+    -->
+    <color name="circle_progress_view_arc_color">#cccce5ff</color>
+    <dimen name="circle_progress_view_size">90.0dp</dimen>
+
+    <!--
+      下拉选择（framework `smartisanos.widget.SmartisanSpinnerView`、
+      `res/values/dimens.xml`）。
+    -->
+    <dimen name="smartisan_spinner_small_icon_width">22.0dp</dimen>
+    <dimen name="smartisan_spinner_view_text_width">152.0dp</dimen>
+    <dimen name="smartisan_small_blank_spacing_width">6.0dp</dimen>
 </resources>
