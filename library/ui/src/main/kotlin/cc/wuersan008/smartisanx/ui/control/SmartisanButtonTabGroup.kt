@@ -57,6 +57,7 @@ import androidx.core.content.ContextCompat
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanStateListColor
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableState
 import cc.wuersan008.smartisanx.ui.R
@@ -345,8 +346,8 @@ private fun segmentBackground(standardStyle: Boolean, index: Int, count: Int): I
 /**
  * 读取原版 `res/color/` 下的状态色（支持按下 / 选中 / 禁用）。
  *
- * 与弹窗组件里的 `rememberSmartisanStateColor` 同一套做法，这里额外支持 `state_activated`
- * —— 分段按钮组的选中态正是用它（原版 `ShadowButton#setActivated`）。
+ * 直接复用 core 的 [rememberSmartisanStateListColor]，这里只是为了在调用处短一点；
+ * 分段按钮组的选中态走原版的 `state_activated`（`ShadowButton#setActivated`）。
  */
 @Composable
 private fun smartisanStateListColor(
@@ -354,22 +355,10 @@ private fun smartisanStateListColor(
     enabled: Boolean = true,
     pressed: Boolean = false,
     activated: Boolean = false,
-): Color {
-    val context = LocalContext.current
-    val stateList: ColorStateList? =
-        remember(context, colorRes) { ContextCompat.getColorStateList(context, colorRes) }
-    return remember(context, colorRes, stateList, enabled, pressed, activated) {
-        // 与弹窗按钮同理：空状态集会让 `state_enabled="false"` 之类的否定项命中，
-        // 必须交给 core 的构造器生成完整状态集。
-        val state =
-            smartisanDrawableState(
-                enabled = enabled,
-                pressed = pressed,
-                activated = activated,
-            )
-        val argb =
-            stateList?.getColorForState(state, stateList.defaultColor)
-                ?: ContextCompat.getColor(context, colorRes)
-        Color(argb)
-    }
-}
+): Color =
+    rememberSmartisanStateListColor(
+        colorRes = colorRes,
+        enabled = enabled,
+        pressed = pressed,
+        activated = activated,
+    )

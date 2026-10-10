@@ -39,6 +39,7 @@ import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanStateListColor
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableState
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
@@ -98,37 +99,6 @@ private val DialogModalButtonStyle =
  */
 @Composable
 internal fun smartisanOnePixel(): Dp = Dp(1f / LocalDensity.current.density)
-
-/**
- * 读取原版 `res/color/` 下的 state list，并按 Compose 的按下 / 禁用状态取色。
- *
- * 弹窗按钮文字色在原版是 `@color/smartisan_modal_confirm_text` 这样的 selector，
- * `colorResource` 只能拿到默认色，所以这里用 [ContextCompat.getColorStateList] 取完整状态色。
- *
- * @param colorRes `res/color/` 下的 selector 资源，例如 `R.color.smartisan_modal_confirm_text`。
- * @param enabled 是否可用，禁用时取 `state_enabled="false"` 那一项。
- * @param pressed 是否按下，按下时取 `state_pressed="true"` 那一项。
- */
-@Composable
-internal fun rememberSmartisanStateColor(
-    @ColorRes colorRes: Int,
-    enabled: Boolean = true,
-    pressed: Boolean = false,
-): Color {
-    val context = LocalContext.current
-    val stateList =
-        remember(context, colorRes) { ContextCompat.getColorStateList(context, colorRes) }
-    return remember(context, colorRes, stateList, enabled, pressed) {
-        // 必须给出**完整**状态集：`ColorStateList` 里 `state_enabled="false"` 这类
-        // 否定项在「空状态集」下同样会命中（`StateSet.stateSetMatches` 的语义），
-        // 于是正常态会拿到禁用色。用 core 的构造器把六种状态都写全。
-        val state = smartisanDrawableState(enabled = enabled, pressed = pressed)
-        val argb =
-            stateList?.getColorForState(state, stateList.defaultColor)
-                ?: ContextCompat.getColor(context, colorRes)
-        Color(argb)
-    }
-}
 
 /**
  * 弹窗标题栏：高 48dp，标题居中、13.5sp 加粗，左右是原版图标按钮。
@@ -307,7 +277,7 @@ fun SmartisanDialogButton(
         if (contentColor != Color.Unspecified) {
             contentColor
         } else {
-            rememberSmartisanStateColor(
+            rememberSmartisanStateListColor(
                 colorRes =
                     if (accent) R.color.smartisan_modal_confirm_text
                     else R.color.smartisan_modal_cancel_text,

@@ -130,6 +130,13 @@ Components verified this way so far:
 | | subtitle | right edge at 1243px, i.e. 21px (6dp) from the screen edge |
 | | count badge | the text's right edge lands near 1180px, so the 18dp margin is on top of the 9-patch's own padding |
 | | page switch | driven by `pageKey`: the original animates for 400ms, this library uses the same duration with a quadratic decelerate easing |
+| `SmartisanPreviewOptions` | cell height | 260px = 74.3dp (preview slot + 9dp + title line) |
+| | two-column container | the cell's left edge sits at x = 42px (12dp, the original `SettingPreviewStyle` `paddingLeft/Right`); the divider between the columns comes from the `preview_options_two` 9-patch stretch column (asset 118x560px, stretch column x 56-61) |
+| | head title | text left edge 105px = 30dp (the original `settings_item_title_left_margin`); 13.5sp, `#80000000` |
+| | preview image | 108px asset, drawn at 126px on a 560dpi screen via drawable density scaling (xxhdpi asset x 560/480) |
+| | check badge | 76px asset pinned to the preview image's top-right corner; the badge ink's top edge lines up with the cell's top edge (the 7px above it are the card 9-patch's top edge) |
+| | title colours | measured `#353539` enabled (the original `setting_item_text_color`) and `#BABABA` disabled (`setting_item_text_color_disabled`), 15sp |
+| | interaction | tapping the other column moves the selection; tapping the already-selected column fires no callback (the original `if (changed)`); the disabled switch greys the image, the title and the badge together |
 
 Still **not** verified item by item:
 

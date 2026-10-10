@@ -36,9 +36,15 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanNumberPicker
 import cc.wuersan008.smartisanx.ui.control.SmartisanPageIndicator
+import cc.wuersan008.smartisanx.ui.control.SmartisanPreviewOption
+import cc.wuersan008.smartisanx.ui.control.SmartisanPreviewOptionCell
+import cc.wuersan008.smartisanx.ui.control.SmartisanPreviewOptions
+import cc.wuersan008.smartisanx.ui.control.SmartisanPreviewOptionsInvalid
 import cc.wuersan008.smartisanx.ui.control.SmartisanProgressIndicator
 import cc.wuersan008.smartisanx.ui.control.SmartisanProgressState
 import cc.wuersan008.smartisanx.ui.control.SmartisanTips
+import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
+import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 
 /**
@@ -57,6 +63,7 @@ fun OriginalControlSections() {
     PageIndicatorSection()
     ProgressIndicatorSection()
     TipsSection()
+    PreviewOptionsSection()
 }
 
 /** 分段按钮组：原版 `smartisanos.widget.ButtonTabGroup`。 */
@@ -412,3 +419,82 @@ private fun TipsSection() {
         }
     }
 }
+
+/**
+ * 两栏预览选项：原版 `PreviewOptionsCheckView`（我们的示例用锤子音乐的列表 / 网格图标当预览图）。
+ */
+@Composable
+private fun PreviewOptionsSection() {
+    var checked by remember { mutableIntStateOf(0) }
+    var enabled by remember { mutableStateOf(true) }
+    SampleSectionHeader("两栏预览选项（PreviewOptionsCheckView）")
+    SmartisanPreviewOptions(
+        left =
+            SmartisanPreviewOption(
+                previewRes = SmartisanDrawables.IconAlbumSwitchList,
+                title = "列表",
+            ),
+        right =
+            SmartisanPreviewOption(
+                previewRes = SmartisanDrawables.IconAlbumSwitchGrid,
+                title = "网格",
+            ),
+        checkedIndex = checked,
+        onCheckedChange = { checked = it },
+        headTitle = "预览样式",
+        enabled = enabled,
+    )
+    SmartisanPreviewOptions(
+        left = SmartisanPreviewOption(previewRes = SmartisanDrawables.IconAlbumSwitchList),
+        right = SmartisanPreviewOption(previewRes = SmartisanDrawables.IconAlbumSwitchGrid),
+        checkedIndex = SmartisanPreviewOptionsInvalid,
+        onCheckedChange = { checked = it },
+        headTitle = "没有标题、两栏都不选（INVALID = -1）",
+        enabled = enabled,
+    )
+    SmartisanRowDivider()
+    SmartisanText(
+        text = "单独用单元格（原版 PreviewOptionView 可独立使用）：",
+        modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp),
+        style = LocalSmartisanTypography.current.caption,
+        color = LocalSmartisanColors.current.textTertiary,
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        SmartisanPreviewOptionCell(
+            option = SmartisanPreviewOption(SmartisanDrawables.IconAlbumSwitchList, "未选中"),
+            checked = false,
+        )
+        SmartisanPreviewOptionCell(
+            option = SmartisanPreviewOption(SmartisanDrawables.IconAlbumSwitchGrid, "选中"),
+            checked = true,
+        )
+    }
+    SmartisanRowDivider()
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SmartisanText(
+            text = "当前选中：${if (checked == 0) "列表" else "网格"}",
+            modifier = Modifier.weight(1f),
+            style = LocalSmartisanTypography.current.listItemSecondary,
+            color = LocalSmartisanColors.current.textTertiary,
+        )
+        SmartisanText(
+            text = "禁用",
+            style = LocalSmartisanTypography.current.listItemSecondary,
+        )
+        SmartisanSwitch(checked = !enabled, onCheckedChange = { enabled = !it })
+    }
+    SmartisanText(
+        text = "点已经选中的那一栏不会触发回调（原版 if (changed)）；禁用时预览图、标题、角标一起走禁用态。",
+        modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp),
+        style = LocalSmartisanTypography.current.caption,
+        color = LocalSmartisanColors.current.textTertiary,
+    )
+}
+

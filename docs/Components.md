@@ -275,6 +275,18 @@ enum class SmartisanProgressState { Download, Pause, Retry, Processing }
     hour: Int, minute: Int, onTimeChange: (hour: Int, minute: Int) -> Unit, onDismissRequest,
     modifier, onConfirm: (hour: Int, minute: Int) -> Unit = ..., is24Hour: Boolean = ...,
 )
+
+data class SmartisanPreviewOption(@DrawableRes previewRes: Int, title: String? = null)
+const val SmartisanPreviewOptionsInvalid = -1
+
+@Composable fun SmartisanPreviewOptions(
+    left: SmartisanPreviewOption, right: SmartisanPreviewOption,
+    checkedIndex: Int, onCheckedChange: (Int) -> Unit, modifier: Modifier = Modifier,
+    headTitle: String? = null, enabled: Boolean = true,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.PreviewOptionsTwo,
+    @DrawableRes checkRes: Int = SmartisanDrawables.PreviewCheckSelector,
+)
+@Composable fun SmartisanPreviewOptionCell(option, checked, modifier, enabled, checkRes, onClick)
 ```
 
 `SmartisanSwitch` reproduces all the behaviour of the original switch: a shadow appears on press and
@@ -304,6 +316,7 @@ durations and interpolators are copied from the originals:
 | `SmartisanMarqueeText` | `smartisanos.widget.SmartisanMarqueeView` | framework (title/subtitle marquee in title bars and the player) |
 | the `SmartisanDatePicker` family | `SmartisanDatePicker[Ex]` / `SmartisanDatePicker[Ex]Dialog` / `SmartisanDateTimePicker[Dialog]` | Calendar, Settings, Notes, Clock (including "jump to date") |
 | `SmartisanTimePickerDialog` | `smartisanos.widget.SmartisanTimePickerDialog` / `SmartisanTimePickerExDialog` | Clock, Calendar |
+| `SmartisanPreviewOptions` / `SmartisanPreviewOptionCell` | `smartisanos.widget.PreviewOptionsCheckView` / `PreviewOptionView` | framework-wide (the two-column preview options in Settings) |
 | `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
 | `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
@@ -368,6 +381,18 @@ Notes:
   device (see `ComponentVerification.md`).
 - Icons do not grey out when disabled: the original only swaps the thumb for the disabled bitmap, and the
   caller decides how the icons look.
+- `SmartisanPreviewOptions` ports the framework's `PreviewOptionsCheckView` (layout
+  `preview_options_view_layout.xml`; each column is a `PreviewOptionView` built from
+  `preview_single_option_layout.xml`): the head title is 13.5sp `#80000000` with a 30dp start indent and a
+  307dp `maxWidth`, the two columns sit on the original 9-patch `preview_options_two` (**the divider
+  between them comes from that 9-patch itself**, there is no separate divider view), and inside a column
+  the preview image has an 11.5dp top margin, the title is 15sp and centred and the check badge sits at
+  the image's top-right corner.
+- Clicking follows the original `onClick`: clicking the column that is **already selected** does not fire
+  the callback at all; when disabled the image, the title and the badge all go disabled (the badge turns
+  into `preview_picture_selected_disable_solid` and the title becomes `#BABABA`). The original's
+  `setAutoCheck(false)` is not needed in Compose: the caller owns the selection state and decides inside
+  the callback.
 
 ---
 

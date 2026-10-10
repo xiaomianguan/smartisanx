@@ -213,7 +213,7 @@ SmartisanTheme {
 `SmartisanChips`, `SmartisanChip`, `SmartisanSmoothSeekBar`, `SmartisanIconSlider`,
 `SmartisanSliderIcon`, `SmartisanDatePicker`, `SmartisanDatePickerDialog`,
 `SmartisanDateTimePicker`, `SmartisanDateTimePickerDialog`, `SmartisanTimePicker`,
-`SmartisanTimePickerDialog`, `SmartisanSpinner`, `SmartisanCircleProgress`,
+`SmartisanTimePickerDialog`, `SmartisanSpinner`, `SmartisanPreviewOptions`, `SmartisanPreviewOptionCell`, `SmartisanCircleProgress`,
 `SmartisanCircleProgressIndeterminate`, `SmartisanCircleProgressLarge`,
 `SmartisanCircleProgressPopup`, `SmartisanMarqueeText`
 

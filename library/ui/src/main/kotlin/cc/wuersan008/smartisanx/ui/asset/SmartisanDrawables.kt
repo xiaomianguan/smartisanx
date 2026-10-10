@@ -81,6 +81,22 @@ object SmartisanDrawables {
     /** 播放页标题栏底色。 */
     @DrawableRes val TitleBarPlayingBackground = R.drawable.titlebar_playing_bg
 
+    // ---- 两栏预览选项（framework smartisanos.widget.PreviewOptionsCheckView） ----
+    /** 两栏容器底图（原版 `preview_options_two`，中间的分隔线来自这张 9-patch）。 */
+    @DrawableRes val PreviewOptionsTwo = R.drawable.sos_smartisanos_drawable_preview_options_two
+
+    /** 选中角标（原版 `preview_picture_check_selector`：选中 / 禁用两张位图）。 */
+    @DrawableRes val PreviewCheckSelector = R.drawable.preview_picture_check_selector
+
+    // ---- 列表 / 网格切换图标（锤子音乐的资料库右上角，可当作预览图） ----
+    /** 列表样式图标（108×108 px）。 */
+    @DrawableRes val IconAlbumSwitchList = R.drawable.album_switch_list
+
+    /** 网格样式图标（108×108 px）。 */
+    @DrawableRes val IconAlbumSwitchGrid = R.drawable.album_switch_grid
+
+
+
     // ---- 标题栏图标（selector，自带按下/禁用态） ----
     @DrawableRes val IconBack = R.drawable.standard_icon_back_selector
     @DrawableRes val IconCancel = R.drawable.standard_icon_cancel_selector
