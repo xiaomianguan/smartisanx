@@ -351,7 +351,7 @@ SmartisanScaffold {                       // 默认已带平铺底纹
 ### 尺寸
 
 关键尺寸沿用原版资源：标题栏 48dp、图标 36dp、列表行最小高度 60dp、分隔线 0.67dp、
-弹窗宽 308dp、弹窗圆角 10dp、弹窗按钮高 48dp、底部栏 54dp（原版 `smartisan_bottom_bar_height`）。
+弹窗宽 308dp、弹窗圆角 5dp、弹窗按钮高 48dp、底部栏 54dp（原版 `smartisan_bottom_bar_height`）。
 
 ### 动效
 

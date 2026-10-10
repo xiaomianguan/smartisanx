@@ -363,7 +363,7 @@ SmartisanScaffold {                       // textured by default
 ### Dimensions
 
 Key dimensions follow the original resources: title bar 48dp, icon 36dp, list row minimum height
-60dp, divider 0.67dp, dialog width 308dp, dialog corner radius 10dp, dialog button height 48dp,
+60dp, divider 0.67dp, dialog width 308dp, dialog corner radius 5dp, dialog button height 48dp,
 bottom bar 54dp (the original `smartisan_bottom_bar_height`).
 
 ### Motion

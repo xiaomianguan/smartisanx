@@ -67,7 +67,7 @@ def to_dp(raw):
 def build_tables():
     dimen = collections.defaultdict(list)
     color = collections.defaultdict(list)
-    layouts = collections.defaultdict(list)
+    xmls = collections.defaultdict(list)
     for tag, root in dumps():
         if not root.exists():
             continue
@@ -83,9 +83,10 @@ def build_tables():
             for m in re.finditer(r'<color name="([^"]+)">([^<]+)</color>', text):
                 if (m.group(2), tag) not in color[m.group(1)]:
                     color[m.group(1)].append((m.group(2), tag))
-        for f in sorted(root.glob("res/layout*/*.xml")):
-            layouts[f.stem].append(f)
-    return dimen, color, layouts
+        # 注释里点名布局 / drawable 时，去那个 xml 里找写死的值
+        for f in sorted(root.glob("res/layout*/*.xml")) + sorted(root.glob("res/drawable*/*.xml")):
+            xmls[f.stem].append(f)
+    return dimen, color, xmls
 
 
 def kdoc_entries(src):
@@ -109,15 +110,15 @@ def candidates(doc):
 
 
 
-def in_layout(name, value, unit, layouts):
-    """在布局文件里找写死的值（dp 或 px，px 按 560dpi 折）。"""
+def in_xml(name, value, unit, xmls):
+    """在布局 / drawable 的 xml 里找写死的值（dp 或 px，px 按 560dpi 折）。"""
     wants = {"%.1f%s" % (value, unit)}
     if unit == "dp":
         wants.add("%gdp" % value)
         px = round(value * PX_PER_DP)
         if abs(px - value * PX_PER_DP) < 0.2:
             wants.add("%.1fpx" % px)
-    for path in layouts.get(name, []):
+    for path in xmls.get(name, []):
         text = path.read_text(encoding="utf-8", errors="replace")
         for w in wants:
             if '="%s"' % w in text:
@@ -130,15 +131,15 @@ def main():
     ap.add_argument("--check", action="store_true", help="对不上时退出码非 0")
     args = ap.parse_args()
 
-    dimen, color, layouts = build_tables()
+    dimen, color, xmls = build_tables()
     missing = [t for t, p in dumps() if not p.exists()]
     print("原版解码目录：%d 个可用%s" % (
         len(dumps()) - len(missing), "（缺 %s）" % ", ".join(missing) if missing else ""))
-    print("   dimens 条目 %d，colors 条目 %d，布局 %d 个\n" % (len(dimen), len(color), len(layouts)))
+    print("   dimens 条目 %d，colors 条目 %d，布局+drawable %d 个\n" % (len(dimen), len(color), len(xmls)))
 
     root = pathlib.Path(__file__).resolve().parent.parent
     src = (root / DIMENS_KT).read_text(encoding="utf-8")
-    ok = bad = unverified = uncited = 0
+    ok = bad = unverified = uncited = measured = 0
     rows = []
     for name, value, unit, doc in kdoc_entries(src):
         cands = candidates(doc)
@@ -151,7 +152,7 @@ def main():
                          "、".join("%g" % v for v, _ in vals[:3]), "%s ← %s" % (hit, vals[0][1])))
             continue
         for c in cands:
-            note = in_layout(c, value, unit, layouts)
+            note = in_xml(c, value, unit, xmls)
             if note:
                 ok += 1
                 rows.append(("ok", name, "%g%s" % (value, unit), "布局写死", "%s %s" % (c, note)))
@@ -160,6 +161,10 @@ def main():
             if not cands:
                 uncited += 1
                 rows.append(("?", name, "%g%s" % (value, unit), "-", "注释没写原版资源名"))
+            elif "实测" in doc:
+                measured += 1
+                rows.append(("~", name, "%g%s" % (value, unit), "实测",
+                             "注释写的是实测值（%s），工具不校验" % ", ".join(cands[:2])))
             else:
                 unverified += 1
                 rows.append(("?", name, "%g%s" % (value, unit), "找不到", "注释写的是 " + ", ".join(cands[:3])))
@@ -168,7 +173,7 @@ def main():
     print("   %-34s %-9s %-12s %s" % ("本库常量", "本库值", "原版值", "来源 / 备注"))
     for mark, name, val, orig, note in rows:
         print("   %-34s %-9s %-12s %s%s" % (name, val, orig, "⚠ " if mark == "BAD" else "", note))
-    print("\n   对得上 %d，对不上 %d，原版里找不到 %d，注释没写 %d\n" % (ok, bad, unverified, uncited))
+    print("\n   对得上 %d，对不上 %d，原版里找不到 %d，实测值 %d，注释没写 %d\n" % (ok, bad, unverified, measured, uncited))
 
     lib = "\n".join(
         p.read_text(encoding="utf-8", errors="replace")

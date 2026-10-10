@@ -20,7 +20,7 @@ similar".
 | `SmartisanAnalogClock` | Clock `AnalogClockHandsView` | ✅ 360×400 base canvas, hand anchors 6.9/8 and 6.5/8, numerals at 108dp / 84.6dp all match |
 | `SmartisanCompactClock` | Clock `SmallWorldClockView` | ✅ anchors 6.7/8, 7.2/8, 6.5/8 and the 4px shadow offset match; 18:00–06:00 night dial matches |
 | `SmartisanRulerPicker` | Clock `TimerRulerView` | ✅ "one minute = one scale bitmap width" tiling matches, as do the three caliper layers |
-| `SmartisanModal` / `SmartisanDialog` | Music `SmartisanModal` + Clock `SmartisanModalDialog` | ✅ 308dp width, 10dp radius, 48dp title bar and buttons, 1px divider, 0.54 scrim all match |
+| `SmartisanModal` / `SmartisanDialog` | Music `SmartisanModal` + Clock `SmartisanModalDialog` | ✅ 308dp width, 5dp radius, 48dp title bar and buttons, 1px divider, 0.54 scrim all match |
 | `SmartisanMenuDialog` | Clock `SmartisanMenuDialog` | ✅ bottom-anchored, 18dp sides, 18/24dp button margins, 48dp buttons match |
 | `SmartisanBottomSheet` | Music `SmartisanAnimatedSheet` | ✅ slides up from the bottom, 300ms in / 250ms out match |
 | `SmartisanLetterIndexBar` | Music letter quick bar + Clock `QuickBarEx` | ✅ hold-and-drag selection and the magnifier bubble match |
@@ -234,5 +234,57 @@ and with About this Phone (`about_settings_layout`, the layout our About page co
 
 Side-by-side captures of our About page and the R2's `About this Phone` were compared at the same
 density; the bar/shadow/card relationship now matches (logo card, five-row group card and the plain
-`AboutStaticItem` list all line up the same way).
+`AboutStaticItem` list all line up the same way). Those numbers were taken while the R2 ran at
+560dpi; it now runs at 400dpi (next section), so the pixel counts shift — convert with **2.5px/dp**.
+
+## 6. Dimension re-check against the decoded original APKs
+
+Five more original APKs were pulled straight off the Nut R2 (`MusicPlayer`, `ClockSmartisan`,
+`NotesSmartisan`, `CalculatorSmartisan`, `FilePreviewSmartisan`) and decoded with apktool, joining the
+earlier framework / File Manager / Settings / Contacts / Keyguard dumps — 10 decode directories in
+total (3119 dimens, 746 colours, 1846 layouts). `tools/dump_sweep.py` looks up every
+`SmartisanDimens` constant under the original resource name its KDoc cites:
+
+- 49 match, 0 mismatch;
+- 13 have no same-named entry in the originals (mostly from the three revival projects, or drawn in code);
+- 15 have no cited source at all.
+
+Values hardcoded inside layouts were checked too: editor row 6dp/44dp, left icon 26dp, right label
+150dp, board section 40dp+6dp, About rows 7dp/3dp/5dp/1px, list row icon 36dp, Contacts
+`list_section.xml` 18dp/1dp/8dp — all match.
+
+### Measured on the device
+
+The R2 currently runs at 400dpi (`display_density_forced=400`; 1080px ÷ 2.5 = 432dp, matching the
+framework's `values-sw432dp`), i.e. **2.5px/dp**. All numbers below are uiautomator bounds:
+
+| Component | Measured original | Our constant |
+| --- | --- | --- |
+| title bar height | 120px = 48dp | `TitleBarHeight` 48dp ✅ |
+| title-bar side icons | 90px = 36dp, 15px = 6dp from the edge | `IconSize` 36dp, `TitleBarHorizontalMargin` 6dp ✅ |
+| list row height | 150px = 60dp (two-line 225px = 90dp) | `ListItemHeight` / `ListRowMinHeight` 60dp ✅ |
+| left icon area | 150×150px = 60×60dp | `ListRowLeftIconArea` 60dp ✅ |
+| section header | 75px = 30dp | `ListSectionTitleHeight` 30dp ✅ |
+| in-row hidden actions | first icon 30px = 12dp from the edge, icons 36dp | `HiddenActionSidePadding` 12dp ✅ |
+| bottom tab bar (Contacts) | 135px = 54dp, icons 67px≈26.8dp / centre 75px=30dp | `BottomBarHeight` 54dp, `BottomBarIconSize` 30dp ✅ |
+| multi-select bottom bar (File Manager) | 120px = 48dp | a different component from the tab bar: the framework's `smartisan_tabswitch_tabbar_height` points at `smartisan_bottom_bar_height` (54dp) |
+| bottom menu dialog | title bar 120px=48dp, buttons 120px=48dp, side margin 45px=18dp, gap 45px=18dp, bottom 60px=24dp | `DialogTitleHeight` 48dp, `DialogButtonHeight` 48dp, `MenuHorizontalMargin` 18dp, `MenuActionGap` 18dp, `MenuButtonBottomMargin` 24dp ✅ |
+| music playback bar | 167px = 66.8dp, artwork 125px = 50dp, transport buttons 120px = 48dp | `MinimumTouchTarget` 48dp ✅ |
+| Settings "About this Phone" row | row 60dp, text starts 75px = 30dp, row margin 30px = 12dp | `ListItemHeight`, `AboutStaticItemContentStart` 30dp, `ListItemHorizontalMargin` 12dp ✅ |
+
+### The one mismatch this pass fixed
+
+Dialog corner radius: we used **10dp** (including `smartisan_modal_corner_radius` in
+`smartisanx_assets_values.xml`), but the original revone dialog background
+`revone_global_dialog_shape_background` and its popup variant
+`revone_global_popupwindow_dialog_background` both use a **5.0dp** corner radius. Their fill
+(`#fff6f6f6`) and 1px stroke (`#ffe8e8e8`) match ours exactly, so 10dp was a transcription slip;
+it is back to 5dp.
+
+The dialog/menu KDocs in `SmartisanDimens` also said "original `smartisan_modal_width`", but
+`smartisan_modal_*` / `smartisan_menu_*` are **our own resource names** (inherited from the three
+revival projects) and exist in no original package. The originals are
+`revone_global_dialog_content_width` (308dp) and `revone_dialog_button_height` (48dp), plus the
+framework's `menu_dialog_horizontal_distance` (18dp) / `menu_dialog_btn_margin_view` (18dp) /
+`menu_dialog_btn_margin_edge` (24dp). The KDocs now say so.
 

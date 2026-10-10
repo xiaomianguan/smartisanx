@@ -340,7 +340,7 @@ from **different sources**: `listItemPrimary` is 15sp, `listRowPrimary` is 17sp.
 | `extraSmall` | 2dp |
 | `small` | 4dp |
 | `medium` | 8dp |
-| `dialog` | 10dp |
+| `dialog` | 5dp |
 | `sheet` | 10dp on the top corners |
 | `large` | 16dp |
 
@@ -353,11 +353,11 @@ TitleBarHeight 48        TitleBarShadowHeight 14     TitleBarHorizontalMargin 6
 IconSize 36              ListItemHeight 60           ListItemMinHeight 60
 ListItemHorizontalMargin 12  RowContentStart 18     CheckboxMarginStart 18
 DividerThickness 0.67    ListItemImageSize 48        DialogWidth 308
-DialogTitleHeight 48     DialogButtonHeight 48       DialogCornerRadius 10
+DialogTitleHeight 48     DialogButtonHeight 48       DialogCornerRadius 5
 MenuHorizontalMargin 18  MenuButtonTopMargin 18      MenuButtonBottomMargin 24
 MenuActionEdgeMargin 24  MenuActionGap 18            BottomBarHeight 54
 BottomBarIconSize 30     ScrollbarWidth 3            ScrollbarMargin 2
-LetterIndexBarWidth 24   MinimumTouchTarget 48
+LetterIndexBarWidth 30   MinimumTouchTarget 48
 ```
 
 ## Motion specs

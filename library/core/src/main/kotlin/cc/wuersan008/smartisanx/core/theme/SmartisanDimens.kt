@@ -74,7 +74,7 @@ object SmartisanDimens {
      */
     val ListItemVerticalGap = 14.dp
 
-    /** 列表内容起始位置，原版 `settings_row_content_margin_start`。 */
+    /** 列表内容 / 分隔线的左缩进 18dp。原版文件管理器的文件列表里，分隔线左端实测在 43px（400dpi 下约 17.2dp）。 */
     val RowContentStart = 18.dp
 
     /** 多选复选框左边距，原版 `check_box_margin_left`。 */
@@ -86,37 +86,53 @@ object SmartisanDimens {
     /** 列表图标尺寸，原版 `listview_item_image_width`。 */
     val ListItemImageSize = 48.dp
 
-    /** 弹窗内容宽度，原版 `smartisan_modal_width` / `revone_global_dialog_content_width`。 */
+    /**
+     * 弹窗内容宽度 308dp。
+     *
+     * 原版 revone 弹窗的 `revone_global_dialog_content_width`（音乐 app 的 dimens.xml，308.0dp）。
+     * 本库对应的资源名是 `smartisan_modal_width`。
+     */
     val DialogWidth = 308.dp
 
-    /** 弹窗标题栏高度，原版 `smartisan_modal_title_height`。 */
+    /**
+     * 弹窗标题栏高度 48dp。
+     *
+     * 原版 revone 布局 `revone_alertdialog_layout.xml` 的标题行高度用的是
+     * `revone_dialog_button_height`（48dp）。本库资源名 `smartisan_modal_title_height`。
+     */
     val DialogTitleHeight = 48.dp
 
-    /** 弹窗按钮高度，原版 `smartisan_modal_button_height`。 */
+    /** 弹窗按钮高度 48dp，原版 `revone_dialog_button_height`；本库资源名 `smartisan_modal_button_height`。 */
     val DialogButtonHeight = 48.dp
 
-    /** 弹窗圆角，原版 `smartisan_modal_corner_radius`。 */
-    val DialogCornerRadius = 10.dp
+    /**
+     * 弹窗圆角 5dp。
+     *
+     * 原版 revone 弹窗底色 `revone_global_dialog_shape_background` 与浮层版
+     * `revone_global_popupwindow_dialog_background` 的 corners radius 都是 5.0dp；
+     * 本库资源名 `smartisan_modal_corner_radius`（此前误写成 10dp）。
+     */
+    val DialogCornerRadius = 5.dp
 
-    /** 底部菜单弹窗左右留白，原版 `smartisan_menu_horizontal_margin`。 */
+    /** 底部菜单弹窗左右留白 18dp，原版 framework `menu_dialog_horizontal_distance`；本库资源名 `smartisan_menu_horizontal_margin`。 */
     val MenuHorizontalMargin = 18.dp
 
-    /** 底部菜单弹窗按钮上边距，原版 `smartisan_menu_button_top_margin`。 */
+    /** 底部菜单弹窗按钮上边距 18dp，原版 framework `menu_dialog_btn_margin_view`；本库资源名 `smartisan_menu_button_top_margin`。 */
     val MenuButtonTopMargin = 18.dp
 
-    /** 底部菜单弹窗按钮下边距，原版 `smartisan_menu_button_bottom_margin`。 */
+    /** 底部菜单弹窗按钮下边距 24dp，原版 framework `menu_dialog_btn_margin_edge`；本库资源名 `smartisan_menu_button_bottom_margin`。 */
     val MenuButtonBottomMargin = 24.dp
 
-    /** 底部菜单弹窗底部动作区的左右留白，原版 `smartisan_menu_action_edge_margin`。 */
+    /** 底部菜单弹窗底部动作区的左右留白 24dp，原版 framework `menu_dialog_btn_margin_edge`；本库资源名 `smartisan_menu_action_edge_margin`。 */
     val MenuActionEdgeMargin = 24.dp
 
-    /** 底部菜单弹窗动作项间距，原版 `smartisan_menu_action_gap`。 */
+    /** 底部菜单弹窗动作项间距 18dp，原版 framework `menu_dialog_horizontal_distance`；本库资源名 `smartisan_menu_action_gap`。 */
     val MenuActionGap = 18.dp
 
     /** 底部标签栏高度，原版 `smartisan_bottom_bar_height`（锤子音乐 54dp）。 */
     val BottomBarHeight = 54.dp
 
-    /** 底部标签栏图标尺寸，原版 `clock_tab_icon_size`。 */
+    /** 底部标签栏图标尺寸 30dp。原版联系人 / 音乐底栏中心图标实测 75px（400dpi 下 = 30dp），两侧图标 67px ≈ 26.8dp。 */
     val BottomBarIconSize = 30.dp
 
     /** 开关宽度（含投影），取自原版开关阴影图 66dp × 48dp。 */
@@ -140,8 +156,13 @@ object SmartisanDimens {
     /** 滚动条与内容边缘的间距。 */
     val ScrollbarMargin = 2.dp
 
-    /** 字母索引栏宽度，原版 `smartisan_letterbar` 列宽。 */
-    val LetterIndexBarWidth = 24.dp
+    /**
+     * 字母索引栏宽度 30dp。
+     *
+     * 原版联系人 / 音乐的字母条 `quickbar_left_letters_bar` 实测宽 74px（400dpi 下 = 29.6dp），
+     * 外层 `main_quickbar` 是 92px = 36.8dp。此前写的 24dp 偏窄。
+     */
+    val LetterIndexBarWidth = 30.dp
 
     /** 通用图标按钮的点击区域，保证至少 48dp 的可点范围。 */
     val MinimumTouchTarget = 48.dp
@@ -168,7 +189,7 @@ object SmartisanDimens {
      */
     val ListRowLeftIconArea = 60.dp
 
-    /** 左侧图标最大边长，原版 layout 里写死的 `maxWidth` / `maxHeight` = 36dp。 */
+    /** 左侧图标最大边长 36dp。原版 `list_content_left_image_view.xml` 里写死的 `maxWidth` / `maxHeight` = 36.0dp。 */
     val ListRowLeftIconMax = 36.dp
 
     /** 行内容与左侧图标区的间距，原版 `mid_container_margin`（列表行本身不用，见 `primary_title_layout`）。 */

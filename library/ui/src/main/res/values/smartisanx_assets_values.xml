@@ -33,7 +33,10 @@
     <color name="weather_bg_color_start_standstorm">#f8f6f2</color>
     <color name="weather_bg_color_start_sunny">#e8eefc</color>
     <color name="weather_top_card_scrim">#00000000</color>
-    <dimen name="smartisan_modal_corner_radius">10dp</dimen>
+    <!-- 原版 revone 弹窗底色 revone_global_dialog_shape_background 与浮层版
+         revone_global_popupwindow_dialog_background 的 corners radius 都是 5.0dp，
+         这里原先写成 10dp，按原版素材改回 5dp。 -->
+    <dimen name="smartisan_modal_corner_radius">5dp</dimen>
     <dimen name="weather_widget_background_artwork_inset">-8dp</dimen>
     <color name="clock_background">#FAFAFA</color>
     <color name="ringtone_picker_title_text">#99000000</color>

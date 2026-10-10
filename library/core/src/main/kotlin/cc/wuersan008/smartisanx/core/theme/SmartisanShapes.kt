@@ -22,8 +22,8 @@ class SmartisanShapes(
     val small: Shape = RoundedCornerShape(4.dp),
     /** 中圆角，用于卡片。 */
     val medium: Shape = RoundedCornerShape(8.dp),
-    /** 弹窗圆角，原版 `smartisan_modal_corner_radius`。 */
-    val dialog: Shape = RoundedCornerShape(10.dp),
+    /** 弹窗圆角，原版 revone 弹窗底色是 5dp（本库资源名 `smartisan_modal_corner_radius`）。 */
+    val dialog: Shape = RoundedCornerShape(5.dp),
     /** 底部弹层圆角。 */
     val sheet: Shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
     /** 大圆角，用于悬浮按钮。 */
