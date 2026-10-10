@@ -20,6 +20,8 @@
     <string name="smartisan_selected">Selected</string>
     <string name="smartisan_unselected">Not selected</string>
     <!-- 手势切横竖屏提示（原版 framework strings.xml / values-zh-rCN 的 twist_guide_title / _body）。 -->
-    <string name="smartisan_twist_guide_title">提示</string>
-    <string name="smartisan_twist_guide_body">你刚刚激活了手势切换横竖屏操作。通过图片所示的手势即可调整当前应用程序的横竖屏锁定状态并同时关闭“自动旋转屏幕”。\n\n每个应用程序的横竖屏锁定状态会被单独记忆，所以你在一个应用中设定的锁定状态不会影响其他应用程序。</string>
+    <string name="smartisan_twist_guide_title">Note</string>
+    <string name="smartisan_twist_guide_body">You just activated Easy Rotate. As shown in the image, you can easily rotate the screen via a simple gesture even when Auto Rotate is turned off.\n\nThe rotate status is remembered by the OS on a per-app basis, so that when you rotate screen within one app, other apps will not be affected.</string>
+    <!-- 日历里「今天」那一格显示的文字（原版 framework strings.xml 的 today_text）。 -->
+    <string name="smartisan_calendar_today">Today</string>
 </resources>

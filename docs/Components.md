@@ -276,6 +276,15 @@ enum class SmartisanProgressState { Download, Pause, Retry, Processing }
     modifier, onConfirm: (hour: Int, minute: Int) -> Unit = ..., is24Hour: Boolean = ...,
 )
 
+@Composable fun SmartisanCalendar(
+    selectedDate: LocalDate, onDateSelected: (LocalDate) -> Unit, modifier: Modifier = Modifier,
+    minDate: LocalDate = SmartisanCalendarDefaults.MinDate, maxDate: LocalDate = ...MaxDate,
+    firstDayOfWeek: DayOfWeek? = null, singleWeek: Boolean = false,
+    today: LocalDate = LocalDate.now(), showTitleBar: Boolean = true, hasFocus: Boolean = true,
+    onTitleClick: (() -> Unit)? = null, enabled: Boolean = true,
+)
+object SmartisanCalendarDefaults   // title bar 48dp / title 174.6dp / arrows 57dp inset + 51dp / weekday row 29.3dp / row 44dp / single week 67.6dp / baseline 30dp -> 38dp ...
+
 data class SmartisanPreviewOption(@DrawableRes previewRes: Int, title: String? = null)
 const val SmartisanPreviewOptionsInvalid = -1
 
@@ -317,6 +326,7 @@ durations and interpolators are copied from the originals:
 | the `SmartisanDatePicker` family | `SmartisanDatePicker[Ex]` / `SmartisanDatePicker[Ex]Dialog` / `SmartisanDateTimePicker[Dialog]` | Calendar, Settings, Notes, Clock (including "jump to date") |
 | `SmartisanTimePickerDialog` | `smartisanos.widget.SmartisanTimePickerDialog` / `SmartisanTimePickerExDialog` | Clock, Calendar |
 | `SmartisanPreviewOptions` / `SmartisanPreviewOptionCell` | `smartisanos.widget.PreviewOptionsCheckView` / `PreviewOptionView` | framework-wide (the two-column preview options in Settings) |
+| `SmartisanCalendar` | `smartisanos.widget.calendar.CalendarView` / `MonthWeekEventsView` / `MonthByWeekAdapter` / `DragViewSwitcher` / `NormalDayCellDrawer` | Calendar, Notes / Reminders (framework-wide) |
 | `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
 | `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
@@ -335,6 +345,44 @@ landscape differ), and repeats on long press at the original `500ms` delay then 
 Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
 **Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp
 radius, all overridable per parameter.
+
+### Calendar (`SmartisanCalendar`)
+
+```kotlin
+@Composable fun SmartisanCalendar(
+    selectedDate: LocalDate, onDateSelected: (LocalDate) -> Unit, modifier: Modifier = Modifier,
+    minDate: LocalDate = LocalDate.of(1970, 1, 1), maxDate: LocalDate = LocalDate.of(2037, 12, 31),
+    firstDayOfWeek: DayOfWeek? = null,   // null = the original's country rule (US / Indonesia start on Sunday, everyone else on Monday)
+    singleWeek: Boolean = false,         // the original adapter's single_week: keep only the selected week
+    today: LocalDate = LocalDate.now(), showTitleBar: Boolean = true, hasFocus: Boolean = true,
+    onTitleClick: (() -> Unit)? = null, enabled: Boolean = true,
+)
+```
+
+- This is the month calendar from Notes / Reminders' "pick a reminder time" screen (every asset is named
+  `remind_` something), and the whole drawing rule set is copied: **cells outside the displayed month are an
+  8% grey block plus a white day number**, the white number being invisible on the grey block so that a
+  glance shows only the shape of the month; **today's cell spells "today"** (14sp, while day numbers are
+  18sp) with a blue pill when today is also the selected day and a light grey pill otherwise; the selected
+  day gets its own blue pill, 1dp wider than the cell on each side and 1.4dp taller on top and bottom; the
+  hairline between weeks comes from the row background asset itself (1.33dp of 10% black at its top and
+  bottom).
+- Metrics: 48dp title bar, 174.6dp-wide title (14dp bold, `#9a000000`), month arrows 51dp large inset 57dp
+  from either edge, a 1dp separator below, a 29.3dp weekday row (10sp, 12.3dp side margins), 44dp rows and
+  cells `(grid width + 0.8dp) / 7` wide; the grid's 12.3dp side padding comes from the content frame
+  9-patch's own padding, the same number as the weekday row's margin, so the two line up exactly (verified
+  pixel by pixel on device, see [ComponentVerification](ComponentVerification.md)).
+- Switching months slides the whole block over 300ms (the four `anim/remind_week_*` files say 400ms but
+  `SequenceAnimUtils` overrides it to 300ms). Pressing an arrow also moves the selection: it keeps the same
+  day of month when it returns to the selected date's month and lands on the 1st otherwise (the original's
+  `getMonthCalendarByOffset`).
+- Known differences from the original: `java.time` instead of `Time` plus Julian days; **the vertical
+  "month <-> single week" collapse gesture is not ported** — the original's `prepareFollowingView` returns
+  false for the vertical direction (`changeKind == 2`), so it is a no-op there and the single-week view was
+  only ever opened by the host changing an adapter parameter; this library exposes it as the explicit
+  `singleWeek` parameter. The title uses the system time zone (the original reads Notes / Calendar's "home
+  time zone" preference), and dead code (the `drawToday()` outline highlight, `mAnimateToday`, the unused
+  `remind_today_blue_week_holo_light` asset) was not ported.
 
 ### framework sliders (`SmartisanSmoothSeekBar` / `SmartisanIconSlider`)
 

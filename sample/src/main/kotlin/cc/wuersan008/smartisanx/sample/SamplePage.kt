@@ -68,4 +68,9 @@ enum class SamplePage(
         subtitle = "机械表盘、时间滚轮、标尺、星期选择",
         icon = R.drawable.selector_tab_worldclock,
     ),
+    Calendar(
+        title = "日历",
+        subtitle = "月视图、单周视角、点标题跳转日期",
+        icon = R.drawable.calendar_icon,
+    ),
 }

@@ -21,6 +21,7 @@ import cc.wuersan008.smartisanx.core.theme.SmartisanTheme
 import cc.wuersan008.smartisanx.core.theme.ThemeController
 import cc.wuersan008.smartisanx.core.theme.rememberSmartisanThemeController
 import cc.wuersan008.smartisanx.sample.pages.ButtonPage
+import cc.wuersan008.smartisanx.sample.pages.CalendarPage
 import cc.wuersan008.smartisanx.sample.pages.ClockPage
 import cc.wuersan008.smartisanx.sample.pages.ControlPage
 import cc.wuersan008.smartisanx.sample.pages.IconPage
@@ -72,6 +73,7 @@ fun SampleApp() {
                     SamplePage.ListInteraction -> ListInteractionPage(onBack = back)
                     SamplePage.Overlay -> OverlayPage(onBack = back)
                     SamplePage.Clock -> ClockPage(onBack = back)
+                    SamplePage.Calendar -> CalendarPage(onBack = back)
                     null -> Unit
                 }
             }

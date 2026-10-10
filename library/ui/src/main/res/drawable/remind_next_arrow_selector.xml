@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  日历标题栏右侧「下一个月」箭头（原版 framework res/drawable/remind_next_arrow_selector.xml）。
+
+  同 `reminder_previous_arrow_selector`：四条 item 与原版逐字一致，
+  按下的反馈由整块按钮提供，箭头本身的 `_down` 只在获得焦点时使用。
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_window_focused="false" android:drawable="@drawable/sos_smartisanos_drawable_remind_next_arrow" />
+    <item android:state_focused="true" android:state_pressed="true" android:drawable="@drawable/sos_smartisanos_drawable_remind_next_arrow_down" />
+    <item android:state_focused="false" android:state_pressed="true" android:drawable="@drawable/sos_smartisanos_drawable_remind_next_arrow" />
+    <item android:state_focused="true" android:drawable="@drawable/sos_smartisanos_drawable_remind_next_arrow_down" />
+</selector>

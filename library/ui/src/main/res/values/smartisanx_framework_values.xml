@@ -71,4 +71,38 @@
     -->
     <drawable name="list_board_pressed_color">#f2f2f2</drawable>
     <drawable name="list_board_section_title_bg_normal">#ffffffff</drawable>
+
+    <!--
+      日历（framework `smartisanos.widget.calendar.*`：CalendarView / MonthWeekEventsView /
+      MonthByWeekAdapter 等，值来自 res/values/dimens.xml、res/values/colors.xml 与
+      res/values/styles.xml 的 TextAppearance.MonthView_DayLabel）。
+
+      说明：
+      - `monthweek_item_height` / `monthweek_item_single_height` 只在 xxhdpi 里有值
+        （44dp / 67.6dp），也就是原版只在 xxhdpi 上定过日历行高；
+      - `text_size_month_number` / `today_text_size_month_number` 原版用的是 **sp**，
+        所以它们会跟随系统字号缩放，而 `remind_title_text_size` 是 dp、不跟随；
+      - 原版还有 `monthweek_item_width`（48dp）与 `monthweek_grid_bg_interval_width`（4dp），
+        前者只是拿不到实际宽度时的兜底、后者在当前这套绘制路径里没被用到，故未收录。
+    -->
+    <color name="black_60">#666666</color>
+    <color name="month_day_number_other">#ffffffff</color>
+    <color name="month_today_number">#ffffffff</color>
+    <dimen name="allinone_titilebar_height">48.0dp</dimen>
+    <dimen name="allinone_dateview_layout_width">174.6dp</dimen>
+    <dimen name="fullmonthheader_layout_height">29.299988dp</dimen>
+    <dimen name="fullmonthheader_margin_left">12.299988dp</dimen>
+    <dimen name="fullmonthheader_margin_right">12.299988dp</dimen>
+    <dimen name="monthweek_item_height">44.0dp</dimen>
+    <dimen name="monthweek_item_single_height">67.599976dp</dimen>
+    <dimen name="monthweek_relative_month_num">30.0dp</dimen>
+    <dimen name="monthweek_relative_week_en_num">38.0dp</dimen>
+    <dimen name="monthbyweek_border_width">0.8000001dp</dimen>
+    <dimen name="monthbyweek_h">1.0dp</dimen>
+    <dimen name="monthbyweek_v">1.3999939dp</dimen>
+    <dimen name="remind_title_text_size">14.0dp</dimen>
+    <dimen name="text_size_month_number">18.0sp</dimen>
+    <dimen name="today_text_size_month_number">14.0sp</dimen>
+    <!-- 星期栏的文字样式：10sp、black_60（原版 `TextAppearance.MonthView_DayLabel`）。 -->
+    <dimen name="monthview_day_label_text_size">10.0sp</dimen>
 </resources>

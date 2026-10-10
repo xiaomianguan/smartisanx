@@ -408,4 +408,45 @@ object SmartisanDrawables {
      */
     @DrawableRes val VolumeMute = R.drawable.volume_mute_d
 
+    // ---- 日历（原版 framework smartisanos.widget.calendar.*，`remind_*` 素材） ----
+
+    /**
+     * 日历里一周行的底纹（原版 `remind_month_grid_body_for_drop.9.png`，1010×148px）。
+     *
+     * 这张素材几乎全透明，只有上 / 下各 1.33dp 一条 10% 黑：就是周与周之间的那条细分割线。
+     */
+    @DrawableRes val CalendarWeekRowBackground = R.drawable.sos_smartisanos_drawable_remind_month_grid_body_for_drop
+
+    /** 非当月那一格的灰块（原版 `remind_month_view_grey_day_item.png`，8% 黑）。 */
+    @DrawableRes val CalendarOtherMonthCell = R.drawable.sos_smartisanos_drawable_remind_month_view_grey_day_item
+
+    /** 选中日期的药丸底图（原版 `remind_calendar_month_view_day_focused.9.png`，蓝色）。 */
+    @DrawableRes val CalendarSelectedDay = R.drawable.sos_smartisanos_drawable_remind_calendar_month_view_day_focused
+
+    /** 今天且被选中时的药丸底图（原版 `remind_calendar_month_view_today_focused.9.png`，蓝色）。 */
+    @DrawableRes val CalendarTodaySelected = R.drawable.sos_smartisanos_drawable_remind_calendar_month_view_today_focused
+
+    /** 今天但未被选中时的药丸底图（原版 `remind_calendar_month_view_day_unfocused.9.png`，浅灰）。 */
+    @DrawableRes val CalendarToday = R.drawable.sos_smartisanos_drawable_remind_calendar_month_view_day_unfocused
+
+    /**
+     * 日历外框（原版 `remind_month_content_frame.9.png`）。
+     *
+     * 素材本身是 30% 白的细框，但它更重要的作用是**自带 padding**：
+     * 左右各 12.3dp、上下各 0.67dp —— 日历网格就是靠它和星期栏对齐的。
+     */
+    @DrawableRes val CalendarContentFrame = R.drawable.sos_smartisanos_drawable_remind_month_content_frame
+
+    /** 标题栏左侧「上一个月」箭头 selector（原版 `reminder_previous_arrow_selector`，51dp）。 */
+    @DrawableRes val CalendarPreviousArrow = R.drawable.reminder_previous_arrow_selector
+
+    /** 标题栏右侧「下一个月」箭头 selector（原版 `remind_next_arrow_selector`，51dp）。 */
+    @DrawableRes val CalendarNextArrow = R.drawable.remind_next_arrow_selector
+
+    /**
+     * 标题栏下方那条 1dp 分割线（原版 `topbar_bottom_line.9.png`，6% 黑）。
+     *
+     * 与库内其它地方用的是同一张素材（原版多处复用），所以没有另存一份。
+     */
+    @DrawableRes val CalendarTitleBarSeparator = R.drawable.topbar_bottom_line
 }

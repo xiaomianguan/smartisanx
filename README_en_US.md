@@ -215,7 +215,7 @@ SmartisanTheme {
 `SmartisanDateTimePicker`, `SmartisanDateTimePickerDialog`, `SmartisanTimePicker`,
 `SmartisanTimePickerDialog`, `SmartisanSpinner`, `SmartisanPreviewOptions`, `SmartisanPreviewOptionCell`, `SmartisanCircleProgress`,
 `SmartisanCircleProgressIndeterminate`, `SmartisanCircleProgressLarge`,
-`SmartisanCircleProgressPopup`, `SmartisanMarqueeText`
+`SmartisanCircleProgressPopup`, `SmartisanMarqueeText`, `SmartisanCalendar`
 
 ### Input (`cc.wuersan008.smartisanx.ui.input`)
 
