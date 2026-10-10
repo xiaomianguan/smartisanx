@@ -111,7 +111,8 @@ dependencies {
 }
 ```
 
-最低要求：`minSdk 26`、Kotlin 2.x、Compose BOM 2025.05.01 及以上。
+最低要求：`minSdk 26`、`compileSdk 37`、Kotlin 2.4、Compose BOM 2026.09.00 及以上
+（库依赖 Compose 1.12，消费方的 `compileSdk` 需要不低于 37）。
 
 如果不想用源码依赖，也可以先发布到本地 Maven 再引用：
 
@@ -258,6 +259,12 @@ SmartisanTheme {
 ./gradlew :sample:assembleDebug
 # 产物：sample/build/outputs/apk/debug/sample-debug.apk
 ```
+
+构建环境：**JDK 17 及以上**（本机默认的 JDK 27 直接用，不需要切换 JDK、也不用设
+`JAVA_HOME`）；工具链为 Gradle 9.8.1 + AGP 9.4.1 + Kotlin 2.4.21，`compileSdk = 37`。
+AGP 9 起 Kotlin 编译由 AGP 内置支持（built-in Kotlin），所以模块里不再声明
+`org.jetbrains.kotlin.android`，只保留 Compose 编译器插件；`jvmTarget` 默认跟随
+`compileOptions.targetCompatibility`（Java 11，也是 AGP 9 的默认值）。
 
 示例应用的分页与组件分组一一对应：主题与设计变量、文字、图标、按钮、基础控件、
 文本与输入、布局与列表、列表交互、浮层、时钟与机械控件。

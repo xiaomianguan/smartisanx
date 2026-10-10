@@ -1,19 +1,17 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
+    // AGP 9 起 Kotlin 编译由 AGP 内置支持（built-in Kotlin），不需要 org.jetbrains.kotlin.android。
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "cc.wuersan008.smartisanx.sample"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "cc.wuersan008.smartisanx.sample"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0.0"
     }
@@ -40,11 +38,8 @@ android {
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
-    }
-}
+// 内置 Kotlin 不需要单独设 kotlin.compilerOptions.jvmTarget：
+// 它默认跟随 android.compileOptions.targetCompatibility（这里保持 Java 11）。
 
 dependencies {
     implementation(project(":library:core"))

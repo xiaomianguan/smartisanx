@@ -121,7 +121,8 @@ dependencies {
 }
 ```
 
-Minimum requirements: `minSdk 26`, Kotlin 2.x, Compose BOM 2025.05.01 or newer.
+Minimum requirements: `minSdk 26`, `compileSdk 37`, Kotlin 2.4, Compose BOM 2026.09.00 or newer
+(the library depends on Compose 1.12, so consumers need `compileSdk` 37 or higher).
 
 If you would rather not use a source dependency, publish to your local Maven cache first:
 

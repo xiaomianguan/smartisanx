@@ -7,9 +7,10 @@
 | Item | Requirement |
 | --- | --- |
 | minSdk | 26 (Android 8.0) |
-| Kotlin | 2.0 or newer (the Compose compiler plugin is required) |
-| Compose BOM | 2025.05.01 or newer |
-| AGP | 8.9 or newer |
+| compileSdk | 37 (the library depends on Compose 1.12, so consumers need 37 or higher) |
+| Kotlin | 2.4 (the Compose compiler plugin is required; AGP 9 compiles Kotlin itself, no kotlin-android needed) |
+| Compose BOM | 2026.09.00 or newer |
+| AGP | 9.4 or newer (Gradle 9.8 or newer, JDK 17 or newer) |
 
 The library does not depend on Material / Material3. If your project also uses Material the two can
 coexist, but make sure the smartisanx components are wrapped in `SmartisanTheme`, not
