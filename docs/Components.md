@@ -1137,6 +1137,19 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
     now: Instant = Instant.now(), localZone: ZoneId = ZoneId.systemDefault(),
     showSecondHand: Boolean = false, onClick: (() -> Unit)? = null,
 )
+
+@Composable fun SmartisanFlipCard(
+    value: Int, modifier: Modifier = Modifier, digitWidth: Dp? = null,
+    animate: Boolean = true, durationMillis: Int = SmartisanFlipDurationMillis,
+    backingColor: Color = Color.Black,
+)
+
+@Composable fun SmartisanFlipClock(
+    hour: Int, minute: Int, modifier: Modifier = Modifier, use24Hour: Boolean = true,
+    digitWidth: Dp? = null, animate: Boolean = true,
+    durationMillis: Int = SmartisanFlipDurationMillis,
+    amPmColor: Color = SmartisanFlipAmPmColor, backingColor: Color = Color.Black,
+)
 ```
 
 - `SmartisanAnalogClock`'s second hand has the original slight rebound (it overshoots, then
@@ -1148,6 +1161,13 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
   vertically to sweep the same state across every row you cross".
 - `SmartisanWorldClockCard` computes local time and the offset from the current device zone using
   the city's `ZoneId`.
+- `SmartisanFlipCard` / `SmartisanFlipClock` are the **flip clock** from the lock screen's wireless-charging
+  canvas (the original `FlipNumber` + `WirelessChargingTime`): one card holds two digits (tens + units) with an
+  upper and a lower fold, hinges on both sides and three cover layers, and the flip uses the original 1000ms
+  ease-out-elastic curve. By default it renders at the assets' intrinsic size (= the original's real pixels at
+  the same density); pass `digitWidth` to scale it down. The original draws onto a pure black landscape charging
+  canvas, so the component paints a black backing via `backingColor` (each half asset keeps a 6px transparent
+  strip along the fold, so without the backing the host page's colour would show through).
 
 ---
 

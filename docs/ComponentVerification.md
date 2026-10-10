@@ -161,6 +161,26 @@ Components verified this way so far:
 | | three-part note | 15sp bold primary title, 12.5sp subtitle and 16sp message; 20dp / 18dp side padding (`dlg_text_view_padding_left` / `_right`) and an 18dp gap (`dlg_section_vertical_space`) |
 | | two-line single choice | 60dp (210px) tall (`dlg_single_choice_height_has_summary`) with 20dp / 6dp padding; 16sp bold title over a 12.5sp summary that turns white while pressed (the original `dlg_single_choice_summary_colorlist`); a `selector_radio_choice` mark on the end that keeps its space when unselected via alpha 0 |
 
+### `SmartisanFlipClock` / `SmartisanFlipCard` (lock-screen wireless-charging flip clock)
+
+Original: `KeyguardSmartisan` (Android 11 darwin) — `widgets/flipnumber/FlipNumber` (one two-digit flip card),
+`widgets/WirelessChargingTime` (hour and minute cards with an 18px gap) and `FlipClock`, drawn on the **landscape**
+charging canvas (`layout/wireless_charging_display.xml`: 2242x1080px, `rotation="270"`). `Settings.Global.clock_theme_style = 0`
+(the default) is this one, and the first preview in the Settings "Smartisan Clock Theme" page (`setting_clock_demo_01.9.png`)
+shows it.
+
+| Item | Original | Pixel check on device (nubia P0110, 560dpi; sample uses `digitWidth = 64.dp`) |
+| --- | --- | --- |
+| half-cell assets | `flip_{d}_{left,right}_{top,bottom}.png`, 454x468px; `left` = tens, `right` = units, `top` / `bottom` = upper / lower half; the upper digits are grey, the lower ones white | assets used as shipped (the 400dpi and xxhdpi buckets contain the very same file, both kept) |
+| card size | 2 cells wide x 2 cells tall = 908x936px | one card measures 448x462px = **128.00dp x 132.00dp** (= 2x64dp x 2x64x468/454; the half height is snapped to whole pixels) |
+| hour-to-minute gap | 18px (hard-coded `leftMargin = 18` in `WirelessChargingTime.onFinishInflate`) | measures 9px = **2.57dp** (= 64dp x 18/454 = 2.537dp, rounded to whole pixels); the whole clock is 905px wide |
+| hinges | `flip_axle.png` 24x120px, aligned to the card's left / right edge (`alignLeft` / `alignRight`) and vertically centred on the fold | the left hinge sits 12px wide inside the card's left edge (x 408 onwards) with its centre exactly on the fold ✓ |
+| fold line | each half asset keeps a **6px transparent strip** on the fold side, 12px together, and the original shows the charging canvas' pure black `#ff000000` through it | **found and fixed during the on-device check**: without a backing the fold showed a white seam (the sample page's white background). With `backingColor` (black by default) and a rounded clip of `digitWidth x 27/454` the fold is a dark line ✓ |
+| cover layers | upper `cover_top` (alpha 229), lower `cover_bottom` (alpha 127); while flipping `UpperFlipAlphaAnimation(1→0)`, `LowerAlphaAnimation(1→0)`, `LowerFlipAlphaAnimation(1→0.5)` and `LowerShadowAlphaAnimation(0→1)` | all four alphas copied verbatim (Compose's `alpha` and the View `Transformation` alpha are both multiplicative) |
+| flip animation | `UpperFlipAnimation(0→-180)` (pivot = bottom edge of the upper half) and `LowerFlipAnimation(180→0)` (pivot = top edge of the lower half), `Camera.setLocation(0, 0, -40)`, 1000ms, interpolator `FlipDownInterpolator(1.0f, 0.75f)` = ease-out-elastic | frame-by-frame from a screen recording (120Hz panel, ~109fps captured, three flips identical): the visible motion of 04 → 05 lasts **174–192ms** (about 65ms of main flip plus the rebound tail), matching an elastic curve that finishes early and converges; the perspective uses `cameraDistance = 40.dp` (5x Compose's 8dp default ↔ the original's -40 against the framework default of -8) |
+| 12-hour mode | `FlipClock.updateTime`: with a 12-hour setting it shows AM / PM (`#ff7f00`, bold, 16dp) and maps hour 0 to 12 | with `use24Hour = false` it shows an orange `PM` (sRGB `#ff7f00` reads as `#ef8632` in a screenshot, consistent with the Display P3 note below) |
+| sizing | the original is a fixed-pixel design on a 1080p landscape canvas with no scaling | the component defaults to the assets' intrinsic size (= the original's actual pixels at the same density) and accepts `digitWidth` for proportional scaling; the portrait sample uses 64dp |
+
 Still **not** verified item by item:
 
 - animation smoothness and feel (the durations and easing values are verified, the look is not);

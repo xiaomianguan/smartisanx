@@ -124,12 +124,17 @@ fun ClockPage(onBack: () -> Unit) {
         SampleSectionHeader("世界时钟卡片")
         WorldClockSection()
 
+        SampleSectionHeader("翻页时钟（锁屏无线充电）")
+        FlipClockSection()
+
         SampleFootnote(
             "这些组件用 Compose Canvas 重写了锤子时钟的自定义 View：" +
                 "AnalogClockHandsView（机械表盘）、CompactAlarmClockView（小表盘）、" +
                 "SmartisanTimePickerView（三列时间滚轮）、TimerRulerView（横向卡尺）、" +
                 "Classic680RulerView（竖向拉环）、AlarmRepeatDaysView（重复日）、" +
-                "SmallWorldClockView（世界时钟小表盘）。原版使用 XML + View，本库改为纯 Compose 实现。",
+                "SmallWorldClockView（世界时钟小表盘）。原版使用 XML + View，本库改为纯 Compose 实现。" +
+                "翻页时钟来自锁屏应用 KeyguardSmartisan 的 FlipNumber / WirelessChargingTime" +
+                "（无线充电画布上的时钟，素材与 1000ms elastic 翻页曲线都是原版的）。",
         )
     }
 }

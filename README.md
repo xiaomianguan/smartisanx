@@ -245,7 +245,7 @@ SmartisanTheme {
 
 `SmartisanAnalogClock`、`SmartisanCompactClock`、`SmartisanTimePicker`、`SmartisanWheelPicker`、
 `SmartisanRulerPicker`、`SmartisanPullRingRuler`、`SmartisanWeekdayPicker`、`SmartisanWeekdayChips`、
-`SmartisanWorldClockCard`
+`SmartisanWorldClockCard`、`SmartisanFlipClock`、`SmartisanFlipCard`
 
 ### 图标（`cc.wuersan008.smartisanx.icons`）
 
