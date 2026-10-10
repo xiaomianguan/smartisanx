@@ -19,7 +19,7 @@
 按职责拆分模块、示例应用独立成模块、组件按功能分包。
 
 > **本库包含原始图形资源。** 锤子风格是拟物设计，质感来自 NinePatch、位图与 selector，
-> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（10257 个文件，含夜间与多密度变体），
+> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（10481 个文件，含夜间与多密度变体），
 > 而不是用 Compose 重新画一遍。这些素材的知识产权归原权利人所有，
 > 使用前请先阅读[资源来源与授权](#资源来源与授权)。
 
@@ -39,10 +39,11 @@
   这里全部用 Compose Canvas 重写。
 - **原始图形资源**：标题栏、开关、弹窗、列表行、分组卡片、机械表盘、标尺等
   全部使用原版素材，夜间模式也有对应的原版资源，不是简单反色。
-- **多语言**：库内所有用户可见文案都已资源化，并翻译为 AOSP 支持的 80 种语言；
-  开发者不需要进库就能支持任意语言。
+- **多语言**：库内所有用户可见文案都已资源化。22 条字符串里 19 条带 AOSP 的 80 种语言译文；
+  后加的 3 条（日历「今天」、手势切横竖屏提示的标题与正文）目前有简体中文、繁体中文、日文、韩文，
+  其余语言回落英文。
 - **原版转场**：常规页面右侧滑入、模态页面底部滑入，参数取自原版 `anim/` 与复刻项目。
-- **全部原版素材**：图形资源取自 12 个原厂 APK，字体取自坚果 R2 官方 ROM 转储；
+- **全部原版素材**：图形资源取自 12 个原厂 APK 与坚果 R2 framework 转储，字体取自坚果 R2 官方 ROM 转储；
   全部 PNG 已用 oxipng 无损压缩。
 - **简体中文文档**：所有 KDoc、示例与说明均为简体中文。
 
@@ -51,8 +52,7 @@
 | 模块 | 说明 |
 | --- | --- |
 | `library/core` | 主题、色板、文字样式、形状、尺寸、动画规格、按压反馈、drawable 绘制等基础能力 |
-| `library/ui` | 全部组件：基础、控件、布局、列表交互、浮层、时钟 |
-| `library/icons` | 矢量图标集（通用 / 状态 / 媒体 / 时钟），可独立使用 |
+| `library/ui` | 全部组件：基础、控件、布局、列表交互、浮层、时钟，以及原版图形资源与图标总表 |
 | `sample` | 示例应用，逐个展示所有组件的用法与参数 |
 
 ## 目录结构
@@ -72,8 +72,8 @@ smartisanx/
 │   │   ├── layout/       标题栏、列表行、分组、标签栏、滚动条、空态、流式布局、关于页信息行
 │   │   ├── list/         拖动排序、侧滑删除、字母索引
 │   │   ├── overlay/      弹窗、菜单弹窗、底部弹层
-│   │   └── clock/        机械表盘、小表盘、时间滚轮、标尺、星期选择
-│   └── icons/src/main/kotlin/cc/wuersan008/smartisanx/icons/
+│   │   ├── clock/        机械表盘、小表盘、时间滚轮、标尺、星期选择
+│   │   └── asset/        原版图形资源索引（SmartisanDrawables / SmartisanOriginalIcons / SmartisanIconSet）
 ├── sample/               示例应用
 └── docs/                 中文文档
 ```
@@ -100,14 +100,12 @@ smartisanx/
 // settings.gradle.kts
 include(":library:core")
 include(":library:ui")
-include(":library:icons")
 ```
 
 ```kotlin
 // app/build.gradle.kts
 dependencies {
     implementation(project(":library:ui"))   // 组件（会自动带上 core）
-    implementation(project(":library:icons")) // 可选：矢量图标
 }
 ```
 
@@ -120,8 +118,8 @@ dependencies {
 ./gradlew publishToMavenLocal
 ```
 
-发布坐标：`cc.wuersan008.smartisanx:smartisanx-core`、`cc.wuersan008.smartisanx:smartisanx-ui`、
-`cc.wuersan008.smartisanx:smartisanx-icons`（版本 `0.1.0`）。
+发布坐标：`cc.wuersan008.smartisanx:smartisanx-core`、
+`cc.wuersan008.smartisanx:smartisanx-ui`（版本 `0.1.0`）。
 
 ### 2. 包裹主题
 
@@ -138,7 +136,7 @@ fun App() {
             titleBar = {
                 SmartisanTitleBar(
                     title = "锤子风格",
-                    navigationIcon = SmartisanTitleBarAction(SmartisanXIcons.Back, "返回") { /* ... */ },
+                    navigationIcon = SmartisanTitleBarAction(SmartisanOriginalIcons.Back, "返回") { /* ... */ },
                 )
             },
         ) {
@@ -159,14 +157,18 @@ fun App() {
 
 ### 3. 只用某一部分
 
-`core` 与 `icons` 可以独立使用，例如只想要色板和图标：
+`core` 可以独立使用，例如只想要色板和文字样式：
 
 ```kotlin
 SmartisanTheme {
     val colors = LocalSmartisanColors.current
-    SmartisanIcon(SmartisanXMediaIcons.Play, contentDescription = "播放", tint = colors.accent)
+    val typography = LocalSmartisanTypography.current
+    SmartisanText("只用主题", style = typography.body, color = colors.accent)
 }
 ```
+
+图标在 `ui` 模块里：**优先用原版位图**（`SmartisanDrawables` / `SmartisanOriginalIcons`，
+selector 自带按下 / 禁用态），原版没有对应素材时才用 `SmartisanIcon(imageVector = ...)` 传自己的 `ImageVector`。
 
 ## 组件总览
 
@@ -248,9 +250,18 @@ SmartisanTheme {
 `SmartisanRulerPicker`、`SmartisanPullRingRuler`、`SmartisanWeekdayPicker`、`SmartisanWeekdayChips`、
 `SmartisanWorldClockCard`、`SmartisanFlipClock`、`SmartisanFlipCard`
 
-### 图标（`cc.wuersan008.smartisanx.icons`）
+### 图标（`cc.wuersan008.smartisanx.ui.asset`）
 
-`SmartisanXIcons`、`SmartisanXStatusIcons`、`SmartisanXMediaIcons`、`SmartisanXClockIcons`
+图标**不用自绘矢量集**，直接用原版素材：
+
+| 对象 | 内容 |
+| --- | --- |
+| `SmartisanOriginalIcons` | 按用途命名的常用图标（返回、更多、搜索、播放……），指向原版 selector，自带按下 / 禁用态 |
+| `SmartisanDrawables` | 组件默认使用的原版图形资源（标题栏、弹窗、列表行、分组底图、表盘等） |
+| `SmartisanIconSet` | 从原厂 APK 提取的 3580 个原版图标总表，分 8 组；示例应用的「原版图标」页逐组展示 |
+
+原版没有对应素材时，仍可传自己的 `ImageVector`：`SmartisanIcon(imageVector = ...)` 与
+`SmartisanTitleBarAction(imageVector, ...)` 都支持。
 
 ## 示例应用
 
@@ -293,8 +304,8 @@ AGP 9 起 Kotlin 编译由 AGP 内置支持（built-in Kotlin），所以模块�
 
 因此深色模式属于**实验性**特性，有两点已知限制：
 
-- 原版图形资源里带夜间变体的只占少数：1008 个 drawable 中只有 194 个（约 19%），
-  其余 814 个只有浅色版本，深色下会继续显示浅色素材；
+- 原版图形资源里带夜间变体的只占少数：7919 个原版 drawable 中只有 195 个（约 2.5%）带夜间变体，
+  其余 7724 个只有浅色版本，深色下会继续显示浅色素材；
 - `res/color/` 下的颜色状态列表完全没有夜间版本，弹窗、菜单等文字色只能沿用浅色取值；
   本库另外为锤子时钟的弹窗与菜单补了一套夜间颜色。
 
@@ -339,8 +350,8 @@ SmartisanScaffold {                       // 默认已带平铺底纹
 
 ### 尺寸
 
-关键尺寸沿用原版资源：标题栏 48dp、图标 36dp、列表行最小高度 48dp、分隔线 0.67dp、
-弹窗宽 308dp、弹窗圆角 10dp、弹窗按钮高 48dp、底部栏 50dp。
+关键尺寸沿用原版资源：标题栏 48dp、图标 36dp、列表行最小高度 60dp、分隔线 0.67dp、
+弹窗宽 308dp、弹窗圆角 10dp、弹窗按钮高 48dp、底部栏 54dp（原版 `smartisan_bottom_bar_height`）。
 
 ### 动效
 
@@ -357,12 +368,14 @@ SmartisanScaffold {                       // 默认已带平铺底纹
 
 ### 资源清单
 
-`library/ui/src/main/res/` 下共 **10257** 个资源文件，来源分两部分：
+`library/ui/src/main/res/` 下共 **10481** 个资源文件（`drawable*` 10334、`mipmap*` 34、
+`values*` 92、`color` 21），来源分三部分：
 
-| 来源 | 文件数 | 内容 |
-| --- | --- | --- |
-| [People-11/SmartisanOS_APP_Port](https://github.com/People-11/SmartisanOS_APP_Port) 的 12 个原厂 APK | 8875 | 全部 `drawable*` / `mipmap*`：标题栏、开关、弹窗、列表与分组、复选框与单选、评分星、标签栏、表盘与指针、标尺与滚轮、字母索引、侧滑删除面板等 |
-| 三个复刻项目 | 1382 | 三个项目自身补充与校准过的素材（页面底纹、图标 selector、城市项等） |
+| 来源 | 内容 |
+| --- | --- |
+| [People-11/SmartisanOS_APP_Port](https://github.com/People-11/SmartisanOS_APP_Port) 的 12 个原厂 APK + 坚果 R2 framework 转储 | 绝大多数 `drawable*` / `mipmap*`：标题栏、开关、弹窗、列表与分组、复选框与单选、评分星、标签栏、表盘与指针、标尺与滚轮、字母索引、侧滑删除面板等 |
+| 三个复刻项目 | 356 个补充与校准过的素材（页面底纹、图标 selector、城市项等，含夜间与多密度变体） |
+| 本库 | `values*/` 下的字符串（80 种语言）、颜色状态列表、`color/`、尺寸常量 |
 
 资源按原始文件名与原始限定符目录（`drawable-night`、`drawable-xxhdpi` 等）原样保留，
 只做了两处处理：

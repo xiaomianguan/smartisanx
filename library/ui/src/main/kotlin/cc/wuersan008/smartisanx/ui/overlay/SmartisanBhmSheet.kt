@@ -32,7 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -382,8 +383,10 @@ fun SmartisanBhmSheet(
     content: @Composable () -> Unit,
 ) {
     val colors = LocalSmartisanColors.current
-    val configuration = LocalConfiguration.current
-    val maxHeight = configuration.screenHeightDp.dp * maxHeightFraction
+    val density = LocalDensity.current
+    // 用窗口实际容器高度（含 insets 语义）而不是 Configuration.screenHeightDp：
+    // 后者在 targetSdk 不同时对 insets 的处理不一致，而且会被四舍五入到整 dp。
+    val maxHeight = with(density) { LocalWindowInfo.current.containerSize.height.toDp() } * maxHeightFraction
     // 与 SmartisanBottomSheet 共用同一套进出场控制：原版 BHMDialog 的窗口动画就是从屏幕下方滑入滑出。
     val controller = rememberSmartisanOverlayController(onDismissRequest)
     val progress = rememberSmartisanOverlayProgress(controller.visible)

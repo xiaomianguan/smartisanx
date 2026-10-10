@@ -13,6 +13,11 @@
 ## 每完成一件事的固定动作
 
 1. 跑构建与 `./gradlew lintDebug`（仓库里没有单元测试，lint 就是门槛）。
+   **门槛是「0 警告」**：三个模块的 `lint-results-debug.txt` 结尾都必须是 `No issues found.`，
+   出现新警告要修掉或按下面的规则明确关闭。
+   `library/ui` 里针对「原版素材」的检查（图标重复 / 密度 / px 单位 / plurals / 私有资源名）
+   已经在 `library/ui/build.gradle.kts` 的 `lint { disable += ... }` 里关掉并写了原因 ——
+   那些是照抄原版资源的结果，不是缺陷；**代码层面的警告一律要修**。
 2. `git commit`（中文信息）之后**要 `git push origin main`** —— 不要只提交不推送。
 3. **代码有变化就打 release 包并发给用户**（这是用户要包的固定方式）：
    ```bash

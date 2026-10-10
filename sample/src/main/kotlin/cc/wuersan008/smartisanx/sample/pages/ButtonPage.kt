@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -27,7 +27,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 fun ButtonPage(onBack: () -> Unit) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    var clicks by remember { mutableStateOf(0) }
+    var clicks by remember { mutableIntStateOf(0) }
 
     SamplePageScaffold(title = "按钮", onBack = onBack) {
         SampleSectionHeader("三种样式")

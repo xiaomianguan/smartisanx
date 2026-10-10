@@ -282,8 +282,8 @@ private fun RowTextLine(text: String, style: TextStyle, color: Color) {
  */
 @Composable
 fun SmartisanListRowArrow(
-    subtitle: String? = null,
     modifier: Modifier = Modifier,
+    subtitle: String? = null,
     enabled: Boolean = true,
     subtitleMaxWidth: Dp = SmartisanDimens.ListRowSubtitleMaxWidth,
 ) {

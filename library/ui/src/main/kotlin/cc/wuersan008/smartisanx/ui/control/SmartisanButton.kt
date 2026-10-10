@@ -132,25 +132,25 @@ internal fun Modifier.smartisanShadowedDrawableBackground(
  * @param showShadow 是否绘制投影，设为 false 时只画底图。
  */
 @Composable
-internal fun rememberSmartisanDrawableButtonBackground(
+internal fun Modifier.smartisanDrawableButtonBackground(
     @DrawableRes backgroundRes: Int?,
     @DrawableRes shadowRes: Int? = null,
     showShadow: Boolean = true,
     enabled: Boolean = true,
     pressed: Boolean = false,
-): Modifier? {
-    if (backgroundRes == null) return null
+): Modifier {
+    if (backgroundRes == null) return this
     val resolvedShadowRes =
         if (showShadow) shadowRes ?: smartisanPairedShadowRes(backgroundRes) else null
     return if (resolvedShadowRes != null) {
-        Modifier.smartisanShadowedDrawableBackground(
+        smartisanShadowedDrawableBackground(
             backgroundRes = backgroundRes,
             shadowRes = resolvedShadowRes,
             enabled = enabled,
             pressed = pressed,
         )
     } else {
-        Modifier.smartisanDrawableBackground(backgroundRes, enabled = enabled, pressed = pressed)
+        smartisanDrawableBackground(backgroundRes, enabled = enabled, pressed = pressed)
     }
 }
 
@@ -252,13 +252,13 @@ private fun SmartisanButtonSurface(
                 SmartisanButtonStyle.Text -> null
             }
     val backgroundModifier =
-        rememberSmartisanDrawableButtonBackground(
+        Modifier.smartisanDrawableButtonBackground(
             backgroundRes = resolvedBackgroundRes,
             shadowRes = shadowRes,
             showShadow = showShadow,
             enabled = enabled,
             pressed = pressed,
-        ) ?: Modifier
+        )
     val contentColor =
         when {
             contentColorOverride != Color.Unspecified ->

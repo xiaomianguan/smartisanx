@@ -120,7 +120,7 @@ Dark mode is therefore **experimental**, with two known limitations:
 
 | Limitation | Detail |
 | --- | --- |
-| Incomplete night artwork | Only 194 of 1008 original drawables (~19%) have night variants; the other 814 are light-only and will keep showing light artwork in dark mode |
+| Incomplete night artwork | Only 195 of 7919 original drawables (~2.5%) have night variants; the other 7724 are light-only and will keep showing light artwork in dark mode |
 | No night colour state lists | There are no night variants under `res/color/` at all, so dialog and menu text colours use their light values; this library adds a night palette for the Clock revival's dialogs and menus |
 
 `SmartisanTheme` writes "is the theme dark" into `LocalSmartisanDarkOverride`, and components resolve
@@ -315,6 +315,19 @@ summary line, a two-line title) grow taller. `SmartisanListItem`'s default `minH
 | `caption` | 12sp | Normal | Captions, footers |
 | `numeric` | 15sp | Normal | Tabular numerals (`tnum`) |
 | `displayNumeric` | 48sp | Light | Large clock/timer numerals |
+| `listRowPrimary` | 17sp | Normal | Framework list-row primary (`primary_text_size`) |
+| `listRowPrimaryAlt` | 16sp | Normal | Framework list-row primary, compact (`primary_text_size_alt`) |
+| `listRowSecondary` | 15sp | Normal | Framework list-row secondary (`secondary_text_size`) |
+| `listRowTertiary` | 13.5sp | Normal | Framework list-row tertiary (`tertiary_text_size`) |
+| `listRowTertiaryAlt` | 12.5sp | Normal | Framework list-row tertiary, compact (`tertiary_text_size_alt`) |
+| `listRowQuaternary` | 12sp | Normal | Framework list-row quaternary (`quaternary_text_size`) |
+| `listRowSwitchTitle` | 18sp | Normal | Switch-row title (`switch_title_size`) |
+| `listItemCaptionSmall` | 10sp | Normal | Small in-row caption (`item_sub_title_size`) |
+| `editorLabel` | 12sp | Normal | Framework editor-row label (`EditorLabelTextStyle`) |
+| `editorField` | 15sp | Normal | Framework editor-row input text (`EditorTextStyle`) |
+
+Note that the framework list-row sizes and the app versions inside the three revival projects come
+from **different sources**: `listItemPrimary` is 15sp, `listRowPrimary` is 17sp.
 
 `SmartisanText` defaults its `style` parameter to `body`. You can also read
 `LocalSmartisanTypography.current` and `copy` from it.
@@ -342,7 +355,7 @@ ListItemHorizontalMargin 12  RowContentStart 18     CheckboxMarginStart 18
 DividerThickness 0.67    ListItemImageSize 48        DialogWidth 308
 DialogTitleHeight 48     DialogButtonHeight 48       DialogCornerRadius 10
 MenuHorizontalMargin 18  MenuButtonTopMargin 18      MenuButtonBottomMargin 24
-MenuActionEdgeMargin 24  MenuActionGap 18            BottomBarHeight 50
+MenuActionEdgeMargin 24  MenuActionGap 18            BottomBarHeight 54
 BottomBarIconSize 30     ScrollbarWidth 3            ScrollbarMargin 2
 LetterIndexBarWidth 24   MinimumTouchTarget 48
 ```

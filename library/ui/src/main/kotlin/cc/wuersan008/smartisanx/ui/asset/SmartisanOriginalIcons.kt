@@ -10,8 +10,8 @@ import cc.wuersan008.smartisanx.ui.R
  * 不是库自绘的矢量图标。绝大多数是 selector（自带按下 / 禁用 / 选中态）或含夜间变体的位图，
  * 因此能还原原版的拟物质感。
  *
- * 与 [cc.wuersan008.smartisanx.icons.SmartisanXIcons] 等矢量图标集的关系：
- * 矢量图标集只是**补充**，用于原版没有对应素材的场合；只要有原版素材，就应该用本对象里的常量。
+ * 本对象是库内**唯一**的常用图标入口：原版没有对应素材时，
+ * 才用 `SmartisanIcon(imageVector = ...)` 传自己的矢量图标。
  *
  * 用法（配合 `SmartisanIcon` 的位图重载）：
  *

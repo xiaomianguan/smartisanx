@@ -19,4 +19,9 @@
     <string name="smartisan_minutes">%1$d 分鐘</string>
     <string name="smartisan_selected">已選取</string>
     <string name="smartisan_unselected">未選取</string>
+    <!-- 手势切横竖屏提示（原版 framework values-zh-rTW 的 twist_guide_title / _body）。 -->
+    <string name="smartisan_twist_guide_title">提示</string>
+    <string name="smartisan_twist_guide_body">您剛剛激活了手勢切換橫豎屏操作。通過圖片所示的手勢即可調整當前應用程式的橫豎屏鎖定狀態並同時關閉“自動旋轉螢幕”。\n\n每一個應用的橫豎屏鎖定狀態會被單獨記憶，所有您在一個應用中設定的鎖定狀態不會影響其他應用程式。</string>
+    <!-- 日历里「今天」那一格显示的文字。 -->
+    <string name="smartisan_calendar_today">今天</string>
 </resources>

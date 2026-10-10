@@ -90,8 +90,8 @@ internal val LocalSmartisanMenuDismiss: ProvidableCompositionLocal<(() -> Unit)?
 @Composable
 fun SmartisanMenuDialog(
     onDismissRequest: () -> Unit,
-    title: String? = null,
     modifier: Modifier = Modifier,
+    title: String? = null,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.MenuDialogBackground,
     confirmText: String? = null,
     confirmEnabled: Boolean = true,

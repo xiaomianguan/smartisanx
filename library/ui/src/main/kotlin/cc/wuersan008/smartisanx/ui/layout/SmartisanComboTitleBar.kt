@@ -161,7 +161,7 @@ fun SmartisanComboTitleBar(
             subtitleColor = subtitleColor,
             height = contentHeight,
             centerMargin = centerMargin,
-            backgroundModifier = backgroundModifier,
+            modifier = backgroundModifier,
         )
         // 原版：投影与次级栏同处一个 FrameLayout，且投影画在它顶部 —— 有次级栏时就是
         // 「压在次级栏顶部的一小截」，没有次级栏时这一格只剩投影，看起来就在主栏下方。
@@ -209,13 +209,13 @@ private fun PrimaryTitleBar(
     subtitleColor: Color,
     height: Dp,
     centerMargin: Dp,
-    backgroundModifier: Modifier,
+    modifier: Modifier,
 ) {
     val density = LocalDensity.current
     val heightPx = with(density) { height.roundToPx() }
     val marginPx = with(density) { centerMargin.roundToPx() }
 
-    SubcomposeLayout(Modifier.fillMaxWidth().height(height).then(backgroundModifier)) { constraints ->
+    SubcomposeLayout(Modifier.fillMaxWidth().height(height).then(modifier)) { constraints ->
         val width = if (constraints.hasBoundedWidth) constraints.maxWidth else constraints.minWidth
         val sideConstraints = Constraints(maxWidth = width, maxHeight = heightPx)
         val leadingPlaceable =

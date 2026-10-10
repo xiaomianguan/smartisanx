@@ -53,7 +53,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * SmartisanBottomBarItem(label = "歌曲", iconRes = SmartisanOriginalIcons.TabSong)
  *
  * // 自定义矢量图标（原版没有对应素材时才用）
- * SmartisanBottomBarItem(icon = SmartisanOriginalIcons.TabSong, label = "音乐")
+ * SmartisanBottomBarItem(icon = myVectorIcon, label = "音乐")
  * ```
  */
 @Immutable
@@ -73,7 +73,7 @@ data class SmartisanBottomBarItem(
 /**
  * 锤子风格底部标签栏。
  *
- * 高 50dp、顶部 0.67dp 分隔线、图标 30dp、文字 10sp；
+ * 高 54dp（原版 `smartisan_bottom_bar_height`）、顶部 0.67dp 分隔线、图标 30dp、文字 10sp；
  * 选中项使用 `accent` 色，按压时轻微缩放。
  */
 @Composable

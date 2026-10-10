@@ -120,6 +120,6 @@ fun EditorRowSection() {
             "_top / _middle / _bottom，即 EditorStyle 的四套样式），左右内边距 6dp、最小高度 44dp；" +
             "左标签 12sp + 左边距 12dp，图标容器 40dp × 44dp 且图标 26dp 居中；" +
             "右说明最宽 150dp、图标左边距 6dp（有分隔线时变 0）；" +
-            "内部 2px 分隔线用 list_divider_color(#14000000)。",
+            "内部 2px 分隔线取主题 divider（浅色 #E9E9E9，即原版 list_divider_color 的 8% 黑）。",
     )
 }

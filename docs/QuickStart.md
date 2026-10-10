@@ -24,14 +24,12 @@ coexist, but make sure the smartisanx components are wrapped in `SmartisanTheme`
 // settings.gradle.kts
 include(":library:core")
 include(":library:ui")
-include(":library:icons")
 ```
 
 ```kotlin
 // app/build.gradle.kts
 dependencies {
     implementation(project(":library:ui"))
-    implementation(project(":library:icons"))
 }
 ```
 
@@ -40,7 +38,6 @@ dependencies {
 ```kotlin
 dependencies {
     implementation(project(":library:core"))  // theme, motion, drawable painting only
-    implementation(project(":library:icons")) // icons only
 }
 ```
 
@@ -53,7 +50,6 @@ dependencies {
 ```kotlin
 dependencies {
     implementation("cc.wuersan008.smartisanx:smartisanx-ui:0.1.0")
-    implementation("cc.wuersan008.smartisanx:smartisanx-icons:0.1.0")
 }
 ```
 
@@ -72,12 +68,12 @@ class MainActivity : ComponentActivity() {
                         SmartisanTitleBar(
                             title = "My app",
                             navigationIcon = SmartisanTitleBarAction(
-                                icon = SmartisanXIcons.Back,
+                                iconRes = SmartisanOriginalIcons.Back,
                                 contentDescription = "Back",
                             ) { /* navigate back */ },
                             actions = listOf(
                                 SmartisanTitleBarAction(
-                                    icon = SmartisanXIcons.More,
+                                    iconRes = SmartisanOriginalIcons.More,
                                     contentDescription = "More",
                                 ) { /* open menu */ },
                             ),
@@ -116,7 +112,7 @@ Key points:
 
 "Follow the system" and "dark" are **experimental** and must be opted into explicitly, with a
 notice to your own users — the original shipped a single light design, dark mode was added by the
-three revival projects, and only ~19% of the original graphic assets have night variants.
+three revival projects, and only ~2.5% of the original graphic assets have night variants.
 See [Theme.md](Theme.md#dark-mode-experimental).
 
 ```kotlin
@@ -189,8 +185,9 @@ Every component can be used on its own.
 **Q: Does the library ship assets from the original APKs?**
 Yes, deliberately. Smartisan's style is skeuomorphic and its texture comes from NinePatches,
 bitmaps and selectors, so `library/ui/src/main/res/` uses the original artwork recovered by the
-three revival projects (481 files). The vector icon set (`SmartisanXIcons` and friends) is only for
-cases where no original asset exists. See "Asset sources and licensing" in the README.
+three revival projects (10481 files). Icons come from those same assets too (see `SmartisanDrawables`
+/ `SmartisanOriginalIcons`); you only need your own `ImageVector` where no original asset exists.
+See "Asset sources and licensing" in the README.
 
 **Q: Why not use Material's `Switch` / `Button`?**
 Smartisan's switches, buttons and dialogs have their own visuals and feel (draggable knob, shrink

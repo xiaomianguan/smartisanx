@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
@@ -100,11 +101,12 @@ fun TypographySection() {
     }
 }
 
-internal fun Color.toHexLabel(): String {
-    val argb =
-        (alpha * 255).toInt() shl 24 or
-            (red * 255).toInt() shl 16 or
-            (green * 255).toInt() shl 8 or
-            (blue * 255).toInt()
-    return "#" + argb.toUInt().toString(16).padStart(8, '0').uppercase()
-}
+/**
+ * 色值的 `#AARRGGBB` 文本。
+ *
+ * 这里必须用 `toArgb()`：`a shl 24 or b shl 16 or c shl 8 or d` 在 Kotlin 里是
+ * 左结合的（`shl` / `or` 都是同优先级的中缀函数），会算成
+ * `(((a shl 24) or b) shl 16) or c) shl 8) or d`，白色会显示成 `#FF00FFFF`。
+ */
+internal fun Color.toHexLabel(): String =
+    "#" + toArgb().toUInt().toString(16).padStart(8, '0').uppercase()

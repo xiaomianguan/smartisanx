@@ -105,8 +105,8 @@ object SmartisanDialogPatternDefaults {
 @Composable
 fun SmartisanDialogAppInfo(
     title: String,
-    summary: String? = null,
     modifier: Modifier = Modifier,
+    summary: String? = null,
     @DrawableRes iconRes: Int? = null,
 ) {
     val colors = LocalSmartisanColors.current

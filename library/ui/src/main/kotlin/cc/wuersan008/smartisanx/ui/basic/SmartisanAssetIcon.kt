@@ -68,8 +68,8 @@ fun SmartisanIcon(
 @Composable
 fun SmartisanIntrinsicImage(
     @DrawableRes res: Int,
-    contentDescription: String? = null,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     enabled: Boolean = true,
     pressed: Boolean = false,
     alpha: Float = 1f,

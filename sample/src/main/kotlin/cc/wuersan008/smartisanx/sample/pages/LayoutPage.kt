@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -216,7 +217,7 @@ fun LayoutPage(onBack: () -> Unit) {
 /** 基础容器与投影：SmartisanSurface、SmartisanGroupItem、IntrinsicImage、TitleBarShadow。 */
 @Composable
 private fun ContainerSection() {
-    var page by remember { mutableStateOf(0) }
+    var page by remember { mutableIntStateOf(0) }
     val feedback = LocalSampleFeedback.current
     SmartisanGroup {
         // SmartisanGroupItem：按位置自动取原版分组底图。

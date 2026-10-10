@@ -22,7 +22,7 @@ modules split by responsibility, the demo app as its own module, components grou
 > **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
 > its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
 > in Compose, the library uses the assets the three revival projects recovered from the original
-> APKs (10257 files, including night-mode and per-density variants).
+> APKs (10481 files, including night-mode and per-density variants).
 > Those assets belong to their respective rights holders; please read
 > [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
@@ -45,12 +45,14 @@ modules split by responsibility, the demo app as its own module, components grou
 - **Original graphic assets**: title bars, switches, dialogs, list rows, group cards, mechanical
   dials and rulers all use the original artwork, with real night-mode variants rather than
   simple colour inversion.
-- **Localisation**: every user-visible string is a resource, translated into the 80 locales AOSP
-  ships, so developers support any language without touching the library.
+- **Localisation**: every user-visible string is a resource. 19 of the 22 strings carry AOSP
+  translations for the 80 locales; the 3 added later (the calendar's "Today" and the rotate-guide
+  title/body) currently have Simplified Chinese, Traditional Chinese, Japanese and Korean, and fall
+  back to English elsewhere.
 - **Original transitions**: regular pages slide in from the right, modal pages slide up from the
   bottom, with timings taken from the original `anim/` resources and the revival projects.
-- **All the original assets**: graphics from the 12 factory APKs, fonts from the nut R2 factory ROM
-  dump; every PNG losslessly optimised with oxipng.
+- **All the original assets**: graphics from the 12 factory APKs and the nut R2 framework dump, fonts
+  from the nut R2 factory ROM dump; every PNG losslessly optimised with oxipng.
 - **Simplified Chinese docs first**: the primary docs are Chinese; this file and the
   `docs/*.md` English pages are translations of them.
 
@@ -59,8 +61,7 @@ modules split by responsibility, the demo app as its own module, components grou
 | Module | Description |
 | --- | --- |
 | `library/core` | Theme, colors, text styles, shapes, dimensions, motion specs, press feedback, drawable painting |
-| `library/ui` | All components: basic, controls, layout, list interaction, overlays, clock |
-| `library/icons` | Vector icon set (general / status / media / clock), usable standalone |
+| `library/ui` | All components: basic, controls, layout, list interaction, overlays, clock, plus the original graphic assets and the icon index |
 | `sample` | Demo app that walks through every component and its parameters |
 
 ## Repository layout
@@ -80,8 +81,8 @@ smartisanx/
 │   │   ├── layout/       Title bar, list item, group, tab row, scrollbar, empty state, flow layout, about info row
 │   │   ├── list/         Drag-to-reorder, swipe-to-delete, letter index
 │   │   ├── overlay/      Dialogs, menu dialog, bottom sheet
-│   │   └── clock/        Analog dial, compact dial, time wheels, rulers, weekday picker
-│   └── icons/src/main/kotlin/cc/wuersan008/smartisanx/icons/
+│   │   ├── clock/        Analog dial, compact dial, time wheels, rulers, weekday picker
+│   │   └── asset/        Original asset indices (SmartisanDrawables / SmartisanOriginalIcons / SmartisanIconSet)
 ├── sample/               Demo app
 └── docs/                 Chinese docs (English translations live beside them)
 ```
@@ -110,14 +111,12 @@ Include this repository in `settings.gradle.kts` (or publish it to your local Ma
 // settings.gradle.kts
 include(":library:core")
 include(":library:ui")
-include(":library:icons")
 ```
 
 ```kotlin
 // app/build.gradle.kts
 dependencies {
     implementation(project(":library:ui"))    // components (pulls in core automatically)
-    implementation(project(":library:icons")) // optional: vector icons
 }
 ```
 
@@ -131,7 +130,7 @@ If you would rather not use a source dependency, publish to your local Maven cac
 ```
 
 Published coordinates: `cc.wuersan008.smartisanx:smartisanx-core`,
-`cc.wuersan008.smartisanx:smartisanx-ui`, `cc.wuersan008.smartisanx:smartisanx-icons` (version `0.1.0`).
+`cc.wuersan008.smartisanx:smartisanx-ui` (version `0.1.0`).
 
 ### 2. Wrap your UI in the theme
 
@@ -147,7 +146,7 @@ fun App() {
             titleBar = {
                 SmartisanTitleBar(
                     title = "Smartisan style",
-                    navigationIcon = SmartisanTitleBarAction(SmartisanXIcons.Back, "Back") { /* ... */ },
+                    navigationIcon = SmartisanTitleBarAction(SmartisanOriginalIcons.Back, "Back") { /* ... */ },
                 )
             },
         ) {
@@ -168,14 +167,19 @@ fun App() {
 
 ### 3. Use only part of the library
 
-`core` and `icons` work standalone. For example, if you only want the palette and the icons:
+`core` works standalone. For example, if you only want the palette and the text styles:
 
 ```kotlin
 SmartisanTheme {
     val colors = LocalSmartisanColors.current
-    SmartisanIcon(SmartisanXMediaIcons.Play, contentDescription = "Play", tint = colors.accent)
+    val typography = LocalSmartisanTypography.current
+    SmartisanText("Theme only", style = typography.body, color = colors.accent)
 }
 ```
+
+Icons live in the `ui` module: **prefer the original bitmaps** (`SmartisanDrawables` /
+`SmartisanOriginalIcons`, whose selectors carry the pressed / disabled states); when no original asset
+exists, pass your own `ImageVector` to `SmartisanIcon(imageVector = ...)`.
 
 ## Component overview
 
@@ -255,11 +259,20 @@ SmartisanTheme {
 
 `SmartisanAnalogClock`, `SmartisanCompactClock`, `SmartisanTimePicker`, `SmartisanWheelPicker`,
 `SmartisanRulerPicker`, `SmartisanPullRingRuler`, `SmartisanWeekdayPicker`, `SmartisanWeekdayChips`,
-`SmartisanWorldClockCard`
+`SmartisanWorldClockCard`, `SmartisanFlipClock`, `SmartisanFlipCard`
 
-### Icons (`cc.wuersan008.smartisanx.icons`)
+### Icons (`cc.wuersan008.smartisanx.ui.asset`)
 
-`SmartisanXIcons`, `SmartisanXStatusIcons`, `SmartisanXMediaIcons`, `SmartisanXClockIcons`
+Icons do **not** come from a hand-drawn vector set — the original artwork is used directly:
+
+| Object | Contents |
+| --- | --- |
+| `SmartisanOriginalIcons` | Commonly used icons named by purpose (back, more, search, play, …), pointing at the original selectors, pressed / disabled states included |
+| `SmartisanDrawables` | The original artwork the components use by default (title bar, dialogs, list rows, group cards, dials, …) |
+| `SmartisanIconSet` | The full index of the 3580 icons extracted from the factory APKs, in 8 groups; the demo app's "original icons" page walks through them |
+
+When no original asset exists you can still pass your own `ImageVector`: both
+`SmartisanIcon(imageVector = ...)` and `SmartisanTitleBarAction(imageVector, ...)` accept one.
 
 ## Demo app
 
@@ -299,8 +312,8 @@ packages it as `darkSmartisanColors()`.
 
 Dark mode is therefore **experimental**, with two known limitations:
 
-- only a minority of the original graphic assets have night variants: 194 of 1008 drawables
-  (~19%); the remaining 814 are light-only and will keep showing light artwork in dark mode;
+- only a minority of the original graphic assets have night variants: 195 of 7919 drawables
+  (~2.5%); the remaining 7724 are light-only and will keep showing light artwork in dark mode;
 - the colour state lists under `res/color/` have no night versions at all, so dialog and menu text
   colours fall back to their light values; this library adds a night palette for the Clock revival's
   dialogs and menus on top of that.
@@ -350,8 +363,8 @@ SmartisanScaffold {                       // textured by default
 ### Dimensions
 
 Key dimensions follow the original resources: title bar 48dp, icon 36dp, list row minimum height
-48dp, divider 0.67dp, dialog width 308dp, dialog corner radius 10dp, dialog button height 48dp,
-bottom bar 50dp.
+60dp, divider 0.67dp, dialog width 308dp, dialog corner radius 10dp, dialog button height 48dp,
+bottom bar 54dp (the original `smartisan_bottom_bar_height`).
 
 ### Motion
 
@@ -370,12 +383,14 @@ own pressed state.
 
 ### Inventory
 
-`library/ui/src/main/res/` holds **10257** resource files, from two sources:
+`library/ui/src/main/res/` holds **10481** resource files (`drawable*` 10334, `mipmap*` 34,
+`values*` 92, `color` 21), from three sources:
 
-| Source | Files | Contents |
-| --- | --- | --- |
-| The 12 factory APKs from [People-11/SmartisanOS_APP_Port](https://github.com/People-11/SmartisanOS_APP_Port) | 8875 | Every `drawable*` / `mipmap*`: title bars, switches, dialogs, list rows and group cards, checkbox and radio, rating stars, tab bars, clock dials and hands, rulers and wheels, letter index, swipe-delete panel |
-| The three revival projects | 1382 | Assets the projects themselves added or calibrated (page texture, icon selectors, city items) |
+| Source | Contents |
+| --- | --- |
+| The 12 factory APKs from [People-11/SmartisanOS_APP_Port](https://github.com/People-11/SmartisanOS_APP_Port) plus the nut R2 framework dump | The vast majority of `drawable*` / `mipmap*`: title bars, switches, dialogs, list rows and group cards, checkbox and radio, rating stars, tab bars, clock dials and hands, rulers and wheels, letter index, swipe-delete panel |
+| The three revival projects | 356 assets the projects added or calibrated (page texture, icon selectors, city items), including night-mode and per-density variants |
+| This library | The `values*/` strings (80 locales), colour state lists, `color/`, dimension tokens |
 
 Assets keep their original file names and qualifier directories (`drawable-night`,
 `drawable-xxhdpi`, and so on). Only two adjustments were made:

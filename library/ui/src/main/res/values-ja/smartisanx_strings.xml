@@ -19,4 +19,9 @@
     <string name="smartisan_minutes">%1$d 分</string>
     <string name="smartisan_selected">選択済み</string>
     <string name="smartisan_unselected">未選択</string>
+    <!-- 手势切横竖屏提示（原版 framework values-ja 的 twist_guide_title / _body）。 -->
+    <string name="smartisan_twist_guide_title">ヒント</string>
+    <string name="smartisan_twist_guide_body">縦横画面の切り替えをジェスチャーで変更する機能をアクティブにしました。画面上のジェスチャーで、「画面の自動回転」がオフになり、現在のアプリに横画面と縦画面をロックします。\n\n各アプリの横画面と縦画面ロックは別々に記録されるので、アプリに設定されたロックが他のアプリに影響することはありません。</string>
+    <!-- 日历里「今天」那一格显示的文字（原版 framework 只有中文，这里是通用译法）。 -->
+    <string name="smartisan_calendar_today">今日</string>
 </resources>

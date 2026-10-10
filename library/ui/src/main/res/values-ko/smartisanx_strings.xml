@@ -19,4 +19,9 @@
     <string name="smartisan_minutes">%1$d분</string>
     <string name="smartisan_selected">선택됨</string>
     <string name="smartisan_unselected">선택 안 됨</string>
+    <!-- 手势切横竖屏提示（原版 framework values-ko 的 twist_guide_title / _body）。 -->
+    <string name="smartisan_twist_guide_title">알림</string>
+    <string name="smartisan_twist_guide_body">화면회전 제스쳐를 활성화하였습니다. 이미지에 나온 제스쳐로 사용 중인 애플리케이션의 화면회전상태를 변경할 수 있고 “자동 회전”을 끌 수도 있습니다.\n\n임의의 애플리케이션의 화면회전상태가 독립적으로 작업되므로 실행시 서로 영양을 주지 않습니다.</string>
+    <!-- 日历里「今天」那一格显示的文字（原版 framework 只有中文，这里是通用译法）。 -->
+    <string name="smartisan_calendar_today">오늘</string>
 </resources>

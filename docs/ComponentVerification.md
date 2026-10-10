@@ -39,7 +39,7 @@ These are **intentionally** different from the originals; each is noted in the c
 | Item | Original | Here | Why |
 | --- | --- | --- | --- |
 | Title bar height | Music 50dp / Weather & Clock 48dp | 48dp | The three apps disagree; taking the majority. Pass `contentHeight = 50.dp` for Music's |
-| Dark mode | Does not exist | Experimental, off by default | Added by the revival projects; only ~19% of original assets have night variants |
+| Dark mode | Does not exist | Experimental, off by default | Added by the revival projects; only ~2.5% of original assets have night variants |
 | Text / hint colours | `editor_text_color` etc. from the framework | Theme semantic colours | Those resources only exist in the Smartisan framework APK |
 | Cursor bar | nine-patch `edittext_cursor_bbackground` | Theme `accent` | Compose's `cursorBrush` only accepts a `Brush` |
 | Clear-button visibility | Instant `setVisibility` | 200ms fade by default | Pass `animateClearIcon = false` to match the original exactly |
@@ -107,7 +107,7 @@ Components verified this way so far:
 | | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
 | | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |
 | | icon container | 40dp × 44dp with the 26dp icon centred (measured centre 38.1dp = container centre) |
-| | inner 2px divider | gray 233 ⇒ `list_divider_color` (8% black) |
+| | inner 2px divider | gray 233 ⇒ theme `divider` (light `#E9E9E9`, i.e. the original `list_divider_color`'s 8% black over white) |
 | | trailing caption / hint / disabled | caption 40% black, hint gray 219 (framework 15% black ≈ 217), disabled 30% black |
 | `SmartisanSmoothSeekBar` | track | 2dp thick (8px in the screenshot including antialiasing), idle track gray `#E9E9E9` = theme `divider` |
 | | progress colour | screenshot reads `#D44E47`, which is theme `accent` `#E64040` encoded as Display P3 (see below) |

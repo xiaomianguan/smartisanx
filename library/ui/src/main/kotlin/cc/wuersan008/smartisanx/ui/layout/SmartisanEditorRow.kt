@@ -177,7 +177,7 @@ fun SmartisanEditorRow(
  * 从左到右是「图标容器（40dp × 44dp，`editor_left_icon_container_*`）+ 标签 + 箭头」：
  *
  * - 图标 26dp 居中放在容器里，容器可以给一张底图（原版 `setIconContainerBackground`）；
- * - 容器右侧可选一条 2px 分隔线（原版 `setShowDivider`，颜色 `list_divider_color`）；
+ * - 容器右侧可选一条 2px 分隔线（原版 `setShowDivider`，颜色取主题 `divider`；
  * - 标签 12sp、`editor_label_text_color`、左边距固定 12dp（`editor_element_margin_left_right`）；
  * - 箭头默认不显示；显示时标签右边距变 0、箭头自己留 12dp（原版 `setArrowVisible` 就是这么切的）。
  *
@@ -288,7 +288,7 @@ fun SmartisanEditorLabel(
  * 横向一行、垂直居中、最小高度 40dp；从左到右是「标签 + 可选 2px 分隔线 + 图标」：
  *
  * - 标签 12sp、`editor_label_text_color`、左边距 12dp、最宽 150dp、超出省略（原版写死的值）；
- * - 分隔线 2px（`list_divider_color`），默认不显示；
+ * - 分隔线 2px（取主题 `divider`，浅色 `#E9E9E9` = 原版 `list_divider_color` 8% 黑压在白底上的合成值），默认不显示；
  * - 图标左边距 6dp（`editor_horizontal_padding`），**分隔线显示时左边距变 0**
  *   （原版 `setDevideVisible` 就是这么切的），尺寸取素材固有大小。
  */

@@ -36,6 +36,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    bundle {
+        language {
+            // 示例应用在 SampleActivity.attachBaseContext 里把自己的资源上下文锁到 zh-CN，
+            // 如果按语言拆分，拆出来的 APK 里可能没有中文资源。这里不拆分。
+            enableSplit = false
+        }
+    }
 }
 
 // 内置 Kotlin 不需要单独设 kotlin.compilerOptions.jvmTarget：

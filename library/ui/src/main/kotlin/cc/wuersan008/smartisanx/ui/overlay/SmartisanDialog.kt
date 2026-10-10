@@ -45,7 +45,7 @@ import cc.wuersan008.smartisanx.core.utils.smartisanDrawableState
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
-import cc.wuersan008.smartisanx.ui.control.rememberSmartisanDrawableButtonBackground
+import cc.wuersan008.smartisanx.ui.control.smartisanDrawableButtonBackground
 
 /**
  * 居中弹窗的标题栏、底部按钮，以及由它们拼出的弹窗。
@@ -123,9 +123,9 @@ internal fun smartisanOnePixel(): Dp = Dp(1f / LocalDensity.current.density)
 fun SmartisanDialogTitleBar(
     title: String,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
     onConfirm: (() -> Unit)? = null,
     confirmEnabled: Boolean = true,
-    modifier: Modifier = Modifier,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomSheetTitleBarBackground,
 ) {
     val colors = LocalSmartisanColors.current
@@ -266,13 +266,13 @@ fun SmartisanDialogButton(
             ?: if (accent) R.drawable.smartisan_modal_confirm_background
             else R.drawable.smartisan_modal_cancel_background
     val backgroundModifier =
-        rememberSmartisanDrawableButtonBackground(
+        Modifier.smartisanDrawableButtonBackground(
             backgroundRes = resolvedBackgroundRes,
             shadowRes = shadowRes,
             showShadow = showShadow,
             enabled = enabled,
             pressed = pressed,
-        ) ?: Modifier
+        )
     val resolvedContentColor =
         if (contentColor != Color.Unspecified) {
             contentColor

@@ -12,7 +12,7 @@ All public APIs grouped by package. Every component must be wrapped in `Smartisa
 - [List interaction](#list-interaction-list)
 - [Overlays](#overlays-overlay)
 - [Clock](#clock-clock)
-- [Icons](#icons-icons)
+- [Icons](#icons)
 
 ---
 
@@ -425,6 +425,8 @@ radius, all overridable per parameter.
     leftAction: SmartisanActionButton? = null,  // 60x48dp icon button at the start
     rightAction: SmartisanActionButton? = null, // 60x48dp icon button at the end
     showShadow: Boolean = true,                 // the shadow above the bar
+    barRes: Int = SmartisanDrawables.SecondaryBarBackground,     // bar background
+    shadowRes: Int = SmartisanDrawables.ActionButtonGroupShadow, // shadow asset
 )
 ```
 
@@ -673,10 +675,17 @@ Notes:
     content: @Composable () -> Unit,
 )
 
-data class SmartisanTitleBarAction(
-    val icon: ImageVector, val contentDescription: String,
-    val onClick: () -> Unit, val enabled: Boolean = true,
-)
+class SmartisanTitleBarAction private constructor(
+    val contentDescription: String, val onClick: () -> Unit, val enabled: Boolean = true,
+    @DrawableRes val iconRes: Int?, val imageVector: ImageVector?,
+) {
+    companion object {
+        // original bitmap (recommended — the selector carries the pressed / disabled states)
+        operator fun invoke(iconRes: Int, contentDescription: String, onClick: () -> Unit, enabled: Boolean = true): SmartisanTitleBarAction
+        // your own vector icon
+        operator fun invoke(imageVector: ImageVector, contentDescription: String, onClick: () -> Unit, enabled: Boolean = true): SmartisanTitleBarAction
+    }
+}
 
 @Composable fun SmartisanTitleBar(
     title: String, modifier: Modifier = Modifier,
@@ -687,6 +696,7 @@ data class SmartisanTitleBarAction(
     includeStatusBar: Boolean = true, showShadow: Boolean = true,
     shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
+    backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
     centerContent: (@Composable () -> Unit)? = null,
 )
 
@@ -695,7 +705,7 @@ data class SmartisanTitleBarAction(
 // parent and raises the bar with `setElevation(0.1f)`). The bar is therefore only status bar + 48dp
 // tall, and the content starts flush under it with the shadow falling on its first row — there is no
 // empty band between bar and content.
-@Composable fun SmartisanTitleBarSurface(modifier, includeStatusBar, showShadow, shadowRes, contentHeight, content)
+@Composable fun SmartisanTitleBarSurface(modifier, includeStatusBar, showShadow, shadowRes, contentHeight, backgroundRes, content)
 // In-flow 14dp shadow band, for the rare case where the content is a different surface.
 @Composable fun SmartisanTitleBarShadow(modifier, height, shadowRes)
 
@@ -718,7 +728,7 @@ data class SmartisanTitleBarAction(
 @Composable fun SmartisanTabRow(tabs: List<String>, selectedIndex: Int, onSelected: (Int) -> Unit, modifier, scrollable: Boolean = false)   // library-original; the original has no counterpart
 
 data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val selectedIcon: ImageVector = icon)
-@Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true)
+@Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground)
 
 @Composable fun Modifier.smartisanVerticalScrollbar(state: ScrollState, width, margin, color): Modifier   // library-original; the original ships no bitmap
 @Composable fun Modifier.smartisanVerticalScrollbar(state: LazyListState, width, margin, color): Modifier
@@ -1110,14 +1120,13 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
 @Composable fun SmartisanAnalogClock(
     modifier: Modifier = Modifier, time: LocalTime = LocalTime.now(),
     showSecondHand: Boolean = true, showEars: Boolean = false, showNumerals: Boolean = true,
-    dialColor: Color = Color.Unspecified, handColor: Color = Color.Unspecified,
-    accentColor: Color = Color.Unspecified, size: Dp = 240.dp,
+    darkHands: Boolean = !LocalSmartisanColors.current.isLight, size: Dp = 240.dp,
 )
 
 @Composable fun SmartisanCompactClock(
     modifier: Modifier = Modifier, hour: Int, minute: Int, second: Int = 0,
     showSecondHand: Boolean = false, size: Dp = 40.dp,
-    dialColor: Color = Color.Unspecified, handColor: Color = Color.Unspecified,
+    night: Boolean = hour >= 18 || hour < 6,
 )
 
 @Composable fun SmartisanTimePicker(
@@ -1190,26 +1199,20 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
 
 ---
 
-## Icons (`icons`)
+## Icons
 
-```kotlin
-SmartisanXIcons.Back / ChevronRight / ChevronDown / ChevronUp / Close / Check / Add / Remove
-SmartisanXIcons.Search / More / Menu / Delete / Edit / Share / Refresh / Settings / DragHandle
+There is **no hand-drawn vector set**: every icon comes from the original assets, through three
+indices under `cc.wuersan008.smartisanx.ui.asset`:
 
-SmartisanXStatusIcons.Star / StarOutline / Heart / Location / Sun / Moon / Info / Warning
-SmartisanXStatusIcons.ArrowUp / ArrowDown / Copy / Calendar / ExternalLink / Folder
+| Object | Contents |
+| --- | --- |
+| `SmartisanOriginalIcons` | Commonly used icons named by purpose (`Back` / `More` / `Search` / `Play` / `Settings` …); each constant points at an original selector with pressed / disabled states |
+| `SmartisanDrawables` | The original artwork the components use by default (title bar, dialogs, list rows, group cards, dials, tab bar, calculator keys, …) |
+| `SmartisanIconSet` | The full index of the 3580 icons extracted from the factory APKs, in 8 groups (title bar 72 / tab bar 51 / list 158 / select 10 / media 25 / clock 30 / editor 30 / other 3204); the demo app's "original icons" page walks through them |
 
-SmartisanXMediaIcons.Play / Pause / Next / Previous / Stop / Shuffle / Repeat / Queue
-SmartisanXMediaIcons.Volume / VolumeMute / FastForward / Rewind / Lyrics
-
-SmartisanXClockIcons.Clock / Alarm / Stopwatch / Hourglass / Globe / Bell / SleepTimer / KeepScreenOn
-```
-
-All of them are 24×24 `ImageVector`s, tinted through `SmartisanIcon`'s `tint`.
-
-This vector set is for cases where **no original asset exists** (custom screens, custom actions).
-Title bars, switches, dialogs, list rows and clock faces use the original bitmaps by default — see
-the asset index below.
+See the asset index below for usage; for a custom vector icon, both
+`SmartisanIcon(imageVector = ...)` and `SmartisanTitleBarAction(imageVector, ...)` accept any
+`ImageVector`.
 
 ## Asset index
 

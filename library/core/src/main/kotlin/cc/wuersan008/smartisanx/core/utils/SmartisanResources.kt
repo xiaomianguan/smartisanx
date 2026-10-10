@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.core.content.ContextCompat
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanDarkOverride
 
@@ -32,11 +33,14 @@ fun smartisanThemedResources(
 ): Resources {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
+    // 用 LocalResources 而不是 context.resources：前者随 Configuration 变化失效，
+    // 后者是「读一次就固定」的，配置改变后可能拿到旧值。
+    val systemResources = LocalResources.current
     val systemDark = isSystemInDarkTheme()
     val wantDark = darkOverride ?: systemDark
-    return remember(context, configuration, wantDark, systemDark) {
+    return remember(context, configuration, systemResources, wantDark, systemDark) {
         if (wantDark == systemDark) {
-            context.resources
+            systemResources
         } else {
             val nightMode =
                 if (wantDark) {

@@ -28,6 +28,31 @@ android {
         // 或特定密度变体（例如 drawable-land-xxhdpi/ac.png 没有 base 版本）。
         // 这是「忠实还原原版资源」的结果，不是缺陷，因此关闭这条检查。
         disable += "MissingDefaultResource"
+
+        // 下面这些检查针对的是「自己设计的资源」：重复图标、图标尺寸/密度不统一、
+        // 用 px 当单位、字符串该用 plurals……本模块的资源是原版素材的逐字节复制，
+        // 文件名、限定符目录与单位都照抄原版（见 README「资源来源与授权」），改了就丢还原度。
+        // 关掉它们，让 lint 输出里只剩代码层面的真问题。
+        //
+        // PluralsCandidate：`smartisan_days_after` / `_before` 只会以 n ≥ 2 调用
+        // （±1 天走 `smartisan_tomorrow` / `smartisan_yesterday`），英文单复数不会出错。
+        // PrivateResource：`status_bg.xml` 引用的 `notify_panel_notification_icon_bg`
+        // 本模块自己就有（mdpi/hdpi/xhdpi/xxhdpi 四份），同模块资源优先，只是名字和
+        // androidx.core 的私有资源撞了。
+        disable +=
+            listOf(
+                "IconDuplicates",
+                "IconDuplicatesConfig",
+                "IconDipSize",
+                "IconXmlAndPng",
+                "IconLocation",
+                "IconDensities",
+                "IconNoDpi",
+                "IconExtension",
+                "PxUsage",
+                "PrivateResource",
+                "PluralsCandidate",
+            )
     }
 
     // 允许发布到本地或私有 Maven 仓库：./gradlew publishToMavenLocal
