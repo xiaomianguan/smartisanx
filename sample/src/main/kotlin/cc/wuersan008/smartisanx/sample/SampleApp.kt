@@ -20,6 +20,7 @@ import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanTheme
 import cc.wuersan008.smartisanx.core.theme.ThemeController
 import cc.wuersan008.smartisanx.core.theme.rememberSmartisanThemeController
+import cc.wuersan008.smartisanx.sample.pages.AboutPage
 import cc.wuersan008.smartisanx.sample.pages.ButtonPage
 import cc.wuersan008.smartisanx.sample.pages.CalendarPage
 import cc.wuersan008.smartisanx.sample.pages.ClockPage
@@ -74,6 +75,7 @@ fun SampleApp() {
                     SamplePage.Overlay -> OverlayPage(onBack = back)
                     SamplePage.Clock -> ClockPage(onBack = back)
                     SamplePage.Calendar -> CalendarPage(onBack = back)
+                    SamplePage.About -> AboutPage(onBack = back)
                     null -> Unit
                 }
             }

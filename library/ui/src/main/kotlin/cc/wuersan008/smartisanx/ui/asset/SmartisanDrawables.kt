@@ -191,6 +191,15 @@ object SmartisanDrawables {
     /** 卡片投影 9-patch（单行分组）。 */
     @DrawableRes val GroupRowSingleShadow = R.drawable.list_content_item_single_shadow
 
+    /**
+     * 设置页子项卡片的单行 selector（原版 `selector_setting_sub_item_bg_single`）。
+     *
+     * 设置页 `ListContentItemStyle.Single` 一族用的就是它：常态是
+     * `sub_item_back_ground_single` 9-patch（白色圆角卡片），按下 / 聚焦换成 `_highlight`，
+     * 禁用换成 `_disabled`。「关于本机」页顶部那张 logo 卡片用的正是这一张。
+     */
+    @DrawableRes val SettingSubItemSingle = R.drawable.selector_setting_sub_item_bg_single
+
     /** 分组标题底色。 */
     @DrawableRes val SectionTitleBackground = R.drawable.list_title_bg
 

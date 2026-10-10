@@ -14,6 +14,8 @@
 #   传统图标（Android 8.0 以下的加载路径 / 部分第三方启动器）：48dp 画布、透明底，
 #     把源图按高度缩放后居中放上去（图形高 48dp），不自带白底 / 白圆 —— 这类启动器会自己
 #     给非自适应图标垫底板，画上去反而会遮住底板。
+#   另外还生成「关于本机」页（AboutPage）用的 logo：`drawable-*/about_logo.png`，
+#     透明底、图形高 88dp，尺寸照原版设置页那张 `about_logo` 9-patch 里红色锁图占的高度。
 #
 # 依赖：ImageMagick（magick）；有 oxipng 就顺便无损压一遍。
 # 用法：tools/gen_sample_icon.sh
@@ -27,6 +29,7 @@ RES="$ROOT/sample/src/main/res"
 CANVAS_DP=108        # 自适应图标画布
 LOGO_DP=56           # 自适应前景里的图形高度（外接圆半径 ≈ 28dp）
 LEGACY_DP=48         # 传统图标画布（源图按高度缩放后居中）
+ABOUT_LOGO_DP=88     # 「关于本机」页 logo 的图形高度
 
 # 源图剪影的外接圆半径 / 图形高度，由 .github/assets/smartisanx.png 的 alpha 通道实测得到：
 # 剪影是六边形，离中心最远的是左右两条竖边的上端，距离为 0.49946 × 图形高度。
@@ -77,12 +80,19 @@ for spec in "mdpi 1" "hdpi 1.5" "xhdpi 2" "xxhdpi 3" "xxxhdpi 4"; do
     magick -size "${lg}x${lg}" xc:none "$TMP/lg_logo.png" -gravity center -composite \
         -define png:compression-level=9 -strip "$RES/mipmap-$dpi/ic_launcher.png"
 
-    echo "  ${dpi}: foreground ${fg}px (logo ${fgh}px), legacy ${lg}px (logo ${lg}px)"
+    # 「关于本机」页的 logo：透明底、只有图形本身（卡片的白底由页面自己画）。
+    # 高度 88dp 是照原版那张 `about_logo` 9-patch 里红色锁图占的高度定的：
+    # 原版锁图整体是 336×180dp，红色部分（圆标 + 字标 + based on Android）占 40dp..127.7dp。
+    al=$(awk "BEGIN{printf \"%d\", $ABOUT_LOGO_DP*$f}")
+    magick "$SRC" -filter Lanczos -resize "x$al" \
+        -define png:compression-level=9 -strip "$RES/drawable-$dpi/about_logo.png"
+
+    echo "  ${dpi}: foreground ${fg}px (logo ${fgh}px), legacy ${lg}px (logo ${lg}px), about ${al}px"
 done
 
 if command -v oxipng >/dev/null; then
     oxipng -q -o4 --strip safe "$RES"/drawable-*/ic_launcher_foreground.png \
-        "$RES"/mipmap-*/ic_launcher.png
+        "$RES"/drawable-*/about_logo.png "$RES"/mipmap-*/ic_launcher.png
     echo "  oxipng 已无损压缩"
 fi
 

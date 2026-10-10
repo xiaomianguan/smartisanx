@@ -77,7 +77,7 @@ smartisanx/
 │   │   ├── basic/        Surface, Text, Icon, Divider
 │   │   ├── control/      Switch, checkbox, radio, button, rating bar, segmented group, number picker
 │   │   ├── input/        Search bar, password field, clearable field, auto-fit and justified text
-│   │   ├── layout/       Title bar, list item, group, tab row, scrollbar, empty state, flow layout
+│   │   ├── layout/       Title bar, list item, group, tab row, scrollbar, empty state, flow layout, about info row
 │   │   ├── list/         Drag-to-reorder, swipe-to-delete, letter index
 │   │   ├── overlay/      Dialogs, menu dialog, bottom sheet
 │   │   └── clock/        Analog dial, compact dial, time wheels, rulers, weekday picker
@@ -231,6 +231,7 @@ SmartisanTheme {
 `SmartisanListItem`,
 `SmartisanListRow`, `SmartisanListRowArrow`, `SmartisanListSectionTitle`,
 `SmartisanLetterSectionTitle`, `SmartisanListBoardSectionTitle`, `SmartisanListVerticalGap`,
+`SmartisanAboutStaticItem`,
 `SmartisanEditorRow`, `SmartisanEditorLabel`, `SmartisanEditorRightIcon`,
 `SmartisanGroup`, `SmartisanGroupItem`, `SmartisanGroupDivider`, `SmartisanSectionTitle`,
 `SmartisanCard`, `SmartisanTabRow`,
@@ -272,7 +273,7 @@ interactive demos:
 
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
 buttons, controls, text and input, layout and lists, list interaction, overlays, clock and
-mechanical controls.
+mechanical controls, calendar, about phone.
 
 ## Design notes
 

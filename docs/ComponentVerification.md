@@ -100,6 +100,10 @@ Components verified this way so far:
 | | shadow | 4px ≈ 1dp of `letter_seperater_shadow`; the asset is 2px `#00000019` → `#00000007`, measured on screen as `#DADADA` → `#EBEBEB` (10.0% → 2.9% black over the page texture) |
 | | text | 10sp bold at the 8dp start indent (ink starts at x = 31..32px, i.e. 8dp plus the glyph's left bearing), gray 147 `#939393` = 40% black on `#f5f5f5`; the glyph box is centred in the band (cap 1337..1360 around band centre 1349) |
 | | total block | 67px = 19.1dp (18 + 1); the two bands ("A" and "B") measure identical 326px apart |
+| `SmartisanAboutStaticItem` | row pitch | 52.9dp (185px) between separators; the original adds up to 7 + 13.5sp line + 3 + 12sp line + 7 + 1px + 5dp ≈ 52.5dp |
+| | separator | 1px, x = 105..1210 (30dp start indent / 15dp end inset, both straight from the original dimens) |
+| | text inset | title ink starts at x = 116px = the 30dp box plus the glyph's left bearing |
+| | about logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo is 88dp tall and 40dp below the card top (the original red lockup occupied 40..127.7dp); the version line's ink lands at 145dp and the trademark line's at 167dp (original 143dp / 165.7dp) |
 | `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
 | | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
 | | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |

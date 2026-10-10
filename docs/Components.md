@@ -760,7 +760,7 @@ enum class SmartisanListRowLines { TwoLine, TwoLineAlt, ThreeLine, ThreeLineAlt 
 @Composable fun SmartisanListSectionTitle(text: String, modifier, startIndent)
 @Composable fun SmartisanLetterSectionTitle(text: String, modifier, startIndent)
 @Composable fun SmartisanListBoardSectionTitle(text: String, modifier, enabled, onClick)
-@Composable fun SmartisanListVerticalGap(modifier, height)
+@Composable fun SmartisanAboutStaticItem(title: String, modifier, summary, showArrow)
 ```
 
 Notes:
@@ -781,6 +781,12 @@ Notes:
   **Contacts** app (`layout/list_section.xml`), not the framework: 10sp bold, 8dp start indent, drawn
   from `letter_seperater` (`#f5f5f5`, 2px `#ebebeb` bottom edge) and `letter_seperater_shadow`
   (black at roughly 10% → 3%). Contacts uses it as the header above each A–Z group.
+- The "About phone" read-only rows (`SmartisanAboutStaticItem`) come from the **Settings** app
+  (`com.android.settings.AboutStaticItem` + `about_static_item_layout.xml`): a 13.5sp title and a
+  12sp value in the same colour, a 1px `#14000000` separator, 30dp / 15dp side insets, a
+  7dp + 3dp + 7dp vertical rhythm and a 5dp gap between rows. They draw **no card background** — in
+  the original they sit straight on the page texture. Sizes were verified pixel by pixel on a real
+  device.
 
 ### framework editor rows (the `SmartisanEditorRow` family)
 

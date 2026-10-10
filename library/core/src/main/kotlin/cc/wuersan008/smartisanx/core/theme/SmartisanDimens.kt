@@ -259,4 +259,31 @@ object SmartisanDimens {
 
     /** 编辑行内部分隔线宽度，原版两个 layout 里都写死 2px（560dpi 下 = 0.57dp）。 */
     val EditorInnerDividerWidth = 0.57.dp
+
+    /** 本机信息静态行的文字左边距，原版 `settings_item_title_left_margin`（30dp）。 */
+    val AboutStaticItemContentStart = 30.dp
+
+    /** 本机信息静态行的文字右边距，原版 `settings_item_title_right_margin`（15dp）。 */
+    val AboutStaticItemContentEnd = 15.dp
+
+    /** 本机信息静态行标题的上下留白，原版 `about_static_item_layout` 里写死的 7dp。 */
+    val AboutStaticItemPaddingVertical = 7.dp
+
+    /** 本机信息静态行「标题 → 摘要」的间距，原版 `about_static_item_layout` 里写死的 3dp。 */
+    val AboutStaticItemTitleSummaryGap = 3.dp
+
+    /**
+     * 本机信息静态行的行间留白。
+     *
+     * 原版是 `about_settings_layout` 里给每个 item 设的 `layout_marginBottom`（5dp），
+     * 这里由 [cc.wuersan008.smartisanx.ui.layout.SmartisanAboutStaticItem] 自己画在下方，
+     * 调用方不必再插间距。
+     */
+    val AboutStaticItemBottomMargin = 5.dp
+
+    /** 本机信息静态行内部分隔线高度，原版写死 1px（560dpi 下 = 0.29dp）。 */
+    val AboutStaticItemDividerHeight = 0.29.dp
+
+    /** 本机信息静态行右侧箭头与右边的距离，原版 `settings_item_right_arrow_margin`（35px，560dpi 下 = 10dp）。 */
+    val AboutStaticItemArrowEnd = 10.dp
 }
