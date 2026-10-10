@@ -276,4 +276,21 @@ object SmartisanDrawables {
     /** 一键清空按钮 selector，原版 `quick_icon_delete`（含按下态）。 */
     @DrawableRes val QuickDeleteIcon = R.drawable.quick_icon_delete
 
+    // ---- 编辑行（原版 smartisanos.widget.editor.AbsEditor 家族） ----
+    /**
+     * 编辑行底图（原版 `editor_bg_single`，分组里唯一一行）。
+     *
+     * 另外三张按位置取：[EditorRowTop] / [EditorRowMiddle] / [EditorRowBottom]。
+     */
+    @DrawableRes val EditorRowSingle = R.drawable.sos_smartisanos_drawable_editor_bg_single
+
+    /** 编辑行底图，分组第一行（原版 `editor_bg_top`）。 */
+    @DrawableRes val EditorRowTop = R.drawable.sos_smartisanos_drawable_editor_bg_top
+
+    /** 编辑行底图，分组中间行（原版 `editor_bg_middle`）。 */
+    @DrawableRes val EditorRowMiddle = R.drawable.sos_smartisanos_drawable_editor_bg_middle
+
+    /** 编辑行底图，分组最后一行（原版 `editor_bg_bottom`）。 */
+    @DrawableRes val EditorRowBottom = R.drawable.sos_smartisanos_drawable_editor_bg_bottom
+
 }

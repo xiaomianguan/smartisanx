@@ -174,4 +174,43 @@ object SmartisanDimens {
 
     /** 开关行图标与标题的间距，原版 `item_icon_right_margin`。 */
     val SwitchRowIconMargin = 20.dp
+
+    // ------------------------------------------------------------------
+    // framework 编辑行（`framework-smartisanos-res.apk` 的 res/values/dimens.xml、
+    // res/layout/abs_editor_layout.xml、editor_left_label_layout.xml、
+    // editor_right_icon_widget_layout.xml）。数值全部照抄原版。
+    // ------------------------------------------------------------------
+
+    /** 编辑行左右内边距，原版 `editor_horizontal_padding`（即 `abs_editor_layout` 的 paddingLeft/Right）。 */
+    val EditorHorizontalPadding = 6.dp
+
+    /** 编辑行最小高度，原版 `abs_editor_layout` 里写死的 44dp（左右两个小部件自身只有 40dp）。 */
+    val EditorRowMinHeight = 44.dp
+
+    /** 编辑行左右小部件的最小高度，原版 `editor_left_right_widget_min_height`。 */
+    val EditorWidgetMinHeight = 40.dp
+
+    /** 编辑行左侧图标容器宽度，原版 `editor_left_icon_container_width`。 */
+    val EditorLeftIconContainerWidth = 40.dp
+
+    /** 编辑行左侧图标容器高度，原版 `editor_left_icon_container_height`。 */
+    val EditorLeftIconContainerHeight = 44.dp
+
+    /** 编辑行左侧图标尺寸，原版 `editor_left_label_layout` 里写死的 26dp。 */
+    val EditorLeftIconSize = 26.dp
+
+    /** 编辑行标签与图标 / 箭头的间距，原版 `editor_element_margin_left_right`。 */
+    val EditorElementMargin = 12.dp
+
+    /** 编辑行输入框的左右外边距，原版 `editor_horizontal_margin`（`EditorTextStyle`）。 */
+    val EditorFieldHorizontalMargin = 12.dp
+
+    /** 编辑行输入框的上下外边距，原版 `editor_small_vertical_margin`（`EditorTextStyle`）。 */
+    val EditorFieldVerticalMargin = 6.dp
+
+    /** 编辑行右侧说明文字的最大宽度，原版 `editor_right_icon_widget_layout` 里写死的 150dp。 */
+    val EditorRightLabelMaxWidth = 150.dp
+
+    /** 编辑行内部分隔线宽度，原版两个 layout 里都写死 2px（560dpi 下 = 0.57dp）。 */
+    val EditorInnerDividerWidth = 0.57.dp
 }

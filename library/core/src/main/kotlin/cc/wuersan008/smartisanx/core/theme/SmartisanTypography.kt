@@ -106,6 +106,18 @@ class SmartisanTypography(
         fontWeight = FontWeight.Normal,
         lineHeight = 13.sp,
     ),
+    /** framework 编辑行的标签（12sp，原版 `EditorLabelTextStyle`）。 */
+    val editorLabel: TextStyle = TextStyle(
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 16.sp,
+    ),
+    /** framework 编辑行的输入框文字（15sp，原版 `EditorTextStyle`）。 */
+    val editorField: TextStyle = TextStyle(
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp,
+    ),
     /** 按钮文字。 */
     val button: TextStyle = TextStyle(
         fontSize = 14.sp,
@@ -179,6 +191,8 @@ fun SmartisanTypography.withFonts(
         listRowQuaternary = listRowQuaternary.copy(fontFamily = text),
         listRowSwitchTitle = listRowSwitchTitle.copy(fontFamily = text),
         listItemCaptionSmall = listItemCaptionSmall.copy(fontFamily = text),
+        editorLabel = editorLabel.copy(fontFamily = text),
+        editorField = editorField.copy(fontFamily = text),
         button = button.copy(fontFamily = text),
         dialogButton = dialogButton.copy(fontFamily = text),
         dialogTitle = dialogTitle.copy(fontFamily = text),
