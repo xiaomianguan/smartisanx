@@ -30,6 +30,7 @@ similar".
 | `SmartisanEditorRow` family | framework `AbsEditor` / `EditorLeftLabelWidget` / `EditorRightIconWidget` + three layouts | ✅ 44dp row height, 6dp sides, position-dependent original 9-patch background, 12sp label with a 12dp start margin, 40dp × 44dp icon container (26dp icon centred), trailing caption capped at 150dp, 2px inner divider; verified pixel by pixel on a real device (see section 4) |
 | `SmartisanSmoothSeekBar` | framework `smartisanos.widget.SmoothSeekBar` + `SeekBarStyle` | ✅ thumb is the original `progress_control` / `progress_control_disabled` (118×147 / 108×144), track drawn at 2dp, dimensions taken from `SeekBarStyle.Thin.LargeThumb.Actived`; verified pixel by pixel on a real device (see section 4) |
 | `SmartisanIconSlider` | framework `SliderWithIcons` + `slider_with_icons_layout.xml` | ✅ the original layout has no dimension constants (three `RelativeLayout` rules) and reuses the `SmoothSeekBar` above; end icons and slider share a vertical centre, verified pixel by pixel on a real device (see section 4) |
+| `SmartisanComboTitleBar` | framework `SmartisanComboTitleBar` + `combo_title_layout` / `primary_title_layout` | ✅ 48dp main bar (`titlebar_height`), the centred / left-aligned centre-slot branches copied from `adjustContainerParams()`, and the shadow switching between `title_bar_shadow` / `_short` with the secondary bar; verified pixel by pixel on a real device (see section 4) |
 
 ## 2. Known differences (deliberate)
 
@@ -51,6 +52,8 @@ These are **intentionally** different from the originals; each is noted in the c
 | Editor hint text colour | framework `#26000000` (15% black ⇒ ≈217 on white) | theme `textHint` (`#DBDBDB` ⇒ 219) | Semantic token; 2 gray levels off the original |
 | Slider end icons | Original shows both icons or neither (only calls `setImageResource` when `leftIconRes > 0 && rightIconRes > 0`) | Two independent optional slots; you get whichever you pass | Slot-based API reads better; the original rule looks like an oversight |
 | End icons when disabled | Only the thumb bitmap is swapped, the icons stay as they are | Same (the library does nothing) | Keeps the original behaviour; whether the icons should grey out is up to the caller |
+| Combination bar centre natural width | Android measures `wrap_content` once, then decides on centring | Uses `maxIntrinsicWidth()` (Compose allows a single measure) | Custom layouts without intrinsic measurements are treated as "does not fit" |
+| Combination bar trailing buttons | Ships up to ten `SmartisanButton`s with `-6dp` overlap | No button container; lay out the `trailing` slot yourself | `SmartisanButton` / `SmartisanIconButton` already cover the original button styles and icons, so the container logic is not worth building in |
 
 ## 3. Assets and fonts
 
@@ -93,6 +96,11 @@ Components verified this way so far:
 | | value → position | slider 872px wide, `value = 0.6` puts the thumb centre at 705px measured; the "half a thumb of padding at each end" formula gives 705.4px |
 | `SmartisanIconSlider` | end icons | 26dp box (91px in the screenshot), sharing the slider's vertical centre: icon centre y = 2417.0, track centre 2416.5, thumb centre 2414.5 (within 1dp inside one row) |
 | | icon ink | the assets carry their own padding (inside a 26dp box `volume_small_n` is only 11.1dp wide, `volume_high_n` 15.7dp) |
+| `SmartisanComboTitleBar` | bar height | 48.0dp (168px in the screenshot, the original `titlebar_height`) |
+| | centre stays centred | with unequal side slots (147px / 182px) the title centre is still 632px = screen centre, same for the subtitle |
+| | centre goes left | with a long title the left edge is 168px = 126px leading + 12dp (42px); the right edge is 1040px = trailing start 1082px − 12dp |
+| | main bar shadow | first row gray 204 (asset row alpha 33 ≈ 13% black), fading down over 56px (16dp) back to the 241 background |
+| | secondary bar shadow | first row gray 228 (asset row alpha 14 ≈ 5.5% black), fading down over 58px (16.6dp) |
 
 Still **not** verified item by item:
 

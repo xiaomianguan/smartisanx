@@ -217,7 +217,8 @@ SmartisanTheme {
 `SmartisanListBoardSectionTitle`、`SmartisanListVerticalGap`、
 `SmartisanEditorRow`、`SmartisanEditorLabel`、`SmartisanEditorRightIcon`、
 `SmartisanGroup`、`SmartisanSectionTitle`、`SmartisanCard`、`SmartisanTabRow`、
-`SmartisanBottomBar`、`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`、
+`SmartisanBottomBar`、`SmartisanComboTitleBar`、`SmartisanComboTitleShadow`、
+`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`、
 `SmartisanFlowLayout`
 
 ### 列表交互（`cc.wuersan008.smartisanx.ui.list`）

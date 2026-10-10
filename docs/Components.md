@@ -543,6 +543,49 @@ Notes:
 - As in the original, a row with just the field (no leading/trailing slot) is clickable and hands
   focus to the field.
 
+### framework combination title bar (`SmartisanComboTitleBar`)
+
+```kotlin
+enum class SmartisanComboTitleShadow { Normal, Short }
+
+@Composable fun SmartisanComboTitleBar(
+    modifier: Modifier = Modifier, title: String? = null, subtitle: String? = null,
+    leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null,
+    center: (@Composable () -> Unit)? = null, secondaryBar: (@Composable () -> Unit)? = null,
+    includeStatusBar: Boolean = true, showTitleShadow: Boolean = true,
+    showSecondaryShadow: Boolean = true, titleShadow: SmartisanComboTitleShadow? = null,
+    titleColor: Color = Color.Unspecified, subtitleColor: Color = Color.Unspecified,
+    contentHeight: Dp = SmartisanDimens.TitleBarHeight,
+    centerMargin: Dp = SmartisanDimens.ComboTitleCenterMargin,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
+)
+```
+
+Notes:
+
+- Ported from the framework's `smartisanos.widget.SmartisanComboTitleBar`
+  (`combo_title_layout.xml` + `primary_title_layout.xml`): a 48dp main bar (`titlebar_height`,
+  background `titlebar_bg`), its shadow, a secondary bar and a secondary shadow. **The shadow shares a
+  slot with the secondary bar**: with a secondary bar the shadow becomes `title_bar_shadow_short` and
+  sits on top of the secondary bar; without one it is `title_bar_shadow` showing below the main bar
+  (the original's `setWithSecondaryLayout` / `setWithOutSecondaryLayout`).
+- The centre slot follows the original `adjustContainerParams()`: when
+  `2 × max(left, right) + centre < bar width - 2 × 12dp` the centre is centred in the whole bar,
+  otherwise centring is dropped, the centre is placed after the leading content and its width becomes
+  "what is left between the two sides"; the 12dp is `mid_container_margin`. The natural width comes from
+  `maxIntrinsicWidth()` (Compose allows only one measure per `Measurable`); custom layouts without
+  intrinsic measurements are always treated as "does not fit".
+- The original's six centre `styles` (plain text / radio tabs / drop-down / range / marquee / separator)
+  collapse into one `center` slot: put whichever library component you need in it. Supplying only
+  `title` / `subtitle` gives the plain-text variant (20sp + 10sp, per `title_bar_title_text_size` and
+  `item_sub_title_size`).
+- Title and subtitle colours default to the theme's `textSecondary` (≈ the original
+  `title_or_btn_text_color` `#99000000`) and `textTertiary`, and can be overridden individually;
+  the 12dp gaps and the vertical centring of both side slots were verified pixel by pixel on a device.
+- Deliberately different: the original packs up to ten trailing buttons with a `-6dp` right margin;
+  this library does not ship that button container, so lay the row out yourself using
+  `SmartisanDimens.ComboTitleActionSpacing` (6dp) if you want the same overlap.
+
 ---
 
 ## List interaction (`list`)
