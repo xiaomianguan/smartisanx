@@ -232,7 +232,8 @@ SmartisanTheme {
 
 ### List interaction (`cc.wuersan008.smartisanx.ui.list`)
 
-`SmartisanReorderableColumn`, `SmartisanSwipeToDelete`, `SmartisanLetterIndexBar`
+`SmartisanReorderableColumn`, `SmartisanSwipeToDelete`, `SmartisanHiddenRowActions`,
+`SmartisanHiddenRowAction`, `SmartisanLetterIndexBar`
 
 ### Overlays (`cc.wuersan008.smartisanx.ui.overlay`)
 

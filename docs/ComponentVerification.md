@@ -101,6 +101,9 @@ Components verified this way so far:
 | | centre goes left | with a long title the left edge is 168px = 126px leading + 12dp (42px); the right edge is 1040px = trailing start 1082px − 12dp |
 | | main bar shadow | first row gray 204 (asset row alpha 33 ≈ 13% black), fading down over 56px (16dp) back to the 241 background |
 | | secondary bar shadow | first row gray 228 (asset row alpha 14 ≈ 5.5% black), fading down over 58px (16.6dp) |
+| `SmartisanHiddenRowActions` | padding / gap | the whole strip is 273px = 12 + 24 + 6 + 24 + 12dp; the rightmost icon ends 42px (12dp) before the group card edge, and the two icon boxes are 21px (6dp) apart |
+| | icon size | 84px boxes with an explicit 24dp; without `iconSize` it falls back to the bitmap's intrinsic size (`icon_delete_normal` is 36dp at xxhdpi) |
+| | disabled state | `enabled = false` resolves the selector's disabled bitmap: in one strip the enabled action is the red `icon_delete_normal`, the disabled one is grey |
 
 Still **not** verified item by item:
 

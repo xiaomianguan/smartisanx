@@ -223,7 +223,8 @@ SmartisanTheme {
 
 ### 列表交互（`cc.wuersan008.smartisanx.ui.list`）
 
-`SmartisanReorderableColumn`、`SmartisanSwipeToDelete`、`SmartisanLetterIndexBar`
+`SmartisanReorderableColumn`、`SmartisanSwipeToDelete`、`SmartisanHiddenRowActions`、
+`SmartisanHiddenRowAction`、`SmartisanLetterIndexBar`
 
 ### 浮层（`cc.wuersan008.smartisanx.ui.overlay`）
 

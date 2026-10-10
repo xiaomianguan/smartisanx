@@ -610,6 +610,18 @@ Notes:
 )
 fun smartisanDefaultLetterIndex(): List<Char>   // '#' + A-Z
 fun smartisanIndexLetter(name: String): Char
+
+@Composable fun SmartisanHiddenRowActions(
+    actions: List<SmartisanHiddenRowAction>, modifier: Modifier = Modifier,
+    iconSize: Dp? = null,                     // null = intrinsic bitmap size (the original's wrap_content)
+    spacing: Dp = SmartisanDimens.HiddenActionIconGap,        // 6dp
+    sidePadding: Dp = SmartisanDimens.HiddenActionSidePadding, // 12dp
+)
+
+data class SmartisanHiddenRowAction(
+    @DrawableRes val iconRes: Int, val contentDescription: String? = null,
+    val enabled: Boolean = true, val onClick: () -> Unit = {},
+)
 ```
 
 - `SmartisanReorderableColumn` uses a plain `Column`, which suits bounded lists such as settings or
@@ -617,6 +629,14 @@ fun smartisanIndexLetter(name: String): Char
   committed once on release.
 - `SmartisanSwipeToDelete`'s physics come from the Clock revival: the first 65dp move 1:1, further
   travel is damped to 1/5 speed, and the maximum is 360dp.
+- `SmartisanHiddenRowActions` ports the framework's `smartisanos.widget.HiddenListActionLayout`: a
+  horizontal strip of icon buttons with 12dp on both sides (`hidden_list_action_left_right_padding`),
+  6dp between icons (`hidden_list_action_icon_gap`), icons at `wrap_content` and vertically centred,
+  and `enabled` driving the selector's disabled state. The original sets icon / listener / enabled by
+  index and throws on out-of-range indices; here it is a `List<SmartisanHiddenRowAction>` instead.
+  Note the original **only ships the strip itself** — nothing in the dump inflates or instantiates it,
+  the reveal container is written per app — so this library also only provides the strip; wrap it in
+  your own gesture if you need the swipe.
 
 ---
 
