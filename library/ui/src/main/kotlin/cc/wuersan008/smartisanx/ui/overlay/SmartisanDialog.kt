@@ -40,6 +40,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableState
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -118,12 +119,10 @@ internal fun rememberSmartisanStateColor(
     val stateList =
         remember(context, colorRes) { ContextCompat.getColorStateList(context, colorRes) }
     return remember(context, colorRes, stateList, enabled, pressed) {
-        val state =
-            when {
-                !enabled -> intArrayOf(-android.R.attr.state_enabled)
-                pressed -> intArrayOf(android.R.attr.state_pressed)
-                else -> intArrayOf()
-            }
+        // 必须给出**完整**状态集：`ColorStateList` 里 `state_enabled="false"` 这类
+        // 否定项在「空状态集」下同样会命中（`StateSet.stateSetMatches` 的语义），
+        // 于是正常态会拿到禁用色。用 core 的构造器把六种状态都写全。
+        val state = smartisanDrawableState(enabled = enabled, pressed = pressed)
         val argb =
             stateList?.getColorForState(state, stateList.defaultColor)
                 ?: ContextCompat.getColor(context, colorRes)

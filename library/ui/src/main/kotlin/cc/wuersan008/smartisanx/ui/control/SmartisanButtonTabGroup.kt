@@ -58,6 +58,7 @@ import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableState
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
@@ -358,13 +359,14 @@ private fun smartisanStateListColor(
     val stateList: ColorStateList? =
         remember(context, colorRes) { ContextCompat.getColorStateList(context, colorRes) }
     return remember(context, colorRes, stateList, enabled, pressed, activated) {
+        // 与弹窗按钮同理：空状态集会让 `state_enabled="false"` 之类的否定项命中，
+        // 必须交给 core 的构造器生成完整状态集。
         val state =
-            when {
-                !enabled -> intArrayOf(-android.R.attr.state_enabled)
-                pressed -> intArrayOf(android.R.attr.state_pressed)
-                activated -> intArrayOf(android.R.attr.state_activated)
-                else -> intArrayOf()
-            }
+            smartisanDrawableState(
+                enabled = enabled,
+                pressed = pressed,
+                activated = activated,
+            )
         val argb =
             stateList?.getColorForState(state, stateList.defaultColor)
                 ?: ContextCompat.getColor(context, colorRes)

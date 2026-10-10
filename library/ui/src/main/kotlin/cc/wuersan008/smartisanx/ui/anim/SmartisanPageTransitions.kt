@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
 import kotlin.math.PI
 import kotlin.math.cos
@@ -128,6 +129,11 @@ fun SmartisanPageTransition(
  * 底下的页面不动（原版用 `fake_anim`）。
  *
  * 对应「用 × 关闭」的模态页面。
+ *
+ * **要求高度有界**（整页、或自己给定高容器）。原版滑走的是整页，
+ * 位移按「容器高度」算；如果被放进滚动容器这类高度无界的地方，
+ * 高度会变成无穷大、`∞ × 0` 得到 `NaN`，内容会整块画不出来。
+ * 因此这里在无界时退回「不做位移」（只保留可见性），既不崩也不画错。
  */
 @Composable
 fun SmartisanModalPageTransition(
@@ -143,7 +149,13 @@ fun SmartisanModalPageTransition(
         )
     }
     BoxWithConstraints(modifier) {
-        val height = with(LocalDensity.current) { maxHeight.toPx() }
+        // 高度无界（例如塞进 verticalScroll）时不做位移：∞ × 0 = NaN 会让内容消失。
+        val height =
+            if (maxHeight == Dp.Infinity) {
+                0f
+            } else {
+                with(LocalDensity.current) { maxHeight.toPx() }
+            }
         Box(
             Modifier.fillMaxSize().graphicsLayer {
                 // 退出滑到 109%，与原版 slide_down_out 一致。
