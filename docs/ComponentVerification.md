@@ -90,6 +90,10 @@ Components verified this way so far:
 | | divider | 2px `#F2F2F2`; indent 18.0dp by default, 60.6dp on rows with a left slot |
 | | primary text colour | gray 51 ⇒ `#cc000000` (80% black), matching the original |
 | | summary / disabled | summary gray 153 (40% black), disabled gray 179 (30% black) |
+| `SmartisanGroup` spacing | card → card (bare neighbours) | 14.3dp vs 14.0dp on the R2 Sound page — in the original this is a blank view **between** groups, not padding of the group |
+| | card → section title | 21.4dp (R2 21.6dp) |
+| | section title → card | 7.7dp (R2 7.2dp); the title carries its own spacing, no extra gap needed |
+| `SmartisanSwitchRow` | row height | 59.7dp (white band), divider pitch 60.6dp; R2 reference 59.2dp / 60.0dp (the 6dp top/bottom padding belongs to the text column, not the row) |
 | `SmartisanListSectionTitle` | band | 30.0dp tall, full width (x = 0..1263), text gray 149 (40% black) |
 | `SmartisanListBoardSectionTitle` | band | 40dp white bar + 1px divider, text gray 101 (60% black) |
 | `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
