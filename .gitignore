@@ -15,3 +15,6 @@ local.properties
 
 # 队友在本地缓存的 framework 反编译产物
 /.fwcache
+
+# Kotlin 2.x 的本地会话目录
+/.kotlin
