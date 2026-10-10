@@ -52,6 +52,60 @@ class SmartisanTypography(
         fontWeight = FontWeight.Normal,
         lineHeight = 18.sp,
     ),
+    /**
+     * framework 列表行一级文字（17sp，原版 `primary_text_size`）。
+     *
+     * ⚠️ 与 [listItemPrimary]（15sp）**不是一个来源**：15sp 来自三个复刻项目里的应用版本，
+     * 17sp 是坚果 R2 framework `list_content_mid_primary_*` 的取值。
+     * framework 列表行（[cc.wuersan008.smartisanx.ui.layout.SmartisanListRow]）用这一档。
+     */
+    val listRowPrimary: TextStyle = TextStyle(
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 23.sp,
+    ),
+    /** framework 列表行一级文字的紧凑版（16sp，原版 `primary_text_size_alt`）。 */
+    val listRowPrimaryAlt: TextStyle = TextStyle(
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 21.sp,
+    ),
+    /** framework 列表行二级文字（15sp，原版 `secondary_text_size`，三行版的第二行）。 */
+    val listRowSecondary: TextStyle = TextStyle(
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp,
+    ),
+    /** framework 列表行三级文字（13.5sp，原版 `tertiary_text_size`）。 */
+    val listRowTertiary: TextStyle = TextStyle(
+        fontSize = 13.5.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 18.sp,
+    ),
+    /** framework 列表行三级文字的紧凑版（12.5sp，原版 `tertiary_text_size_alt`）。 */
+    val listRowTertiaryAlt: TextStyle = TextStyle(
+        fontSize = 12.5.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 17.sp,
+    ),
+    /** framework 列表行第四级文字（12sp，原版 `quaternary_text_size`）。 */
+    val listRowQuaternary: TextStyle = TextStyle(
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 16.sp,
+    ),
+    /** 开关行标题（18sp，原版 `switch_title_size`）。 */
+    val listRowSwitchTitle: TextStyle = TextStyle(
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 24.sp,
+    ),
+    /** 行内小号说明（10sp，原版 `item_sub_title_size`）。 */
+    val listItemCaptionSmall: TextStyle = TextStyle(
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 13.sp,
+    ),
     /** 按钮文字。 */
     val button: TextStyle = TextStyle(
         fontSize = 14.sp,
@@ -117,6 +171,14 @@ fun SmartisanTypography.withFonts(
         listItemPrimary = listItemPrimary.copy(fontFamily = text),
         listItemSecondary = listItemSecondary.copy(fontFamily = text),
         sectionTitle = sectionTitle.copy(fontFamily = text),
+        listRowPrimary = listRowPrimary.copy(fontFamily = text),
+        listRowPrimaryAlt = listRowPrimaryAlt.copy(fontFamily = text),
+        listRowSecondary = listRowSecondary.copy(fontFamily = text),
+        listRowTertiary = listRowTertiary.copy(fontFamily = text),
+        listRowTertiaryAlt = listRowTertiaryAlt.copy(fontFamily = text),
+        listRowQuaternary = listRowQuaternary.copy(fontFamily = text),
+        listRowSwitchTitle = listRowSwitchTitle.copy(fontFamily = text),
+        listItemCaptionSmall = listItemCaptionSmall.copy(fontFamily = text),
         button = button.copy(fontFamily = text),
         dialogButton = dialogButton.copy(fontFamily = text),
         dialogTitle = dialogTitle.copy(fontFamily = text),

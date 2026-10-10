@@ -63,4 +63,12 @@
     <dimen name="smartisan_spinner_small_icon_width">22.0dp</dimen>
     <dimen name="smartisan_spinner_view_text_width">152.0dp</dimen>
     <dimen name="smartisan_small_blank_spacing_width">6.0dp</dimen>
+
+    <!--
+      板块分组标题的底色（framework `res/values/drawables.xml` 的
+      `list_board_pressed_color` / `list_board_section_title_bg_normal`，
+      被 `res/drawable/list_board_section_bg.xml` 这个 selector 引用）。
+    -->
+    <drawable name="list_board_pressed_color">#f2f2f2</drawable>
+    <drawable name="list_board_section_title_bg_normal">#ffffffff</drawable>
 </resources>

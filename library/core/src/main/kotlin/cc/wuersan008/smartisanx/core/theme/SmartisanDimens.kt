@@ -119,4 +119,59 @@ object SmartisanDimens {
 
     /** 分组卡片内部的行内边距。 */
     val GroupRowPadding = 12.dp
+
+    // ------------------------------------------------------------------
+    // framework 列表行矩阵（`framework-smartisanos-res.apk` 的 res/values/dimens.xml
+    // 与 res/layout/list_content_*.xml）。数值全部照抄原版，用于 SmartisanListRow 家族。
+    // ------------------------------------------------------------------
+
+    /** 列表行最小高度，原版 `list_item_min_height`（= `list_item_height`）。 */
+    val ListRowMinHeight = 60.dp
+
+    /**
+     * 左侧图标区宽度，原版 `left_icon_area_width`。
+     *
+     * 原版列表行左侧是一个 60dp × 60dp 的方形区域，左图标 / 左复选框都在里面居中；
+     * 它同时充当行内容的左缩进。
+     */
+    val ListRowLeftIconArea = 60.dp
+
+    /** 左侧图标最大边长，原版 layout 里写死的 `maxWidth` / `maxHeight` = 36dp。 */
+    val ListRowLeftIconMax = 36.dp
+
+    /** 行内容与左侧图标区的间距，原版 `mid_container_margin`（列表行本身不用，见 `primary_title_layout`）。 */
+    val ListRowMidContainerMargin = 12.dp
+
+    /** 右侧容器的左右外边距，原版 `right_container_margin`。 */
+    val ListRowRightContainerMargin = 6.dp
+
+    /** 右侧副标题前的弹性间隔，原版 `flexible_space`。 */
+    val ListRowFlexibleSpace = 18.dp
+
+    /** 右侧副标题字号对应的最大宽度上限（原版未限制，这里给箭头留位）。 */
+    val ListRowSubtitleMaxWidth = 200.dp
+
+    /** 两 / 三行文字容器的上下内边距，原版 `mid_container_top_bottom_padding`。 */
+    val ListRowTextVerticalPadding = 6.dp
+
+    /** 行内多行文字之间的间距，原版 `mid_container_summary_margin`。 */
+    val ListRowTextLineGap = 2.dp
+
+    /** 分组标题高度，原版 `list_section_title_height`。 */
+    val ListSectionTitleHeight = 30.dp
+
+    /** 分组标题左内边距，原版 `list_section_header_padding_left`。 */
+    val ListSectionHeaderPaddingStart = 12.dp
+
+    /** 板块分组标题高度，原版 `list_board_section_title_layout` 里写死的 40dp。 */
+    val ListBoardSectionTitleHeight = 40.dp
+
+    /** 板块分组标题上方的留白，原版 `list_board_section_title_layout` 的 `top_space`。 */
+    val ListBoardSectionTitleTopSpace = 6.dp
+
+    /** 开关行标题的最大宽度，原版 `switch_title_max_width`。 */
+    val SwitchRowTitleMaxWidth = 222.dp
+
+    /** 开关行图标与标题的间距，原版 `item_icon_right_margin`。 */
+    val SwitchRowIconMargin = 20.dp
 }

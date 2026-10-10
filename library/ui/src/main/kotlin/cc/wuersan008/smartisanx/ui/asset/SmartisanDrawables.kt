@@ -87,6 +87,17 @@ object SmartisanDrawables {
     /** 分组标题底色。 */
     @DrawableRes val SectionTitleBackground = R.drawable.list_title_bg
 
+    /**
+     * 板块分组标题底色（framework `list_board_section_bg`）。
+     *
+     * 是 selector：常态白色、按下 `#f2f2f2`；两个颜色值都写在
+     * `values/smartisanx_framework_values.xml` 里，与原版 `values/drawables.xml` 一致。
+     */
+    @DrawableRes val ListBoardSectionBackground = R.drawable.list_board_section_bg
+
+    /** 板块分组标题下方的 1px 分隔线（framework `list_board_section_title_divider`）。 */
+    @DrawableRes val ListBoardSectionTitleDivider = R.drawable.list_board_section_title_divider
+
     /** 列表项右侧箭头 selector。 */
     @DrawableRes val ListItemArrow = R.drawable.selector_list_content_item_arrow
 
