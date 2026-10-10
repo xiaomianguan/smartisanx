@@ -41,6 +41,15 @@ object SmartisanDimens {
     /** 行内隐藏操作相邻图标之间的间距，原版 `hidden_list_action_icon_gap`。 */
     val HiddenActionIconGap = 6.dp
 
+    /** 消息输入栏里输入区上下的外边距，原版 `message_field_margin_top_bottom`（8.329987dp）。 */
+    val MessageFieldFieldGap = 8.33.dp
+
+    /** 消息输入栏输入框的内边距，原版 `mid_container_top_bottom_padding`。 */
+    val FieldInnerPadding = 6.dp
+
+    /** 消息输入栏显示表情图标时输入框的右内边距，原版 `message_field_right_emoji_padding`。 */
+    val MessageFieldEmojiPadding = 5.dp
+
     /** 标题栏图标尺寸，原版 `standard_icon_size`。 */
     val IconSize = 36.dp
 

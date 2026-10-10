@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 原版 framework 的 selector_small_icon_send。
+     正常态素材 `icon_send` 与本库从别的 APK 拿到的同名黑色图标冲突，
+     按本库约定把 framework 这份重命名为 sos_smartisanos_drawable_icon_send（绿色箭头）。 -->
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:state_pressed="true" android:drawable="@drawable/icon_send_pressed" />
+    <item android:state_enabled="false" android:drawable="@drawable/icon_send_disabled" />
+    <item android:drawable="@drawable/sos_smartisanos_drawable_icon_send" />
+</selector>

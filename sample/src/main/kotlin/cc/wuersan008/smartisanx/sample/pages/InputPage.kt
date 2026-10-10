@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.sample.pages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.input.SmartisanAutoFitText
 import cc.wuersan008.smartisanx.ui.input.SmartisanClearableField
 import cc.wuersan008.smartisanx.ui.input.SmartisanJustifyText
+import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
 import cc.wuersan008.smartisanx.ui.input.SmartisanPasswordField
 import cc.wuersan008.smartisanx.ui.input.SmartisanSearchBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
@@ -65,6 +67,9 @@ fun InputPage(onBack: () -> Unit) {
         SampleSectionHeader("framework 编辑行（editor.*）")
         EditorRowSection()
 
+        SampleSectionHeader("消息输入栏（MessageField）")
+        MessageFieldSection()
+
         SampleFootnote(
             "这 5 个组件都直接用原版 APK 里的素材：搜索栏用 NinePatch `search_field`、" +
                 "放大镜 `search_bar_left_icon`、清除按钮 `text_clear_btn`、筛选 `sorting_icon_selector`、" +
@@ -76,6 +81,71 @@ fun InputPage(onBack: () -> Unit) {
 }
 
 /** 搜索栏：展示展开 / 收起、清除、筛选、二级筛选与动画。 */
+/** 消息输入栏（framework `smartisanos.widget.MessageField`）演示。 */
+@Composable
+private fun MessageFieldSection() {
+    val colors = LocalSmartisanColors.current
+    val typography = LocalSmartisanTypography.current
+    var draft by remember { mutableStateOf("") }
+    var lastSent by remember { mutableStateOf("（还没有发送过）") }
+    var emojiDraft by remember { mutableStateOf("带表情图标的输入框") }
+    val messages =
+        remember {
+            listOf(
+                "对方：明天上午十点开会",
+                "我：收到，会议室我来订",
+            )
+        }
+
+    Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+        // 模拟聊天窗口的下半部分：上面是消息，下面压着输入栏。
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .background(colors.surfaceRaised),
+        ) {
+            Column(Modifier.fillMaxWidth().padding(18.dp)) {
+                messages.forEach { line ->
+                    SmartisanText(
+                        text = line,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        style = typography.listItemPrimary,
+                        color = colors.textPrimary,
+                    )
+                }
+                SmartisanText(
+                    text = "最近发送：$lastSent",
+                    style = typography.caption,
+                    color = colors.textTertiary,
+                )
+            }
+            SmartisanMessageField(
+                value = draft,
+                onValueChange = { draft = it },
+                onSend = {
+                    lastSent = draft
+                    draft = ""
+                },
+                hint = "输入消息",
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
+
+        // 第二例：显示表情图标（输入框右内边距 6dp → 5dp）并隐藏左侧图标。
+        Box(Modifier.fillMaxWidth().padding(top = 24.dp)) {
+            SmartisanMessageField(
+                value = emojiDraft,
+                onValueChange = { emojiDraft = it },
+                leftIconRes = null,
+                emojiIconRes = SmartisanDrawables.MessageFieldEmojiIcon,
+                hint = "无左侧图标 + 表情图标",
+            )
+        }
+    }
+}
+
 @Composable
 private fun SearchBarSection() {
     val colors = LocalSmartisanColors.current

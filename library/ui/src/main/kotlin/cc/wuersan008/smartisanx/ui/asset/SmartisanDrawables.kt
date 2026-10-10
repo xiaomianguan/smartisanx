@@ -31,6 +31,30 @@ object SmartisanDrawables {
     /** 次级栏下方的投影（原版 `secondary_bar_shadow`，9-patch）。 */
     @DrawableRes val SecondaryBarShadow = R.drawable.secondary_bar_shadow
 
+    /**
+     * framework 的底部栏投影（原版 `bottom_bar_shadow`，素材 12×33px ⇒ 11dp，与
+     * `@dimen/bottom_bar_shadow_height` 一致）。
+     *
+     * 与锤子音乐那条 [BottomBarShadow]（`tab_bar_shadow`）不同源；本库里另有一份同名 9-patch
+     * `bottom_bar_shadow.9.png` 来自别的 APK（14.3dp 高），framework 这份按约定重命名保存。
+     * 消息输入栏（[cc.wuersan008.smartisanx.ui.input.SmartisanMessageField]）等 framework 底栏用它。
+     */
+    @DrawableRes val BottomBarShadowPlain = R.drawable.sos_smartisanos_drawable_bottom_bar_shadow
+
+    // ---- 消息输入栏（framework smartisanos.widget.MessageField） ----
+
+    /** 消息输入栏的输入区底图（原版 `message_field.9.png`，固有 146×96px @xxhdpi）。 */
+    @DrawableRes val MessageFieldBackground = R.drawable.message_field
+
+    /** 消息输入栏左侧「添加」图标（原版 `standard_icon_add_selector`）。 */
+    @DrawableRes val MessageFieldAddIcon = R.drawable.standard_icon_add_selector
+
+    /** 消息输入栏右侧发送按钮（原版 `selector_small_icon_send`：绿色箭头，含按下 / 禁用态）。 */
+    @DrawableRes val MessageFieldSendIcon = R.drawable.selector_small_icon_send
+
+    /** 消息输入栏的表情图标（原版 `message_field_emoji_selector`）。 */
+    @DrawableRes val MessageFieldEmojiIcon = R.drawable.message_field_emoji_selector
+
     /** 播放页标题栏底色。 */
     @DrawableRes val TitleBarPlayingBackground = R.drawable.titlebar_playing_bg
 
