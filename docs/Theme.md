@@ -281,6 +281,19 @@ gets clipped:
 
 `SmartisanGroup` already uses both.
 
+### Row height
+
+| Name | Original resource | Value |
+| --- | --- | --- |
+| `SmartisanDimens.ListItemHeight` | `listview_item_height` | 60dp |
+| `SmartisanDimens.ListItemMinHeight` | `list_item_min_height` | 60dp |
+
+The original's `list_content_item_layout.xml` is a `RelativeLayout` with
+`android:minHeight="@dimen/list_item_min_height"`, and `list_item_min_height` is **60dp** — the same
+value as `listview_item_height`. So a one-line row is 60dp and only rows with more content (a second
+summary line, a two-line title) grow taller. `SmartisanListItem`'s default `minHeight` is
+`ListItemMinHeight`, so every row lands on that grid.
+
 ## Text styles
 
 | Name | Size | Weight | Usage |
@@ -319,7 +332,7 @@ The important values in `SmartisanDimens` (all in dp):
 
 ```
 TitleBarHeight 48        TitleBarShadowHeight 14     TitleBarHorizontalMargin 6
-IconSize 36              ListItemHeight 60           ListItemMinHeight 48
+IconSize 36              ListItemHeight 60           ListItemMinHeight 60
 ListItemHorizontalMargin 12  RowContentStart 18     CheckboxMarginStart 18
 DividerThickness 0.67    ListItemImageSize 48        DialogWidth 308
 DialogTitleHeight 48     DialogButtonHeight 48       DialogCornerRadius 10

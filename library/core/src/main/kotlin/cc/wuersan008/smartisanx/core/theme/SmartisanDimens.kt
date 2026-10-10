@@ -56,8 +56,14 @@ object SmartisanDimens {
     /** 列表行高度，原版 `listview_item_height`。 */
     val ListItemHeight = 60.dp
 
-    /** 列表行最小高度，用于多行内容。 */
-    val ListItemMinHeight = 48.dp
+    /** 列表行最小高度，原版 `list_item_min_height`。
+     *
+     * 原版 `list_content_item_layout.xml` 的根布局写着
+     * `android:minHeight="@dimen/list_item_min_height"`，而 `list_item_min_height` 是
+     * **60dp**，与 [ListItemHeight] 一致 —— 也就是「单行文字的行也是 60dp，
+     * 只有内容更多（两行副标题等）时才变高」。
+     */
+    val ListItemMinHeight = 60.dp
 
     /** 列表行左右外边距，原版 `list_item_left_right_margin`。 */
     val ListItemHorizontalMargin = 12.dp
