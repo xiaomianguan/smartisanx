@@ -19,8 +19,10 @@
    ./tools/release_apk.sh        # 与 debug 同签名，可直接覆盖安装手机上已装的包
    ./tools/send_tg.sh sample/build/outputs/apk/release/smartisanx-sample-release.apk <说明文件>
    ```
-   说明文件（caption）用**英文**写。Telegram 凭据在 `~/tg.env`（`TG_BOT_TOKEN` /
-   `TG_CHAT_ID`），**不进仓库**；要换文件用 `TG_ENV=<路径>`。
+   说明文件（caption）用**英文**写，且**别超过 1024 字符** —— 超了 Telegram 会直接回
+   `Bad Request: message caption is too long`，包根本不会发出去（发送前可以先数一下：
+   `python3 -c "print(len(open('说明文件').read()))"`）。Telegram 凭据在 `~/tg.env`
+   （`TG_BOT_TOKEN` / `TG_CHAT_ID`），**不进仓库**；要换文件用 `TG_ENV=<路径>`。
 4. 只改了文档 / 脚本这类不进包的东西时，推送即可，不用发包。
 
 ## 验证标准
