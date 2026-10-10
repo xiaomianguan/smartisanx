@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -75,12 +77,19 @@ fun SmartisanWorldClockCard(
     // 小表盘会按城市当地小时自动切换日间/夜间底图，这里不需要再算颜色。
 
     val dayDelta = ChronoUnit.DAYS.between(localDate, cityDate).toInt()
+    // 语言从 LocalConfiguration 读（可观察：系统语言变化会重组，lint 的 NonObservableLocale
+    // 就是 `Locale.getDefault()` 不可观察）；日期与星期都用平台自带的本地化名称，
+    // 这样每种语言都自动正确，库里不需要维护一份。
+    val locale = LocalConfiguration.current.locales[0]
+    val dateFormatter =
+        remember(locale) {
+            java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM, locale)
+        }
     val dateText = dayHint(dayDelta) +
-        // 日期用平台自带的本地化格式，星期也用平台的显示名，
-        // 这样每种语言都自动正确，库里不需要维护一份。
-        java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
-            .format(java.util.Date.from(cityDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())) +
-        " " + cityDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
+        dateFormatter.format(
+            java.util.Date.from(cityDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()),
+        ) +
+        " " + cityDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, locale)
 
     val diffMinutes =
         (zone.rules.getOffset(now).totalSeconds - localZone.rules.getOffset(now).totalSeconds) / 60

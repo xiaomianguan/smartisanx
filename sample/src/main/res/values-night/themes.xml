@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- 深色模式窗口底色，沿用 smartisanx 炭灰色板 #25282D。 -->
     <style name="Theme.SmartisanX.Sample" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">#FF25282D</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
+        <!-- API 26 还没有这个属性，写在这里只是让 27+ 也吃同一份主题。 -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
     </style>
 </resources>

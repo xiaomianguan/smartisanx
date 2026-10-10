@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
       示例应用只使用 smartisanx 自己的主题，不依赖 Material。
       窗口底色与状态栏样式跟随深浅色，避免启动瞬间闪白。
@@ -9,6 +9,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <!-- API 26 还没有这个属性，写在这里只是让 27+ 也吃同一份主题。 -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 </resources>

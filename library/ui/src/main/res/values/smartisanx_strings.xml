@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="smartisan_delete">Delete</string>
     <string name="smartisan_cancel">Cancel</string>
     <string name="smartisan_confirm">OK</string>
@@ -19,9 +19,10 @@
     <string name="smartisan_minutes">%1$d min</string>
     <string name="smartisan_selected">Selected</string>
     <string name="smartisan_unselected">Not selected</string>
-    <!-- 手势切横竖屏提示（原版 framework strings.xml / values-zh-rCN 的 twist_guide_title / _body）。 -->
-    <string name="smartisan_twist_guide_title">Note</string>
-    <string name="smartisan_twist_guide_body">You just activated Easy Rotate. As shown in the image, you can easily rotate the screen via a simple gesture even when Auto Rotate is turned off.\n\nThe rotate status is remembered by the OS on a per-app basis, so that when you rotate screen within one app, other apps will not be affected.</string>
-    <!-- 日历里「今天」那一格显示的文字（原版 framework strings.xml 的 today_text）。 -->
-    <string name="smartisan_calendar_today">Today</string>
+    <!-- 手势切横竖屏提示（原版 framework strings.xml / values-zh-rCN 的 twist_guide_title / _body）。
+         这两条只抄了英文与中文，其余语言的原文翻译没跟着抄，所以不要求补齐。 -->
+    <string name="smartisan_twist_guide_title" tools:ignore="MissingTranslation">Note</string>
+    <string name="smartisan_twist_guide_body" tools:ignore="MissingTranslation">You just activated Easy Rotate. As shown in the image, you can easily rotate the screen via a simple gesture even when Auto Rotate is turned off.\n\nThe rotate status is remembered by the OS on a per-app basis, so that when you rotate screen within one app, other apps will not be affected.</string>
+    <!-- 日历里「今天」那一格显示的文字（原版 framework strings.xml 的 today_text），同样只抄了中英。 -->
+    <string name="smartisan_calendar_today" tools:ignore="MissingTranslation">Today</string>
 </resources>

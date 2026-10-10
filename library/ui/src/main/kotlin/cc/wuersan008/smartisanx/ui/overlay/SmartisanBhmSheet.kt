@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -424,17 +425,22 @@ fun SmartisanBhmSheet(
                                 fadeOut(tween(durationMillis = SmartisanBhmDefaults.SlideDurationMillis)))
                     },
                     label = "smartisan bhm page",
-                ) {
-                    Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-                        // 原版把 bhm_list_header_separator 当列表头插入：一条 0.67dp、8% 黑的细线，
-                        // 并且会跟着列表一起滚走。
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(SmartisanBhmDefaults.ListTopHairlineHeight)
-                                .background(Color.Black.copy(alpha = SmartisanBhmDefaults.ListTopHairlineAlpha)),
-                        )
-                        content()
+                ) { state ->
+                    // 页面内容由调用方按当前页提供，state 只当动画 key 用：
+                    // 用 key(state) 给每页一个独立的组合作用域，过渡期间新旧页不会串内容
+                    // （lint 的 UnusedContentLambdaTargetStateParameter 说的就是这个）。
+                    key(state) {
+                        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
+                            // 原版把 bhm_list_header_separator 当列表头插入：一条 0.67dp、8% 黑的细线，
+                            // 并且会跟着列表一起滚走。
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(SmartisanBhmDefaults.ListTopHairlineHeight)
+                                    .background(Color.Black.copy(alpha = SmartisanBhmDefaults.ListTopHairlineAlpha)),
+                            )
+                            content()
+                        }
                     }
                 }
             }
