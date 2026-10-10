@@ -133,6 +133,10 @@ fun LayoutPage(onBack: () -> Unit) {
             )
         }
 
+        SampleSectionHeader("framework 列表行矩阵")
+        // 对应 framework 的 list_content_item_layout 家族，见 ListRowMatrixSection.kt。
+        ListRowMatrixSection()
+
         SampleSectionHeader("卡片")
         CardSection()
 
