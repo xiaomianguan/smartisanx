@@ -64,6 +64,8 @@ fun ListRowMatrixSection() {
         )
     }
 
+    SmartisanListVerticalGap()
+
     // 左槽：原版是 60dp × 60dp 的方形区（left_icon_area_width），内容居中且不超过 36dp。
     SmartisanGroup {
         SmartisanListRow(
@@ -86,6 +88,8 @@ fun ListRowMatrixSection() {
             onClick = {},
         )
     }
+
+    SmartisanListVerticalGap()
 
     // 右槽：list_content_right_subtitle_arrow（副标题 + 箭头）与 list_content_right_switch（开关）。
     SmartisanGroup {

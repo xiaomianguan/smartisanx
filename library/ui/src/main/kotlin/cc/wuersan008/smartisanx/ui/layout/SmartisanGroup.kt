@@ -26,6 +26,10 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * 分组标题。
  *
  * 对应原版设置页、资料库里的灰色小标题（13.5sp，`textTertiary`）。
+ *
+ * 标题本身就带原版的上下留白：坚果 R2 声音页实测「卡片下沿 → 标题字顶」约 21.6dp、
+ * 「标题字底 → 下一张卡片上沿」约 7.2dp（字号 13.5sp，字面上下各约 2dp 是由字体
+ * 行高带来的）。所以标题前后**不再需要** [SmartisanListVerticalGap]。
  */
 @Composable
 fun SmartisanSectionTitle(
@@ -37,7 +41,7 @@ fun SmartisanSectionTitle(
     val typography = LocalSmartisanTypography.current
     SmartisanText(
         text = text,
-        modifier = modifier.fillMaxWidth().padding(start = startIndent, end = startIndent, top = 16.dp, bottom = 6.dp),
+        modifier = modifier.fillMaxWidth().padding(start = startIndent, end = startIndent, top = 19.5.dp, bottom = 5.5.dp),
         style = typography.sectionTitle,
         color = colors.textTertiary,
         maxLines = 1,
@@ -56,6 +60,12 @@ fun SmartisanSectionTitle(
  *
  * 需要整块底色时显式传 [color]。
  *
+ * **分组自己不占纵向间距**：原版的 `list_item_vertical_gap`(14dp) 是一个插在
+ * 两个分组之间的空白 View（`group_list_item_vertical_gap_layout`），不是分组
+ * 自己的内边距 —— 两张卡片的投影（9-patch 上下各向外扩 14dp）正好落在这段留白里
+ * 互相重叠。所以相邻两个分组之间请显式插一个 [SmartisanListVerticalGap]，
+ * 分组标题前后则不用（标题自带留白）。
+ *
  * [position] 是给「内容不是列表行」的分组用的（比如演示用的控件排排站）：
  * 这类分组里的内容自己不会画卡片，传 [position] 后由分组统一画上原版的
  * 分组卡片底图与向外投影，`color` / `shape` 随即失效。
@@ -73,8 +83,8 @@ fun SmartisanGroup(
         modifier =
             modifier
                 .fillMaxWidth()
-                // 纵向留白是原版的 list_item_vertical_gap，投影要落在行边界之外。
-                .padding(horizontal = horizontalMargin, vertical = SmartisanDimens.ListItemVerticalGap)
+                // 只有左右外边距；纵向间距由 [SmartisanListVerticalGap] 显式提供。
+                .padding(horizontal = horizontalMargin)
                 .then(
                     when {
                         position != null ->

@@ -274,12 +274,17 @@ SmartisanCard(backgroundRes = ..., shadowRes = ...) { /* ... */ }
 Because the projection is drawn outside the bounds, rows and groups must leave margin or the shadow
 gets clipped:
 
-| Name | Original resource | Value |
-| --- | --- | --- |
-| `SmartisanDimens.ListItemHorizontalMargin` | `list_item_left_right_margin` | 12dp |
-| `SmartisanDimens.ListItemVerticalGap` | `list_item_vertical_gap` | 14dp |
+| Name | Original resource | Value | Usage |
+| --- | --- | --- | --- |
+| `SmartisanDimens.ListItemHorizontalMargin` | `list_item_left_right_margin` | 12dp | horizontal margin of a group, applied by `SmartisanGroup` |
+| `SmartisanDimens.ListItemVerticalGap` | `list_item_vertical_gap` | 14dp | a blank view **between** two groups, inserted via `SmartisanListVerticalGap()` |
 
-`SmartisanGroup` already uses both.
+In the original the vertical gap is a spacer view inserted between two groups
+(`group_list_item_vertical_gap_layout`), not padding of the group itself — the shadows of the two
+cards (each nine-patch expands 14dp up and down) overlap inside that single spacer. `SmartisanGroup`
+therefore adds no vertical spacing of its own and only keeps the horizontal margin: insert a
+`SmartisanListVerticalGap` between two adjacent groups. No gap is needed around a section title —
+the title carries its own spacing.
 
 ### Row height
 

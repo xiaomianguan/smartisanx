@@ -320,9 +320,10 @@ AGP 9 起 Kotlin 编译由 AGP 内置支持（built-in Kotlin），所以模块�
   阴影用 `list_content_item_top/middle/bottom/single_shadow`，
   阴影按自己的 9-patch padding 向四周扩张，因此投影落在控件边界**之外**。
   对应实现是 `Modifier.smartisanShadowBackground(backgroundRes, shadowRes)`。
-- 因为投影画在边界外，行与分组需要留出边距：原版是左右 `list_item_left_right_margin`(12dp)、
-  上下 `list_item_vertical_gap`(14dp)，本库对应 `SmartisanDimens.ListItemHorizontalMargin`
-  与 `SmartisanDimens.ListItemVerticalGap`。
+- 因为投影画在边界外，分组需要留出边距：左右是 `list_item_left_right_margin`(12dp)，对应
+  `SmartisanDimens.ListItemHorizontalMargin`；纵向的 `list_item_vertical_gap`(14dp) 在原版里
+  是**插在两个分组之间**的一条空白 View，本库对应 `SmartisanListVerticalGap()`，
+  `SmartisanGroup` 自己不占纵向间距（分组标题自带留白，前后也不用插）。
 
 ```kotlin
 SmartisanScaffold {                       // 默认已带平铺底纹

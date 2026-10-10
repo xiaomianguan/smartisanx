@@ -41,6 +41,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupDivider
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarShadow
@@ -149,6 +150,8 @@ fun LayoutPage(onBack: () -> Unit) {
                 onClick = {},
             )
         }
+        // 两张卡片直接相邻：按原版插一条 14dp 的分组间距。
+        SmartisanListVerticalGap()
         SmartisanGroup {
             SmartisanGroupItem(
                 position = SmartisanGroupRowPosition.Single,

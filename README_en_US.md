@@ -329,9 +329,11 @@ sits in **cards with an outward shadow**.
   shadow via `list_content_item_top/middle/bottom/single_shadow`. The shadow expands by its own
   nine-patch padding, so the projection lands **outside** the control's bounds.
   The implementation is `Modifier.smartisanShadowBackground(backgroundRes, shadowRes)`.
-- Because the projection is drawn outside, rows and groups need margin: the original uses
-  `list_item_left_right_margin` (12dp) horizontally and `list_item_vertical_gap` (14dp) vertically,
-  exposed here as `SmartisanDimens.ListItemHorizontalMargin` / `ListItemVerticalGap`.
+- Because the projection is drawn outside, groups need margin: `list_item_left_right_margin` (12dp)
+  horizontally, exposed as `SmartisanDimens.ListItemHorizontalMargin`. Vertically the original's
+  `list_item_vertical_gap` (14dp) is a spacer view **between two groups**, exposed here as
+  `SmartisanListVerticalGap()` — `SmartisanGroup` itself adds no vertical spacing, and the section
+  title carries its own.
 
 ```kotlin
 SmartisanScaffold {                       // textured by default

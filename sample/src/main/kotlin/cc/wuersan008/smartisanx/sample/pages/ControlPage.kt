@@ -37,6 +37,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 
 /** 基础控件页：开关、复选框、按钮、评分条。 */
@@ -76,6 +77,8 @@ fun ControlPage(onBack: () -> Unit) {
                 position = SmartisanGroupRowPosition.Bottom,
             )
         }
+        // 两张卡片直接相邻：按原版插一条 14dp 的分组间距（group_list_item_vertical_gap_layout）。
+        SmartisanListVerticalGap()
         SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
                 // 三个开关横排：开关是定宽的，说明文字必须另起一行 ——
