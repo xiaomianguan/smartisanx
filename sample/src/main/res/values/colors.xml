@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 自适应图标的底图：纯白。图形本体（原版牛皮纸包裹盒）作前景，
+         空隙里透出这层白色，与界面的白色卡片风格一致。 -->
+    <color name="ic_launcher_background">#FFFFFFFF</color>
+</resources>

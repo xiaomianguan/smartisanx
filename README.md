@@ -1,5 +1,9 @@
 # smartisanx
 
+<p align="center">
+  <img src=".github/assets/smartisanx.png" width="180" alt="smartisanx：牛皮纸包裹盒 + 红色封蜡">
+</p>
+
 锤子风格（Smartisan OS）Jetpack Compose 组件库。
 
 **中文** · [English](README_en_US.md)

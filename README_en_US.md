@@ -1,5 +1,9 @@
 # smartisanx
 
+<p align="center">
+  <img src=".github/assets/smartisanx.png" width="180" alt="smartisanx: a kraft-paper parcel with a red wax seal">
+</p>
+
 A Jetpack Compose UI library in the Smartisan OS (Smartisan / "hammer") visual language.
 
 `smartisanx` extracts the custom UI components from three Smartisan app revival projects,
