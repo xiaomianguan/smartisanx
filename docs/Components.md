@@ -736,11 +736,31 @@ data class SmartisanHiddenRowAction(
 )
 ```
 
+@Composable fun SmartisanProgressDialog(
+    onDismissRequest: () -> Unit, modifier: Modifier = Modifier,
+    title: String? = null, message: String? = null,
+    showProgress: Boolean = true, dark: Boolean = false, dimAmount: Float = 0.54f,
+    spinnerRes: Int = R.drawable.spinner_48_outer_smartisanos_light,
+    backgroundRes: Int? = null, titleColor: Color = Color.Unspecified,
+    messageColor: Color = Color.Unspecified,
+    spinDurationMillis: Int = SmartisanProgressDialogDefaults.SpinDurationMillis,
+)
+
+@Composable fun SmartisanProgressDialogCard(/* same, without the window */)
+object SmartisanProgressDialogDefaults   // 246dp card / 48dp spinner / 18sp title / 13sp message ...
+```
+
 - The scrim defaults to 0.54, matching the original.
 - The window is only removed after the exit animation finishes, avoiding the original's problem of
   the window being destroyed while the animation was still running.
 - `SmartisanSheetScaffold` is for sheets hosted inside the page rather than in their own window
   (for example a side panel or an embedded surface).
+- `SmartisanProgressDialog` comes from the framework's `smartisanos.app.SmartisanProgressDialog`: a
+  centred 246dp card (`smartisan_progress_dialog_bg`, shipped in a light and a dark variant), an 18sp
+  title, a 48dp spinner and a 13sp single-line ellipsised message — all three optional. The layout
+  itself writes no padding at all: the insets come from the background 9-patch's own padding (this
+  library reads the very same numbers through `rememberSmartisanDrawablePadding`). `dark = true`
+  mirrors the original `setDarkTheme`, swapping in the dark asset and white text.
 
 ---
 

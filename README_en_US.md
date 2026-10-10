@@ -240,7 +240,7 @@ SmartisanTheme {
 
 `SmartisanModal`, `SmartisanModalWindow`, `SmartisanDialog`, `SmartisanConfirmDialog`,
 `SmartisanDialogTitleBar`, `SmartisanDialogButton`, `SmartisanMenuDialog`, `SmartisanMenuItem`,
-`SmartisanBottomSheet`, `SmartisanSheetScaffold`
+`SmartisanProgressDialog`, `SmartisanProgressDialogCard`, `SmartisanBottomSheet`, `SmartisanSheetScaffold`
 
 ### Clock (`cc.wuersan008.smartisanx.ui.clock`)
 

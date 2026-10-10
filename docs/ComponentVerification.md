@@ -57,6 +57,8 @@ These are **intentionally** different from the originals; each is noted in the c
 | Message bar text / hint colours | framework `editor_text_color` (#cc000000) / `editor_hint_text_color` (#26000000) | theme `textPrimary` / `textHint` | Follows the smartisanx dark theme and matches the other input components |
 | Message bar text listening | `beforeTextChanged` / `onTextChanged` / `afterTextChanged` | Collapsed into `onValueChange` | Compose offers a single change callback; the first two have no counterpart |
 | Message bar navigation-bar insets | Not handled by the original (each app's layout does it) | Not handled either; the caller adds them | Keeps the original split of responsibilities |
+| Progress dialog spinner animation | Uses the platform's indeterminate ProgressBar (`ProgressBarCircleStyle.Medium` sets no drawable) | Rotates the ROM's 48dp ring asset at a steady speed (1s per turn, overridable) | Compose has no platform indeterminate animation; the asset and the size still match the original |
+| Progress dialog determinate progress | `setProgress(int)` is an empty method | Also only indeterminate | The original never supported determinate progress |
 
 ## 3. Assets and fonts
 
@@ -112,6 +114,12 @@ Components verified this way so far:
 | | side icons | 36dp (126px, `standard_icon_size`); the leading icon starts 21px (6dp) in, the input area 42px (12dp) in |
 | | bottom bar shadow | a 38px (11dp) whisper-light gradient above the bar's top edge (gray 247 → 242; the asset's peak alpha is only 4/255) plus a 2px divider (gray 233 = theme `divider`) |
 | | send button | empty input resolves `icon_send_disabled` (pale green arrow); with text it switches to `sos_smartisanos_drawable_icon_send` (deep green) |
+| `SmartisanProgressDialog` | card size | the node is 246dp (861px); the asset carries about 11dp of transparent margin on each side — which is also its padding — so the visible card is 224dp (789px) |
+| | card height | the node is 156dp (546px): 18.67dp of 9-patch padding top and bottom plus title (8dp + a 20sp line box + 8dp), spinner (2dp + 48dp) and message (8dp + 20sp + 8dp) |
+| | vertical positions | title text 1263–1336px, spinner ink 1392–1517px, message 1567–1620px — each one lines up with those spacings |
+| | spinner | a 48dp box (168px); the 144px asset has 18px of transparent margin all round, so the visible ring is 36dp (126px) |
+| | scrim | 0.54: white (255) behind the dialog measures 117 = 255 × 0.46 |
+| | dark theme | swaps in `smartisan_progress_dialog_bg_dark` plus pure white text (the original's `setDarkTheme(true)`) |
 
 Still **not** verified item by item:
 

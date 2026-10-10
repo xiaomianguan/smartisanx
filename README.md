@@ -231,7 +231,7 @@ SmartisanTheme {
 
 `SmartisanModal`、`SmartisanModalWindow`、`SmartisanDialog`、`SmartisanConfirmDialog`、
 `SmartisanDialogTitleBar`、`SmartisanDialogButton`、`SmartisanMenuDialog`、`SmartisanMenuItem`、
-`SmartisanBottomSheet`、`SmartisanSheetScaffold`
+`SmartisanProgressDialog`、`SmartisanProgressDialogCard`、`SmartisanBottomSheet`、`SmartisanSheetScaffold`
 
 ### 时钟（`cc.wuersan008.smartisanx.ui.clock`）
 
