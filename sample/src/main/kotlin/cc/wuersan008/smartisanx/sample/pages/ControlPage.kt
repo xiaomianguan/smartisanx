@@ -48,6 +48,7 @@ fun ControlPage(onBack: () -> Unit) {
     var switchOn by remember { mutableStateOf(true) }
     var switchOff by remember { mutableStateOf(false) }
     var checked by remember { mutableStateOf(true) }
+    var unchecked by remember { mutableStateOf(false) }
     var rating by remember { mutableIntStateOf(3) }
 
     SamplePageScaffold(title = "基础控件", onBack = onBack) {
@@ -110,7 +111,7 @@ fun ControlPage(onBack: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SmartisanCheckbox(checked = checked, onCheckedChange = { checked = it })
-                    SmartisanCheckbox(checked = false, onCheckedChange = {})
+                    SmartisanCheckbox(checked = unchecked, onCheckedChange = { unchecked = it })
                     SmartisanCheckbox(checked = true, enabled = false, onCheckedChange = {})
                 }
                 SmartisanText(

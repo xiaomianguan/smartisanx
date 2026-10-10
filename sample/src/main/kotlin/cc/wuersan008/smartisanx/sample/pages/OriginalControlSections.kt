@@ -162,6 +162,8 @@ private fun ActionButtonGroupSection() {
 private fun ButtonTabGroupSection() {
     var selected by remember { mutableIntStateOf(0) }
     var gapped by remember { mutableIntStateOf(1) }
+    // 带图标那一段也要能选中，否则点上去像是坏掉了。
+    var iconTab by remember { mutableIntStateOf(0) }
     SampleSectionHeader("分段按钮组（ButtonTabGroup）")
     SmartisanGroup {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
@@ -193,8 +195,8 @@ private fun ButtonTabGroupSection() {
                         SmartisanButtonTabGroupItem("完成", SmartisanOriginalIcons.Complete),
                         SmartisanButtonTabGroupItem("删除", SmartisanOriginalIcons.Delete),
                     ),
-                selectedIndex = 0,
-                onSelectedChange = {},
+                selectedIndex = iconTab,
+                onSelectedChange = { iconTab = it },
                 disabledIndices = setOf(2),
                 modifier = Modifier.padding(top = 16.dp),
             )

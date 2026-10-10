@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
@@ -39,7 +40,9 @@ fun SmartisanScaffold(
         }
     Column(modifier.fillMaxSize().then(backgroundModifier)) {
         if (titleBar != null) {
-            Box(Modifier.fillMaxWidth()) { titleBar() }
+            // 标题栏（连同它画在栏外的那条投影）要压在内容上面：原版是给标题栏
+            // `setElevation(0.1f)`，这里用 zIndex 得到同样的绘制顺序。
+            Box(Modifier.fillMaxWidth().zIndex(1f)) { titleBar() }
         }
         Box(Modifier.fillMaxWidth().weight(1f)) { content() }
         if (bottomBar != null) {

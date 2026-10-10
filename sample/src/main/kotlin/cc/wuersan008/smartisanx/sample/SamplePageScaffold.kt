@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
@@ -21,10 +24,21 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
+import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
+import cc.wuersan008.smartisanx.ui.layout.rememberSmartisanSnackbarState
 
-/** 组件示例页的统一骨架：标题栏 + 可滚动内容 + 底部系统栏留白。 */
+/**
+ * 页面内的轻量反馈。
+ *
+ * 示例里有不少「样例行」（只展示版式的静态行，本来就没有业务动作）。点它们如果一点
+ * 反应都没有，会让人以为组件坏了 —— 所以统一点一下弹一条提示条，告诉用户这一行是
+ * 纯展示用的。业务页面里请换成真正的动作。
+ */
+val LocalSampleFeedback = staticCompositionLocalOf<(String) -> Unit> { {} }
+
+/** 组件示例页的统一骨架：标题栏 + 可滚动内容 + 底部系统栏留白 + 轻量反馈提示条。 */
 @Composable
 fun SamplePageScaffold(
     title: String,
@@ -33,28 +47,40 @@ fun SamplePageScaffold(
     actions: List<SmartisanTitleBarAction> = emptyList(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    // 页面骨架直接用库里的 SmartisanScaffold（标题栏 + 内容 + 底部栏 + 原版页面底纹），
-    // 示例本身也是这套组件的使用者。
-    SmartisanScaffold(
-        modifier = modifier.fillMaxSize(),
-        titleBar = {
-            SmartisanTitleBar(
-                title = title,
-                // 原版标题栏图标资源：selector 自带按下 / 禁用态，按压还会放大 1.33 倍。
-                navigationIcon =
-                    SmartisanTitleBarAction(
-                        iconRes = SmartisanDrawables.IconBack,
-                        contentDescription = "返回",
-                        onClick = onBack,
-                    ),
-                actions = actions,
-            )
-        },
-        bottomBar = { Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars)) },
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-            content = content,
+    val snackbar = rememberSmartisanSnackbarState()
+    Box(modifier.fillMaxSize()) {
+        // 页面骨架直接用库里的 SmartisanScaffold（标题栏 + 内容 + 底部栏 + 原版页面底纹），
+        // 示例本身也是这套组件的使用者。
+        SmartisanScaffold(
+            modifier = Modifier.fillMaxSize(),
+            titleBar = {
+                SmartisanTitleBar(
+                    title = title,
+                    // 原版标题栏图标资源：selector 自带按下 / 禁用态，按压还会放大 1.33 倍。
+                    navigationIcon =
+                        SmartisanTitleBarAction(
+                            iconRes = SmartisanDrawables.IconBack,
+                            contentDescription = "返回",
+                            onClick = onBack,
+                        ),
+                    actions = actions,
+                )
+            },
+            bottomBar = { Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars)) },
+        ) {
+            CompositionLocalProvider(
+                LocalSampleFeedback provides { message -> snackbar.show(message) },
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                    content = content,
+                )
+            }
+        }
+        SmartisanSnackbarHost(
+            state = snackbar,
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter,
         )
     }
 }

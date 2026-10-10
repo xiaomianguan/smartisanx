@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.sample.LocalSampleFeedback
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
@@ -60,11 +61,33 @@ fun ShapeSection() {
 /** 尺寸常量一览。 */
 @Composable
 fun DimensSection() {
+    // 样例行没有业务动作，点一下弹条提示，避免「点了没反应」。
+    val feedback = LocalSampleFeedback.current
     SmartisanGroup {
-        SmartisanListItem(title = "标题栏高度", summary = "SmartisanDimens.TitleBarHeight = 48dp")
-        SmartisanListItem(title = "图标尺寸", summary = "SmartisanDimens.IconSize = 36dp")
-        SmartisanListItem(title = "列表行最小高度", summary = "SmartisanDimens.ListItemMinHeight = 48dp")
-        SmartisanListItem(title = "弹窗宽度", summary = "SmartisanDimens.DialogWidth = 308dp")
-        SmartisanListItem(title = "底部栏高度", summary = "SmartisanDimens.BottomBarHeight = 50dp")
+        SmartisanListItem(
+            title = "标题栏高度",
+            summary = "SmartisanDimens.TitleBarHeight = 48dp",
+            onClick = { feedback("标题栏高度 · 纯展示行") },
+        )
+        SmartisanListItem(
+            title = "图标尺寸",
+            summary = "SmartisanDimens.IconSize = 36dp",
+            onClick = { feedback("图标尺寸 · 纯展示行") },
+        )
+        SmartisanListItem(
+            title = "列表行最小高度",
+            summary = "SmartisanDimens.ListItemMinHeight = 48dp",
+            onClick = { feedback("列表行最小高度 · 纯展示行") },
+        )
+        SmartisanListItem(
+            title = "弹窗宽度",
+            summary = "SmartisanDimens.DialogWidth = 308dp",
+            onClick = { feedback("弹窗宽度 · 纯展示行") },
+        )
+        SmartisanListItem(
+            title = "底部栏高度",
+            summary = "SmartisanDimens.BottomBarHeight = 50dp",
+            onClick = { feedback("底部栏高度 · 纯展示行") },
+        )
     }
 }

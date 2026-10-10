@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
@@ -28,6 +30,7 @@ fun SmartisanTitleBarSurface(
     modifier: Modifier = Modifier,
     includeStatusBar: Boolean = true,
     showShadow: Boolean = true,
+    @DrawableRes shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
     content: @Composable () -> Unit,
@@ -39,13 +42,23 @@ fun SmartisanTitleBarSurface(
         } else {
             Modifier.background(colors.titleBarBackground)
         }
-    Column(modifier.fillMaxWidth().then(backgroundModifier)) {
-        if (includeStatusBar) {
-            Box(Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars))
+    Box(modifier.fillMaxWidth().then(backgroundModifier)) {
+        Column(Modifier.fillMaxWidth()) {
+            if (includeStatusBar) {
+                Box(Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars))
+            }
+            Box(Modifier.fillMaxWidth().height(contentHeight)) { content() }
         }
-        Box(Modifier.fillMaxWidth().height(contentHeight)) { content() }
         if (showShadow) {
-            SmartisanTitleBarShadow()
+            // 与 [SmartisanTitleBar] 同一套做法：投影画在栏外、盖在内容上，不占布局空间。
+            Box(
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .offset(y = SmartisanDimens.TitleBarShadowHeight)
+                    .height(SmartisanDimens.TitleBarShadowHeight)
+                    .smartisanDrawableBackground(shadowRes),
+            )
         }
     }
 }

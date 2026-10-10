@@ -33,6 +33,9 @@ fun EditorRowSection() {
     var password by remember { mutableStateOf("123456") }
     var reveal by remember { mutableStateOf(false) }
     var tag by remember { mutableStateOf("可清空输入框") }
+    // 左图标 / 右说明那一行也要能输入、能点，否则点上去像是坏掉了。
+    var iconLabel by remember { mutableStateOf("") }
+    var synced by remember { mutableStateOf(true) }
 
     // 四行一组：底图按 Single / Top / Middle / Bottom 取（原版 EditorStyle.*）。
     Column(modifier = Modifier.padding(horizontal = SmartisanDimens.ListItemHorizontalMargin)) {
@@ -69,8 +72,8 @@ fun EditorRowSection() {
     Column(modifier = Modifier.padding(horizontal = SmartisanDimens.ListItemHorizontalMargin)) {
         // 左槽换成「图标 + 标签 + 箭头」，右槽换成「说明 + 图标（带 2px 分隔线）」。
         SmartisanEditorRow(
-            value = "",
-            onValueChange = {},
+            value = iconLabel,
+            onValueChange = { iconLabel = it },
             placeholder = "左图标 + 右说明 / 图标",
             leading = {
                 SmartisanEditorLabel(
@@ -78,15 +81,15 @@ fun EditorRowSection() {
                     iconRes = SmartisanOriginalIcons.TabFolder,
                     showDivider = true,
                     showArrow = true,
-                    onClick = {},
+                    onClick = { synced = !synced },
                 )
             },
             trailing = {
                 SmartisanEditorRightIcon(
-                    text = "已同步",
+                    text = if (synced) "已同步" else "未同步",
                     iconRes = SmartisanOriginalIcons.Refresh,
                     showDivider = true,
-                    onClick = {},
+                    onClick = { synced = !synced },
                 )
             },
         )

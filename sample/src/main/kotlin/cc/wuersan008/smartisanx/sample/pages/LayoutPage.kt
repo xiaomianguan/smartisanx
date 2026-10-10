@@ -23,6 +23,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
+import cc.wuersan008.smartisanx.sample.LocalSampleFeedback
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
@@ -92,10 +93,18 @@ fun LayoutPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("列表行")
+        val feedback = LocalSampleFeedback.current
         SmartisanGroup {
-            SmartisanListItem(title = "只有标题")
+            SmartisanListItem(
+                title = "只有标题",
+                onClick = { feedback("只有标题 · 纯展示行") },
+            )
             SmartisanRowDivider()
-            SmartisanListItem(title = "标题与说明", summary = "二级说明文字 12.5sp")
+            SmartisanListItem(
+                title = "标题与说明",
+                summary = "二级说明文字 12.5sp",
+                onClick = { feedback("标题与说明 · 纯展示行") },
+            )
             SmartisanRowDivider()
             SmartisanListItem(
                 title = "带前置图标",
@@ -108,6 +117,7 @@ fun LayoutPage(onBack: () -> Unit) {
                         size = 24.dp,
                     )
                 },
+                onClick = { feedback("带前置图标 · 纯展示行") },
             )
             SmartisanRowDivider()
             SmartisanListItem(
@@ -120,10 +130,14 @@ fun LayoutPage(onBack: () -> Unit) {
                         size = 18.dp,
                     )
                 },
-                onClick = {},
+                onClick = { feedback("带后置箭头 · 纯展示行") },
             )
             SmartisanRowDivider()
-            SmartisanListItem(title = "选中态（蓝色多选底色）", selected = true)
+            SmartisanListItem(
+                title = "选中态（蓝色多选底色）",
+                selected = true,
+                onClick = { feedback("选中态 · 纯展示行") },
+            )
             SmartisanRowDivider()
             SmartisanListItem(title = "禁用态", summary = "不可点击", enabled = false)
         }
@@ -203,11 +217,26 @@ fun LayoutPage(onBack: () -> Unit) {
 @Composable
 private fun ContainerSection() {
     var page by remember { mutableStateOf(0) }
+    val feedback = LocalSampleFeedback.current
     SmartisanGroup {
         // SmartisanGroupItem：按位置自动取原版分组底图。
-        SmartisanGroupItem(position = SmartisanGroupRowPosition.Top, title = "GroupItem 顶部")
-        SmartisanGroupItem(position = SmartisanGroupRowPosition.Middle, title = "GroupItem 中间", summary = "底图会拼成一体")
-        SmartisanGroupItem(position = SmartisanGroupRowPosition.Bottom, title = "GroupItem 底部", showDivider = false)
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Top,
+            title = "GroupItem 顶部",
+            onClick = { feedback("GroupItem 顶部 · 纯展示行") },
+        )
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Middle,
+            title = "GroupItem 中间",
+            summary = "底图会拼成一体",
+            onClick = { feedback("GroupItem 中间 · 纯展示行") },
+        )
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Bottom,
+            title = "GroupItem 底部",
+            showDivider = false,
+            onClick = { feedback("GroupItem 底部 · 纯展示行") },
+        )
     }
     // SmartisanSurface：带形状 / 颜色 / 内容色 / 边框的容器。
     Row(

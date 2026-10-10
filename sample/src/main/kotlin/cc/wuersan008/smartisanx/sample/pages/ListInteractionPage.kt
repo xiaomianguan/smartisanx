@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.sample.LocalSampleFeedback
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
@@ -102,6 +103,7 @@ private fun ReorderSection() {
 
 @Composable
 private fun SwipeDeleteSection() {
+    val feedback = LocalSampleFeedback.current
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val alarms = remember { mutableStateListOf("07:30 工作日", "09:00 周末", "13:00 午休") }
@@ -121,13 +123,18 @@ private fun SwipeDeleteSection() {
             }
         }
         if (alarms.isEmpty()) {
-            SmartisanListItem(title = "已全部删除", summary = "重新进入页面即可恢复")
+            SmartisanListItem(
+                title = "已全部删除",
+                summary = "重新进入页面即可恢复",
+                onClick = { feedback("已全部删除 · 纯展示行") },
+            )
         }
     }
 }
 
 @Composable
 private fun HiddenActionsSection() {
+    val feedback = LocalSampleFeedback.current
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val mails = remember { mutableStateListOf("邮件 · 项目周报", "邮件 · 账单提醒", "邮件 · 设计稿评审") }
@@ -165,7 +172,11 @@ private fun HiddenActionsSection() {
             }
         }
         if (mails.isEmpty()) {
-            SmartisanListItem(title = "已全部删除", summary = "重新进入页面即可恢复")
+            SmartisanListItem(
+                title = "已全部删除",
+                summary = "重新进入页面即可恢复",
+                onClick = { feedback("已全部删除 · 纯展示行") },
+            )
         }
     }
 }

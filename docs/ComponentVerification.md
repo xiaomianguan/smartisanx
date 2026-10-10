@@ -14,7 +14,7 @@ similar".
 
 | Component | Reference | Result |
 | --- | --- | --- |
-| `SmartisanTitleBar` | Music `SmartisanTitleBar` + Weather `WeatherTitleBar` | ✅ icon 36dp, edge margin 6dp, title 20sp, shadow 14dp, press scale 1.33 all match; height is 48dp (see below) |
+| `SmartisanTitleBar` | Music `SmartisanTitleBar` + Weather `WeatherTitleBar` | ✅ icon 36dp, edge margin 6dp, title 20sp, shadow 14dp, press scale 1.33 all match; height is 48dp (see below). The 14dp shadow is drawn **outside** the bar and **over the content** (`BarsHelper`), so bar + content have no empty band between them — re-checked against a real Nut R2 (section 5) |
 | `SmartisanSwitch` | Music Compose switch + Clock `SmartisanSwitchView` / `SmartisanSwitchExView` | ✅ settle formula, 200ms cosine shadow fade, draggable knob and haptics all match |
 | `SmartisanSwipeToDelete` | Clock `SmartisanSwipeDeleteMotion` | ✅ 65dp direct travel, 1/5 damping, 360dp cap match; threshold corrected to the original 50dp |
 | `SmartisanAnalogClock` | Clock `AnalogClockHandsView` | ✅ 360×400 base canvas, hand anchors 6.9/8 and 6.5/8, numerals at 108dp / 84.6dp all match |
@@ -74,7 +74,6 @@ These are **intentionally** different from the originals; each is noted in the c
   nine-patch button backgrounds and 1647 large images, leaving only real icons.
 
 ## 4. Pixel-level verification on a real device
-
 The verification environment is macOS plus a 1264×2800 @ 560dpi test device (i.e. **3.5px per dp**),
 so components can be installed, screenshotted and their **real sizes and colours measured back from
 the pixels** instead of only reading values. The method: scan rows/columns of a screenshot (first and
@@ -205,3 +204,35 @@ reads as `#D44E47` in a screenshot, and converting the sRGB value to P3 coordina
 (`(230,64,64) → (212,78,71)`) matches the measurement exactly. So **do not change code colours based on
 screenshot colours** — geometry and gray levels are unaffected (neutral grays have identical coordinates
 in sRGB and P3), but chroma has to be converted first.
+
+## 5. Title-bar shadow placement (re-checked on a Nut R2)
+
+The bar's 14dp shadow must be an **overlay**: it is drawn outside the bar's bounds and on top of the
+content, so the content sits flush under the bar. The original does this in
+`smartisanos.widget.BarsHelper.BarShadowBuilder`:
+
+```java
+shadow.setTranslationY(mIsBottomType ? -mBottomShadowHeight : mTopShadowHeight);  // moved out of bounds
+parent.setClipChildren(false);                                                    // allowed to draw outside
+mTargetView.setElevation(0.1f);                                                   // bar drawn above content
+```
+
+`SmartisanTitleBar` / `SmartisanTitleBarSurface` reproduce it with a child placed at the bar's bottom
+edge and `offset(y = TitleBarShadowHeight)`, and `SmartisanScaffold` gives the bar `zIndex(1f)` for the
+original's `setElevation(0.1f)`. An earlier version kept the shadow **in the layout flow**, which pushed
+the content down by an extra 14dp and left a visible empty band between bar and content.
+
+Measured on a real Nut R2 (`darwin`, 1080×2340, `ro.sf.lcd_density=560`, i.e. 3.5px/dp) with Settings
+and with About this Phone (`about_settings_layout`, the layout our About page copies):
+
+| | Nut R2 | Sample on the test device (1264×2800 @560dpi) |
+| --- | --- | --- |
+| bar background ends | y = 240 | y = 306 |
+| shadow band | 240 → ~289 (14dp, `title_bar_shadow`) | 307 → ~357 (14dp) |
+| content starts | at the bar's bottom edge | at the bar's bottom edge |
+| first card's top edge | y = 273 — **the shadow falls on the card** | About: y = 366 (14dp `list_item_vertical_gap` + the card's 9-patch inset) — the shadow falls on the card |
+
+Side-by-side captures of our About page and the R2's `About this Phone` were compared at the same
+density; the bar/shadow/card relationship now matches (logo card, five-row group card and the plain
+`AboutStaticItem` list all line up the same way).
+

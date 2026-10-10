@@ -685,12 +685,19 @@ data class SmartisanTitleBarAction(
     navigationActions: List<SmartisanTitleBarAction> = emptyList(),
     actions: List<SmartisanTitleBarAction> = emptyList(),
     includeStatusBar: Boolean = true, showShadow: Boolean = true,
+    shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
     centerContent: (@Composable () -> Unit)? = null,
 )
 
-@Composable fun SmartisanTitleBarSurface(modifier, includeStatusBar, showShadow, contentHeight, content)
-@Composable fun SmartisanTitleBarShadow(modifier, height)
+// The 14dp shadow is drawn *outside* the bar and on top of the content, exactly like the original
+// (`BarsHelper` translates the shadow view by its own height, turns off `clipChildren` on the bar's
+// parent and raises the bar with `setElevation(0.1f)`). The bar is therefore only status bar + 48dp
+// tall, and the content starts flush under it with the shadow falling on its first row — there is no
+// empty band between bar and content.
+@Composable fun SmartisanTitleBarSurface(modifier, includeStatusBar, showShadow, shadowRes, contentHeight, content)
+// In-flow 14dp shadow band, for the rare case where the content is a different surface.
+@Composable fun SmartisanTitleBarShadow(modifier, height, shadowRes)
 
 @Composable fun SmartisanListItem(
     title: String, modifier: Modifier = Modifier, summary: String? = null,
