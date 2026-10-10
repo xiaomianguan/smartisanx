@@ -26,7 +26,7 @@ similar".
 | `SmartisanLetterIndexBar` | Music letter quick bar + Clock `QuickBarEx` | ✅ hold-and-drag selection and the magnifier bubble match |
 | `SmartisanPageTransition` | Music `PageStackTransition` | ✅ right slide, 300ms, `Smooth` / `Decelerate` match |
 | `SmartisanModalPageTransition` | Weather `pop_up_in` / `slide_down_out` | ✅ bottom slide, 100%→0 and 0→109%, `decelerate_cubic` match |
-| `SmartisanListRow` family | framework `list_content_*` / `list_section_title_layout` / `list_board_section_title_layout` | ✅ 60dp row height, 60dp left icon slot (content centred at 42dp), divider indents 18dp / 60dp, 30dp section title, 40dp board title, all four type scales match; verified pixel by pixel on a real device (see section 4) |
+| `SmartisanListRow` family | framework `list_content_*` / `list_section_title_layout` / `list_board_section_title_layout` + Contacts `list_section.xml` | ✅ 60dp row height, 60dp left icon slot (content centred at 42dp), divider indents 18dp / 60dp, 30dp section title, 40dp board title, the Contacts 18dp letter band + 1dp shadow, all four type scales match; verified pixel by pixel on a real device (see section 4) |
 | `SmartisanEditorRow` family | framework `AbsEditor` / `EditorLeftLabelWidget` / `EditorRightIconWidget` + three layouts | ✅ 44dp row height, 6dp sides, position-dependent original 9-patch background, 12sp label with a 12dp start margin, 40dp × 44dp icon container (26dp icon centred), trailing caption capped at 150dp, 2px inner divider; verified pixel by pixel on a real device (see section 4) |
 | `SmartisanSmoothSeekBar` | framework `smartisanos.widget.SmoothSeekBar` + `SeekBarStyle` | ✅ thumb is the original `progress_control` / `progress_control_disabled` (118×147 / 108×144), track drawn at 2dp, dimensions taken from `SeekBarStyle.Thin.LargeThumb.Actived`; verified pixel by pixel on a real device (see section 4) |
 | `SmartisanIconSlider` | framework `SliderWithIcons` + `slider_with_icons_layout.xml` | ✅ the original layout has no dimension constants (three `RelativeLayout` rules) and reuses the `SmoothSeekBar` above; end icons and slider share a vertical centre, verified pixel by pixel on a real device (see section 4) |
@@ -96,6 +96,10 @@ Components verified this way so far:
 | `SmartisanSwitchRow` | row height | 59.7dp (white band), divider pitch 60.6dp; R2 reference 59.2dp / 60.0dp (the 6dp top/bottom padding belongs to the text column, not the row) |
 | `SmartisanListSectionTitle` | band | 30.0dp tall, full width (x = 0..1263), text gray 149 (40% black) |
 | `SmartisanListBoardSectionTitle` | band | 40dp white bar + 1px divider, text gray 101 (60% black) |
+| `SmartisanLetterSectionTitle` | band | 63px = 18.0dp of `letter_seperater` (`#F5F5F5` with the 2px `#EBEBEB` bottom edge the asset itself carries), edge to edge (x = 0..1263); this asset and the shadow below are pixel-identical (same raw RGBA hash, 0 differing pixels) to `ContactsSmartisan.apk` `res/drawable-xxhdpi-v4/letter_seperater*.png` |
+| | shadow | 4px ≈ 1dp of `letter_seperater_shadow`; the asset is 2px `#00000019` → `#00000007`, measured on screen as `#DADADA` → `#EBEBEB` (10.0% → 2.9% black over the page texture) |
+| | text | 10sp bold at the 8dp start indent (ink starts at x = 31..32px, i.e. 8dp plus the glyph's left bearing), gray 147 `#939393` = 40% black on `#f5f5f5`; the glyph box is centred in the band (cap 1337..1360 around band centre 1349) |
+| | total block | 67px = 19.1dp (18 + 1); the two bands ("A" and "B") measure identical 326px apart |
 | `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
 | | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
 | | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |

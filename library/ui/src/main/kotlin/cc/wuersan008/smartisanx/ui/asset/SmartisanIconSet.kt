@@ -459,7 +459,7 @@ object SmartisanIconSet {
         ),
     )
 
-    /** 其他原版图标（3203 个）。 */
+    /** 其他原版图标（3204 个）。 */
     val other: SmartisanIconGroup = SmartisanIconGroup(
         title = "其他原版图标",
         icons = listOf(
@@ -2238,6 +2238,7 @@ object SmartisanIconSet {
             SmartisanIconEntry("letter_bar_unfold_btn_pressed", R.drawable.letter_bar_unfold_btn_pressed),
             SmartisanIconEntry("letter_bar_unfold_button", R.drawable.letter_bar_unfold_button),
             SmartisanIconEntry("letter_seperater", R.drawable.letter_seperater),
+            SmartisanIconEntry("letter_seperater_shadow", R.drawable.letter_seperater_shadow),
             SmartisanIconEntry("letters_bar_arrow", R.drawable.letters_bar_arrow),
             SmartisanIconEntry("letters_bar_dot", R.drawable.letters_bar_dot),
             SmartisanIconEntry("letters_bar_highlight_icon", R.drawable.letters_bar_highlight_icon),

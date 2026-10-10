@@ -205,6 +205,21 @@ object SmartisanDrawables {
     /** 板块分组标题下方的 1px 分隔线（framework `list_board_section_title_divider`）。 */
     @DrawableRes val ListBoardSectionTitleDivider = R.drawable.list_board_section_title_divider
 
+    /**
+     * 字母分组标题底色（原版联系人 `letter_seperater`）。
+     *
+     * 10×81 的竖条纹：79 行 `#f5f5f5`，最下沿 2 行略深 `#ebebeb`；用纯灰是原版不需要夜间变体。
+     * framework 里也有同名素材，联系人复用的是同一张。
+     */
+    @DrawableRes val LetterSeparator = R.drawable.letter_seperater
+
+    /**
+     * 字母分组标题下方的阴影（原版联系人 `letter_seperater_shadow`）。
+     *
+     * 10×2 的黑色渐变（不透明度约 10% → 3%），压在标题条下方 1dp。
+     */
+    @DrawableRes val LetterSeparatorShadow = R.drawable.letter_seperater_shadow
+
     /** 列表项右侧箭头 selector。 */
     @DrawableRes val ListItemArrow = R.drawable.selector_list_content_item_arrow
 

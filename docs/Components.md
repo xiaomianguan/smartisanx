@@ -758,6 +758,7 @@ enum class SmartisanListRowLines { TwoLine, TwoLineAlt, ThreeLine, ThreeLineAlt 
 
 @Composable fun SmartisanListRowArrow(subtitle: String? = null, modifier, enabled, subtitleMaxWidth)
 @Composable fun SmartisanListSectionTitle(text: String, modifier, startIndent)
+@Composable fun SmartisanLetterSectionTitle(text: String, modifier, startIndent)
 @Composable fun SmartisanListBoardSectionTitle(text: String, modifier, enabled, onClick)
 @Composable fun SmartisanListVerticalGap(modifier, height)
 ```
@@ -776,6 +777,10 @@ Notes:
 - Section titles are 30dp (`SmartisanListSectionTitle`); the board title is a 40dp bar drawn with the
   original selector bitmap plus a 1px divider (`SmartisanListBoardSectionTitle`). Sizes and colours
   were verified pixel by pixel on a real device.
+- The letter section title is 18dp plus a 1dp shadow (`SmartisanLetterSectionTitle`) and comes from the
+  **Contacts** app (`layout/list_section.xml`), not the framework: 10sp bold, 8dp start indent, drawn
+  from `letter_seperater` (`#f5f5f5`, 2px `#ebebeb` bottom edge) and `letter_seperater_shadow`
+  (black at roughly 10% → 3%). Contacts uses it as the header above each A–Z group.
 
 ### framework editor rows (the `SmartisanEditorRow` family)
 

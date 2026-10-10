@@ -346,6 +346,66 @@ fun SmartisanListSectionTitle(
 }
 
 /**
+ * 字母分组标题（原版联系人 `layout/list_section.xml`）。
+ *
+ * 这是联系人 A–Z 索引列表里压在每个字母分组上方的一条窄标题，和
+ * [SmartisanListSectionTitle]（framework 的 30dp 灰带）**不是同一套版式**：
+ *
+ * | 部分 | 原版 | 说明 |
+ * | --- | --- | --- |
+ * | 标题条 | 18dp 高、`letter_seperater` 底图 | 浅灰 `#f5f5f5`，最下沿 2px 略深 `#ebebeb` |
+ * | 阴影 | 1dp 高、`letter_seperater_shadow` 底图 | 黑色渐变（约 10% → 3%），压在标题条下方 |
+ * | 文字 | 10sp 加粗、左内边距 8dp | 原版 `#4d000000`（30% 黑） |
+ *
+ * 整块合计 19dp 高（18 + 1），两个背景都是原版素材，浅灰不需要夜间变体。
+ * 文字色沿用 [SmartisanListSectionTitle] 的做法：原版 30% 黑，库内统一成主题的
+ * `textTertiary`（浅色 40%），深色模式下也能自动跟随。
+ *
+ * ```kotlin
+ * SmartisanLetterSectionTitle("A")
+ * ```
+ *
+ * @param text 字母（或任意分组名）。
+ * @param modifier 外部修饰符。
+ * @param startIndent 左内边距，原版 `list_section.xml` 的 `paddingLeft` 8dp。
+ */
+@Composable
+fun SmartisanLetterSectionTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+    startIndent: Dp = SmartisanDimens.LetterSectionHeaderPaddingStart,
+) {
+    val colors = LocalSmartisanColors.current
+    val typography = LocalSmartisanTypography.current
+    Column(modifier.fillMaxWidth()) {
+        // 18dp 标题条：原版 `letter_seperater` 底图 + 10sp 加粗文字。
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(SmartisanDimens.LetterSectionTitleHeight)
+                    .smartisanDrawableBackground(SmartisanDrawables.LetterSeparator)
+                    .padding(start = startIndent),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            SmartisanText(
+                text = text,
+                style = typography.listItemCaptionSmall.copy(fontWeight = FontWeight.Bold),
+                color = colors.textTertiary,
+                maxLines = 1,
+            )
+        }
+        // 标题条下方的 1dp 阴影：原版 `letter_seperater_shadow`。
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(SmartisanDimens.LetterSectionShadowHeight)
+                .smartisanDrawableBackground(SmartisanDrawables.LetterSeparatorShadow),
+        )
+    }
+}
+
+/**
  * 板块分组标题（`list_board_section_title_layout`）。
  *
  * 原版结构：6dp 留白 + 40dp 高的白底（按下变 `#f2f2f2`）标题条 + 1px 分隔线。

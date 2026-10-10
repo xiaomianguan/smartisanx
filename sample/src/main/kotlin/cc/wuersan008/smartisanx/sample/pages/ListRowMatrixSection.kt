@@ -13,6 +13,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.control.SmartisanCheckbox
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanLetterSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListBoardSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListRowArrow
@@ -145,10 +146,32 @@ fun ListRowMatrixSection() {
         )
     }
 
+    // 联系人 A–Z 索引列表的字母分组标题（原版 list_section.xml，另一套版式）。
+    SmartisanLetterSectionTitle("A")
+    SmartisanGroup {
+        SmartisanListRow(
+            title = "字母分组标题",
+            summary = "18dp 灰带 + 1dp 阴影，10sp 加粗、左缩进 8dp",
+            onClick = {},
+        )
+    }
+
+    SmartisanListVerticalGap()
+
+    SmartisanLetterSectionTitle("B")
+    SmartisanGroup {
+        SmartisanListRow(
+            title = "压在每个字母分组之上",
+            summary = "letter_seperater + letter_seperater_shadow",
+            onClick = {},
+        )
+    }
+
     SampleFootnote(
         "列表行矩阵照抄 framework 的 list_content_item_layout：左容器 60dp（left_icon_area_width）、" +
             "中容器四套文字版式、右容器按 right_container_margin(6dp) 留边。" +
             "副标题 + 箭头来自 list_content_right_subtitle_arrow，" +
-            "板块标题来自 list_board_section_title_layout。",
+            "板块标题来自 list_board_section_title_layout，" +
+            "字母分组标题来自联系人 list_section.xml。",
     )
 }

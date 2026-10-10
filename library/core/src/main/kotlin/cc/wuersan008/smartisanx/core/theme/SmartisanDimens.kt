@@ -195,6 +195,20 @@ object SmartisanDimens {
     /** 分组标题左内边距，原版 `list_section_header_padding_left`。 */
     val ListSectionHeaderPaddingStart = 12.dp
 
+    /**
+     * 字母分组标题高度，原版联系人 `layout/list_section.xml` 里写死的 18dp。
+     *
+     * 注意与 [ListSectionTitleHeight]（framework 的 30dp）不是同一档：这条是联系人
+     * A–Z 索引列表压在每个字母分组上方的窄标题。
+     */
+    val LetterSectionTitleHeight = 18.dp
+
+    /** 字母分组标题下方的阴影高度，原版联系人 `list_section.xml` 里写死的 1dp。 */
+    val LetterSectionShadowHeight = 1.dp
+
+    /** 字母分组标题左内边距，原版联系人 `list_section.xml` 的 `paddingLeft` 8dp。 */
+    val LetterSectionHeaderPaddingStart = 8.dp
+
     /** 板块分组标题高度，原版 `list_board_section_title_layout` 里写死的 40dp。 */
     val ListBoardSectionTitleHeight = 40.dp
 

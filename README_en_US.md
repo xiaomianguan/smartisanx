@@ -230,7 +230,7 @@ SmartisanTheme {
 `SmartisanScaffold`, `SmartisanTitleBar`, `SmartisanTitleBarSurface`, `SmartisanTitleBarShadow`,
 `SmartisanListItem`,
 `SmartisanListRow`, `SmartisanListRowArrow`, `SmartisanListSectionTitle`,
-`SmartisanListBoardSectionTitle`, `SmartisanListVerticalGap`,
+`SmartisanLetterSectionTitle`, `SmartisanListBoardSectionTitle`, `SmartisanListVerticalGap`,
 `SmartisanEditorRow`, `SmartisanEditorLabel`, `SmartisanEditorRightIcon`,
 `SmartisanGroup`, `SmartisanGroupItem`, `SmartisanGroupDivider`, `SmartisanSectionTitle`,
 `SmartisanCard`, `SmartisanTabRow`,
