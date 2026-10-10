@@ -192,6 +192,15 @@ object SmartisanDrawables {
     /** 列表项右侧箭头 selector。 */
     @DrawableRes val ListItemArrow = R.drawable.selector_list_content_item_arrow
 
+    /**
+     * 设置项右侧箭头 selector（原版 `secletor_setting_item_arrow`，文件名里的 "secletor" 是原版拼错的）。
+     *
+     * 与 [ListItemArrow] 是同一支 6dp 宽、10dp 高、30% 黑的小箭头，区别在按下 / 聚焦态：
+     * 这个用的是白色的 `setting_item_arrow_highlight`（原版设置项在深色标题栏下也用同一套）。
+     * 原版 `setting_item_text_layout.xml` 的 `item_arrow` 用的就是它。
+     */
+    @DrawableRes val SettingsItemArrow = R.drawable.secletor_setting_item_arrow
+
     /** 弹层菜单底色（NinePatch，含夜间变体）。 */
     @DrawableRes val MenuPopupBackground = R.drawable.pop_up_menu_bg
 
