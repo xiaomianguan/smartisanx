@@ -207,7 +207,7 @@ SmartisanTheme {
 `SmartisanTimePickerDialog`、`SmartisanSpinner`、`SmartisanPreviewOptions`、`SmartisanPreviewOptionCell`、`SmartisanCircleProgress`、
 `SmartisanCircleProgressIndeterminate`、`SmartisanCircleProgressLarge`、
 `SmartisanCircleProgressPopup`、`SmartisanMarqueeText`、`SmartisanCalendar`、`SmartisanActionButtonGroup`、
-`SmartisanDialogAppInfo`、`SmartisanDialogSectionGroup`、`SmartisanDialogSingleChoiceRow`
+`SmartisanDialogAppInfo`、`SmartisanDialogSectionGroup`、`SmartisanDialogSingleChoiceRow`、`SmartisanProgressBar`
 
 ### 输入（`cc.wuersan008.smartisanx.ui.input`）
 

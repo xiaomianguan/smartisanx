@@ -25,6 +25,8 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanActionButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanActionButtonGroup
+import cc.wuersan008.smartisanx.ui.control.SmartisanProgressBar
+import cc.wuersan008.smartisanx.ui.control.SmartisanProgressBarState
 import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
@@ -68,6 +70,32 @@ fun OriginalControlSections() {
     TipsSection()
     PreviewOptionsSection()
     ActionButtonGroupSection()
+    ProgressBarSection()
+}
+
+/** 横向进度条：原版文件管理器的 `progress_*_smartisanos` 三层结构。 */
+@Composable
+private fun ProgressBarSection() {
+    SampleSectionHeader("横向进度条（progress_horizontal_drawable_*）")
+    Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 6.dp)) {
+        SmartisanProgressBar(
+            progress = 0.42f,
+            secondaryProgress = 0.66f,
+        )
+        Box(Modifier.height(12.dp))
+        // 失败态：原版把主进度换成 progress_error_smartisanos。
+        SmartisanProgressBar(
+            progress = 0.42f,
+            state = SmartisanProgressBarState.Failed,
+        )
+        Box(Modifier.height(12.dp))
+        // 细一档的 thin 变体（固有高 6.67dp）。
+        SmartisanProgressBar(
+            progress = 0.78f,
+            thin = true,
+        )
+    }
+    SmartisanRowDivider()
 }
 
 /** 底部操作按钮组：原版 `smartisanos.widget.ActionButtonGroup` / `ButtonGroup`。 */

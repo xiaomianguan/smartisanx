@@ -309,6 +309,13 @@ object SmartisanActionButtonGroupDefaults   // bar 48dp / text button as tall as
 )
 object SmartisanDialogPatternDefaults   // icon 36dp / single-choice row 60dp / section gap 18dp / 15sp + 12.5sp + 16sp ...
 
+enum class SmartisanProgressBarState { Normal, Failed, Unfocused, Disabled }
+@Composable fun SmartisanProgressBar(
+    progress: Float, modifier: Modifier = Modifier, secondaryProgress: Float = 0f,
+    state: SmartisanProgressBarState = SmartisanProgressBarState.Normal, thin: Boolean = false,
+)
+object SmartisanProgressBarDefaults   // 8.67dp tall (thin 6.67dp) / 1dp inset on the progress layer ...
+
 @Composable fun SmartisanPreviewOptions(
     left: SmartisanPreviewOption, right: SmartisanPreviewOption,
     checkedIndex: Int, onCheckedChange: (Int) -> Unit, modifier: Modifier = Modifier,
@@ -350,6 +357,7 @@ durations and interpolators are copied from the originals:
 | `SmartisanCalendar` | `smartisanos.widget.calendar.CalendarView` / `MonthWeekEventsView` / `MonthByWeekAdapter` / `DragViewSwitcher` / `NormalDayCellDrawer` | Calendar, Notes / Reminders (framework-wide) |
 | `SmartisanActionButtonGroup` | `smartisanos.widget.ActionButtonGroup` / `ButtonGroup` / `ShadowButton` / `ShadowComponent` | Settings, File Manager, Notes (the multi-select / batch-action bar at the bottom) |
 | `SmartisanDialogAppInfo` / `SmartisanDialogSectionGroup` / `SmartisanDialogSingleChoiceRow` | `smartisanos.widget.DialogPatternAppInfoLayout` / `DialogPatternSectionGroup` / `DialogPatternTwoLineSingleChoice` | framework-wide dialog content patterns (app info / three-part note / two-line single choice) |
+| `SmartisanProgressBar` | `drawable/progress_horizontal_drawable_*` + `progress_*_smartisanos` (File Manager `FileManagerSmartisan.apk`) | Horizontal progress bar (normal / failed / unfocused / disabled plus a thin variant, with a secondary track) |
 | `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
 | `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
@@ -368,6 +376,24 @@ landscape differ), and repeats on long press at the original `500ms` delay then 
 Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
 **Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp
 radius, all overridable per parameter.
+
+### Horizontal progress bar (`SmartisanProgressBar`)
+
+```kotlin
+@Composable fun SmartisanProgressBar(
+    progress: Float, secondaryProgress: Float = 0f,
+    state: SmartisanProgressBarState = Normal, thin: Boolean = false, modifier: Modifier = Modifier,
+)
+```
+
+- The original ships no custom view here: it uses the platform `ProgressBar` with a whole set of
+  9-patch layer-lists (`progress_horizontal_drawable_{normal,failed,unfocus}` plus thin variants) — a
+  `progress_track_smartisanos` track (26px = 8.67dp intrinsic, thin 20px = 6.67dp), a
+  `progress_smartisanos` fill (one bitmap each for failed / unfocused / disabled) and a
+  `secondary_progress_smartisanos` secondary track, with the fill inset 1dp on each side (the original
+  layer-lists hard-code `android:left/right="1dp"`).
+- The assets come from the File Manager (the dump's `FileManagerSmartisan.apk`) and the library draws
+  the same three layers.
 
 ### Dialog content patterns (`SmartisanDialogAppInfo` / `SmartisanDialogSectionGroup` / `SmartisanDialogSingleChoiceRow`)
 
