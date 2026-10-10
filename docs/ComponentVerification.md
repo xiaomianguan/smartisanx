@@ -27,6 +27,7 @@ similar".
 | `SmartisanPageTransition` | Music `PageStackTransition` | ✅ right slide, 300ms, `Smooth` / `Decelerate` match |
 | `SmartisanModalPageTransition` | Weather `pop_up_in` / `slide_down_out` | ✅ bottom slide, 100%→0 and 0→109%, `decelerate_cubic` match |
 | `SmartisanListRow` family | framework `list_content_*` / `list_section_title_layout` / `list_board_section_title_layout` | ✅ 60dp row height, 60dp left icon slot (content centred at 42dp), divider indents 18dp / 60dp, 30dp section title, 40dp board title, all four type scales match; verified pixel by pixel on a real device (see section 4) |
+| `SmartisanEditorRow` family | framework `AbsEditor` / `EditorLeftLabelWidget` / `EditorRightIconWidget` + three layouts | ✅ 44dp row height, 6dp sides, position-dependent original 9-patch background, 12sp label with a 12dp start margin, 40dp × 44dp icon container (26dp icon centred), trailing caption capped at 150dp, 2px inner divider; verified pixel by pixel on a real device (see section 4) |
 
 ## 2. Known differences (deliberate)
 
@@ -45,6 +46,7 @@ These are **intentionally** different from the originals; each is noted in the c
 | Section-title text colour | framework `#4c000000` (30% black) | theme `textTertiary` (`#66000000`, 40%) | Uses the semantic token and matches `SmartisanGroup`'s section title |
 | Row summary colour | framework `#80000000` (50% black) | theme `textTertiary` (`#66000000`, 40%) | Same tier as `SmartisanListItem`'s summary, so the library has one gray, not two |
 | Row disabled text colour | framework opaque `#bababa` | theme `textDisabled` (`#4c000000`, 30% black ⇒ ≈179 on white) | Semantic token; less than 8 gray levels off the original |
+| Editor hint text colour | framework `#26000000` (15% black ⇒ ≈217 on white) | theme `textHint` (`#DBDBDB` ⇒ 219) | Semantic token; 2 gray levels off the original |
 
 ## 3. Assets and fonts
 
@@ -75,6 +77,12 @@ Components verified this way so far:
 | | summary / disabled | summary gray 153 (40% black), disabled gray 179 (30% black) |
 | `SmartisanListSectionTitle` | band | 30.0dp tall, full width (x = 0..1263), text gray 149 (40% black) |
 | `SmartisanListBoardSectionTitle` | band | 40dp white bar + 1px divider, text gray 101 (60% black) |
+| `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
+| | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
+| | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |
+| | icon container | 40dp × 44dp with the 26dp icon centred (measured centre 38.1dp = container centre) |
+| | inner 2px divider | gray 233 ⇒ `list_divider_color` (8% black) |
+| | trailing caption / hint / disabled | caption 40% black, hint gray 219 (framework 15% black ≈ 217), disabled 30% black |
 
 Still **not** verified item by item:
 

@@ -450,6 +450,51 @@ Notes:
   original selector bitmap plus a 1px divider (`SmartisanListBoardSectionTitle`). Sizes and colours
   were verified pixel by pixel on a real device.
 
+### framework editor rows (the `SmartisanEditorRow` family)
+
+```kotlin
+@DrawableRes fun smartisanEditorRowBackground(position: SmartisanGroupRowPosition): Int
+
+@Composable fun SmartisanEditorRow(
+    modifier: Modifier = Modifier, label: String? = null,
+    position: SmartisanGroupRowPosition = SmartisanGroupRowPosition.Single,
+    leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null,
+    enabled: Boolean = true, value: String = "", onValueChange: ((String) -> Unit)? = null,
+    placeholder: String? = null, singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    content: (@Composable () -> Unit)? = null,
+)
+
+@Composable fun SmartisanEditorLabel(
+    text: String, modifier: Modifier = Modifier, iconRes: Int? = null,
+    iconContainerBackground: Int? = null, showDivider: Boolean = false,
+    showArrow: Boolean = false, enabled: Boolean = true, onClick: (() -> Unit)? = null,
+)
+
+@Composable fun SmartisanEditorRightIcon(
+    modifier: Modifier = Modifier, text: String? = null, iconRes: Int? = null,
+    showDivider: Boolean = false, enabled: Boolean = true, onClick: (() -> Unit)? = null,
+)
+```
+
+Notes:
+
+- Ported from the framework's `AbsEditor` family (`abs_editor_layout` + `editor_left_label_layout` +
+  `editor_right_icon_widget_layout`): the master row behind every Settings line made of
+  "label + field + trailing caption/icon".
+- The row background is the original 9-patch for its position (`editor_bg_single` / `_top` /
+  `_middle` / `_bottom`, i.e. the four `EditorStyle` variants); 6dp side padding, 44dp min height.
+- The leading slot defaults to `SmartisanEditorLabel`: 12sp label with a 12dp start margin, an
+  optional 40dp × 44dp icon container (26dp icon centred), a 2px divider on its right edge and an
+  optional arrow after the label.
+- The trailing slot can use `SmartisanEditorRightIcon`: caption capped at 150dp and ellipsized, with
+  the icon 6dp away (0dp when the 2px divider is shown).
+- Pass `content` to take over the middle: the framework's other two field variants map to
+  `SmartisanPasswordField` (`pwd_edit_text`) and `SmartisanClearableField` (`quick_del_edit_text`).
+- As in the original, a row with just the field (no leading/trailing slot) is clickable and hands
+  focus to the field.
+
 ---
 
 ## List interaction (`list`)

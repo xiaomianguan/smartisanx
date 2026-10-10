@@ -216,6 +216,7 @@ SmartisanTheme {
 `SmartisanScaffold`, `SmartisanTitleBar`, `SmartisanTitleBarSurface`, `SmartisanListItem`,
 `SmartisanListRow`, `SmartisanListRowArrow`, `SmartisanListSectionTitle`,
 `SmartisanListBoardSectionTitle`, `SmartisanListVerticalGap`,
+`SmartisanEditorRow`, `SmartisanEditorLabel`, `SmartisanEditorRightIcon`,
 `SmartisanGroup`, `SmartisanSectionTitle`, `SmartisanCard`, `SmartisanTabRow`,
 `SmartisanBottomBar`, `Modifier.smartisanVerticalScrollbar`, `SmartisanEmptyHint`,
 `SmartisanFlowLayout`
