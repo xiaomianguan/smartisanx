@@ -41,6 +41,12 @@
   是目标 Activity 再截；`uiautomator dump` 拿控件 bounds 比猜坐标可靠。
 - 原版素材一律**照抄 APK**（`~/sos_apps/*_dec` 是 apktool 解出来的原版资源，
   `~/sos_apps/*_jadx` 是 jadx 出来的源码），能对一下 md5 逐字节一致最好。
+- 动启动器图标 / 自适应图标这类资源时，**别只看「编译过了」**：`lint` 会建议把
+  `mipmap-anydpi-v26` 改成 `mipmap-anydpi`（`ObsoleteSdkInt`），照做之后 AGP 会把这个资源
+  从 APK 里**静默丢掉**，`@mipmap/ic_launcher` 于是落到 `library/ui` 里那张原版
+  `mipmap-400dpi/ic_launcher.png`（一张指南针），启动器上就显示成指南针。改完用
+  `aapt2 dump resources sample/build/outputs/apk/debug/sample-debug.apk | grep -A3 'mipmap/ic_launcher$'`
+  确认 `(anydpi)` 那条还在（原因写在 `sample/lint.xml` 里）。
 
 ## 其它
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!--
+      示例应用的自适应图标必须放在 `mipmap-anydpi-v26/`：一旦改成 `mipmap-anydpi/`，
+      AGP 会把这个资源整个丢掉 —— 对比 `aapt2 dump resources sample-debug.apk` 就能看到
+      `mipmap/ic_launcher` 只剩库里那张 `mipmap-400dpi/ic_launcher.png`（原版指南针图标），
+      启动器于是显示成指南针。`aapt2 compile` 单独编译 `mipmap-anydpi/` 是能过的，
+      所以这是合并/链接阶段静默丢资源，不是 XML 写错。
+      结论：这里的 `-v26` 不是多余的版本限定符，`ObsoleteSdkInt` 在这一条上是误报。
+    -->
+    <issue id="ObsoleteSdkInt">
+        <ignore path="src/main/res/mipmap-anydpi-v26" />
+    </issue>
+
+    <!--
+      同理，示例的前景是一张彩色位图（等轴测纸箱），没有单独的单色剪影素材，
+      所以自适应图标里不写 <monochrome>：主题图标（Android 13+ 把单色图层的 alpha
+      当遮罩再着色）需要的是「实心剪影」，直接拿彩色前景顶上去只会糊成一团。
+      要支持主题图标得让 tools/gen_sample_icon.sh 另外出一份剪影，现在先不做，
+      这条检查在示例里是「已知且有意为之」，不是漏改。
+    -->
+    <issue id="MonochromeLauncherIcon">
+        <ignore path="src/main/res/mipmap-anydpi-v26" />
+    </issue>
+</lint>
