@@ -41,6 +41,7 @@ import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanModalWindow
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanProgressDialog
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanTwistGuide
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanSheetScaffold
 
 /** 浮层页：弹窗、确认框、底部菜单、底部弹层。 */
@@ -58,6 +59,7 @@ fun OverlayPage(onBack: () -> Unit) {
     var bhmDrawer by remember { mutableStateOf<String?>(null) }
     var showModalWindow by remember { mutableStateOf(false) }
     var showSheetScaffold by remember { mutableStateOf(false) }
+    var showTwistGuide by remember { mutableStateOf(false) }
     val snackbar = rememberSmartisanSnackbarState()
     var lastAction by remember { mutableStateOf("暂无操作") }
 
@@ -107,6 +109,12 @@ fun OverlayPage(onBack: () -> Unit) {
                 title = "SmartisanSheetScaffold",
                 summary = "挂在页面里的弹层（自带遮罩与进出动画）",
                 onClick = { showSheetScaffold = true },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanTwistGuide",
+                summary = "手势切横竖屏提示（全屏遮罩 + 303×453dp 面板 + 右上角关闭）",
+                onClick = { showTwistGuide = true },
             )
             SmartisanRowDivider()
             SmartisanListItem(
@@ -358,4 +366,13 @@ fun OverlayPage(onBack: () -> Unit) {
             }
         }
     }
+
+    // 手势提示最后画，盖在整页之上（原版是单独的窗口）。
+    SmartisanTwistGuide(
+        visible = showTwistGuide,
+        onDismiss = {
+            showTwistGuide = false
+            lastAction = "手势提示已关闭"
+        },
+    )
 }

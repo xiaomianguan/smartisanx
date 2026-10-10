@@ -95,6 +95,23 @@ object SmartisanDrawables {
     /** 网格样式图标（108×108 px）。 */
     @DrawableRes val IconAlbumSwitchGrid = R.drawable.album_switch_grid
 
+    // ---- 手势切换横竖屏提示（framework smartisanos.widget.TwistGuideView） ----
+    /** 竖屏面板底图（原版 `twist_guide_bg_port` 9-patch）。 */
+    @DrawableRes val TwistGuideBackgroundPortrait = R.drawable.sos_smartisanos_drawable_twist_guide_bg_port
+
+    /** 横屏面板底图（原版 `twist_guide_bg_land` 9-patch）。 */
+    @DrawableRes val TwistGuideBackgroundLandscape = R.drawable.sos_smartisanos_drawable_twist_guide_bg_land
+
+    /** 提示插画：竖屏布局用这张（原版就是这么摆的）。 */
+    @DrawableRes val TwistGuideDiagramLandscape = R.drawable.sos_smartisanos_drawable_twist_guide_diagram_land
+
+    /** 提示插画：横屏布局用这张。 */
+    @DrawableRes val TwistGuideDiagramPortrait = R.drawable.sos_smartisanos_drawable_twist_guide_diagram_port
+
+    /** 关闭按钮（原版 `twist_guide_close_btn` selector）。 */
+    @DrawableRes val TwistGuideCloseButton = R.drawable.twist_guide_close_btn
+
+
 
 
     // ---- 标题栏图标（selector，自带按下/禁用态） ----

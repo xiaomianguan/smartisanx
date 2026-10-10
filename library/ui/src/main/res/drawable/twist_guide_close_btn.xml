@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 原版 framework 的 twist_guide_close_btn：按下态反而是 norm 位图（原版 selector 就是这样写的）。 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/sos_smartisanos_drawable_twist_guide_close_btn_norm" />
+    <item android:drawable="@drawable/sos_smartisanos_drawable_twist_guide_close_btn_down" />
+</selector>

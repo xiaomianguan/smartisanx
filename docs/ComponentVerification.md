@@ -137,6 +137,9 @@ Components verified this way so far:
 | | check badge | 76px asset pinned to the preview image's top-right corner; the badge ink's top edge lines up with the cell's top edge (the 7px above it are the card 9-patch's top edge) |
 | | title colours | measured `#353539` enabled (the original `setting_item_text_color`) and `#BABABA` disabled (`setting_item_text_color_disabled`), 15sp |
 | | interaction | tapping the other column moves the selection; tapping the already-selected column fires no callback (the original `if (changed)`); the disabled switch greys the image, the title and the badge together |
+| `SmartisanTwistGuide` | panel size | 303x453dp in portrait (1060x1585px) with another 16dp inset for the 9-patch: the measured white area is 939x1467px = 268.3x419.1dp, i.e. 271x421dp minus the 9-patch's own border pixels |
+| | dim | `0x98000000` (about 60% black), fading out over 400ms on close |
+| | close button | pinned to the panel's corner (not the background's); tapping it shrinks the panel towards the top-right corner over 300ms, rotates the button 320 degrees over 400ms and fades the dim over 400ms, and `onDismiss` fires only after all three finish (verified on device: the overlay page comes back) |
 
 Still **not** verified item by item:
 

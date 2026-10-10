@@ -893,6 +893,16 @@ data class SmartisanBhmItem(
 
 enum class SmartisanBhmCountColor { Blue, Red, Grey }
 object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header 24dp / page switch 400ms ...
+
+@Composable fun SmartisanTwistGuide(
+    visible: Boolean, onDismiss: () -> Unit, modifier: Modifier = Modifier,
+    title: String = the original "提示", body: String = the original paragraph,
+    titleTextSize: TextUnit = 16.sp, bodyTextSize: TextUnit = 13.sp,
+    dimColor: Color = 0x98000000,
+    portraitBackgroundRes: Int = SmartisanDrawables.TwistGuideBackgroundPortrait,
+    landscapeBackgroundRes: Int = SmartisanDrawables.TwistGuideBackgroundLandscape,
+    closeIconRes: Int = SmartisanDrawables.TwistGuideCloseButton,
+)
 ```
 
 - The scrim defaults to 0.54, matching the original.
@@ -900,6 +910,16 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
   the window being destroyed while the animation was still running.
 - `SmartisanSheetScaffold` is for sheets hosted inside the page rather than in their own window
   (for example a side panel or an embedded surface).
+- `SmartisanTwistGuide` ports the framework's `smartisanos.widget.TwistGuideView` (the "you just
+  activated rotate-by-gesture" hint): the original is a `WindowManager`-level full-screen overlay with
+  a `0x98000000` dim and a panel sized 303x453dp in portrait and 453x297dp in landscape (inset by
+  another 16dp for the 9-patch background), with **the close button pinned to the panel's top-right
+  corner rather than the background's**. All three exit animations are copied from the original:
+  the panel plays `anim/shrink_to_right_top` (300ms, shrinking towards the top-right corner while
+  fading), the close button plays `anim/rotate` (400ms to 320 degrees, shrinking over the last 300ms)
+  and the dim plays `anim/fade_out` (400ms); `onDismiss` only fires once they all finish. The portrait
+  layout uses the `_land` illustration and the landscape layout the `_port` one, exactly as the
+  original does, and the close-button selector is copied verbatim (its pressed state draws `_norm`).
 - `SmartisanProgressDialog` comes from the framework's `smartisanos.app.SmartisanProgressDialog`: a
   centred 246dp card (`smartisan_progress_dialog_bg`, shipped in a light and a dark variant), an 18sp
   title, a 48dp spinner and a 13sp single-line ellipsised message — all three optional. The layout
