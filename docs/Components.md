@@ -124,6 +124,28 @@ direction handling match the original `View` behaviour.
 unset. `SmartisanPixelText` reproduces the original `TextView` behaviour of rounding a dp font size
 to whole physical pixels.
 
+### Page transitions (`SmartisanPageTransition` / `SmartisanModalPageTransition`)
+
+```kotlin
+@Composable fun SmartisanPageTransition(
+    secondary: Boolean, modifier: Modifier = Modifier,
+    primary: @Composable () -> Unit, secondaryContent: @Composable () -> Unit,
+)
+
+@Composable fun SmartisanModalPageTransition(
+    visible: Boolean, modifier: Modifier = Modifier, content: @Composable () -> Unit,
+)
+```
+
+- Durations and easings are copied from the Music revival's `SmartisanNavigationDuration` and
+  `PageStackTransition`: opening uses `Smooth` = `(1 - cos(t*pi)) / 2` and closing uses
+  `Decelerate` = `1 - (1-t)^2`. The original XML interpolators are exposed as well:
+  `decelerate_cubic` (page-level push up / slide down), `decelerate_interpolator` (dialog scale-in)
+  and `accelerate_interpolator` (bottom menu exit).
+- `SmartisanPageTransition` reproduces `PageStackTransition` — the incoming page slides in from the
+  right while the outgoing one steps aside to the left, with `secondary` selecting the page;
+  `SmartisanModalPageTransition` reproduces the dialog-style scale + fade enter/exit.
+
 ---
 
 ## Controls (`control`)
@@ -172,11 +194,11 @@ data class SmartisanButtonTabGroupItem(val text: String, val iconRes: Int? = nul
 )
 @Composable fun SmartisanButtonTabGroup(items: List<String>, ...same, without icons...)
 
-enum class SmartisanHammerButtonStyle { White, Grey, Black, GreyFocus, BlackFocus, DigitZero, Equal }
+enum class SmartisanCalculatorButtonStyle { White, Grey, Black, GreyFocus, BlackFocus, DigitZero, Equal }
 
-@Composable fun SmartisanHammerButton(
+@Composable fun SmartisanCalculatorButton(
     iconRes: Int, onClick: () -> Unit, modifier: Modifier = Modifier,
-    style: SmartisanHammerButtonStyle = SmartisanHammerButtonStyle.White,
+    style: SmartisanCalculatorButtonStyle = SmartisanCalculatorButtonStyle.White,
     highlighted: Boolean = false, onRepeat: (() -> Unit)? = null,
     contentDescription: String? = null, iconPadding: PaddingValues = PaddingValues(...),
 )
@@ -213,6 +235,46 @@ enum class SmartisanProgressState { Download, Pause, Retry, Processing }
     text: String, modifier: Modifier = Modifier,
     color: Color = Color.Unspecified, showShadow: Boolean = true,
 )
+
+@Composable fun SmartisanSpinner(
+    text: String, modifier: Modifier = Modifier, style: SmartisanSpinnerStyle = SmartisanSpinnerStyle.Drop,
+    subText: String? = null, leftIconRes: Int? = null, enabled: Boolean = true,
+    textColor: Color = Color.Unspecified, textSize: TextUnit = TextUnit.Unspecified,
+)
+
+@Composable fun SmartisanMarqueeText(
+    title: String, modifier: Modifier = Modifier, subTitle: String? = null,
+    titleColor: Color = ..., subTitleColor: Color = ..., titleTextSize: TextUnit = ..., ...
+)
+
+@Composable fun SmartisanSelectionMark(
+    selected: Boolean, modifier: Modifier = Modifier,
+    enabled: Boolean = true, pressed: Boolean = false, size: Dp = 28.dp,
+)
+
+@Composable fun SmartisanCircleProgress(
+    progress: Float?, modifier: Modifier = Modifier, size: Dp = ...,
+    arcColor: Color = ..., state: SmartisanCircleProgressState? = null, stateIconSize: Dp = ...,
+)
+@Composable fun SmartisanCircleProgressIndeterminate(modifier, size, arcColor, durationMillis, state, ...)
+@Composable fun SmartisanCircleProgressLarge(modifier, size: Dp = 72.dp, durationMillis: Int = 1000, contentDescription)
+@Composable fun SmartisanCircleProgressPopup(visible: Boolean, modifier, size, arcColor, durationMillis, contentDescription)
+
+@Composable fun SmartisanDatePicker(
+    year: Int, month: Int, day: Int, onDateChange: (year: Int, month: Int, day: Int) -> Unit,
+    modifier: Modifier = Modifier, minYear: Int = ..., maxYear: Int = ...,
+    variant: SmartisanPickerVariant = SmartisanPickerVariant.Enhanced,
+)
+@Composable fun SmartisanDatePickerDialog(
+    year, month, day, onDateChange, onDismissRequest, modifier,
+    onConfirm: (year: Int, month: Int, day: Int) -> Unit = ..., minYear, maxYear, variant,
+)
+@Composable fun SmartisanDateTimePicker(timeMillis, onDateTimeChange, modifier, minTimeMillis, maxTimeMillis, variant, visibleCount)
+@Composable fun SmartisanDateTimePickerDialog(timeMillis, onDateTimeChange, onDismissRequest, modifier, onConfirm, minTimeMillis, maxTimeMillis, title, visibleCount)
+@Composable fun SmartisanTimePickerDialog(
+    hour: Int, minute: Int, onTimeChange: (hour: Int, minute: Int) -> Unit, onDismissRequest,
+    modifier, onConfirm: (hour: Int, minute: Int) -> Unit = ..., is24Hour: Boolean = ...,
+)
 ```
 
 `SmartisanSwitch` reproduces all the behaviour of the original switch: a shadow appears on press and
@@ -234,7 +296,14 @@ durations and interpolators are copied from the originals:
 | `SmartisanPageIndicator` | `smartisanos.app.IndicatorView` | Calendar, Notes (2) |
 | `SmartisanProgressIndicator` | `smartisanos.widget.DownloadProgressView` | Calendar, Mail (2) |
 | `SmartisanTips` | `smartisanos.widget.TipsView` | Calendar, Mail (2) |
-| `SmartisanHammerButton` | `com.smartisanos.calculator.HammerButton` | Calculator (1) |
+| `SmartisanCalculatorButton` | `com.smartisanos.calculator.HammerButton` | Calculator (1) |
+| `SmartisanSelectionMark` | The original radio check bitmap (`btn_selected_on_smartisanos_light` / `ringtone_picker_radio_normal`, the same 80x80 blue tick in this library) | Music, Clock (2) |
+| `SmartisanSpinner` | `smartisanos.widget.SmartisanSpinnerView` | framework dropdown (Settings etc.; no layout file, the original builds it in code) |
+| the `SmartisanCircleProgress` family | `smartisanos.widget.CircleProgressView` / `CircleProgressPopup` | framework circular progress (download, pause, retry, processing) |
+| `SmartisanChips` / `SmartisanChip` | `smartisanos.widget.ChipsView` / `ShadowChipsView` | framework chips (contact tags, search history, hot words) |
+| `SmartisanMarqueeText` | `smartisanos.widget.SmartisanMarqueeView` | framework (title/subtitle marquee in title bars and the player) |
+| the `SmartisanDatePicker` family | `SmartisanDatePicker[Ex]` / `SmartisanDatePicker[Ex]Dialog` / `SmartisanDateTimePicker[Dialog]` | Calendar, Settings, Notes, Clock (including "jump to date") |
+| `SmartisanTimePickerDialog` | `smartisanos.widget.SmartisanTimePickerDialog` / `SmartisanTimePickerExDialog` | Clock, Calendar |
 | `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
 | `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
@@ -246,7 +315,7 @@ highlighted unit suffix semantics.
 `selector_small_btn_standard` bitmaps, overlaps adjacent segments by the original
 `button_tab_group_each_gap = 6dp`, and takes its text shadow from `color/filter_button_text_shadow_colors`.
 
-`SmartisanHammerButton` gets its press offset from the original selectors themselves (the pressed bitmap is
+`SmartisanCalculatorButton` gets its press offset from the original selectors themselves (the pressed bitmap is
 inset by about 1dp), draws the highlight badge at the original `highlight_padding_right / top` (portrait and
 landscape differ), and repeats on long press at the original `500ms` delay then `150ms` intervals.
 
@@ -464,15 +533,16 @@ data class SmartisanTitleBarAction(
 
 @Composable fun SmartisanGroup(modifier, shape, color, horizontalMargin, content)
 @Composable fun SmartisanGroupDivider(modifier, startIndent)
+@Composable fun SmartisanGroupItem(position, title, modifier, summary, leading, trailing, enabled, selected, showDivider, ...)   // SmartisanListItem + the original group background per position
 @Composable fun SmartisanSectionTitle(text: String, modifier: Modifier = Modifier, startIndent: Dp)
 @Composable fun SmartisanCard(modifier, shape, color, content)
 
-@Composable fun SmartisanTabRow(tabs: List<String>, selectedIndex: Int, onSelected: (Int) -> Unit, modifier, scrollable: Boolean = false)
+@Composable fun SmartisanTabRow(tabs: List<String>, selectedIndex: Int, onSelected: (Int) -> Unit, modifier, scrollable: Boolean = false)   // library-original; the original has no counterpart
 
 data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val selectedIcon: ImageVector = icon)
 @Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true)
 
-@Composable fun Modifier.smartisanVerticalScrollbar(state: ScrollState, width, margin, color): Modifier
+@Composable fun Modifier.smartisanVerticalScrollbar(state: ScrollState, width, margin, color): Modifier   // library-original; the original ships no bitmap
 @Composable fun Modifier.smartisanVerticalScrollbar(state: LazyListState, width, margin, color): Modifier
 
 @Composable fun SmartisanEmptyHint(title: String, modifier, description, icon, action)
@@ -580,6 +650,34 @@ Notes:
   `SmartisanPasswordField` (`pwd_edit_text`) and `SmartisanClearableField` (`quick_del_edit_text`).
 - As in the original, a row with just the field (no leading/trailing slot) is clickable and hands
   focus to the field.
+
+### Snackbars (`SmartisanSnackbar`)
+
+```kotlin
+@Composable fun SmartisanSnackbarHost(
+    state: SmartisanSnackbarState, modifier: Modifier = Modifier,
+    contentAlignment: Alignment = Alignment.BottomCenter,
+)
+
+@Composable fun SmartisanSnackbar(
+    message: String, modifier: Modifier = Modifier, actionText: String? = null,
+    onAction: (() -> Unit)? = null, iconRes: Int? = null,
+    durationMillis: Int = SmartisanSnackbarDefaults.DurationShort,
+    onDismiss: () -> Unit = {},
+)
+
+object SmartisanSnackbarDefaults
+```
+
+- Ported from the framework's `smartisanos.widget.SnackbarWithButton` and `SnackbarWithDrawable`
+  (layouts `snackbar_with_btn_layout.xml` / `snackbar_with_drawable_layout.xml`); both share the
+  `toast_frame_smartisanos` background and the default `CustomToast.SNACKBAR_DURATION` of 2000ms.
+- The message style is copied from `values/styles.xml`'s `SnackbarMessageStyle`: bold, `#996b3d`,
+  single line, ellipsised, 18dp / 10dp margins. With an action it shows the golden
+  `toast_action_btn_selector` button (40dp tall); with an icon it adds a 2px vertical divider and a
+  40dp icon button.
+- Tapping the action dismisses the bar first and then fires the callback, exactly like the original
+  `CustomToast`; `SmartisanSnackbarHost` mounts a state-driven bar at the bottom of the page.
 
 ### framework combination title bar (`SmartisanComboTitleBar`)
 

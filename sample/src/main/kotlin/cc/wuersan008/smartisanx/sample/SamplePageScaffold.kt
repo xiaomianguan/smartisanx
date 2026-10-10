@@ -19,6 +19,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
@@ -32,25 +33,29 @@ fun SamplePageScaffold(
     actions: List<SmartisanTitleBarAction> = emptyList(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    // 原版页面底纹：common_bg 是一张 270×270 的细竖条纹布纹，
-    // 原版通过 list_bg / account_background 以 tileMode=repeat 平铺满屏。
-    Column(modifier.fillMaxSize().smartisanDrawableBackground(SmartisanDrawables.PageBackground)) {
-        SmartisanTitleBar(
-            title = title,
-            // 原版标题栏图标资源：selector 自带按下 / 禁用态，按压还会放大 1.33 倍。
-            navigationIcon =
-                SmartisanTitleBarAction(
-                    iconRes = SmartisanDrawables.IconBack,
-                    contentDescription = "返回",
-                    onClick = onBack,
-                ),
-            actions = actions,
-        )
+    // 页面骨架直接用库里的 SmartisanScaffold（标题栏 + 内容 + 底部栏 + 原版页面底纹），
+    // 示例本身也是这套组件的使用者。
+    SmartisanScaffold(
+        modifier = modifier.fillMaxSize(),
+        titleBar = {
+            SmartisanTitleBar(
+                title = title,
+                // 原版标题栏图标资源：selector 自带按下 / 禁用态，按压还会放大 1.33 倍。
+                navigationIcon =
+                    SmartisanTitleBarAction(
+                        iconRes = SmartisanDrawables.IconBack,
+                        contentDescription = "返回",
+                        onClick = onBack,
+                    ),
+                actions = actions,
+            )
+        },
+        bottomBar = { Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars)) },
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
             content = content,
         )
-        Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars))
     }
 }
 

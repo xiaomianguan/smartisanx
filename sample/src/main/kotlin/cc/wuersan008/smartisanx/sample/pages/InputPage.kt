@@ -24,12 +24,14 @@ import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.input.SmartisanAutoFitText
 import cc.wuersan008.smartisanx.ui.input.SmartisanClearableField
 import cc.wuersan008.smartisanx.ui.input.SmartisanJustifyText
+import cc.wuersan008.smartisanx.ui.control.SmartisanMarqueeText
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
 import cc.wuersan008.smartisanx.ui.input.SmartisanPasswordField
 import cc.wuersan008.smartisanx.ui.input.SmartisanSearchBar
@@ -69,6 +71,9 @@ fun InputPage(onBack: () -> Unit) {
 
         SampleSectionHeader("消息输入栏（MessageField）")
         MessageFieldSection()
+
+        SampleSectionHeader("跑马灯标题（MarqueeView）")
+        MarqueeSection()
 
         SampleFootnote(
             "这 5 个组件都直接用原版 APK 里的素材：搜索栏用 NinePatch `search_field`、" +
@@ -141,6 +146,36 @@ private fun MessageFieldSection() {
                 leftIconRes = null,
                 emojiIconRes = SmartisanDrawables.MessageFieldEmojiIcon,
                 hint = "无左侧图标 + 表情图标",
+            )
+        }
+    }
+}
+
+/** 跑马灯：原版 `SmartisanMarqueeView`，主标题超长时横向滚动。 */
+@Composable
+private fun MarqueeSection() {
+    val colors = LocalSmartisanColors.current
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            SmartisanMarqueeText(
+                title = "锤子音乐 · 世界经典钢琴曲精选集（1998 重制版）",
+                subTitle = "原版标题过长时横向滚动，副标题一行小字",
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        SmartisanRowDivider()
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+            SmartisanMarqueeText(
+                title = "短标题不滚动",
+                subTitle = "没有超出宽度时保持静止",
+                marquee = false,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            SmartisanText(
+                text = "第二行用 marquee = false 关闭滚动",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.caption,
+                color = colors.textTertiary,
             )
         }
     }

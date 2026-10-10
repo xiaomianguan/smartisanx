@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,9 +21,14 @@ import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.clock.SmartisanAnalogClock
 import cc.wuersan008.smartisanx.ui.clock.SmartisanCompactClock
+import cc.wuersan008.smartisanx.ui.control.SmartisanDatePickerDialog
+import cc.wuersan008.smartisanx.ui.control.SmartisanDateTimePickerDialog
+import cc.wuersan008.smartisanx.ui.control.SmartisanTimePickerDialog
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 
 /** 时钟页：机械表盘、小表盘、时间滚轮。 */
 @Composable
@@ -108,6 +118,9 @@ fun ClockPage(onBack: () -> Unit) {
         SampleSectionHeader("重复日选择")
         WeekdayPickerSection()
 
+        SampleSectionHeader("日期 / 时间选择器弹窗")
+        PickerDialogSection()
+
         SampleSectionHeader("世界时钟卡片")
         WorldClockSection()
 
@@ -117,6 +130,73 @@ fun ClockPage(onBack: () -> Unit) {
                 "SmartisanTimePickerView（三列时间滚轮）、TimerRulerView（横向卡尺）、" +
                 "Classic680RulerView（竖向拉环）、AlarmRepeatDaysView（重复日）、" +
                 "SmallWorldClockView（世界时钟小表盘）。原版使用 XML + View，本库改为纯 Compose 实现。",
+        )
+    }
+}
+
+
+/** 日期 / 时间选择器弹窗：原版 `SmartisanDatePickerDialog` 家族（含 Ex 版与「日期 + 时间」合体版）。 */
+@Composable
+private fun PickerDialogSection() {
+    var showDate by remember { mutableStateOf(false) }
+    var showDateTime by remember { mutableStateOf(false) }
+    var showTime by remember { mutableStateOf(false) }
+    var date by remember { mutableStateOf(Triple(2026, 10, 10)) }
+    var dateTime by remember { mutableLongStateOf(1_760_000_000_000L) }
+    var time by remember { mutableStateOf(Pair(9, 30)) }
+
+    SmartisanGroup {
+        SmartisanListItem(
+            title = "日期选择（SmartisanDatePickerDialog）",
+            summary = "当前：%d-%02d-%02d".format(date.first, date.second, date.third),
+            onClick = { showDate = true },
+        )
+        SmartisanRowDivider()
+        SmartisanListItem(
+            title = "日期 + 时间（SmartisanDateTimePickerDialog）",
+            summary = "当前时间戳：$dateTime",
+            onClick = { showDateTime = true },
+        )
+        SmartisanRowDivider()
+        SmartisanListItem(
+            title = "时间选择（SmartisanTimePickerDialog）",
+            summary = "当前：%02d:%02d".format(time.first, time.second),
+            onClick = { showTime = true },
+        )
+    }
+
+    if (showDate) {
+        SmartisanDatePickerDialog(
+            year = date.first,
+            month = date.second,
+            day = date.third,
+            onDateChange = { y, m, d -> date = Triple(y, m, d) },
+            onDismissRequest = { showDate = false },
+            onConfirm = { y, m, d ->
+                date = Triple(y, m, d)
+                showDate = false
+            },
+        )
+    }
+    if (showDateTime) {
+        SmartisanDateTimePickerDialog(
+            timeMillis = dateTime,
+            onDateTimeChange = { dateTime = it },
+            onDismissRequest = { showDateTime = false },
+            onConfirm = { dateTime = it },
+            title = "设置提醒时间",
+        )
+    }
+    if (showTime) {
+        SmartisanTimePickerDialog(
+            hour = time.first,
+            minute = time.second,
+            onTimeChange = { h, m -> time = Pair(h, m) },
+            onDismissRequest = { showTime = false },
+            onConfirm = { h, m ->
+                time = Pair(h, m)
+                showTime = false
+            },
         )
     }
 }

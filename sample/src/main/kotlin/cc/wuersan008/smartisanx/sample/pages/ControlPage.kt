@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.sample.pages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,8 +21,18 @@ import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.SmartisanButton
+import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanCheckbox
+import cc.wuersan008.smartisanx.ui.control.SmartisanCircleProgress
+import cc.wuersan008.smartisanx.ui.control.SmartisanCircleProgressIndeterminate
+import cc.wuersan008.smartisanx.ui.control.SmartisanCircleProgressLarge
+import cc.wuersan008.smartisanx.ui.control.SmartisanCircleProgressPopup
+import cc.wuersan008.smartisanx.ui.control.SmartisanRadioButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanRatingBar
+import cc.wuersan008.smartisanx.ui.control.SmartisanSelectionMark
+import cc.wuersan008.smartisanx.ui.control.SmartisanSpinner
+import cc.wuersan008.smartisanx.ui.control.SmartisanSpinnerStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
@@ -100,6 +111,15 @@ fun ControlPage(onBack: () -> Unit) {
             }
         }
 
+        SampleSectionHeader("下拉选择（SmartisanSpinner）")
+        SpinnerSection()
+
+        SampleSectionHeader("环形进度（CircleProgressView）")
+        CircleProgressSection()
+
+        SampleSectionHeader("单选对勾（SelectionMark）")
+        SelectionMarkSection()
+
         // 原版 APK 里直接移植过来的控件，单独成文件，见 OriginalControlSections.kt。
         OriginalControlSections()
 
@@ -110,5 +130,125 @@ fun ControlPage(onBack: () -> Unit) {
                 "自定义 View（ButtonTabGroup / SmartisanCalculatorButton / SmartisanNumberPicker / IndicatorView / " +
                 "DownloadProgressView / TipsView，见 docs/原版应用组件清单.md）。",
         )
+    }
+}
+
+
+/** 下拉选择：原版 `SmartisanSpinnerView` 的三种版式。 */
+@Composable
+private fun SpinnerSection() {
+    var dropIndex by remember { mutableIntStateOf(0) }
+    var rangeIndex by remember { mutableIntStateOf(2) }
+    val options = listOf("每天", "工作日", "仅周末")
+    val ranges = listOf("10 分钟", "20 分钟", "30 分钟")
+    SmartisanGroup {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SmartisanText("重复", style = LocalSmartisanTypography.current.listItemPrimary)
+            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.End) {
+                SmartisanSpinner(
+                    text = options[dropIndex],
+                    style = SmartisanSpinnerStyle.Drop,
+                    subText = "下拉版式",
+                    onClick = { dropIndex = (dropIndex + 1) % options.size },
+                )
+            }
+        }
+        SmartisanRowDivider()
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SmartisanText("提醒间隔", style = LocalSmartisanTypography.current.listItemPrimary)
+            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.End) {
+                SmartisanSpinner(
+                    text = ranges[rangeIndex],
+                    style = SmartisanSpinnerStyle.Range,
+                    onPreviousClick = { rangeIndex = (rangeIndex + ranges.size - 1) % ranges.size },
+                    onNextClick = { rangeIndex = (rangeIndex + 1) % ranges.size },
+                )
+            }
+        }
+    }
+}
+
+/** 环形进度：确定进度、不确定进度、大号不确定圈与贴底弹层四种形态。 */
+@Composable
+private fun CircleProgressSection() {
+    var progress by remember { mutableStateOf(0.35f) }
+    var popupVisible by remember { mutableStateOf(false) }
+    SmartisanGroup {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SmartisanCircleProgress(progress = progress)
+            SmartisanCircleProgressIndeterminate()
+            SmartisanCircleProgressLarge()
+            SmartisanCircleProgressPopup(visible = popupVisible)
+        }
+        SmartisanText(
+            text = "确定进度 ${(progress * 100).toInt()}%（进度 / 不确定 / 大号 / 弹层）",
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp),
+            style = LocalSmartisanTypography.current.caption,
+            color = LocalSmartisanColors.current.textTertiary,
+        )
+        SmartisanRowDivider()
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+        ) {
+            SmartisanButton(
+                text = "推进",
+                style = SmartisanButtonStyle.Neutral,
+                onClick = { progress = if (progress >= 1f) 0f else progress + 0.15f },
+            )
+            SmartisanButton(
+                text = "弹层进度",
+                style = SmartisanButtonStyle.Neutral,
+                onClick = { popupVisible = !popupVisible },
+            )
+        }
+    }
+}
+
+/** 单选对勾：原版的单选标记是一枚蓝色对勾（选中才画，未选中只占位）。 */
+@Composable
+private fun SelectionMarkSection() {
+    var selected by remember { mutableIntStateOf(0) }
+    SmartisanGroup {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SmartisanSelectionMark(selected = true)
+            SmartisanSelectionMark(selected = false)
+            SmartisanSelectionMark(selected = true, pressed = true)
+            SmartisanSelectionMark(selected = true, enabled = false)
+        }
+        SmartisanText(
+            text = "选中 / 未选中（不画）/ 按下 / 禁用",
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp),
+            style = LocalSmartisanTypography.current.caption,
+            color = LocalSmartisanColors.current.textTertiary,
+        )
+        SmartisanRowDivider()
+        listOf("每天 07:30", "工作日 07:30", "仅一次").forEachIndexed { index, label ->
+            Row(
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .clickable { selected = index }
+                        .padding(horizontal = 18.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SmartisanText(label, Modifier.weight(1f), style = LocalSmartisanTypography.current.listItemPrimary)
+                SmartisanRadioButton(selected = selected == index, onClick = { selected = index })
+            }
+            if (index != 2) SmartisanRowDivider()
+        }
     }
 }

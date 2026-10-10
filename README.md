@@ -192,18 +192,21 @@ SmartisanTheme {
 ### 基础（`cc.wuersan008.smartisanx.ui.basic`）
 
 `SmartisanSurface`、`SmartisanText`、`SmartisanPixelText`、`SmartisanIcon`、
-`SmartisanIconButton`、`SmartisanDivider`、`SmartisanRowDivider`
+`SmartisanIconButton`、`SmartisanIntrinsicImage`、`SmartisanDivider`、`SmartisanRowDivider`、
+`SmartisanPageTransition`、`SmartisanModalPageTransition`
 
 ### 控件（`cc.wuersan008.smartisanx.ui.control`）
 
 `SmartisanSwitch`、`SmartisanSwitchRow`、`SmartisanCheckbox`、`SmartisanRadioButton`、
-`SmartisanRadioRow`、`SmartisanButton`、`SmartisanTextButton`、`SmartisanRatingBar`、
-`SmartisanButtonTabGroup`、`SmartisanHammerButton`、`SmartisanNumberPicker`、
-`SmartisanPageIndicator`、`SmartisanProgressIndicator`、`SmartisanTips`、
+`SmartisanRadioRow`、`SmartisanSelectionMark`、`SmartisanButton`、`SmartisanTextButton`、
+`SmartisanRatingBar`、`SmartisanButtonTabGroup`、`SmartisanCalculatorButton`、
+`SmartisanNumberPicker`、`SmartisanPageIndicator`、`SmartisanProgressIndicator`、`SmartisanTips`、
 `SmartisanChips`、`SmartisanChip`、`SmartisanSmoothSeekBar`、`SmartisanIconSlider`、
 `SmartisanSliderIcon`、`SmartisanDatePicker`、`SmartisanDatePickerDialog`、
 `SmartisanDateTimePicker`、`SmartisanDateTimePickerDialog`、`SmartisanTimePicker`、
-`SmartisanSpinner`、`SmartisanCircleProgress`、`SmartisanMarqueeText`
+`SmartisanTimePickerDialog`、`SmartisanSpinner`、`SmartisanCircleProgress`、
+`SmartisanCircleProgressIndeterminate`、`SmartisanCircleProgressLarge`、
+`SmartisanCircleProgressPopup`、`SmartisanMarqueeText`
 
 ### 输入（`cc.wuersan008.smartisanx.ui.input`）
 
@@ -213,14 +216,16 @@ SmartisanTheme {
 
 ### 布局（`cc.wuersan008.smartisanx.ui.layout`）
 
-`SmartisanScaffold`、`SmartisanTitleBar`、`SmartisanTitleBarSurface`、`SmartisanListItem`、
+`SmartisanScaffold`、`SmartisanTitleBar`、`SmartisanTitleBarSurface`、`SmartisanTitleBarShadow`、
+`SmartisanListItem`、
 `SmartisanListRow`、`SmartisanListRowArrow`、`SmartisanListSectionTitle`、
 `SmartisanListBoardSectionTitle`、`SmartisanListVerticalGap`、
 `SmartisanEditorRow`、`SmartisanEditorLabel`、`SmartisanEditorRightIcon`、
-`SmartisanGroup`、`SmartisanSectionTitle`、`SmartisanCard`、`SmartisanTabRow`、
+`SmartisanGroup`、`SmartisanGroupItem`、`SmartisanGroupDivider`、`SmartisanSectionTitle`、
+`SmartisanCard`、`SmartisanTabRow`、
 `SmartisanBottomBar`、`SmartisanComboTitleBar`、`SmartisanComboTitleShadow`、
-`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`、
-`SmartisanFlowLayout`
+`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`、`SmartisanSnackbar`、
+`SmartisanSnackbarHost`、`SmartisanFlowLayout`
 
 ### 列表交互（`cc.wuersan008.smartisanx.ui.list`）
 
@@ -237,7 +242,8 @@ SmartisanTheme {
 ### 时钟（`cc.wuersan008.smartisanx.ui.clock`）
 
 `SmartisanAnalogClock`、`SmartisanCompactClock`、`SmartisanTimePicker`、`SmartisanWheelPicker`、
-`SmartisanRulerPicker`、`SmartisanPullRingRuler`、`SmartisanWeekdayPicker`
+`SmartisanRulerPicker`、`SmartisanPullRingRuler`、`SmartisanWeekdayPicker`、`SmartisanWeekdayChips`、
+`SmartisanWorldClockCard`
 
 ### 图标（`cc.wuersan008.smartisanx.icons`）
 

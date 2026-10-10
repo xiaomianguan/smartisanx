@@ -1,6 +1,10 @@
 package cc.wuersan008.smartisanx.sample.pages
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -8,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
@@ -19,6 +24,8 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
+import cc.wuersan008.smartisanx.ui.layout.rememberSmartisanSnackbarState
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmCountColor
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmHeader
@@ -28,9 +35,13 @@ import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmSheet
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanBottomSheet
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanConfirmDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialogButton
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialogTitleBar
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuDialog
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanModalWindow
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanProgressDialog
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanSheetScaffold
 
 /** 浮层页：弹窗、确认框、底部菜单、底部弹层。 */
 @Composable
@@ -45,6 +56,9 @@ fun OverlayPage(onBack: () -> Unit) {
     var progressDark by remember { mutableStateOf(false) }
     var showBhm by remember { mutableStateOf(false) }
     var bhmDrawer by remember { mutableStateOf<String?>(null) }
+    var showModalWindow by remember { mutableStateOf(false) }
+    var showSheetScaffold by remember { mutableStateOf(false) }
+    val snackbar = rememberSmartisanSnackbarState()
     var lastAction by remember { mutableStateOf("暂无操作") }
 
     SamplePageScaffold(title = "浮层", onBack = onBack) {
@@ -80,6 +94,35 @@ fun OverlayPage(onBack: () -> Unit) {
                 onClick = {
                     progressDark = true
                     showProgress = true
+                },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanModalWindow",
+                summary = "自定义内容弹窗（标题栏 + 按钮自己排）",
+                onClick = { showModalWindow = true },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanSheetScaffold",
+                summary = "挂在页面里的弹层（自带遮罩与进出动画）",
+                onClick = { showSheetScaffold = true },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanSnackbar（带操作）",
+                summary = "金色操作按钮，2 秒后自动收起",
+                onClick = { snackbar.show("已加入收藏", actionText = "撤销") { lastAction = "撤销" } },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanSnackbar（带图标）",
+                summary = "右侧 2px 分隔线 + 40dp 图标按钮",
+                onClick = {
+                    snackbar.show(
+                        message = "设置已同步",
+                        iconRes = SmartisanOriginalIcons.Complete,
+                    )
                 },
             )
             SmartisanRowDivider()
@@ -255,6 +298,60 @@ fun OverlayPage(onBack: () -> Unit) {
             Column(Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
                 SmartisanText(
                     text = "SmartisanBottomSheet 使用 Compose 的进出动画，关闭时会先播完动画再回调。",
+                    style = typography.listItemSecondary,
+                    color = colors.textSecondary,
+                )
+            }
+        }
+    }
+
+    // 提示条挂在页面底部（原版是 CustomToast 的窗口，这里用宿主叠在页面里）。
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        SmartisanSnackbarHost(state = snackbar, modifier = Modifier.padding(bottom = 24.dp))
+    }
+
+    if (showModalWindow) {
+        SmartisanModalWindow(onDismissRequest = { showModalWindow = false }) {
+            SmartisanDialogTitleBar(
+                title = "自定义弹窗",
+                onDismiss = { showModalWindow = false },
+            )
+            Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)) {
+                SmartisanText(
+                    text = "SmartisanModalWindow 只提供窗口与遮罩，标题栏与按钮由调用方用 " +
+                        "SmartisanDialogTitleBar / SmartisanDialogButton 自己排。",
+                    style = typography.listItemSecondary,
+                    color = colors.textSecondary,
+                )
+            }
+            Row(Modifier.fillMaxWidth().height(48.dp)) {
+                SmartisanDialogButton(
+                    text = "取消",
+                    onClick = { showModalWindow = false },
+                    modifier = Modifier.weight(1f),
+                    accent = false,
+                )
+                SmartisanDialogButton(
+                    text = "知道了",
+                    onClick = {
+                        lastAction = "自定义弹窗已关闭"
+                        showModalWindow = false
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+
+    if (showSheetScaffold) {
+        SmartisanSheetScaffold(
+            visible = true,
+            onDismissRequest = { showSheetScaffold = false },
+            title = "页面内弹层",
+        ) {
+            Column(Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
+                SmartisanText(
+                    text = "SmartisanSheetScaffold 不新建窗口，直接叠在当前页面里，适合侧边栏、内嵌面板。",
                     style = typography.listItemSecondary,
                     color = colors.textSecondary,
                 )
