@@ -8,6 +8,9 @@ cd "$(dirname "$0")/.."
 
 BT="$HOME/Library/Android/sdk/build-tools/36.0.0"
 KS="/tmp/dbg.jks"
+# 这个 keystore 就是 Android 的 debug keystore 的副本（签名与 debug 包一致，所以能覆盖安装）；
+# /tmp 每次重启都会清掉，丢了就自动复制回来。
+[ -f "$KS" ] || cp "$HOME/.android/debug.keystore" "$KS"
 OUT="sample/build/outputs/apk/release"
 NAME="smartisanx-sample-release.apk"
 
