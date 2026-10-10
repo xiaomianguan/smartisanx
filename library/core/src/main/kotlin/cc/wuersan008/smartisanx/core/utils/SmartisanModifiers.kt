@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import android.graphics.Rect
 
@@ -57,6 +58,30 @@ fun Modifier.smartisanProjectedShadow(
     elevation: Dp = 1.dp,
     shape: Shape = RectangleShape,
 ): Modifier = this.shadow(elevation = elevation, shape = shape, clip = false)
+
+/**
+ * 顶外边距，**允许负值**。
+ *
+ * 原版布局里偶有 `android:layout_marginTop="-0.4dp"` 这类负外边距（例如跑马灯标题的
+ * 副标题 `marquee_subtitle_margin_top = -0.4dp`），而 Compose 的 `Modifier.padding`
+ * 会直接抛 `Padding must be non-negative`，所以这里用 `layout` 自己实现一个真正的负外边距：
+ * 自身高度按「内容高度 + margin」上报（负值即收紧父容器），内容整体向上偏移，
+ * 后续兄弟节点的位置与父容器高度都与原版一致。
+ *
+ * ```kotlin
+ * Text("副标题", modifier = Modifier.smartisanTopMargin((-0.4).dp))
+ * ```
+ *
+ * @param margin 顶外边距，正值相当于 `padding(top = margin)`，负值把内容往上提。
+ */
+fun Modifier.smartisanTopMargin(margin: Dp): Modifier =
+    layout { measurable, constraints ->
+        val marginPx = margin.roundToPx()
+        val placeable = measurable.measure(constraints)
+        layout(placeable.width, (placeable.height + marginPx).coerceAtLeast(0)) {
+            placeable.placeRelative(0, marginPx)
+        }
+    }
 
 /**
  * 读 9-patch 自己声明的 padding，转成 Compose 的 [PaddingValues]。

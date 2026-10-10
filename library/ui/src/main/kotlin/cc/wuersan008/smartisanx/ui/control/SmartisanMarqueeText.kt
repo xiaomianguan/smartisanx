@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import cc.wuersan008.smartisanx.core.utils.smartisanTopMargin
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
@@ -105,7 +106,8 @@ fun SmartisanMarqueeText(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(top = SmartisanMarqueeDefaults.SubTitleMarginTop),
+                        // 原版是负的 layout_marginTop，padding 收不了负值。
+                        .smartisanTopMargin(SmartisanMarqueeDefaults.SubTitleMarginTop),
                 style = MarqueeTextStyle,
                 color = subTitleColor,
                 fontSize = subTitleTextSize,

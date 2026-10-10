@@ -74,6 +74,7 @@ uses the same duration as the platform's `ViewConfiguration.getPressedStateDurat
 fun Modifier.smartisanPainterBackground(painter: Painter): Modifier
 @Composable fun Modifier.smartisanDrawableBackground(...): Modifier
 fun Modifier.smartisanProjectedShadow(elevation: Dp = 1.dp, shape: Shape = RectangleShape): Modifier
+fun Modifier.smartisanTopMargin(margin: Dp): Modifier
 fun smartisanDrawableState(...): IntArray
 ```
 
