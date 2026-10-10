@@ -32,6 +32,22 @@ object SmartisanDrawables {
     @DrawableRes val SecondaryBarShadow = R.drawable.secondary_bar_shadow
 
     /**
+     * 次级栏底图（原版 `secondary_bar`，9-patch）。
+     *
+     * framework 的底部操作按钮组（`ActionButtonGroup` / `ButtonGroup`）与复合标题栏的次级栏
+     * 都用它；复合标题栏另见 [cc.wuersan008.smartisanx.ui.layout.SmartisanComboTitleBar]。
+     */
+    @DrawableRes val SecondaryBarBackground = R.drawable.secondary_bar
+
+    /**
+     * 底部操作按钮组上方那条投影（原版 `smartisan_secondary_bar_shadow`，9-patch）。
+     *
+     * 与 [SecondaryBarShadow] 是两张不同的素材：前者用在 `smartisan_button_group_layout.xml`
+     * 的 `smartisan_iv_btn_group_shadow`，后者用在复合标题栏的次级栏下方。
+     */
+    @DrawableRes val ActionButtonGroupShadow = R.drawable.smartisan_secondary_bar_shadow
+
+    /**
      * framework 的底部栏投影（原版 `bottom_bar_shadow`，素材 12×33px ⇒ 11dp，与
      * `@dimen/bottom_bar_shadow_height` 一致）。
      *

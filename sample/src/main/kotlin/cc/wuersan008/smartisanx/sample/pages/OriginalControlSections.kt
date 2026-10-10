@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -22,6 +23,8 @@ import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.SmartisanActionButton
+import cc.wuersan008.smartisanx.ui.control.SmartisanActionButtonGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
@@ -64,6 +67,66 @@ fun OriginalControlSections() {
     ProgressIndicatorSection()
     TipsSection()
     PreviewOptionsSection()
+    ActionButtonGroupSection()
+}
+
+/** 底部操作按钮组：原版 `smartisanos.widget.ActionButtonGroup` / `ButtonGroup`。 */
+@Composable
+private fun ActionButtonGroupSection() {
+    var lastAction by remember { mutableStateOf("（还没点）") }
+    SampleSectionHeader("底部操作按钮组（ActionButtonGroup / ButtonGroup）")
+    SmartisanText(
+        text = "原版设置页 / 文件管理器多选时贴底的 48dp 操作条。最近一次点击：$lastAction",
+        modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp),
+        style = LocalSmartisanTypography.current.caption,
+        color = LocalSmartisanColors.current.textTertiary,
+    )
+    // 三个文字按钮：多个按钮按位置取 filter_left / middle / right 分段底图。
+    SmartisanActionButtonGroup(
+        actions =
+            listOf(
+                SmartisanActionButton("复制") { lastAction = "复制" },
+                SmartisanActionButton("移动") { lastAction = "移动" },
+                SmartisanActionButton("删除") { lastAction = "删除" },
+            ),
+    )
+    Box(Modifier.height(8.dp))
+    // 单个文字按钮：走 SmallButton.Standard 的整块底图。
+    SmartisanActionButtonGroup(
+        actions = listOf(SmartisanActionButton("完成") { lastAction = "完成" }),
+    )
+    Box(Modifier.height(8.dp))
+    // 左图标 + 四个文字按钮（原版 ACTION_MODE_LEFT，文字居中）。
+    SmartisanActionButtonGroup(
+        actions =
+            listOf(
+                SmartisanActionButton("分享") { lastAction = "分享" },
+                SmartisanActionButton("收藏") { lastAction = "收藏" },
+                SmartisanActionButton("压缩") { lastAction = "压缩" },
+                SmartisanActionButton("删除", enabled = false) { lastAction = "删除（禁用）" },
+            ),
+        leftAction =
+            SmartisanActionButton(
+                iconRes = SmartisanDrawables.IconComplete,
+                contentDescription = "全选",
+            ) { lastAction = "全选" },
+    )
+    Box(Modifier.height(8.dp))
+    // 两个文字按钮 + 右图标（原版 ACTION_MODE_BOTH，文字左对齐）。
+    SmartisanActionButtonGroup(
+        actions =
+            listOf(
+                SmartisanActionButton("上一页") { lastAction = "上一页" },
+                SmartisanActionButton("下一页") { lastAction = "下一页" },
+            ),
+        rightAction =
+            SmartisanActionButton(
+                iconRes = SmartisanDrawables.IconMultiSelect,
+                contentDescription = "设置",
+            ) { lastAction = "设置" },
+        showShadow = false,
+    )
+    SmartisanRowDivider()
 }
 
 /** 分段按钮组：原版 `smartisanos.widget.ButtonTabGroup`。 */

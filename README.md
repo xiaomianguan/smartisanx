@@ -1,4 +1,4 @@
-# smartisanx
+、# smartisanx
 
 <p align="center">
   <img src=".github/assets/smartisanx.png" width="180" alt="smartisanx：牛皮纸包裹盒 + 红色封蜡">
@@ -206,7 +206,7 @@ SmartisanTheme {
 `SmartisanDateTimePicker`、`SmartisanDateTimePickerDialog`、`SmartisanTimePicker`、
 `SmartisanTimePickerDialog`、`SmartisanSpinner`、`SmartisanPreviewOptions`、`SmartisanPreviewOptionCell`、`SmartisanCircleProgress`、
 `SmartisanCircleProgressIndeterminate`、`SmartisanCircleProgressLarge`、
-`SmartisanCircleProgressPopup`、`SmartisanMarqueeText`、`SmartisanCalendar`
+`SmartisanCircleProgressPopup`、`SmartisanMarqueeText`、`SmartisanCalendar`、`SmartisanActionButtonGroup`
 
 ### 输入（`cc.wuersan008.smartisanx.ui.input`）
 

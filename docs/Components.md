@@ -288,6 +288,19 @@ object SmartisanCalendarDefaults   // title bar 48dp / title 174.6dp / arrows 57
 data class SmartisanPreviewOption(@DrawableRes previewRes: Int, title: String? = null)
 const val SmartisanPreviewOptionsInvalid = -1
 
+data class SmartisanActionButton(
+    text: String? = null, @DrawableRes iconRes: Int? = null, enabled: Boolean = true,
+    contentDescription: String? = null, onClick: () -> Unit,
+)
+@Composable fun SmartisanActionButtonGroup(
+    actions: List<SmartisanActionButton>, modifier: Modifier = Modifier,
+    leftAction: SmartisanActionButton? = null, rightAction: SmartisanActionButton? = null,
+    showShadow: Boolean = true,
+    @DrawableRes barRes: Int = SmartisanDrawables.SecondaryBarBackground,
+    @DrawableRes shadowRes: Int = SmartisanDrawables.ActionButtonGroupShadow,
+)
+object SmartisanActionButtonGroupDefaults   // bar 48dp / text button as tall as the bar (48dp), min 66dp / icon button 60x48dp / gaps 6dp / text 13.5sp ...
+
 @Composable fun SmartisanPreviewOptions(
     left: SmartisanPreviewOption, right: SmartisanPreviewOption,
     checkedIndex: Int, onCheckedChange: (Int) -> Unit, modifier: Modifier = Modifier,
@@ -327,6 +340,7 @@ durations and interpolators are copied from the originals:
 | `SmartisanTimePickerDialog` | `smartisanos.widget.SmartisanTimePickerDialog` / `SmartisanTimePickerExDialog` | Clock, Calendar |
 | `SmartisanPreviewOptions` / `SmartisanPreviewOptionCell` | `smartisanos.widget.PreviewOptionsCheckView` / `PreviewOptionView` | framework-wide (the two-column preview options in Settings) |
 | `SmartisanCalendar` | `smartisanos.widget.calendar.CalendarView` / `MonthWeekEventsView` / `MonthByWeekAdapter` / `DragViewSwitcher` / `NormalDayCellDrawer` | Calendar, Notes / Reminders (framework-wide) |
+| `SmartisanActionButtonGroup` | `smartisanos.widget.ActionButtonGroup` / `ButtonGroup` / `ShadowButton` / `ShadowComponent` | Settings, File Manager, Notes (the multi-select / batch-action bar at the bottom) |
 | `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
 | `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
@@ -345,6 +359,34 @@ landscape differ), and repeats on long press at the original `500ms` delay then 
 Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
 **Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp
 radius, all overridable per parameter.
+
+### Action button group (`SmartisanActionButtonGroup`)
+
+```kotlin
+@Composable fun SmartisanActionButtonGroup(
+    actions: List<SmartisanActionButton>,       // 1-4 text buttons, background picked by position
+    modifier: Modifier = Modifier,
+    leftAction: SmartisanActionButton? = null,  // 60x48dp icon button at the start
+    rightAction: SmartisanActionButton? = null, // 60x48dp icon button at the end
+    showShadow: Boolean = true,                 // the shadow above the bar
+)
+```
+
+- This is the 48dp bar that Settings and File Manager pin to the bottom while multi-selecting
+  (`secondary_bar` plus `smartisan_secondary_bar_shadow` above it): text buttons are as tall as the bar
+  (the `filter_btn_*` asset is 92x146px = 30.7x48.7dp) and at least 66dp wide with 13.5sp bold
+  single-line ellipsised text, and when there is more than one the
+  background is picked by position from `selector_small_btn_filter_left` / `_middle` / `_right` (the
+  same assets and text shadow as the segmented button group), while a single button uses
+  `selector_small_btn_standard`. Icon buttons are a fixed 60x48dp with the icon inset 9dp from the
+  start and 7dp from the end.
+- Spacing: 6dp of bar padding at either end (`button_group_left_right_padding`), 6dp between buttons
+  (`button_group_btn_gap`) and 12dp between an icon button and the text buttons
+  (`action_button_left_margin`).
+- The original's two layouts (icon on the left with up to four text buttons, or two text buttons with
+  an icon on the right) are one API here; passing `rightAction` also left-aligns the text, which is
+  what the original's `ACTION_MODE_BOTH` does with `setGravity(start|center)`. Disabled buttons use an
+  overall alpha of 0.3, matching the original `ShadowButton`'s disabled bitmap plus 0.3 alpha.
 
 ### Calendar (`SmartisanCalendar`)
 

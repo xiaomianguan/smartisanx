@@ -149,6 +149,10 @@ Components verified this way so far:
 | | today | that cell spells "today" (14sp, bold, white) with a blue pill when it is also the selected day and a light grey `#CDCDCD` pill otherwise; re-checked on device in the single-week view: selecting today gives the blue pill, selecting another day of the same week turns today's cell into the `#CCCCCC` grey pill with the white text still there |
 | | interaction | tapping a cell moves the selection and the pill (tapping (633,1316) selected 2016-09-15 with the pill in column 3 of row 2); pressing "next month" retitles to `2016年9月` and moves the selection to the 1st (the original's `getAndCorrectDay`); tapping the title opens the date picker dialog (titled "选择要跳转的日期"); `hasFocus = false` shows every other-month number and drops the grey blocks |
 | | single week | with `singleWeek = true` only the selected week is drawn, 67.6dp tall (measured 236px = 67.4dp) with the text baseline moved from 30dp down to 38dp, and the month stays the selected date's month (on device it showed `2026年10月` with only today's week) |
+| `SmartisanActionButtonGroup` | bar and shadow | 48dp (168px) tall bar with the original `secondary_bar` background and the `smartisan_secondary_bar_shadow` asset above it (a different file from the `secondary_bar_shadow` the combo title bar uses, so each has its own constant) |
+| | text buttons | 48dp (168px) tall, at least 66dp (231px) wide, 13.5sp bold and single-line ellipsised; with more than one button the background is picked by position from `selector_small_btn_filter_left/middle/right` (the same assets and `filter_button_text_shadow_colors` text shadow as the segmented group), a single button uses `selector_small_btn_standard` |
+| | icon buttons | 60x48dp (210x168px) with `selector_small_btn_standard` and the icon inset 9dp (31.5px) from the start and 7dp (24.5px) from the end |
+| | spacing | 6dp of bar padding, 6dp between buttons and 12dp between an icon button and the text buttons; passing `rightAction` left-aligns the text (the original `ACTION_MODE_BOTH`'s `setGravity(start|center)`); disabled buttons use an overall alpha of 0.3 |
 
 Still **not** verified item by item:
 

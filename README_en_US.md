@@ -1,4 +1,4 @@
-# smartisanx
+, # smartisanx
 
 <p align="center">
   <img src=".github/assets/smartisanx.png" width="180" alt="smartisanx: a kraft-paper parcel with a red wax seal">
@@ -215,7 +215,7 @@ SmartisanTheme {
 `SmartisanDateTimePicker`, `SmartisanDateTimePickerDialog`, `SmartisanTimePicker`,
 `SmartisanTimePickerDialog`, `SmartisanSpinner`, `SmartisanPreviewOptions`, `SmartisanPreviewOptionCell`, `SmartisanCircleProgress`,
 `SmartisanCircleProgressIndeterminate`, `SmartisanCircleProgressLarge`,
-`SmartisanCircleProgressPopup`, `SmartisanMarqueeText`, `SmartisanCalendar`
+`SmartisanCircleProgressPopup`, `SmartisanMarqueeText`, `SmartisanCalendar`, `SmartisanActionButtonGroup`
 
 ### Input (`cc.wuersan008.smartisanx.ui.input`)
 
