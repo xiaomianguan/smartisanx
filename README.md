@@ -1,4 +1,4 @@
-、# smartisanx
+# smartisanx
 
 <p align="center">
   <img src=".github/assets/smartisanx.png" width="180" alt="smartisanx：牛皮纸包裹盒 + 红色封蜡">
