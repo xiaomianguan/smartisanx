@@ -54,6 +54,9 @@ These are **intentionally** different from the originals; each is noted in the c
 | End icons when disabled | Only the thumb bitmap is swapped, the icons stay as they are | Same (the library does nothing) | Keeps the original behaviour; whether the icons should grey out is up to the caller |
 | Combination bar centre natural width | Android measures `wrap_content` once, then decides on centring | Uses `maxIntrinsicWidth()` (Compose allows a single measure) | Custom layouts without intrinsic measurements are treated as "does not fit" |
 | Combination bar trailing buttons | Ships up to ten `SmartisanButton`s with `-6dp` overlap | No button container; lay out the `trailing` slot yourself | `SmartisanButton` / `SmartisanIconButton` already cover the original button styles and icons, so the container logic is not worth building in |
+| Message bar text / hint colours | framework `editor_text_color` (#cc000000) / `editor_hint_text_color` (#26000000) | theme `textPrimary` / `textHint` | Follows the smartisanx dark theme and matches the other input components |
+| Message bar text listening | `beforeTextChanged` / `onTextChanged` / `afterTextChanged` | Collapsed into `onValueChange` | Compose offers a single change callback; the first two have no counterpart |
+| Message bar navigation-bar insets | Not handled by the original (each app's layout does it) | Not handled either; the caller adds them | Keeps the original split of responsibilities |
 
 ## 3. Assets and fonts
 
@@ -104,6 +107,11 @@ Components verified this way so far:
 | `SmartisanHiddenRowActions` | padding / gap | the whole strip is 273px = 12 + 24 + 6 + 24 + 12dp; the rightmost icon ends 42px (12dp) before the group card edge, and the two icon boxes are 21px (6dp) apart |
 | | icon size | 84px boxes with an explicit 24dp; without `iconSize` it falls back to the bitmap's intrinsic size (`icon_delete_normal` is 36dp at xxhdpi) |
 | | disabled state | `enabled = false` resolves the selector's disabled bitmap: in one strip the enabled action is the red `icon_delete_normal`, the disabled one is grey |
+| `SmartisanMessageField` | overall height | 48.0dp (168px in the screenshot = the input area plus 8.33dp above and below) |
+| | input area | `message_field.9.png` drawn at its intrinsic height (about 106px ≈ 30dp in the screenshot; the asset is 96px at xxhdpi) |
+| | side icons | 36dp (126px, `standard_icon_size`); the leading icon starts 21px (6dp) in, the input area 42px (12dp) in |
+| | bottom bar shadow | a 38px (11dp) whisper-light gradient above the bar's top edge (gray 247 → 242; the asset's peak alpha is only 4/255) plus a 2px divider (gray 233 = theme `divider`) |
+| | send button | empty input resolves `icon_send_disabled` (pale green arrow); with text it switches to `sos_smartisanos_drawable_icon_send` (deep green) |
 
 Still **not** verified item by item:
 

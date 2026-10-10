@@ -370,6 +370,44 @@ object SmartisanInputDefaults
 | `SmartisanJustifyText` | `smartisanos.tablet.widget.SmartisanJustifyTextView` | Music (1) |
 | `SmartisanPasswordField` | `smartisanos.widget.PasswordEditText` | Calendar, Mail, Music (3) |
 | `SmartisanClearableField` | `smartisanos.widget.QuickDeleteEditText` | Calendar, Mail (2) |
+| `SmartisanMessageField` | `smartisanos.widget.MessageField` | Message input bar (no caller inside the framework; a shared component for apps) |
+
+### Message input bar (`SmartisanMessageField`)
+
+```kotlin
+@Composable fun SmartisanMessageField(
+    value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier,
+    onSend: () -> Unit = {}, enabled: Boolean = true, hint: String? = null,
+    maxLength: Int = 2000, maxLines: Int = 1,
+    @DrawableRes leftIconRes: Int? = SmartisanDrawables.MessageFieldAddIcon,
+    onLeftIconClick: (() -> Unit)? = null,
+    @DrawableRes emojiIconRes: Int? = null, onEmojiClick: (() -> Unit)? = null,
+    showShadow: Boolean = true,
+    @DrawableRes backgroundRes: Int = SmartisanDrawables.MessageFieldBackground,
+    @DrawableRes sendIconRes: Int = SmartisanDrawables.MessageFieldSendIcon,
+    textStyle: TextStyle = LocalSmartisanTypography.current.body.copy(fontSize = 13.5.sp),
+    keyboardOptions: KeyboardOptions = ...,
+    keyboardActions: KeyboardActions = ...,
+)
+```
+
+- Ported from the framework's `smartisanos.widget.MessageField` (layout `message_field.xml`, a `merge`):
+  a 36dp leading icon (`standard_icon_size`), the input area (background `message_field.9.png`,
+  32dp intrinsic height) and a 36dp send button (`selector_small_icon_send`, the green arrow), with
+  `bar_margin_edge` (6dp) at both ends.
+- Three rules copied straight out of the original code: the send button is **disabled while the field is
+  empty** (the selector then picks `icon_send_disabled`); hiding the leading icon moves the input area's
+  start margin from 12dp to 6dp (`adjustMessageFiledLayoutParams`); showing the emoji icon moves the
+  editor's end padding from 6dp to 5dp (`updateEditorPaddingRight`).
+- The length cap defaults to 2000 (the original's `integer/message_field_editor_max_length`) and extra
+  input is rejected outright; with more lines the input area grows (the original's `editorMaxLine`).
+- The framework's `bottom_bar_shadow` sits on the bar's top edge
+  (`sos_smartisanos_drawable_bottom_bar_shadow`, 33px asset ⇒ 11dp, matching
+  `bottom_bar_shadow_height`) together with a 0.67dp divider; both hug the top edge and the shadow is
+  translated up by its own height (the original's `BarsHelper` `SHADOW_BOTTOM_TYPE`).
+- Differences: the original `Listener`'s `beforeTextChanged` / `onTextChanged` have no Compose
+  counterpart, so they collapse into `onValueChange`; text and hint colours use the theme's
+  `textPrimary` / `textHint`; navigation-bar insets are left to the caller.
 
 Notes:
 

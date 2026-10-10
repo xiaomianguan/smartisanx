@@ -217,7 +217,8 @@ SmartisanTheme {
 ### Input (`cc.wuersan008.smartisanx.ui.input`)
 
 `SmartisanSearchBar`, `SmartisanAutoFitText`, `SmartisanJustifyText`,
-`SmartisanPasswordField`, `SmartisanClearableField`, `SmartisanInputDefaults`
+`SmartisanPasswordField`, `SmartisanClearableField`, `SmartisanMessageField`,
+`SmartisanInputDefaults`
 
 ### Layout (`cc.wuersan008.smartisanx.ui.layout`)
 
