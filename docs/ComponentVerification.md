@@ -67,7 +67,7 @@ These are **intentionally** different from the originals; each is noted in the c
 
 ## 4. Pixel-level verification on a real device
 
-The environment is now macOS plus a real nut R2 phone (1264×2800 @ 560dpi, i.e. **3.5px per dp**),
+The verification environment is macOS plus a 1264×2800 @ 560dpi test device (i.e. **3.5px per dp**),
 so components can be installed, screenshotted and their **real sizes and colours measured back from
 the pixels** instead of only reading values. The method: scan rows/columns of a screenshot (first and
 last "inked" pixel, the edges and gray levels of flat colour bands) and compare against the framework
