@@ -20,6 +20,17 @@ object SmartisanDrawables {
     /** 标题栏下方投影。 */
     @DrawableRes val TitleBarShadow = R.drawable.title_bar_shadow
 
+    /**
+     * 标题栏下方投影的**短**版本（原版 `title_bar_shadow_short`）。
+     *
+     * 复合标题栏（[cc.wuersan008.smartisanx.ui.layout.SmartisanComboTitleBar]）有次级栏时用它：
+     * 投影改成压在次级栏顶部，所以只要短短一截（素材高 25px，比 `title_bar_shadow` 的 48px 短）。
+     */
+    @DrawableRes val TitleBarShadowShort = R.drawable.title_bar_shadow_short
+
+    /** 次级栏下方的投影（原版 `secondary_bar_shadow`，9-patch）。 */
+    @DrawableRes val SecondaryBarShadow = R.drawable.secondary_bar_shadow
+
     /** 播放页标题栏底色。 */
     @DrawableRes val TitleBarPlayingBackground = R.drawable.titlebar_playing_bg
 

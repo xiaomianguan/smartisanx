@@ -149,6 +149,10 @@ fun LayoutPage(onBack: () -> Unit) {
         SampleSectionHeader("空态")
         EmptyHintSection()
 
+        SampleSectionHeader("framework 复合标题栏")
+        // 对应 framework 的 combo_title_layout / primary_title_layout，见 ComboTitleBarSection.kt。
+        ComboTitleBarSection()
+
         // 原版 APK 里直接移植过来的布局，单独成文件，见 OriginalLayoutSections.kt。
         OriginalLayoutSections()
 

@@ -24,6 +24,17 @@ object SmartisanDimens {
     /** 标题栏左右留白，原版 `bar_margin_edge`。 */
     val TitleBarHorizontalMargin = 6.dp
 
+    /** 复合标题栏中槽与两侧内容的间距，原版 `mid_container_margin`。 */
+    val ComboTitleCenterMargin = 12.dp
+
+    /**
+     * 复合标题栏右侧按钮之间的间距，原版 `smartisan_small_blank_spacing_width`。
+     *
+     * 原版把右侧图标按钮排成一行、相邻按钮的右外边距设为 `-6dp`（互相压住），
+     * 最后一个按钮再补回 `+6dp`，所以整体看起来是「紧密一排、两端留白」。
+     */
+    val ComboTitleActionSpacing = 6.dp
+
     /** 标题栏图标尺寸，原版 `standard_icon_size`。 */
     val IconSize = 36.dp
 
