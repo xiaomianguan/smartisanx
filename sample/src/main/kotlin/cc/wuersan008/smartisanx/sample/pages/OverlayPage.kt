@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,8 +21,12 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.SmartisanDialogAppInfo
+import cc.wuersan008.smartisanx.ui.control.SmartisanDialogSectionGroup
+import cc.wuersan008.smartisanx.ui.control.SmartisanDialogSingleChoiceRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
@@ -160,6 +165,40 @@ fun OverlayPage(onBack: () -> Unit) {
                 )
             }
         }
+
+        SampleSectionHeader("弹窗内容版式（DialogPattern*）")
+        SmartisanText(
+            text = "原版 framework 把「应用信息 / 三段说明 / 两行单选」做成了固定版式，各应用弹窗都用它。",
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp),
+            style = typography.listItemSecondary,
+            color = colors.textTertiary,
+        )
+        Box(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
+            SmartisanDialogAppInfo(
+                title = "锤子便签",
+                summary = "版本 1.0.0 · 12.4 MB",
+                iconRes = SmartisanDrawables.CalendarOtherMonthCell,
+            )
+        }
+        Box(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
+            SmartisanDialogSectionGroup(
+                primaryTitle = "清除缓存",
+                subtitle = "将删除临时文件与缩略图",
+                message = "共可释放 128 MB，操作不可撤销。",
+            )
+        }
+        Column(Modifier.padding(vertical = 4.dp)) {
+            var choice by remember { mutableIntStateOf(0) }
+            listOf("仅本次" to "重启后恢复", "始终" to "以后不再询问").forEachIndexed { index, item ->
+                SmartisanDialogSingleChoiceRow(
+                    title = item.first,
+                    summary = item.second,
+                    selected = choice == index,
+                    onClick = { choice = index },
+                )
+            }
+        }
+        SmartisanRowDivider()
 
         SampleFootnote(
             "弹窗外壳合并了锤子音乐的 SmartisanModal（透明窗口 + 0.54 遮罩）与锤子时钟的 " +

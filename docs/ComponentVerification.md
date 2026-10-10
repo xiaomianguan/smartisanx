@@ -153,6 +153,9 @@ Components verified this way so far:
 | | text buttons | 48dp (168px) tall, at least 66dp (231px) wide, 13.5sp bold and single-line ellipsised; with more than one button the background is picked by position from `selector_small_btn_filter_left/middle/right` (the same assets and `filter_button_text_shadow_colors` text shadow as the segmented group), a single button uses `selector_small_btn_standard` |
 | | icon buttons | 60x48dp (210x168px) with `selector_small_btn_standard` and the icon inset 9dp (31.5px) from the start and 7dp (24.5px) from the end |
 | | spacing | 6dp of bar padding, 6dp between buttons and 12dp between an icon button and the text buttons; passing `rightAction` left-aligns the text (the original `ACTION_MODE_BOTH`'s `setGravity(start|center)`); disabled buttons use an overall alpha of 0.3 |
+| `SmartisanDialogAppInfo` / `SmartisanDialogSectionGroup` / `SmartisanDialogSingleChoiceRow` | app info | 36dp (126px) icon plus a 12dp (42px) gap; a 16sp bold `#9a000000` title over a 12.5sp `#66000000` summary, both single-line ellipsised (the `DialogPatternPrimaryText` / `DialogPatternSecondaryText` styles) |
+| | three-part note | 15sp bold primary title, 12.5sp subtitle and 16sp message; 20dp / 18dp side padding (`dlg_text_view_padding_left` / `_right`) and an 18dp gap (`dlg_section_vertical_space`) |
+| | two-line single choice | 60dp (210px) tall (`dlg_single_choice_height_has_summary`) with 20dp / 6dp padding; 16sp bold title over a 12.5sp summary that turns white while pressed (the original `dlg_single_choice_summary_colorlist`); a `selector_radio_choice` mark on the end that keeps its space when unselected via alpha 0 |
 
 Still **not** verified item by item:
 

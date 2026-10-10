@@ -301,6 +301,14 @@ data class SmartisanActionButton(
 )
 object SmartisanActionButtonGroupDefaults   // bar 48dp / text button as tall as the bar (48dp), min 66dp / icon button 60x48dp / gaps 6dp / text 13.5sp ...
 
+@Composable fun SmartisanDialogAppInfo(title, summary: String? = null, modifier, @DrawableRes iconRes: Int? = null)
+@Composable fun SmartisanDialogSectionGroup(primaryTitle, modifier, subtitle: String? = null, message: String? = null)
+@Composable fun SmartisanDialogSingleChoiceRow(
+    title: String, selected: Boolean, modifier: Modifier = Modifier, summary: String? = null,
+    onClick: (() -> Unit)? = null, @DrawableRes checkRes: Int = R.drawable.selector_radio_choice,
+)
+object SmartisanDialogPatternDefaults   // icon 36dp / single-choice row 60dp / section gap 18dp / 15sp + 12.5sp + 16sp ...
+
 @Composable fun SmartisanPreviewOptions(
     left: SmartisanPreviewOption, right: SmartisanPreviewOption,
     checkedIndex: Int, onCheckedChange: (Int) -> Unit, modifier: Modifier = Modifier,
@@ -341,6 +349,7 @@ durations and interpolators are copied from the originals:
 | `SmartisanPreviewOptions` / `SmartisanPreviewOptionCell` | `smartisanos.widget.PreviewOptionsCheckView` / `PreviewOptionView` | framework-wide (the two-column preview options in Settings) |
 | `SmartisanCalendar` | `smartisanos.widget.calendar.CalendarView` / `MonthWeekEventsView` / `MonthByWeekAdapter` / `DragViewSwitcher` / `NormalDayCellDrawer` | Calendar, Notes / Reminders (framework-wide) |
 | `SmartisanActionButtonGroup` | `smartisanos.widget.ActionButtonGroup` / `ButtonGroup` / `ShadowButton` / `ShadowComponent` | Settings, File Manager, Notes (the multi-select / batch-action bar at the bottom) |
+| `SmartisanDialogAppInfo` / `SmartisanDialogSectionGroup` / `SmartisanDialogSingleChoiceRow` | `smartisanos.widget.DialogPatternAppInfoLayout` / `DialogPatternSectionGroup` / `DialogPatternTwoLineSingleChoice` | framework-wide dialog content patterns (app info / three-part note / two-line single choice) |
 | `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
 | `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
@@ -359,6 +368,26 @@ landscape differ), and repeats on long press at the original `500ms` delay then 
 Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
 **Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp
 radius, all overridable per parameter.
+
+### Dialog content patterns (`SmartisanDialogAppInfo` / `SmartisanDialogSectionGroup` / `SmartisanDialogSingleChoiceRow`)
+
+```kotlin
+@Composable fun SmartisanDialogAppInfo(title, summary: String? = null, modifier, iconRes: Int? = null)
+@Composable fun SmartisanDialogSectionGroup(primaryTitle, modifier, subtitle: String? = null, message: String? = null)
+@Composable fun SmartisanDialogSingleChoiceRow(title, selected, modifier, summary, onClick, checkRes)
+```
+
+- The framework turned three kinds of dialog content into fixed custom views plus layouts and styles
+  (app info / three-part note / two-line single choice), and every app's dialogs use them, so the
+  layouts are identical across the system. All three are copied here: app info is a 36dp icon, a 12dp
+  gap and two lines (16sp bold `#9a000000` over 12.5sp `#66000000`, both single-line ellipsised); the
+  three-part note is a 15sp bold primary title, a 12.5sp subtitle and a 16sp message with 20dp / 18dp
+  side padding and an 18dp gap (`dlg_section_vertical_space`); the two-line single-choice row is 60dp
+  tall (`dlg_single_choice_height_has_summary`) with 20dp / 6dp padding and a `selector_radio_choice`
+  mark on the end that takes no space when unselected.
+- Differences from the original: the row's text colour comes from the theme here (the original reads the
+  system theme's `?android:textColorAlertDialogListItem`), and the check mark defaults to the same
+  `selector_radio_choice` asset but can be swapped for `SmartisanSelectionMark`.
 
 ### Action button group (`SmartisanActionButtonGroup`)
 
