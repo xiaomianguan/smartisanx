@@ -35,6 +35,12 @@ object SmartisanDimens {
      */
     val ComboTitleActionSpacing = 6.dp
 
+    /** 行内隐藏操作的左右内边距，原版 `hidden_list_action_left_right_padding`。 */
+    val HiddenActionSidePadding = 12.dp
+
+    /** 行内隐藏操作相邻图标之间的间距，原版 `hidden_list_action_icon_gap`。 */
+    val HiddenActionIconGap = 6.dp
+
     /** 标题栏图标尺寸，原版 `standard_icon_size`。 */
     val IconSize = 36.dp
 
