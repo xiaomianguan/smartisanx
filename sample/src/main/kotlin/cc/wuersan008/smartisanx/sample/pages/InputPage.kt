@@ -62,6 +62,9 @@ fun InputPage(onBack: () -> Unit) {
         SampleSectionHeader("可清空输入框（QuickDeleteEditText）")
         ClearableFieldSection()
 
+        SampleSectionHeader("framework 编辑行（editor.*）")
+        EditorRowSection()
+
         SampleFootnote(
             "这 5 个组件都直接用原版 APK 里的素材：搜索栏用 NinePatch `search_field`、" +
                 "放大镜 `search_bar_left_icon`、清除按钮 `text_clear_btn`、筛选 `sorting_icon_selector`、" +
