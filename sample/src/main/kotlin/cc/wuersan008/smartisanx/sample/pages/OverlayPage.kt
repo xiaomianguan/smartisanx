@@ -15,10 +15,16 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
+import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmCountColor
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmHeader
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmItem
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmRow
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmSheet
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanBottomSheet
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanConfirmDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
@@ -37,6 +43,8 @@ fun OverlayPage(onBack: () -> Unit) {
     var showSheet by remember { mutableStateOf(false) }
     var showProgress by remember { mutableStateOf(false) }
     var progressDark by remember { mutableStateOf(false) }
+    var showBhm by remember { mutableStateOf(false) }
+    var bhmDrawer by remember { mutableStateOf<String?>(null) }
     var lastAction by remember { mutableStateOf("暂无操作") }
 
     SamplePageScaffold(title = "浮层", onBack = onBack) {
@@ -72,6 +80,15 @@ fun OverlayPage(onBack: () -> Unit) {
                 onClick = {
                     progressDark = true
                     showProgress = true
+                },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanBhmSheet",
+                summary = "带标题的列表弹层：分组标题 + 计数徽标 + 两列切换",
+                onClick = {
+                    bhmDrawer = null
+                    showBhm = true
                 },
             )
             SmartisanRowDivider()
@@ -148,6 +165,86 @@ fun OverlayPage(onBack: () -> Unit) {
             message = "标题与文案都是可选的，圆环是 ROM 里那张 48dp 不确定圈。",
             dark = progressDark,
         )
+    }
+
+    if (showBhm) {
+        val drawer = bhmDrawer
+        SmartisanBhmSheet(
+            onDismissRequest = { showBhm = false },
+            title = drawer ?: "添加",
+            onBack = if (drawer != null) { { bhmDrawer = null } } else null,
+            pageKey = drawer ?: "root",
+        ) {
+            if (drawer == null) {
+                SmartisanBhmHeader("快速访问")
+                listOf(
+                    SmartisanBhmItem(
+                        title = "最近文件",
+                        iconRes = SmartisanOriginalIcons.SortByTime,
+                        count = "12",
+                        onClick = { bhmDrawer = "最近文件" },
+                    ),
+                    SmartisanBhmItem(
+                        title = "图片",
+                        iconRes = SmartisanOriginalIcons.Share,
+                        count = "48",
+                        onClick = { bhmDrawer = "图片" },
+                    ),
+                    SmartisanBhmItem(
+                        title = "音乐",
+                        iconRes = SmartisanOriginalIcons.Play,
+                        count = "6",
+                        countColor = SmartisanBhmCountColor.Grey,
+                        onClick = { bhmDrawer = "音乐" },
+                    ),
+                ).forEach { SmartisanBhmRow(it) }
+                SmartisanBhmHeader("更多")
+                SmartisanBhmRow(
+                    SmartisanBhmItem(
+                        title = "收藏夹",
+                        iconRes = SmartisanOriginalIcons.Settings,
+                        subtitle = "3 个",
+                    ),
+                )
+                SmartisanBhmRow(
+                    SmartisanBhmItem(
+                        title = "正在扫描…",
+                        showProgress = true,
+                    ),
+                )
+                SmartisanBhmRow(
+                    SmartisanBhmItem(
+                        title = "回收站",
+                        iconRes = SmartisanOriginalIcons.DeletePlain,
+                        count = "2",
+                        countColor = SmartisanBhmCountColor.Red,
+                        showAlert = true,
+                    ),
+                )
+            } else {
+                listOf(
+                    SmartisanBhmItem(
+                        title = "项目周报.pdf",
+                        iconRes = SmartisanOriginalIcons.SortByName,
+                        subtitle = "2.4 MB",
+                    ),
+                    SmartisanBhmItem(
+                        title = "设计稿评审.png",
+                        iconRes = SmartisanOriginalIcons.Share,
+                        subtitle = "1.1 MB",
+                    ),
+                    SmartisanBhmItem(
+                        title = "会议纪要.docx",
+                        iconRes = SmartisanOriginalIcons.SortByName,
+                        subtitle = "86 KB",
+                    ),
+                    SmartisanBhmItem(
+                        title = "已归档的条目",
+                        enabled = false,
+                    ),
+                ).forEach { SmartisanBhmRow(it) }
+            }
+        }
     }
 
     if (showSheet) {

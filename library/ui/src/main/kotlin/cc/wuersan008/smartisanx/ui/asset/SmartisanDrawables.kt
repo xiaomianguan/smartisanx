@@ -55,6 +55,29 @@ object SmartisanDrawables {
     /** 消息输入栏的表情图标（原版 `message_field_emoji_selector`）。 */
     @DrawableRes val MessageFieldEmojiIcon = R.drawable.message_field_emoji_selector
 
+    // ---- 带标题的列表弹层（framework smartisanos.widget.BHM*） ----
+
+    /** 弹层列表行的底图（原版 `bhm_item_view_bg`：按下 / 聚焦态换色）。 */
+    @DrawableRes val BhmItemBackground = R.drawable.sos_smartisanos_drawable_bhm_item_view_bg
+
+    /** 弹层列表行的警示小图标（原版 `bhm_item_view_ic_alert`）。 */
+    @DrawableRes val BhmItemAlert = R.drawable.sos_smartisanos_drawable_bhm_item_view_ic_alert
+
+    /** 弹层列表的选中底图（原版 `bhm_list_view_bg`）。 */
+    @DrawableRes val BhmListBackground = R.drawable.sos_smartisanos_drawable_bhm_list_view_bg
+
+    /** 分组标题的底图（原版 `bhm_header_view_bg`）。 */
+    @DrawableRes val BhmHeaderBackground = R.drawable.sos_smartisanos_drawable_bhm_header_view_bg
+
+    /** 计数徽标：蓝（原版 `bhm_num_blue`，默认）。 */
+    @DrawableRes val BhmCountBlue = R.drawable.sos_smartisanos_drawable_bhm_num_blue
+
+    /** 计数徽标：红（原版 `bhm_num_red`）。 */
+    @DrawableRes val BhmCountRed = R.drawable.sos_smartisanos_drawable_bhm_num_red
+
+    /** 计数徽标：灰（原版 `bhm_num_grey`）。 */
+    @DrawableRes val BhmCountGrey = R.drawable.sos_smartisanos_drawable_bhm_num_grey
+
     /** 播放页标题栏底色。 */
     @DrawableRes val TitleBarPlayingBackground = R.drawable.titlebar_playing_bg
 
