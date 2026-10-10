@@ -26,6 +26,7 @@ similar".
 | `SmartisanLetterIndexBar` | Music letter quick bar + Clock `QuickBarEx` | ✅ hold-and-drag selection and the magnifier bubble match |
 | `SmartisanPageTransition` | Music `PageStackTransition` | ✅ right slide, 300ms, `Smooth` / `Decelerate` match |
 | `SmartisanModalPageTransition` | Weather `pop_up_in` / `slide_down_out` | ✅ bottom slide, 100%→0 and 0→109%, `decelerate_cubic` match |
+| `SmartisanListRow` family | framework `list_content_*` / `list_section_title_layout` / `list_board_section_title_layout` | ✅ 60dp row height, 60dp left icon slot (content centred at 42dp), divider indents 18dp / 60dp, 30dp section title, 40dp board title, all four type scales match; verified pixel by pixel on a real device (see section 4) |
 
 ## 2. Known differences (deliberate)
 
@@ -40,6 +41,10 @@ These are **intentionally** different from the originals; each is noted in the c
 | Clear-button visibility | Instant `setVisibility` | 200ms fade by default | Pass `animateClearIcon = false` to match the original exactly |
 | Scrollbar | Platform default | Custom thin bar | The original has no matching bitmap |
 | Text tab row | Does not exist | Custom | The originals switch tabs with icons only |
+| Section-title background | framework `#f5f5f5` | theme `surfaceRaised` (light `#F7F8F9`) | Must follow the theme in dark mode; within 3 gray levels of the original in light mode |
+| Section-title text colour | framework `#4c000000` (30% black) | theme `textTertiary` (`#66000000`, 40%) | Uses the semantic token and matches `SmartisanGroup`'s section title |
+| Row summary colour | framework `#80000000` (50% black) | theme `textTertiary` (`#66000000`, 40%) | Same tier as `SmartisanListItem`'s summary, so the library has one gray, not two |
+| Row disabled text colour | framework opaque `#bababa` | theme `textDisabled` (`#4c000000`, 30% black ⇒ ≈179 on white) | Semantic token; less than 8 gray levels off the original |
 
 ## 3. Assets and fonts
 
@@ -51,15 +56,31 @@ These are **intentionally** different from the originals; each is noted in the c
 - **Icons**: each selector chain was resolved to its underlying bitmap and classified, excluding 2195
   nine-patch button backgrounds and 1647 large images, leaving only real icons.
 
-## 4. What has not been verified item by item
+## 4. Pixel-level verification on a real device
 
-To be straight about it: the following could **not** be checked to pixel level, because there is no
-device here to run the app on:
+The environment is now macOS plus a real nut R2 phone (1264×2800 @ 560dpi, i.e. **3.5px per dp**),
+so components can be installed, screenshotted and their **real sizes and colours measured back from
+the pixels** instead of only reading values. The method: scan rows/columns of a screenshot (first and
+last "inked" pixel, the edges and gray levels of flat colour bands) and compare against the framework
+dimens and colours.
 
-- actual rendered appearance (colours, shadow strength, how type sizes look on a real screen);
+Components verified this way so far:
+
+| Component | Item | Measured |
+| --- | --- | --- |
+| `SmartisanListRow` | row height | 60.0dp (the selected pale-blue background is exactly 210px) |
+| | left icon slot | checkbox centre x = 42.0dp = 12dp card margin + 30dp (half of the 60dp slot) |
+| | divider | 2px `#F2F2F2`; indent 18.0dp by default, 60.6dp on rows with a left slot |
+| | primary text colour | gray 51 ⇒ `#cc000000` (80% black), matching the original |
+| | summary / disabled | summary gray 153 (40% black), disabled gray 179 (30% black) |
+| `SmartisanListSectionTitle` | band | 30.0dp tall, full width (x = 0..1263), text gray 149 (40% black) |
+| `SmartisanListBoardSectionTitle` | band | 40dp white bar + 1px divider, text gray 101 (60% black) |
+
+Still **not** verified item by item:
+
 - animation smoothness and feel (the durations and easing values are verified, the look is not);
 - gesture edge cases (fast drags, multi-touch, the exact feel of overscroll rebound);
-- how the assets actually behave in dark mode.
+- how the assets actually behave in dark mode (the on-device demo only covers light mode).
 
 If you want, I can take one specific component and diff its drawing code against the original
 `onDraw` line by line.

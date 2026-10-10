@@ -410,6 +410,46 @@ Notes:
   right and wrap once the container width is exceeded, with each row as tall as its tallest child.
   The original spaced children with their own margins, so `itemSpacing` / `lineSpacing` default to `0.dp`.
 
+### framework list-row matrix (the `SmartisanListRow` family)
+
+```kotlin
+enum class SmartisanListRowLines { TwoLine, TwoLineAlt, ThreeLine, ThreeLineAlt }
+
+@Composable fun SmartisanListRow(
+    title: String, modifier: Modifier = Modifier,
+    summary: String? = null, tertiary: String? = null,
+    lines: SmartisanListRowLines = SmartisanListRowLines.TwoLine,
+    leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null,
+    enabled: Boolean = true, selected: Boolean = false, showDivider: Boolean = false,
+    dividerStartIndent: Dp = SmartisanDimens.RowContentStart,
+    minHeight: Dp = SmartisanDimens.ListRowMinHeight,
+    contentPadding: Dp = SmartisanDimens.ListRowFlexibleSpace,
+    @DrawableRes rowBackgroundRes: Int? = SmartisanDrawables.ListRowSelector,
+    @DrawableRes rowShadowRes: Int? = null,
+    onClick: (() -> Unit)? = null, onLongClick: (() -> Unit)? = null,
+)
+
+@Composable fun SmartisanListRowArrow(subtitle: String? = null, modifier, enabled, subtitleMaxWidth)
+@Composable fun SmartisanListSectionTitle(text: String, modifier, startIndent)
+@Composable fun SmartisanListBoardSectionTitle(text: String, modifier, enabled, onClick)
+@Composable fun SmartisanListVerticalGap(modifier, height)
+```
+
+Notes:
+
+- This is the **master** list row of the framework (`list_content_item_layout` plus
+  `smartisanos.widget.ListContentItem`), with a 17sp / 16sp primary line. `SmartisanListItem` is the
+  other line (15sp, from the three re-implemented apps); both are kept, pick by source.
+- `lines` picks the middle text layout: `TwoLine` (17/13.5sp), `TwoLineAlt` (16/12.5sp),
+  `ThreeLine` (17/15/13.5sp), `ThreeLineAlt` (16/13.5/12sp) — type sizes copied from the framework dimens.
+- The left slot is a fixed 60dp square (`left_icon_area_width`) whose content is centred and capped at
+  36dp; the right slot keeps the original `right_container_margin` (6dp), with
+  `SmartisanListRowArrow` for the subtitle + arrow pair.
+- Divider indent: 18dp (`flexible_space`) without a left slot, 60dp with one.
+- Section titles are 30dp (`SmartisanListSectionTitle`); the board title is a 40dp bar drawn with the
+  original selector bitmap plus a 1px divider (`SmartisanListBoardSectionTitle`). Sizes and colours
+  were verified pixel by pixel on a real device.
+
 ---
 
 ## List interaction (`list`)

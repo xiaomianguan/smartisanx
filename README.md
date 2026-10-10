@@ -205,6 +205,8 @@ SmartisanTheme {
 ### 布局（`cc.wuersan008.smartisanx.ui.layout`）
 
 `SmartisanScaffold`、`SmartisanTitleBar`、`SmartisanTitleBarSurface`、`SmartisanListItem`、
+`SmartisanListRow`、`SmartisanListRowArrow`、`SmartisanListSectionTitle`、
+`SmartisanListBoardSectionTitle`、`SmartisanListVerticalGap`、
 `SmartisanGroup`、`SmartisanSectionTitle`、`SmartisanCard`、`SmartisanTabRow`、
 `SmartisanBottomBar`、`Modifier.smartisanVerticalScrollbar`、`SmartisanEmptyHint`、
 `SmartisanFlowLayout`
