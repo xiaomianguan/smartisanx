@@ -1,9 +1,9 @@
 package cc.wuersan008.smartisanx.sample.pages
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.os.StatFs
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,13 +41,15 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
-import java.io.File
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 /**
- * 「关于本机」页：照抄坚果 R2 设置页的 `about_settings_layout.xml`。
+ * 「关于」页：smartisanx 组件库与示例应用自己的说明页。
  *
- * 自上而下与原版一一对应：
+ * 借的是**版式** —— 自上而下照抄坚果 R2 设置页的 `about_settings_layout.xml`，
+ * 但内容跟「本机」无关：
  *
  * 1. **logo 卡片**（原版 `ListContentItemText` + `ListContentItemStyle.Single`）：
  *    原版这里放的是那张「smartisan os / based on Android™」锁图（`about_logo` 9-patch，
@@ -55,17 +57,15 @@ import java.util.Date
  *    位置与原版红色锁图相同：距卡片顶 40dp）；原版压在图上那行 8.6sp 小字
  *    （`about_logo_os_vertion`，距卡片顶 143dp）放的是系统版本，这里放示例应用版本。
  * 2. **五行可点设置行**（原版 `SettingItemText`，`SettingSubItemTop/Mid/BottomStyle`）：
- *    本机状态信息 / 本机名称 / 法律信息 / 保修服务 / 用户反馈。原版分别跳到状态页、
- *    设备名称页、法律信息页、保修应用与反馈应用，示例里只保留版式与箭头。
+ *    源码仓库 / 组件文档 / 问题反馈 / 更新日志 / 开源许可，点一下用浏览器打开对应网址。
  * 3. **只读信息行**（原版 `AboutStaticItem`，即 [SmartisanAboutStaticItem]）：
- *    型号 / 存储容量 / Android 版本 / 基带版本 / 内核版本 / 处理器 / 内存 / 软件版本 /
- *    编译日期。取值方式照抄原版 `AboutFragment.onSupportVisible()`：型号取 `Build.MODEL`、
- *    容量按原版公式向上取到 2 的幂、内存读 `/proc/meminfo` 再向上取整、处理器读
- *    `/proc/cpuinfo` 的 `Hardware` 行、基带取 `Build.getRadioVersion()`（原版读
- *    `gsm.version.baseband`）、编译日期取 `Build.TIME`（原版读 `ro.build.date`）。
+ *    组件库 / 示例应用版本 / 界面语言 / 最低 API / 目标 API / 界面字体 / 素材来源 /
+ *    安装日期 / 运行环境。能现取的就现取 —— 版本号取 `PackageInfo`、两个 API 级别取
+ *    `ApplicationInfo`、安装日期取 `lastUpdateTime`、运行环境取 `Build.MODEL` 与
+ *    `Build.VERSION.RELEASE`；字体与素材来源这类运行时拿不到的项目事实直接写在示例里。
  *
- * 原版的小彩蛋也照搬：300ms 内的连点累加，连点 logo 15 次后「软件版本」显示完整版本号
- * （`showRightModVersion()`，原版显示的是 `ro.smartisan.version` 全量串）。
+ * 原版的小彩蛋也照搬：300ms 内的连点累加，连点 logo 15 次后「示例应用版本」显示完整版本号
+ * （原版 `showRightModVersion()`）。
  */
 @Composable
 fun AboutPage(onBack: () -> Unit) {
@@ -76,7 +76,7 @@ fun AboutPage(onBack: () -> Unit) {
     var showFullVersion by remember { mutableStateOf(false) }
     val version = if (showFullVersion) info.appVersionFull else info.appVersion
 
-    SamplePageScaffold(title = "关于本机", onBack = onBack) {
+    SamplePageScaffold(title = "关于", onBack = onBack) {
         // 原版布局的第一件事就是插一条 14dp 的分组留白（group_list_item_vertical_gap_layout）。
         SmartisanListVerticalGap()
         AboutLogoCard(
@@ -90,59 +90,34 @@ fun AboutPage(onBack: () -> Unit) {
             },
         )
         // 五行设置行：位置决定取分组底图的哪一段（圆角只出现在首尾），
-        // 对应原版四套 SettingSubItem*Style。
+        // 对应原版四套 SettingSubItem*Style；内容换成仓库 / 文档 / 反馈等链接。
         SmartisanGroup {
-            SmartisanGroupItem(
-                position = SmartisanGroupRowPosition.Top,
-                title = "本机状态信息",
-                trailing = { AboutRowArrow() },
-                onClick = {},
-            )
-            SmartisanGroupItem(
-                position = SmartisanGroupRowPosition.Middle,
-                title = "本机名称",
-                trailing = { AboutRowArrow() },
-                onClick = {},
-            )
-            SmartisanGroupItem(
-                position = SmartisanGroupRowPosition.Middle,
-                title = "法律信息",
-                trailing = { AboutRowArrow() },
-                onClick = {},
-            )
-            SmartisanGroupItem(
-                position = SmartisanGroupRowPosition.Middle,
-                title = "保修服务",
-                trailing = { AboutRowArrow() },
-                onClick = {},
-            )
-            SmartisanGroupItem(
-                position = SmartisanGroupRowPosition.Bottom,
-                title = "用户反馈",
-                trailing = { AboutRowArrow() },
-                onClick = {},
-            )
+            AboutLinkRow(position = SmartisanGroupRowPosition.Top, title = "源码仓库", url = RepoUrl)
+            AboutLinkRow(position = SmartisanGroupRowPosition.Middle, title = "组件文档", url = "$RepoUrl/tree/main/docs")
+            AboutLinkRow(position = SmartisanGroupRowPosition.Middle, title = "问题反馈", url = "$RepoUrl/issues")
+            AboutLinkRow(position = SmartisanGroupRowPosition.Middle, title = "更新日志", url = "$RepoUrl/commits/main")
+            AboutLinkRow(position = SmartisanGroupRowPosition.Bottom, title = "开源许可", url = "$RepoUrl/blob/main/LICENSE")
         }
         // 原版这里有一条卡片底部投影（item_bottom_shadow_layout）；库里的行投影画在行边界
         // 之外，所以留一段 14dp 留白让它落下来，别压到下面的信息行。
         SmartisanListVerticalGap()
         // 只读信息行：原版这些行不带卡片底图，直接落在页面底纹上，靠 1px 分隔线分节。
-        SmartisanAboutStaticItem(title = "型号", summary = info.model)
-        SmartisanAboutStaticItem(title = "存储容量", summary = info.storage)
-        SmartisanAboutStaticItem(title = "Android 版本", summary = info.androidVersion)
-        SmartisanAboutStaticItem(title = "基带版本", summary = info.baseband)
-        SmartisanAboutStaticItem(title = "内核版本", summary = info.kernel)
-        SmartisanAboutStaticItem(title = "处理器", summary = info.cpu)
-        SmartisanAboutStaticItem(title = "内存", summary = info.memory)
-        SmartisanAboutStaticItem(title = "软件版本", summary = version)
-        SmartisanAboutStaticItem(title = "编译日期", summary = info.buildDate)
+        SmartisanAboutStaticItem(title = "组件库", summary = info.library)
+        SmartisanAboutStaticItem(title = "示例应用版本", summary = version)
+        SmartisanAboutStaticItem(title = "界面语言", summary = info.languages)
+        SmartisanAboutStaticItem(title = "最低 API", summary = info.minApi)
+        SmartisanAboutStaticItem(title = "目标 API", summary = info.targetApi)
+        SmartisanAboutStaticItem(title = "界面字体", summary = info.font)
+        SmartisanAboutStaticItem(title = "素材来源", summary = info.assets)
+        SmartisanAboutStaticItem(title = "安装日期", summary = info.installDate)
+        SmartisanAboutStaticItem(title = "运行环境", summary = info.runtime)
 
         SampleFootnote(
-            "版式来自坚果 R2 设置页：about_settings_layout（logo 卡片 + 五行设置行 + " +
-                "只读信息行）与 about_static_item_layout（SmartisanAboutStaticItem）。" +
-                "原版卡片里那张「smartisan os / based on Android™」锁图换成了项目 logo，" +
-                "图上那行小字从系统版本改成示例应用版本；只读信息行的取值方式照抄 " +
-                "AboutFragment，所以数字随设备而变。",
+            "版式借自坚果 R2 设置页：about_settings_layout（logo 卡片 + 五行设置行 + " +
+                "只读信息行）与 about_static_item_layout（SmartisanAboutStaticItem）；" +
+                "内容换成 smartisanx 自己的 —— logo 卡片里原版那张「smartisan os / based on " +
+                "Android™」锁图换成项目 logo，设置行换成仓库 / 文档 / 反馈等链接，" +
+                "只读信息行换成组件库与示例应用的事实。",
         )
     }
 }
@@ -234,84 +209,70 @@ private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
 }
 
 /**
- * 「关于本机」页要显示的取值，逐项对应原版 `AboutFragment.onSupportVisible()` 里的赋值。
+ * 「关于」页只读信息行的取值。
  *
- * 原版这些值都从系统属性与 `/proc` 里现取，所以数字随设备而变；这里同样现取，
- * 取不到的项显示原版的兜底文案「未知」（`device_info_default`）。
+ * 能现取的就现取：版本号取 `PackageInfo`、两个 API 级别取 `ApplicationInfo`、
+ * 安装日期取 `lastUpdateTime`、运行环境取 `Build`；字体与素材来源这类**运行时拿不到**的
+ * 项目事实直接写在示例里（来源是 README 与固件清单，那边改了要一起改）。
  */
 private data class AboutInfo(
-    val model: String,
-    val storage: String,
-    val androidVersion: String,
-    val baseband: String,
-    val kernel: String,
-    val cpu: String,
-    val memory: String,
+    val library: String,
     val appVersion: String,
     val appVersionFull: String,
-    val buildDate: String,
+    val languages: String,
+    val minApi: String,
+    val targetApi: String,
+    val font: String,
+    val assets: String,
+    val installDate: String,
+    val runtime: String,
 )
-
-/** 原版 `device_info_default`：取不到值时显示「未知」。 */
-private const val AboutUnknown = "未知"
 
 private fun readAboutInfo(context: Context): AboutInfo {
     val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-    val versionName = packageInfo.versionName ?: AboutUnknown
+    val applicationInfo = packageInfo.applicationInfo
+    val versionName = packageInfo.versionName ?: "未知"
     return AboutInfo(
-        // 原版是 `Build.MODEL` + `getMsvSuffix()`（只有工程机才会多一个后缀）。
-        model = Build.MODEL,
-        storage = nominalStorage(Environment.getDataDirectory().path),
-        androidVersion = Build.VERSION.RELEASE,
-        // 原版读 `gsm.version.baseband`；公开 API 里对应的是 `Build.getRadioVersion()`。
-        baseband = Build.getRadioVersion()?.takeIf { it.isNotBlank() } ?: AboutUnknown,
-        // 原版读 `/proc/version` 再格式化成三行；这里只取内核版本号。
-        kernel = System.getProperty("os.version") ?: AboutUnknown,
-        cpu = cpuInfo(),
-        memory = totalMemoryGb(),
+        library = "smartisanx（core + ui）",
         appVersion = versionName,
         appVersionFull = "$versionName (build ${PackageInfoCompat.getLongVersionCode(packageInfo)})",
-        // 原版读 `ro.build.date`（形如 "Tue Jun 27 07:32:14 CST 2017"），
-        // `Date.toString()` 正好是同一个格式。
-        buildDate = Date(Build.TIME).toString(),
+        languages = "80 多种，跟随系统",
+        // 两个 API 级别直接读 APK 清单（原版这几行读的是设备信息，本页改成读应用自己）。
+        minApi = (applicationInfo?.minSdkVersion ?: 0).toString(),
+        targetApi = (applicationInfo?.targetSdkVersion ?: 0).toString(),
+        font = "Smartisan Compact CNS（坚果 R2 固件）",
+        assets = "12 个官方 APK + 三个复刻项目",
+        installDate =
+            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).format(Date(packageInfo.lastUpdateTime)),
+        runtime = "${Build.MODEL} · Android ${Build.VERSION.RELEASE}",
     )
 }
 
 /**
- * 原版 `Utils.getStorageVersion()`：把总容量向上取到 2 的整数次幂，再换算成 GB / TB。
+ * 一行可点设置行：右侧是原版设置项的小箭头，点一下用系统浏览器打开 [url]。
  *
- * 128GB 的机器 `StatFs` 读到约 118GB，向上取整后正好是原版显示的「128 GB」。
+ * 原版这五行是「本机状态信息 / 本机名称 / 法律信息 / 保修服务 / 用户反馈」，
+ * 本页换成项目自己的入口。
  */
-private fun nominalStorage(path: String): String =
-    runCatching {
-        val totalBytes = StatFs(path).totalBytes
-        if (totalBytes <= 0L) return@runCatching AboutUnknown
-        val nominal = 1L shl (64 - java.lang.Long.numberOfLeadingZeros(totalBytes))
-        val tb = nominal shr 40
-        if (tb > 0L) "$tb TB" else "${nominal shr 30} GB"
-    }.getOrDefault(AboutUnknown)
-
-/** 原版读 `/proc/cpuinfo` 的 `Hardware` 行；读不到就退回 `Build.HARDWARE`。 */
-private fun cpuInfo(): String {
-    val fromProc =
-        runCatching {
-            File("/proc/cpuinfo").readLines()
-                .firstOrNull { it.startsWith("Hardware") }
-                ?.substringAfter(':')
-                ?.trim()
-                ?.takeIf { it.isNotEmpty() }
-        }.getOrNull()
-    return fromProc ?: Build.HARDWARE.takeIf { it.isNotBlank() } ?: AboutUnknown
+@Composable
+private fun AboutLinkRow(position: SmartisanGroupRowPosition, title: String, url: String) {
+    val context = LocalContext.current
+    SmartisanGroupItem(
+        position = position,
+        title = title,
+        trailing = { AboutRowArrow() },
+        onClick = { openUrl(context, url) },
+    )
 }
 
-/** 原版把 `/proc/meminfo` 的 `MemTotal` 向上取整到 GB（`(kb / 1024 / 1024) + 1`）。 */
-private fun totalMemoryGb(): String =
+/** 用系统浏览器打开链接；设备上没有能处理它的应用时静默失败（示例不弹错误提示）。 */
+private fun openUrl(context: Context, url: String) {
     runCatching {
-        val kb =
-            File("/proc/meminfo").readLines()
-                .firstOrNull { it.startsWith("MemTotal") }
-                ?.filter { it.isDigit() }
-                ?.toLongOrNull()
-                ?: return@runCatching AboutUnknown
-        if (kb <= 0L) AboutUnknown else "${(kb / 1024 / 1024) + 1} GB"
-    }.getOrDefault(AboutUnknown)
+        context.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+        )
+    }
+}
+
+/** 项目仓库地址；上面几行链接都由它拼出来。 */
+private const val RepoUrl = "https://github.com/xiaomianguan/smartisanx"

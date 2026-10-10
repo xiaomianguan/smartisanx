@@ -30,7 +30,7 @@ import cc.wuersan008.smartisanx.ui.R
  * | 浮层 | `secletor_setting_item_icon_notification`（通知） |
  * | 时钟与机械控件 | `secletor_setting_item_icon_keyguard`（锁屏设置，里面就是时钟样式） |
  * | 日历 | `button_small_calendar_selector`（设置页没有日历 glyph，用 framework 里日历应用的日历 glyph） |
- * | 关于本机 | `secletor_setting_item_icon_about`（设置页主菜单最后一项「关于本机」，页面照抄它的 `about_settings_layout`） |
+ * | 关于 | `secletor_setting_item_icon_about`（原版设置页最后一项「关于本机」的图标；页面只借它的 `about_settings_layout` 版式，内容是 smartisanx 自己） |
  *
  * [iconSize] 是图标位图的固有尺寸：设置页这套是 24dp 画布（glyph 约 20dp），
  * 按固有尺寸渲染每行的 glyph 视觉大小才一致。
@@ -109,9 +109,9 @@ enum class SamplePage(
         iconSize = 36.dp,
     ),
     About(
-        title = "关于本机",
-        subtitle = "照抄坚果 R2 设置页：logo 卡片 + 本机信息列表",
-        // 原版设置页主菜单最后一项就是「关于本机」，直接用它的图标。
+        title = "关于",
+        subtitle = "组件库与示例应用的信息，版式照抄坚果 R2 设置页",
+        // 借的是版式：原版设置页主菜单最后一项「关于本机」的排版。
         icon = R.drawable.secletor_setting_item_icon_about,
     ),
 }

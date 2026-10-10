@@ -273,7 +273,7 @@ interactive demos:
 
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
 buttons, controls, text and input, layout and lists, list interaction, overlays, clock and
-mechanical controls, calendar, about phone.
+mechanical controls, calendar, about.
 
 ## Design notes
 
