@@ -293,4 +293,28 @@ object SmartisanDrawables {
     /** 编辑行底图，分组最后一行（原版 `editor_bg_bottom`）。 */
     @DrawableRes val EditorRowBottom = R.drawable.sos_smartisanos_drawable_editor_bg_bottom
 
+    // ---- 带图标滑杆两端的图标（原版 smartisanos.widget.SliderWithIcons 的用法） ----
+
+    /**
+     * 音量滑杆左端的「小音量」图标（原版 `volume_small_n`）。
+     *
+     * 这套音量图标出自原版音乐播放器的音量滑杆，是库内现成的成对图标；
+     * 素材 144×144px（xxhdpi 下 48dp），用 [SmartisanSliderIcon] 时可以显式给尺寸。
+     */
+    @DrawableRes val VolumeSmall = R.drawable.volume_small_n
+
+    /** 音量滑杆的「中等音量」图标（原版 `volume_middle_n`）。 */
+    @DrawableRes val VolumeMiddle = R.drawable.volume_middle_n
+
+    /** 音量滑杆右端的「大音量」图标（原版 `volume_high_n`）。 */
+    @DrawableRes val VolumeHigh = R.drawable.volume_high_n
+
+    /**
+     * 音量滑杆的「静音 / 禁用」图标（原版 `volume_mute_d`）。
+     *
+     * 注意这张素材本身是**浅灰**（`_d` = disabled），原版用在深色的音量面板上；
+     * 放到浅色底上几乎看不见，浅色背景别用它做端点图标。
+     */
+    @DrawableRes val VolumeMute = R.drawable.volume_mute_d
+
 }

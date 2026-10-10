@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanButton
@@ -26,6 +27,8 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonTabGroupItem
 import cc.wuersan008.smartisanx.ui.control.SmartisanChips
+import cc.wuersan008.smartisanx.ui.control.SmartisanIconSlider
+import cc.wuersan008.smartisanx.ui.control.SmartisanSliderIcon
 import cc.wuersan008.smartisanx.ui.control.SmartisanSmoothSeekBar
 import androidx.compose.runtime.mutableFloatStateOf
 import kotlin.math.roundToInt
@@ -48,6 +51,7 @@ fun OriginalControlSections() {
     ButtonTabGroupSection()
     CalculatorButtonSection()
     SmoothSeekBarSection()
+    IconSliderSection()
     ChipsSection()
     NumberPickerSection()
     PageIndicatorSection()
@@ -223,6 +227,84 @@ private fun SmoothSeekBarSection() {
                 color = LocalSmartisanColors.current.textSecondary,
             )
             SmartisanSmoothSeekBar(value = 0.4f, onValueChange = {}, enabled = false)
+        }
+    }
+}
+
+/** 带图标的滑杆：framework 的 `smartisanos.widget.SliderWithIcons`。 */
+@Composable
+private fun IconSliderSection() {
+    var volume by remember { mutableFloatStateOf(0.6f) }
+    var alone by remember { mutableFloatStateOf(0.35f) }
+    SampleSectionHeader("带图标的滑杆（framework SliderWithIcons）")
+    SmartisanGroup {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
+            SmartisanText(
+                text = "音量  ${(volume * 100).roundToInt()}%",
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            // 原版布局：左图标 + 滑杆 + 右图标；两端按素材固有尺寸摆放，这里显式给 26dp。
+            SmartisanIconSlider(
+                value = volume,
+                onValueChange = { volume = it },
+                leading = {
+                    SmartisanSliderIcon(
+                        res = SmartisanDrawables.VolumeSmall,
+                        contentDescription = "小音量",
+                        size = 26.dp,
+                    )
+                },
+                trailing = {
+                    SmartisanSliderIcon(
+                        res = SmartisanDrawables.VolumeHigh,
+                        contentDescription = "大音量",
+                        size = 26.dp,
+                    )
+                },
+            )
+            SmartisanText(
+                text = "只有一端有图标  ${(alone * 100).roundToInt()}%",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            SmartisanIconSlider(
+                value = alone,
+                onValueChange = { alone = it },
+                leading = {
+                    SmartisanSliderIcon(
+                        res = SmartisanDrawables.VolumeMiddle,
+                        contentDescription = "中等音量",
+                        size = 26.dp,
+                    )
+                },
+            )
+            SmartisanText(
+                text = "禁用态（滑块换成禁用素材，图标是原图、不跟着变灰）",
+                modifier = Modifier.padding(top = 8.dp),
+                style = LocalSmartisanTypography.current.listItemSecondary,
+                color = LocalSmartisanColors.current.textSecondary,
+            )
+            SmartisanIconSlider(
+                value = 0.2f,
+                onValueChange = {},
+                enabled = false,
+                leading = {
+                    SmartisanSliderIcon(
+                        res = SmartisanDrawables.VolumeSmall,
+                        contentDescription = "小音量",
+                        size = 26.dp,
+                    )
+                },
+                trailing = {
+                    SmartisanSliderIcon(
+                        res = SmartisanDrawables.VolumeHigh,
+                        contentDescription = "大音量",
+                        size = 26.dp,
+                    )
+                },
+            )
         }
     }
 }
