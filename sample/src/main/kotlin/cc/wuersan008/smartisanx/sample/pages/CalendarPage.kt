@@ -21,6 +21,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanDatePickerDialog
 import cc.wuersan008.smartisanx.ui.control.SmartisanPickerVariant
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import java.time.LocalDate
 
 /**
@@ -56,6 +57,7 @@ fun CalendarPage(onBack: () -> Unit) {
                 summary = "对应原版 MonthByWeekAdapter#setHasFocus(false)：整屏都显示日期数字",
                 checked = greyOutOtherMonths,
                 onCheckedChange = { greyOutOtherMonths = it },
+                position = SmartisanGroupRowPosition.Single,
             )
         }
         SmartisanCalendar(

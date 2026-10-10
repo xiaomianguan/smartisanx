@@ -55,6 +55,10 @@ fun SmartisanSectionTitle(
  * 条纹底纹被盖住；行的圆角与白底混在一起，看上去就没有圆角了。
  *
  * 需要整块底色时显式传 [color]。
+ *
+ * [position] 是给「内容不是列表行」的分组用的（比如演示用的控件排排站）：
+ * 这类分组里的内容自己不会画卡片，传 [position] 后由分组统一画上原版的
+ * 分组卡片底图与向外投影，`color` / `shape` 随即失效。
  */
 @Composable
 fun SmartisanGroup(
@@ -62,6 +66,7 @@ fun SmartisanGroup(
     shape: Shape = LocalSmartisanShapes.current.none,
     color: Color = Color.Transparent,
     horizontalMargin: Dp = SmartisanDimens.ListItemHorizontalMargin,
+    position: SmartisanGroupRowPosition? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -71,10 +76,15 @@ fun SmartisanGroup(
                 // 纵向留白是原版的 list_item_vertical_gap，投影要落在行边界之外。
                 .padding(horizontal = horizontalMargin, vertical = SmartisanDimens.ListItemVerticalGap)
                 .then(
-                    if (color != Color.Transparent) {
-                        Modifier.background(color = color, shape = shape)
-                    } else {
-                        Modifier
+                    when {
+                        position != null ->
+                            Modifier.smartisanShadowBackground(
+                                backgroundRes = smartisanGroupRowBackground(position),
+                                shadowRes = smartisanGroupRowShadow(position),
+                            )
+
+                        color != Color.Transparent -> Modifier.background(color = color, shape = shape)
+                        else -> Modifier
                     },
                 ),
         content = content,

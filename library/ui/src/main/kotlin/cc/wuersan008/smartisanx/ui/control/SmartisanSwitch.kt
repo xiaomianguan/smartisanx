@@ -73,6 +73,10 @@ import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSou
 import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.core.utils.smartisanShadowBackground
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.smartisanGroupRowBackground
+import cc.wuersan008.smartisanx.ui.layout.smartisanGroupRowShadow
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanTimerDrawables
@@ -543,6 +547,8 @@ fun SmartisanSwitch(
  * 按压时整行切换为 `surfacePressed`，不使用涟漪。
  *
  * @param style 开关的位图风格，默认与 [SmartisanSwitch] 相同。
+ * @param position 该行在分组卡片里的位置；传入时整行画上原版的分组卡片底图与向外投影
+ *   （设置页里的开关行都长在白色卡片里），传 `null` 则保持透明，由外层的卡片行提供底色。
  */
 @Composable
 fun SmartisanSwitchRow(
@@ -553,6 +559,7 @@ fun SmartisanSwitchRow(
     enabled: Boolean = true,
     summary: String? = null,
     style: SmartisanSwitchStyle = SmartisanSwitchStyle.Music,
+    position: SmartisanGroupRowPosition? = null,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -565,7 +572,20 @@ fun SmartisanSwitchRow(
             modifier
                 .fillMaxWidth()
                 .heightIn(min = SmartisanDimens.ListItemHeight)
-                .background(if (pressed && enabled) colors.surfacePressed else Color.Transparent)
+                .then(
+                    if (position != null) {
+                        Modifier.smartisanShadowBackground(
+                            backgroundRes = smartisanGroupRowBackground(position),
+                            shadowRes = smartisanGroupRowShadow(position),
+                            enabled = enabled,
+                            pressed = pressed && enabled,
+                        )
+                    } else {
+                        Modifier.background(
+                            if (pressed && enabled) colors.surfacePressed else Color.Transparent,
+                        )
+                    },
+                )
                 .toggleable(
                     value = checked,
                     interactionSource = interaction,

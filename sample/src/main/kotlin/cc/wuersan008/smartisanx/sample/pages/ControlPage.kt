@@ -36,6 +36,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanSpinnerStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 
 /** 基础控件页：开关、复选框、按钮、评分条。 */
@@ -50,18 +51,21 @@ fun ControlPage(onBack: () -> Unit) {
 
     SamplePageScaffold(title = "基础控件", onBack = onBack) {
         SampleSectionHeader("开关")
+        // 设置页的开关行都长在白色卡片里：行自己画卡片底图，所以要按位置传 Top / Middle / Bottom。
         SmartisanGroup {
             SmartisanSwitchRow(
                 text = "智能音效",
                 summary = "整行可点，行内点击只触发一次回调",
                 checked = switchOn,
                 onCheckedChange = { switchOn = it },
+                position = SmartisanGroupRowPosition.Top,
             )
             SmartisanRowDivider()
             SmartisanSwitchRow(
                 text = "睡眠定时",
                 checked = switchOff,
                 onCheckedChange = { switchOff = it },
+                position = SmartisanGroupRowPosition.Middle,
             )
             SmartisanRowDivider()
             SmartisanSwitchRow(
@@ -69,37 +73,54 @@ fun ControlPage(onBack: () -> Unit) {
                 checked = true,
                 enabled = false,
                 onCheckedChange = {},
+                position = SmartisanGroupRowPosition.Bottom,
             )
         }
-        SmartisanGroup {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                SmartisanSwitch(checked = switchOn, onCheckedChange = { switchOn = it })
-                SmartisanSwitch(checked = switchOff, onCheckedChange = { switchOff = it })
-                SmartisanSwitch(checked = true, enabled = false, onCheckedChange = {})
-                SmartisanText("可拖动滑块", style = typography.caption, color = colors.textTertiary)
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+                // 三个开关横排：开关是定宽的，说明文字必须另起一行 ——
+                // 塞在同一行里会被挤成一列竖排的单字。
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SmartisanSwitch(checked = switchOn, onCheckedChange = { switchOn = it })
+                    SmartisanSwitch(checked = switchOff, onCheckedChange = { switchOff = it })
+                    SmartisanSwitch(checked = true, enabled = false, onCheckedChange = {})
+                }
+                SmartisanText(
+                    text = "从左到右：选中 / 未选中 / 禁用（按住可拖动滑块）",
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = typography.caption,
+                    color = colors.textTertiary,
+                )
             }
         }
 
         SampleSectionHeader("复选框")
-        SmartisanGroup {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                SmartisanCheckbox(checked = checked, onCheckedChange = { checked = it })
-                SmartisanCheckbox(checked = false, onCheckedChange = {})
-                SmartisanCheckbox(checked = true, enabled = false, onCheckedChange = {})
-                SmartisanText("选中 / 未选中 / 禁用", style = typography.caption, color = colors.textTertiary)
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SmartisanCheckbox(checked = checked, onCheckedChange = { checked = it })
+                    SmartisanCheckbox(checked = false, onCheckedChange = {})
+                    SmartisanCheckbox(checked = true, enabled = false, onCheckedChange = {})
+                }
+                SmartisanText(
+                    text = "从左到右：选中 / 未选中 / 禁用",
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = typography.caption,
+                    color = colors.textTertiary,
+                )
             }
         }
 
         SampleSectionHeader("评分条")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
                 SmartisanRatingBar(rating = rating, onRatingChange = { rating = it })
                 SmartisanText(
@@ -141,7 +162,7 @@ private fun SpinnerSection() {
     var rangeIndex by remember { mutableIntStateOf(2) }
     val options = listOf("每天", "工作日", "仅周末")
     val ranges = listOf("10 分钟", "20 分钟", "30 分钟")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -179,7 +200,7 @@ private fun SpinnerSection() {
 private fun CircleProgressSection() {
     var progress by remember { mutableStateOf(0.35f) }
     var popupVisible by remember { mutableStateOf(false) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -219,7 +240,7 @@ private fun CircleProgressSection() {
 @Composable
 private fun SelectionMarkSection() {
     var selected by remember { mutableIntStateOf(0) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
