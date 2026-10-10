@@ -24,6 +24,7 @@ import cc.wuersan008.smartisanx.ui.overlay.SmartisanConfirmDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuDialog
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanProgressDialog
 
 /** 浮层页：弹窗、确认框、底部菜单、底部弹层。 */
 @Composable
@@ -34,6 +35,8 @@ fun OverlayPage(onBack: () -> Unit) {
     var showConfirm by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
     var showSheet by remember { mutableStateOf(false) }
+    var showProgress by remember { mutableStateOf(false) }
+    var progressDark by remember { mutableStateOf(false) }
     var lastAction by remember { mutableStateOf("暂无操作") }
 
     SamplePageScaffold(title = "浮层", onBack = onBack) {
@@ -55,6 +58,21 @@ fun OverlayPage(onBack: () -> Unit) {
                 title = "SmartisanMenuDialog",
                 summary = "贴底的全宽动作菜单",
                 onClick = { showMenu = true },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanProgressDialog",
+                summary = "246dp 进度卡片：标题 + 48dp 圆环 + 文案",
+                onClick = { showProgress = true },
+            )
+            SmartisanRowDivider()
+            SmartisanListItem(
+                title = "SmartisanProgressDialog（深色）",
+                summary = "setDarkTheme(true)：深色底图 + 白字",
+                onClick = {
+                    progressDark = true
+                    showProgress = true
+                },
             )
             SmartisanRowDivider()
             SmartisanListItem(
@@ -118,6 +136,18 @@ fun OverlayPage(onBack: () -> Unit) {
             SmartisanMenuItem(text = "删除", danger = true, onClick = { lastAction = "删除" })
             SmartisanMenuItem(text = "禁用项示例", enabled = false, showDivider = false, onClick = {})
         }
+    }
+
+    if (showProgress) {
+        SmartisanProgressDialog(
+            onDismissRequest = {
+                showProgress = false
+                progressDark = false
+            },
+            title = if (progressDark) "深色进度弹窗" else "正在同步",
+            message = "标题与文案都是可选的，圆环是 ROM 里那张 48dp 不确定圈。",
+            dark = progressDark,
+        )
     }
 
     if (showSheet) {

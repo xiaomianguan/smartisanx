@@ -1,15 +1,19 @@
 package cc.wuersan008.smartisanx.core.utils
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import android.graphics.Rect
 
 /**
  * 用 [Painter] 作为背景绘制。
@@ -53,3 +57,31 @@ fun Modifier.smartisanProjectedShadow(
     elevation: Dp = 1.dp,
     shape: Shape = RectangleShape,
 ): Modifier = this.shadow(elevation = elevation, shape = shape, clip = false)
+
+/**
+ * 读 9-patch 自己声明的 padding，转成 Compose 的 [PaddingValues]。
+ *
+ * 对应原版「把一个 9-patch 设成 `View.background` 时，View 自动吃掉它的 padding」这个行为：
+ * framework 的不少布局（例如进度弹窗的 246dp 卡片）就靠这个 padding 撑出内边距，
+ * 布局里一个 `padding*` 都没写。
+ *
+ * ```kotlin
+ * Box(Modifier.width(246.dp).smartisanDrawableBackground(res).padding(rememberSmartisanDrawablePadding(res))) { ... }
+ * ```
+ */
+@Composable
+fun rememberSmartisanDrawablePadding(@DrawableRes drawableRes: Int): PaddingValues {
+    val resources = smartisanThemedResources()
+    val density = LocalDensity.current
+    return remember(resources, drawableRes, density) {
+        val padding = Rect()
+        resources.getDrawable(drawableRes, null)?.getPadding(padding)
+        PaddingValues(
+            start = with(density) { padding.left.toDp() },
+            top = with(density) { padding.top.toDp() },
+            end = with(density) { padding.right.toDp() },
+            bottom = with(density) { padding.bottom.toDp() },
+        )
+    }
+}
+
