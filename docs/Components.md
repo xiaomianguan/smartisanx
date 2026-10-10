@@ -748,6 +748,28 @@ data class SmartisanHiddenRowAction(
 
 @Composable fun SmartisanProgressDialogCard(/* same, without the window */)
 object SmartisanProgressDialogDefaults   // 246dp card / 48dp spinner / 18sp title / 13sp message ...
+
+@Composable fun SmartisanBhmSheet(
+    onDismissRequest: () -> Unit, title: String, modifier: Modifier = Modifier,
+    onBack: (() -> Unit)? = null, pageKey: Any = Unit,
+    maxHeightFraction: Float = SmartisanBhmDefaults.MaxHeightFraction,   // 2/3
+    dimAmount: Float = 0.54f, titleBarBackgroundRes: Int? = ...,
+    content: @Composable () -> Unit,
+)
+
+@Composable fun SmartisanBhmRow(item: SmartisanBhmItem, modifier: Modifier = Modifier, selected: Boolean = false)
+@Composable fun SmartisanBhmHeader(text: String, modifier: Modifier = Modifier)
+
+data class SmartisanBhmItem(
+    title: String, iconRes: Int? = null, subtitle: String? = null,
+    count: String? = null, countColor: SmartisanBhmCountColor = Blue,
+    showProgress: Boolean = false, showAlert: Boolean = false,
+    enabled: Boolean = true, titleColor: Color = Color.Unspecified,
+    onClick: (() -> Unit)? = null,
+)
+
+enum class SmartisanBhmCountColor { Blue, Red, Grey }
+object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header 24dp / page switch 400ms ...
 ```
 
 - The scrim defaults to 0.54, matching the original.
@@ -761,6 +783,16 @@ object SmartisanProgressDialogDefaults   // 246dp card / 48dp spinner / 18sp tit
   itself writes no padding at all: the insets come from the background 9-patch's own padding (this
   library reads the very same numbers through `rememberSmartisanDrawablePadding`). `dark = true`
   mirrors the original `setDarkTheme`, swapping in the dark asset and white text.
+- `SmartisanBhmSheet` is the framework's `smartisanos.widget.BHM` (the file manager's bottom-half menu):
+  it sits at the bottom, has a 48dp title bar (`bottom_sheet_title_bar_bg` with 36dp back / cancel
+  icons) and a hairline of 0.67dp at 8% black at the top of the list (the original inserts
+  `bhm_list_header_separator` as a list header, so it scrolls away with the content); the sheet is
+  capped at two thirds of the screen height. Rows are 48dp with an 18dp icon, a 16sp bold title,
+  a `bhm_num_blue/red/grey` count badge and optional 30dp progress ring or alert icon; section
+  headers are 24dp tall with 13.5sp bold text.
+- Changing `pageKey` slides between pages (the original runs a 400ms `decelerate_interpolator`
+  animation on each of its two ListViews) and the sheet itself reuses the same 300ms slide-up entry
+  as the original `bhm_dialog_in`.
 
 ---
 

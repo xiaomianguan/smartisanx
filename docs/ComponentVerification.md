@@ -59,6 +59,9 @@ These are **intentionally** different from the originals; each is noted in the c
 | Message bar navigation-bar insets | Not handled by the original (each app's layout does it) | Not handled either; the caller adds them | Keeps the original split of responsibilities |
 | Progress dialog spinner animation | Uses the platform's indeterminate ProgressBar (`ProgressBarCircleStyle.Medium` sets no drawable) | Rotates the ROM's 48dp ring asset at a steady speed (1s per turn, overridable) | Compose has no platform indeterminate animation; the asset and the size still match the original |
 | Progress dialog determinate progress | `setProgress(int)` is an empty method | Also only indeterminate | The original never supported determinate progress |
+| BHM row disabled state | `BHMDrawerItem.isEnabled()` only blocks clicks; greying out is left to each app | Also only blocks clicks and switches the icon selector; the title colour comes from `SmartisanBhmItem.titleColor` | Keeps the original split |
+| BHM header colour | `bhm_header_view_color` #4d000000 (30% black) | theme `textTertiary` (40% black) | Follows the dark theme |
+| BHM list background | Hard-coded `@android:color/white` in the layout | theme `surface` | Follows the dark theme |
 
 ## 3. Assets and fonts
 
@@ -120,6 +123,13 @@ Components verified this way so far:
 | | spinner | a 48dp box (168px); the 144px asset has 18px of transparent margin all round, so the visible ring is 36dp (126px) |
 | | scrim | 0.54: white (255) behind the dialog measures 117 = 255 × 0.46 |
 | | dark theme | swaps in `smartisan_progress_dialog_bg_dark` plus pure white text (the original's `setDarkTheme(true)`) |
+| `SmartisanBhmSheet` | sheet position | bottom aligned; title bar 1398–1566px = 48dp; the list area starts at 1566px |
+| | list top hairline | 2px across the width at about gray 235 (0.67dp of 8% black over the 245 surface), scrolling with the content |
+| | section header | 24dp (1568–1652px) with the text starting 84px (24dp) from the left |
+| | rows and icons | rows are 48dp (1652–1820px); the icon box is 18dp with a 15dp start margin, and the title text starts at 169px = 15 + 18 + 15dp |
+| | subtitle | right edge at 1243px, i.e. 21px (6dp) from the screen edge |
+| | count badge | the text's right edge lands near 1180px, so the 18dp margin is on top of the 9-patch's own padding |
+| | page switch | driven by `pageKey`: the original animates for 400ms, this library uses the same duration with a quadratic decelerate easing |
 
 Still **not** verified item by item:
 
