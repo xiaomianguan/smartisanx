@@ -26,6 +26,11 @@ class SmartisanIconGroup(val title: String, val icons: List<SmartisanIconEntry>)
  * - **排除** `<shape>` —— 那些是纯色/圆角底图。
  *
  * 分组按原版自己的命名习惯还原使用场景（标题栏动作、底部标签栏、列表与菜单项……）。
+ *
+ * **横屏素材补了竖屏变体**：原版有 37 张图只放在 `drawable-land-xxhdpi/`（计算器的
+ * `sin` / `cos` / `log` 等按键字符是横屏专属）。竖屏手机取不到这些资源，
+ * `Resources.getDrawable` 会抛 `NotFoundException`，所以每张都往 `drawable-xxhdpi/`
+ * 复制了一份作为竖屏回落；横屏仍然优先用原来的 `drawable-land-xxhdpi/`。
  */
 object SmartisanIconSet {
 

@@ -3,6 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true" android:state_selected="false" android:drawable="@drawable/btn_radio_on" />
     <item android:state_checked="false" android:state_selected="false" android:drawable="@drawable/btn_radio_off" />
-    <item android:state_checked="true" android:state_selected="true" />
-    <item android:state_checked="false" android:state_selected="true" />
+    <!-- 原版 APK 里这两条只写了状态、没写 drawable，运行时会抛
+         「<item> tag requires a 'drawable' attribute」，这里回落到未选中态的同款底图。 -->
+    <item android:state_checked="true" android:state_selected="true" android:drawable="@drawable/btn_radio_on" />
+    <item android:state_checked="false" android:state_selected="true" android:drawable="@drawable/btn_radio_off" />
 </selector>
