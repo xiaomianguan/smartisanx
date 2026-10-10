@@ -235,6 +235,8 @@ durations and interpolators are copied from the originals:
 | `SmartisanProgressIndicator` | `smartisanos.widget.DownloadProgressView` | Calendar, Mail (2) |
 | `SmartisanTips` | `smartisanos.widget.TipsView` | Calendar, Mail (2) |
 | `SmartisanHammerButton` | `com.smartisanos.calculator.HammerButton` | Calculator (1) |
+| `SmartisanSmoothSeekBar` | `smartisanos.widget.SmoothSeekBar` | Settings and others (framework-wide slider) |
+| `SmartisanIconSlider` | `smartisanos.widget.SliderWithIcons` | Settings and others (slider with end icons) |
 
 `SmartisanNumberPicker` does not reimplement the wheel: it reuses `SmartisanWheelPicker` (which gained the
 original's cyclic scrolling `wrap` in this change) and only adds the original's min/max range, formatter and
@@ -251,6 +253,52 @@ landscape differ), and repeats on long press at the original `500ms` delay then 
 Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
 **Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp
 radius, all overridable per parameter.
+
+### framework sliders (`SmartisanSmoothSeekBar` / `SmartisanIconSlider`)
+
+```kotlin
+@Composable fun SmartisanSmoothSeekBar(
+    value: Float, onValueChange: (Float) -> Unit, modifier: Modifier = Modifier,
+    enabled: Boolean = true, steps: Int = 0,
+    trackColor: Color = LocalSmartisanColors.current.divider,
+    progressColor: Color = LocalSmartisanColors.current.accent,
+    thumbRes: Int = R.drawable.progress_control,
+    thumbDisabledRes: Int = R.drawable.progress_control_disabled,
+    height: Dp = 48.dp, contentDescription: String? = null,
+)
+
+@Composable fun SmartisanIconSlider(
+    value: Float, onValueChange: (Float) -> Unit, modifier: Modifier = Modifier,
+    enabled: Boolean = true, steps: Int = 0,
+    leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null,
+)
+
+@Composable fun SmartisanSliderIcon(
+    @DrawableRes res: Int, contentDescription: String?, modifier: Modifier = Modifier,
+    size: Dp? = null, tint: Color = Color.Unspecified,
+)
+```
+
+Notes:
+
+- `SmartisanSmoothSeekBar` ports the framework's `smartisanos.widget.SmoothSeekBar` (Settings uses it for
+  brightness, volume and font size); the library had **no slider at all** before this one. The thumb is the
+  original `progress_control` / `progress_control_disabled` bitmap (the two states of
+  `seekbar_scrubber_control_selector`) and the track is drawn by the control at 2dp.
+- `SmartisanIconSlider` ports `SliderWithIcons` + `slider_with_icons_layout.xml`: the original layout holds
+  only three layout rules (left icon `alignParentLeft` + centred, right icon `alignParentRight` + centred,
+  slider `match_parent` between the two) and **no dimension constants**, so no `SmartisanDimens` entries
+  were added; the slider itself is the `SeekBarStyle.Thin.LargeThumb.Actived` style, the thickest thumb of
+  the `SeekBarStyle` family.
+- The original end icons are `wrap_content` (drawn at their intrinsic bitmap size), which is what
+  `SmartisanSliderIcon(size = null)` does; pass an explicit size (for example 26dp) to normalise them.
+- The original quirk "show both icons or neither" (the constructor only calls `setImageResource` when
+  `leftIconRes > 0 && rightIconRes > 0`) was not carried over: the Compose version has two optional slots
+  and draws whichever you provide.
+- Label, slider and both end icons are vertically centred; the result was verified pixel by pixel on a real
+  device (see `ComponentVerification.md`).
+- Icons do not grey out when disabled: the original only swaps the thumb for the disabled bitmap, and the
+  caller decides how the icons look.
 
 ---
 

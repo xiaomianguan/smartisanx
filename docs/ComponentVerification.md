@@ -28,6 +28,8 @@ similar".
 | `SmartisanModalPageTransition` | Weather `pop_up_in` / `slide_down_out` | ✅ bottom slide, 100%→0 and 0→109%, `decelerate_cubic` match |
 | `SmartisanListRow` family | framework `list_content_*` / `list_section_title_layout` / `list_board_section_title_layout` | ✅ 60dp row height, 60dp left icon slot (content centred at 42dp), divider indents 18dp / 60dp, 30dp section title, 40dp board title, all four type scales match; verified pixel by pixel on a real device (see section 4) |
 | `SmartisanEditorRow` family | framework `AbsEditor` / `EditorLeftLabelWidget` / `EditorRightIconWidget` + three layouts | ✅ 44dp row height, 6dp sides, position-dependent original 9-patch background, 12sp label with a 12dp start margin, 40dp × 44dp icon container (26dp icon centred), trailing caption capped at 150dp, 2px inner divider; verified pixel by pixel on a real device (see section 4) |
+| `SmartisanSmoothSeekBar` | framework `smartisanos.widget.SmoothSeekBar` + `SeekBarStyle` | ✅ thumb is the original `progress_control` / `progress_control_disabled` (118×147 / 108×144), track drawn at 2dp, dimensions taken from `SeekBarStyle.Thin.LargeThumb.Actived`; verified pixel by pixel on a real device (see section 4) |
+| `SmartisanIconSlider` | framework `SliderWithIcons` + `slider_with_icons_layout.xml` | ✅ the original layout has no dimension constants (three `RelativeLayout` rules) and reuses the `SmoothSeekBar` above; end icons and slider share a vertical centre, verified pixel by pixel on a real device (see section 4) |
 
 ## 2. Known differences (deliberate)
 
@@ -47,6 +49,8 @@ These are **intentionally** different from the originals; each is noted in the c
 | Row summary colour | framework `#80000000` (50% black) | theme `textTertiary` (`#66000000`, 40%) | Same tier as `SmartisanListItem`'s summary, so the library has one gray, not two |
 | Row disabled text colour | framework opaque `#bababa` | theme `textDisabled` (`#4c000000`, 30% black ⇒ ≈179 on white) | Semantic token; less than 8 gray levels off the original |
 | Editor hint text colour | framework `#26000000` (15% black ⇒ ≈217 on white) | theme `textHint` (`#DBDBDB` ⇒ 219) | Semantic token; 2 gray levels off the original |
+| Slider end icons | Original shows both icons or neither (only calls `setImageResource` when `leftIconRes > 0 && rightIconRes > 0`) | Two independent optional slots; you get whichever you pass | Slot-based API reads better; the original rule looks like an oversight |
+| End icons when disabled | Only the thumb bitmap is swapped, the icons stay as they are | Same (the library does nothing) | Keeps the original behaviour; whether the icons should grey out is up to the caller |
 
 ## 3. Assets and fonts
 
@@ -83,6 +87,12 @@ Components verified this way so far:
 | | icon container | 40dp × 44dp with the 26dp icon centred (measured centre 38.1dp = container centre) |
 | | inner 2px divider | gray 233 ⇒ `list_divider_color` (8% black) |
 | | trailing caption / hint / disabled | caption 40% black, hint gray 219 (framework 15% black ≈ 217), disabled 30% black |
+| `SmartisanSmoothSeekBar` | track | 2dp thick (8px in the screenshot including antialiasing), idle track gray `#E9E9E9` = theme `divider` |
+| | progress colour | screenshot reads `#D44E47`, which is theme `accent` `#E64040` encoded as Display P3 (see below) |
+| | thumb bitmap | the 118×147px bitmap scaled to 49dp height ⇒ 39.3dp × 49dp; its white disc is 19.7dp across (the rest is transparent shadow) |
+| | value → position | slider 872px wide, `value = 0.6` puts the thumb centre at 705px measured; the "half a thumb of padding at each end" formula gives 705.4px |
+| `SmartisanIconSlider` | end icons | 26dp box (91px in the screenshot), sharing the slider's vertical centre: icon centre y = 2417.0, track centre 2416.5, thumb centre 2414.5 (within 1dp inside one row) |
+| | icon ink | the assets carry their own padding (inside a 26dp box `volume_small_n` is only 11.1dp wide, `volume_high_n` 15.7dp) |
 
 Still **not** verified item by item:
 
@@ -92,3 +102,11 @@ Still **not** verified item by item:
 
 If you want, I can take one specific component and diff its drawing code against the original
 `onDraw` line by line.
+
+### Screenshot colours are Display P3
+
+Colour pixels in a device screenshot are **Display P3** encoded, not sRGB: theme `accent` `#E64040`
+reads as `#D44E47` in a screenshot, and converting the sRGB value to P3 coordinates
+(`(230,64,64) → (212,78,71)`) matches the measurement exactly. So **do not change code colours based on
+screenshot colours** — geometry and gray levels are unaffected (neutral grays have identical coordinates
+in sRGB and P3), but chroma has to be converted first.

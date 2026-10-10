@@ -208,7 +208,11 @@ SmartisanTheme {
 `SmartisanSwitch`, `SmartisanSwitchRow`, `SmartisanCheckbox`, `SmartisanRadioButton`,
 `SmartisanRadioRow`, `SmartisanButton`, `SmartisanTextButton`, `SmartisanRatingBar`,
 `SmartisanButtonTabGroup`, `SmartisanHammerButton`, `SmartisanNumberPicker`,
-`SmartisanPageIndicator`, `SmartisanProgressIndicator`, `SmartisanTips`
+`SmartisanPageIndicator`, `SmartisanProgressIndicator`, `SmartisanTips`,
+`SmartisanChips`, `SmartisanChip`, `SmartisanSmoothSeekBar`, `SmartisanIconSlider`,
+`SmartisanSliderIcon`, `SmartisanDatePicker`, `SmartisanDatePickerDialog`,
+`SmartisanDateTimePicker`, `SmartisanDateTimePickerDialog`, `SmartisanTimePicker`,
+`SmartisanSpinner`, `SmartisanCircleProgress`, `SmartisanMarqueeText`
 
 ### Input (`cc.wuersan008.smartisanx.ui.input`)
 
