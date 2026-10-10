@@ -597,12 +597,19 @@ fun SmartisanSwitchRow(
                 .padding(
                     start = SmartisanDimens.RowContentStart,
                     end = SmartisanDimens.ListItemHorizontalMargin,
-                    top = 6.dp,
-                    bottom = 6.dp,
                 ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
+        Column(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(end = 12.dp)
+                    // 原版 `mid_container_top_bottom_padding` 是**文字列**的上下内边距，
+                    // 不是整行的（见 SmartisanListRow）。加在行上会让 52dp 的开关画布
+                    // 撑出 64dp 的行高，比原版的 60dp 高 4.6dp。
+                    .padding(vertical = SmartisanDimens.ListRowTextVerticalPadding),
+        ) {
             SmartisanText(
                 text = text,
                 style = typography.listItemPrimary,
