@@ -51,6 +51,11 @@ modules split by responsibility, the demo app as its own module, components grou
   back to English elsewhere.
 - **Original transitions**: regular pages slide in from the right, modal pages slide up from the
   bottom, with timings taken from the original `anim/` resources and the revival projects.
+- **Original scroll overscroll**: pulling a list past its edge is the original **rigid translation
+  plus spring-back** (drag damping 1/3, limit 1/3 of the container height, critically damped spring
+  ω ≈ 22) rather than the Material stretch; `SmartisanTheme` provides it to every scrolling component
+  in the hierarchy. Values and measurements:
+  [Theme and design tokens](docs/Theme.md#overscroll-bounce).
 - **All the original assets**: graphics from the 12 factory APKs and the nut R2 framework dump, fonts
   from the nut R2 factory ROM dump; every PNG losslessly optimised with oxipng.
 - **Simplified Chinese docs first**: the primary docs are Chinese; this file and the
@@ -187,7 +192,7 @@ exists, pass your own `ImageVector` to `SmartisanIcon(imageVector = ...)`.
 
 | Name | Description |
 | --- | --- |
-| `SmartisanTheme` | Provides colors, text styles and shapes |
+| `SmartisanTheme` | Provides colors, text styles, shapes and the scroll overscroll bounce |
 | `ThemeController` / `rememberSmartisanThemeController` | System / light / dark |
 | `SmartisanColors` | 30 semantic colors, one set for light and one for dark |
 | `SmartisanTypography` | Title bar, body, list primary/secondary, button, dialog, tabular numerals |

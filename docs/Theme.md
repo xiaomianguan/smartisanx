@@ -10,6 +10,7 @@ fun SmartisanTheme(
     colors: SmartisanColors = lightSmartisanColors(),   // light by default
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
+    overscrollFactory: OverscrollFactory? = SmartisanOverscrollFactory(),
     content: @Composable () -> Unit,
 )
 
@@ -18,6 +19,7 @@ fun SmartisanTheme(
     controller: ThemeController,
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
+    overscrollFactory: OverscrollFactory? = SmartisanOverscrollFactory(),
     content: @Composable () -> Unit,
 )
 ```
@@ -31,7 +33,9 @@ The theme is delivered through four `CompositionLocal`s:
 | `LocalSmartisanShapes` | Shapes |
 | `LocalSmartisanContentColor` | Default content color (written by `SmartisanSurface`) |
 
-`LocalSmartisanThemeController` additionally exposes the current controller (nullable).
+`LocalSmartisanThemeController` additionally exposes the current controller (nullable),
+and [overscrollFactory] is written into Compose's `LocalOverscrollFactory`
+(the scroll overscroll behaviour — see "Overscroll bounce" below).
 
 ## Palette
 
@@ -374,6 +378,49 @@ LetterIndexBarWidth 30   MinimumTouchTarget 48
 | `PressSpring` | damping 0.55 / stiffness 800 | Press rebound |
 | `SettleSpring` | low bounce | List displacement, drag settle |
 | `switchSettleMillis` | derived from distance | Switch knob settle duration |
+
+## Overscroll bounce
+
+The original Smartisan OS overscroll is **not** the Material stretch (which deforms the
+content); it is a **rigid translation plus a spring-back**: the whole content slides out,
+revealing the background at the edge, and then springs back.
+`SmartisanTheme` provides this by default to every scrolling component in the hierarchy
+(`LazyColumn`, `Modifier.verticalScroll`, `Modifier.scrollableArea`, `HorizontalPager`, …),
+so nothing has to be passed per component.
+
+| Token | Meaning |
+| --- | --- |
+| `DragDivisor` = 3 | Overscroll drag damping: offset = finger delta / 3 |
+| `MaxDragFraction` = 1/3 | Drag overscroll limit: one third of the container size |
+| `MaxFlingFraction` = 1/2 | Fling overscroll limit: half of the container size |
+| `Stiffness` = 500 | Spring-back stiffness (ω ≈ 22.36) |
+| `DampingRatio` = 1 | Critical damping: settles without overshooting |
+
+```kotlin
+// Replace the whole behaviour (e.g. back to the Material stretch, or none at all)
+SmartisanTheme(overscrollFactory = null) { /* no overscroll effect at all */ }
+
+// Change only the parameters: make the drag follow the finger more closely
+SmartisanTheme(overscrollFactory = SmartisanOverscrollFactory(dragDivisor = 1.5f)) { /* ... */ }
+
+// Change a single area (grab the effect explicitly)
+val effect = rememberOverscrollEffect()
+LazyColumn(modifier = Modifier.overscroll(effect!!)) { /* ... */ }
+```
+
+| Name | Purpose |
+| --- | --- |
+| `SmartisanOverscrollDefaults` | The five values above |
+| `SmartisanOverscrollFactory` | Creates the effect; provided to `LocalOverscrollFactory` |
+| `SmartisanOverscrollEffect` | The implementation: drag damping, limits, spring-back, fling impulse |
+
+> Where the numbers come from: in the framework of the Nut R2
+> (`SMARTISAN/aries/aries:11/RKQ1.201217.002`), `android.widget.AbsListView` sets
+> `mOverscrollDistance` to the full height, `mOverflingDistance` to half the height and
+> `mOverscrollMax` to `(b - t) / 3`, and declares `OVERSCROLL_LIMIT_DIVISOR = 3`.
+> Frame-by-frame pixel measurements of device recordings give the 1/3 drag damping, and
+> fitting the spring-back curve gives a critically damped spring with ω ≈ 22.
+> See the [verification record](ComponentVerification.md).
 
 ## Overriding and extending
 

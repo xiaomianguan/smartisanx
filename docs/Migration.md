@@ -117,6 +117,23 @@ The original implementations handled "blue list press highlight", "icon scales t
 `collectSmartisanPressedAsState` plus per-component pressed-state drawing. The behaviour is the
 same, but there is only one place to maintain.
 
+### 5. Overscroll now behaves like the original
+
+`SmartisanTheme` writes a `SmartisanOverscrollFactory` into Compose's `LocalOverscrollFactory`, so
+every scrolling component in the hierarchy (`LazyColumn`, `Modifier.verticalScroll`,
+`Modifier.scrollableArea`, `HorizontalPager`, …) switches from the Material **stretch** to the
+original **rigid translation plus spring-back**.
+
+Two things to keep in mind when migrating:
+
+- it is a **theme-level** default — no per-list `overscroll` parameters are needed any more;
+- if a screen depends on the Material stretch (for example it customises an `OverscrollEffect`),
+  override it with `SmartisanTheme(overscrollFactory = null)` or by passing
+  `Modifier.verticalScroll(state, overscrollEffect = ...)` explicitly.
+
+Parameters and measurements: [Theme and design tokens](Theme.md#overscroll-bounce) and the
+[verification record](ComponentVerification.md).
+
 ## 3. Migration checklist
 
 - [ ] Wrap the root of your UI in `SmartisanTheme`

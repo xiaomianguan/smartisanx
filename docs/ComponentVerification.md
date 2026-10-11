@@ -368,3 +368,71 @@ revival projects) and exist in no original package. The originals are
 framework's `menu_dialog_horizontal_distance` (18dp) / `menu_dialog_btn_margin_view` (18dp) /
 `menu_dialog_btn_margin_edge` (24dp). The KDocs now say so.
 
+## 7. Scroll overscroll bounce (measured on the original R2 and on the test device)
+
+The original overscroll is **not** the Material stretch; it is a rigid translation plus a spring-back.
+First the R2 framework constants, then recordings of the R2's behaviour, then the same scripts applied
+to this library's implementation on the test device (nubia P0110).
+
+### 1. Original framework constants (Nut R2, `android.widget.AbsListView`)
+
+```java
+static final int OVERSCROLL_LIMIT_DIVISOR = 3;            // declared (unused inside this class)
+protected void onLayout(...) {
+    int i2 = b - t;                                       // view height
+    this.mOverscrollDistance = i2;                        // drag limit = the whole height
+    this.mOverflingDistance = i2 / 2;                     // fling limit = half the height
+    this.mOverscrollMax = (b - t) / 3;                    // overscroll limit = a third
+}
+```
+
+In `ScrollView.java` the same block sits behind `ScrollViewSmtEx.mSmartisanosOverScrollEnable`
+(switched off only for `com.buzzfeed.android`), so this is a **system-wide** behaviour rather than
+something an app does for itself. The `OverScroller` in `smartisanos.jar` also changes the return:
+`GRAVITY` raised from AOSP's 2000 to 8000 and `startSpringback` using a quartic ease-out over
+`mOver/|Δ|` — but the curve measured on the device is not that one (below), so this library
+reproduces the **measured** one.
+
+### 2. Measured on the R2 (1080×2340 @400dpi, Settings ListView 2100px tall)
+
+Captured with `screenrecord`, resampled to 60fps with `ffmpeg`, tracking the centre of the first text
+band:
+
+| Finger travel | Content travel | Ratio |
+| --- | --- | --- |
+| 400px | 125px | 0.31 |
+| 800px | 302px | 0.38 |
+| 1200px | 398px | 0.33 |
+
+→ **drag damping of 1/3** (the spread comes from touch slop and the resolution of the injected events).
+
+Fitting the return curve (peak 503px) against several models — the critically damped spring wins:
+
+| Model | Best parameters | rms |
+| --- | --- | --- |
+| critically damped spring `(1+ωt)e^{-ωt}` | ω = 22.04 (≈ √500) | **6.2px** |
+| quartic ease-out (the one in the framework) | T = 0.44s | 21.4px |
+| cubic ease-out | T = 0.35s | 18.5px |
+| exponential decay | τ = 94ms | 31.8px |
+| sine ease-out | T = 0.24s | 13.2px |
+
+Also measured: the **row pitch stays 150px throughout** (card heights and gaps never change) = a rigid
+translation, not a stretch; and the return **starts from rest** (the velocity rises then falls rather
+than continuing the release velocity).
+
+### 3. This library's implementation (test device nubia P0110, 1264×2800 @560dpi)
+
+Same scripts, applied to `Modifier.verticalScroll` and `LazyColumn`:
+
+| Item | Measured | Expected |
+| --- | --- | --- |
+| drag damping (900px) | 291px (0.323) | 1/3 ✅ |
+| drag damping (1300px) | 424px (0.326) | 1/3 ✅ |
+| drag damping (2000px) | ~700px (0.35) | 1/3 ✅ |
+| return curve fit | critically damped, ω = 21.6, rms **2.7px** | the R2's 22.0 ✅ |
+| settling | screenshot 1.5s after release is byte-identical to the one before | returns exactly ✅ |
+| row pitch | unchanged throughout (band spacing identical before/after) | rigid translation ✅ |
+| clipping | the revealed area is the page texture; content never crosses the scroll area's top edge | matches the original ✅ |
+| `LazyColumn` | the Contacts page translates and springs back the same way | same `LocalOverscrollFactory` ✅ |
+
+

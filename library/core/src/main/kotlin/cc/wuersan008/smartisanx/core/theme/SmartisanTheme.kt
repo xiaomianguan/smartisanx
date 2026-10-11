@@ -1,5 +1,7 @@
 package cc.wuersan008.smartisanx.core.theme
 
+import androidx.compose.foundation.LocalOverscrollFactory
+import androidx.compose.foundation.OverscrollFactory
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -11,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import cc.wuersan008.smartisanx.core.scroll.SmartisanOverscrollFactory
 
 /**
  * 主题模式。
@@ -136,6 +139,12 @@ fun systemSmartisanColors(): SmartisanColors =
  * val controller = rememberSmartisanThemeController(SmartisanColorSchemeMode.System)
  * SmartisanTheme(controller) { /* ... */ }
  * ```
+ *
+ * 主题同时把**滚动越界回弹**换成原版行为（见 [SmartisanOverscrollFactory]）：
+ * `LazyColumn`、`Modifier.verticalScroll`、`Modifier.scrollableArea` 等滚动组件
+ * 默认就是原版那种「刚性平移 + 弹簧回弹」，不是 Material 的拉伸。
+ * 想换掉（例如要回 Material 拉伸、或干脆不要越界效果）就传
+ * [overscrollFactory]；也可以只改某一块区域，见 `Modifier.overscroll`。
  */
 @Composable
 fun SmartisanTheme(
@@ -143,6 +152,7 @@ fun SmartisanTheme(
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
     fonts: SmartisanFonts = SmartisanFonts.Original,
+    overscrollFactory: OverscrollFactory? = SmartisanOverscrollFactory(),
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
@@ -151,6 +161,7 @@ fun SmartisanTheme(
         LocalSmartisanFonts provides fonts,
         LocalSmartisanShapes provides shapes,
         LocalSmartisanDarkOverride provides !colors.isLight,
+        LocalOverscrollFactory provides overscrollFactory,
         content = content,
     )
 }
@@ -164,6 +175,7 @@ fun SmartisanTheme(
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
     fonts: SmartisanFonts = SmartisanFonts.Original,
+    overscrollFactory: OverscrollFactory? = SmartisanOverscrollFactory(),
     content: @Composable () -> Unit,
 ) {
     val colors = controller.colors()
@@ -174,6 +186,7 @@ fun SmartisanTheme(
         LocalSmartisanShapes provides shapes,
         LocalSmartisanDarkOverride provides !colors.isLight,
         LocalSmartisanThemeController provides controller,
+        LocalOverscrollFactory provides overscrollFactory,
         content = content,
     )
 }
