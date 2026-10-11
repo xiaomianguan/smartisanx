@@ -507,20 +507,86 @@ Multi-select editing).
 - The "Full-page layouts" row used to borrow the music album page's `btn_album_switch_grid_selector`
   (a grid glyph); it now uses the settings app's own `selector_setting_item_tnt_assist` — the
   **display** glyph of the original "TNT desktop" item (`setting_item_icon_tnt.png`, a 72×72px = 24dp
-  canvas with a 63×54px glyph, `#C5C5C7` normally and white when pressed,
+  canvas with a 63×54px glyph, grey 196–208 normally and white when pressed,
   `setting_item_icon_tnt_focus.png`). Measured on device: 75×64px = 21.4×18.3dp of ink, darkest pixel
   195 — the same weight as the other settings icons in the card (195–197).
-- The "Calendar" row: the settings icon family has no calendar glyph, so it uses the lock screen's
-  (`KeyguardSmartisan`) `calendar_icon` (153×153px canvas, 74×70px glyph, darkest pixel 205). That
-  canvas is large (51dp at xxhdpi) with the glyph in the middle, so rendering it at 40dp yields a
-  glyph of about 19.3×18.3dp — the same weight as the settings icons; the ink measured on device is
-  62×59px = 17.7×16.9dp (a 250 threshold only catches the core of the artwork, not its pale edges).
-- All four new assets are **byte-identical** to the originals in `~/sos_apps` (identical md5):
-  `kg_calendar_icon.png` ↔ `kg_dec/res/drawable-xxhdpi/calendar_icon.png`, the two
+- The two new assets are **byte-identical** to the originals in `~/sos_apps` (identical md5): the two
   `setting_item_icon_tnt*.png` files ↔ the same-named files in `settings_dec`, and
   `selector_setting_item_tnt_assist.xml` ↔ its same-named original.
 - After the swap every home row title starts at 252px = 72dp (the effect of the fixed 60dp left slot),
-  the 40dp calendar icon no longer pushes its title right, and every arrow sits at `x=1159..1179`.
+  and every arrow sits at `x=1159..1179`.
+
+### 5. All 13 home-row icons re-checked against one icon family (2026-10-11, second pass)
+
+**Problem**: in the first pass the "Calendar" row used the lock screen's
+(`KeyguardSmartisan`) `calendar_icon` — that artwork carries a **gradient** (153×153px canvas,
+74×70px glyph, measured grey 205–253 across 46 levels), so it looked paler and softer than the
+flat, even grey of the other twelve rows.
+
+**What was done**: every calendar-like original asset was measured first (same method as below) to
+confirm that **none of them** sits in the flat 196–208 band:
+
+| Asset | Source | Canvas | Measured grey | Verdict |
+| --- | --- | --- | --- | --- |
+| `calendar_icon` | lock screen | 153×153 | 205–253, 46 levels | gradient (the one used before) |
+| `calendar_icon` / `_pressed` | notes bubble | 60×60 | 241–255 / 224 | flat but near-white / too pale |
+| `buttom_framepop_icon_calendar` | lock screen shortcut bar | 54×54 | 245–255 | pure white, invisible on a white card |
+| `ic_notification_calendar` | notification bar | 72×72 | 255 | pure white, same |
+| `added_calendar`, `mail_icon_popup_calendar`, `icon_today_normal`, `squeeze_new_calendar_normal` | calendar / mail / framework | 48–175px | 140–201 / 138–193 / 120–173 / 119–253 | all gradients |
+| **`forcetouch_calendar_add`** | **force-touch menu** | **80×80** | **178, flat** | **chosen** |
+
+`forcetouch_calendar_add` is drawn with the **same convention** as the settings app's
+`setting_item_icon_pencil`: grey channel 0 with a maximum alpha of 77/255 (the pencil is 76/255),
+which composites to 178 / 179 on a white card — the "30% black" branch of the same settings-item
+tier. The 46 `setting_item_icon_*` files in the settings app contain **no calendar glyph**
+(neither do the framework's 268 `sos_smartisanos_drawable_*` files).
+
+**Per-row measurements on device** (row bands from the 1px row separators, darkest pixel inside the
+icon slot's middle strip x=105..195; test device is xxhdpi, 1dp = 3.5px):
+
+| Home row | Icon asset | Canvas | Measured ink | Darkest grey |
+| --- | --- | --- | --- | --- |
+| Theme & design tokens | `secletor_setting_item_icon_brightness` | 72×72 | 74×74px | 196 |
+| Text | `setting_item_icon_pencil` | 54×54 | 66×66px | **179** |
+| Icons | `secletor_setting_item_icon_wallpaper` | 72×72 | 68×56px | 196 |
+| Buttons | `secletor_setting_item_icon_shortcut` | 72×72 | 46×74px | 195 |
+| Controls | `selector_setting_item_navbar` | 72×72 | 78×46px | 195 |
+| Text & input | `secletor_setting_item_icon_language` | 72×72 | 70×50px | 195 |
+| Layout & list | `secletor_setting_item_icon_launcher` | 72×72 | 52×68px | 195 |
+| Full-page layouts | `selector_setting_item_tnt_assist` | 72×72 | 73×62px | 195 |
+| List interaction | `secletor_setting_item_icon_application` | 72×72 | 64×64px | 196 |
+| Overlay | `secletor_setting_item_icon_notification` | 72×72 | 66×66px | 197 |
+| Clock & mechanical | `secletor_setting_item_icon_keyguard` | 72×72 | 53×68px | 195 |
+| **Calendar** | **`forcetouch_calendar_add`** | **80×80** | **70×69px = 20.0×19.7dp** | **178** |
+| About | `secletor_setting_item_icon_about` | 72×72 | 70×69px | 195 |
+
+All thirteen rows now land in the 178–197 band (the calendar row used to measure 205, with only
+55×12px of ink dark enough), and no row has a gradient. The lock screen `kg_calendar_icon.png` was
+removed from the library (that row was its only user).
+
+### 6. The icon index gained a "list row" group
+
+The glyph tier the home rows use was only referenced as raw `R.drawable.*` by the sample and was
+**missing from `SmartisanIconSet`** (searching the index for `setting_item_icon_launcher` found
+nothing); the twelve force-touch glyphs were buried in the "other" catch-all. A usage-based group was
+added:
+
+- `SmartisanIconSet.listRow` ("列表行图标", **49 icons**) = the settings main menu's 25
+  `setting_item_icon_*` bitmaps (including 11 white focus variants) + its 12
+  `secletor_setting_item_icon_*` / `selector_setting_item_*` selectors + the force-touch menu's 12
+  `forcetouch_*` glyphs;
+- the 12 `forcetouch_*` entries were **moved out** of "other" (3204 → 3192) so nothing is listed twice;
+- the group sits right after "list & menu items", making the order
+  title bar 72 / tab bar 51 / list 158 / **list rows 49** / select 10 / media 25 / clock 30 /
+  editor 30 / other 3192, with the total going 3580 → **3617**.
+
+Checked on device (the demo's "original icons" page): the header reads "列表行图标（49）" and sits
+exactly between the last "list & menu items" entry (`more_select_icon_timer_disable`) and
+"多选与复选框（10）"; all 49 render (no `NotFoundException`) and every one of them is a flat
+single-tone glyph. The 11 white focus variants (`setting_item_icon_focus_*`) were invisible on the
+light chip, so the icon page's chip colour moved from `surfaceRaised` (#F7F8F9) to
+`surfacePressed` (#ECECEC) — white glyphs now show an outline and grey glyphs actually gained
+contrast.
 
 
 

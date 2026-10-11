@@ -28,8 +28,12 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 /**
  * 图标页：展示从原厂 APK 里提取的**原版 UI 图标**。
  *
- * 这里没有任何自绘矢量图标 —— 全部是 `People-11/SmartisanOS_APP_Port` 的 12 个 APK 里
- * 用 apktool 解出的真实素材，保留原始文件名与夜间 / 多密度变体。
+ * 这里没有任何自绘矢量图标 —— 全部是原厂 `res/drawable*` 里用 apktool 解出的真实素材
+ * （`People-11/SmartisanOS_APP_Port` 那批复刻 APK，加上固件里的 `SettingsSmartisan`、
+ * `framework-smartisanos-res` 等），保留原始文件名与夜间 / 多密度变体。
+ *
+ * 分组按**用途**排（见 [SmartisanIconSet]）：示例首页每一行左侧的图标都来自
+ * 「列表行图标」那一组。
  */
 @Composable
 fun IconPage(onBack: () -> Unit) {
@@ -80,9 +84,13 @@ private fun IconGrid(icons: List<SmartisanIconEntry>) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Box(
+                            // 底色用 `surfacePressed`（#ECECEC）而不是更浅的 `surfaceRaised`：
+                            // 这一档素材里有**纯白的聚焦态 glyph**（`setting_item_icon_focus_*`，
+                            // 原版用在深色标题栏下），放在浅底上会整块看不见；底色深一档之后
+                            // 白 glyph 也能看出轮廓，灰色 glyph 的对比反而更清楚。
                             Modifier
                                 .size(44.dp)
-                                .background(colors.surfaceRaised, RoundedCornerShape(6.dp)),
+                                .background(colors.surfacePressed, RoundedCornerShape(6.dp)),
                             contentAlignment = Alignment.Center,
                         ) {
                             SmartisanIcon(

@@ -14,7 +14,8 @@ import cc.wuersan008.smartisanx.ui.R
  * `com.android.settings.MainSettingsFragment` 里每个设置项都是
  * `new SettingItem(index, style, R.drawable.secletor_setting_item_icon_xxx, titleRes, bgStyle)`，
  * 也就是「一档浅灰的 glyph（`setting_item_icon_*`，72×72px 画布、约 20dp glyph，
- * 常态 `#C5C5C7`、按下 / 聚焦态换成白色的 `setting_item_icon_focus_*`）+ 标题 + 右侧小箭头」。
+ * 常态实测灰通道 196–208 或黑色 30% 不透明度、按下 / 聚焦态换成白色的 `setting_item_icon_focus_*`）
+ * + 标题 + 右侧小箭头」。
  * 本页按**用途**挑同一套里的图标（下面每条都写了对应哪个设置项），不自己画图标：
  *
  * | 本页条目 | 原版设置页里的出处 |
@@ -30,13 +31,23 @@ import cc.wuersan008.smartisanx.ui.R
  * | 列表交互 | `secletor_setting_item_icon_application`（应用管理） |
  * | 浮层 | `secletor_setting_item_icon_notification`（通知） |
  * | 时钟与机械控件 | `secletor_setting_item_icon_keyguard`（锁屏设置，里面就是时钟样式） |
- * | 日历 | 设置页那一套里没有日历 glyph，用锁屏（`KeyguardSmartisan`）的 `calendar_icon` —— 同一档浅灰的实心日历 |
+ * | 日历 | `forcetouch_calendar_add`（压感菜单里的日历 glyph —— **设置页那套 `setting_item_icon_*` 里没有日历**，见下） |
  * | 关于 | `secletor_setting_item_icon_about`（原版设置页最后一项「关于本机」的图标；页面只借它的 `about_settings_layout` 版式，内容是 smartisanx 自己） |
  *
- * [iconSize] 是图标位图的固有尺寸：设置页这套是 24dp 画布（glyph 42–66px，
- * 见 `setting_item_icon_*`），按固有尺寸渲染每行的 glyph 视觉大小才一致。
- * 日历那张来自锁屏，画布是 153px、glyph 只有 74×70px，所以按 40dp 渲染，
- * 得到的 glyph 约 68×64px，与设置页那一档同粗同大。
+ * 这 13 个图标属于 `SmartisanIconSet.listRow` 那一组（「列表行浅灰图标」）：
+ * 平灰、**没有渐变**、约 20dp 的一档 glyph。真机实测每行的最暗灰度都在 194–197 之间
+ * （见 `docs/组件核对记录.md`「示例应用视觉复查」），所以整列图标看起来是同一档粗细。
+ *
+ * **为什么「日历」用的是压感菜单的图标**：设置页主菜单那 46 张 `setting_item_icon_*`
+ * 里没有日历 glyph（全部原版素材里都没有 —— 锁屏那张 `calendar_icon` 是**带渐变的**
+ * 153×153 画布素材，实测灰度 205–253，放到这一列里明显偏浅、偏软）。
+ * 压感菜单的 `forcetouch_calendar_add` 与 `setting_item_icon_pencil` 是**同一套画法**
+ * （黑色 30% 不透明度：灰通道全 0、alpha 最高 77/255），叠到白底上得到 178，
+ * 与设置页那一档同粗同大，是唯一能对上的原版日历素材。
+ *
+ * [iconSize] 是图标位图的固有尺寸：上面这些素材是 72×72px（设置页）与 80×80px（压感菜单）
+ * 画布，xxhdpi 下就是 24dp，所以每一行都用默认值；只有画布明显不同的素材
+ * （例如锁屏那批 153px 的）才需要单独给值。
  *
  * 图标大小**不影响**标题的 x：列表行的左槽是原版固定的 `left_icon_area_width`(60dp)，
  * 图标在槽里居中（所以 24dp 与 36dp 的图标后面，标题都从距屏幕左 72dp 处开始）。
@@ -116,10 +127,10 @@ enum class SamplePage(
     Calendar(
         title = "日历",
         subtitle = "月视图、单周视角、点标题跳转日期",
-        // 设置页那一套里没有日历 glyph，用锁屏（KeyguardSmartisan）的 `calendar_icon`：
-        // 153px 画布、glyph 74×70px，按 40dp 渲染后与设置页那一档同粗同大。
-        icon = R.drawable.kg_calendar_icon,
-        iconSize = 40.dp,
+        // 设置页那一套 `setting_item_icon_*` 里没有日历 glyph，用压感菜单的
+        // `forcetouch_calendar_add`：与 `setting_item_icon_pencil` 同一套画法
+        // （黑色 30% 不透明度，白底上 178），与设置页那一档同粗同大。
+        icon = R.drawable.forcetouch_calendar_add,
     ),
     About(
         title = "关于",

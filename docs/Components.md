@@ -1262,7 +1262,7 @@ indices under `cc.wuersan008.smartisanx.ui.asset`:
 | --- | --- |
 | `SmartisanOriginalIcons` | Commonly used icons named by purpose (`Back` / `More` / `Search` / `Play` / `Settings` …); each constant points at an original selector with pressed / disabled states |
 | `SmartisanDrawables` | The original artwork the components use by default (title bar, dialogs, list rows, group cards, dials, tab bar, calculator keys, …) |
-| `SmartisanIconSet` | The full index of the 3580 icons extracted from the factory APKs, in 8 groups (title bar 72 / tab bar 51 / list 158 / select 10 / media 25 / clock 30 / editor 30 / other 3204); the demo app's "original icons" page walks through them |
+| `SmartisanIconSet` | The full index of the 3617 icons extracted from the factory APKs, in 9 groups (title bar 72 / tab bar 51 / list 158 / **list rows 49** / select 10 / media 25 / clock 30 / editor 30 / other 3192); the demo app's "original icons" page walks through them |
 
 See the asset index below for usage; for a custom vector icon, both
 `SmartisanIcon(imageVector = ...)` and `SmartisanTitleBarAction(imageVector, ...)` accept any

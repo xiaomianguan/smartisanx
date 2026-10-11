@@ -25,7 +25,10 @@ class SmartisanIconGroup(val title: String, val icons: List<SmartisanIconEntry>)
  * - **排除** 单边超过 128px 的大图 —— 那些是插图、封面、背景；
  * - **排除** `<shape>` —— 那些是纯色/圆角底图。
  *
- * 分组按原版自己的命名习惯还原使用场景（标题栏动作、底部标签栏、列表与菜单项……）。
+ * 分组按原版自己的命名习惯还原使用场景（标题栏动作、底部标签栏、列表与菜单项、
+ * 列表行图标……）。其中「列表行图标」这一组是**列表行左侧 glyph 的完整一档**
+ * （设置页主菜单的 `setting_item_icon_*` + 压感菜单的 `forcetouch_*`，两者都是
+ * 平灰、无渐变、约 20dp），示例首页每一行的图标都取自它 —— 见该组的注释。
  *
  * **横屏素材补了竖屏变体**：原版有 37 张图只放在 `drawable-land-xxhdpi/`（计算器的
  * `sin` / `cos` / `log` 等按键字符是横屏专属）。竖屏手机取不到这些资源，
@@ -336,6 +339,84 @@ object SmartisanIconSet {
         ),
     )
 
+    /**
+     * **列表行图标（49 个）—— 列表行左侧那一档 glyph 的完整一档，示例首页每一行都取自这里。**
+     *
+     * 这一档的共同点：**平灰、没有渐变**、约 20dp 视觉大小（真机实测首页 13 行的最暗像素
+     * 都落在 178–197 这一档）。原版里有两个来源，画法完全一样，所以合成一组：
+     *
+     * - **设置页主菜单**（`SettingsSmartisan` 的 `MainSettingsFragment`：每个设置项都是
+     *   `new SettingItem(index, style, R.drawable.secletor_setting_item_icon_xxx, titleRes, bgStyle)`）：
+     *   `setting_item_icon_*` 是 72×72px 画布、glyph 42–66px。常态有两种存法，
+     *   渲染出来是同一档浅灰 —— 一种是实心灰（灰通道 196–208、alpha 255，
+     *   即 `#C4C4C4`–`#D0D0D0`），
+     *   另一种是**黑色 30% 不透明度**（`setting_item_icon_pencil`：灰通道全 0、
+     *   alpha 最高 76/255，叠到白底上得到 179）；聚焦 / 按下态一律换成白色
+     *   （`setting_item_icon_focus_*`，实测 255）。
+     * - **压感菜单**（长按图标弹出的快捷菜单）：`forcetouch_*` 是 80×80px 画布，
+     *   与 `setting_item_icon_pencil` 是同一套画法 —— 黑色 30% 不透明度
+     *   （`forcetouch_calendar_add` 的 alpha 最高 77/255 → 白底上 178），
+     *   所以与设置页那一档同粗同大。**设置页那套里没有日历 glyph**，
+     *   示例首页「日历」行用的就是这里的 `forcetouch_calendar_add`。
+     *
+     * 每组同时保留 selector 与它引用的位图（与其它组一致）：selector 自带
+     * 常态 / 聚焦态切换，直接交给 `SmartisanIcon(res = ...)` 用即可。
+     */
+    val listRow: SmartisanIconGroup = SmartisanIconGroup(
+        title = "列表行图标",
+        icons = listOf(
+            SmartisanIconEntry("forcetouch_calendar_add", R.drawable.forcetouch_calendar_add),
+            SmartisanIconEntry("forcetouch_mail_add", R.drawable.forcetouch_mail_add),
+            SmartisanIconEntry("forcetouch_mail_important", R.drawable.forcetouch_mail_important),
+            SmartisanIconEntry("forcetouch_mail_new", R.drawable.forcetouch_mail_new),
+            SmartisanIconEntry("forcetouch_mail_search", R.drawable.forcetouch_mail_search),
+            SmartisanIconEntry("forcetouch_mail_unread", R.drawable.forcetouch_mail_unread),
+            SmartisanIconEntry("forcetouch_music_album", R.drawable.forcetouch_music_album),
+            SmartisanIconEntry("forcetouch_music_like", R.drawable.forcetouch_music_like),
+            SmartisanIconEntry("forcetouch_music_search", R.drawable.forcetouch_music_search),
+            SmartisanIconEntry("forcetouch_music_song", R.drawable.forcetouch_music_song),
+            SmartisanIconEntry("forcetouch_record_start", R.drawable.forcetouch_record_start),
+            SmartisanIconEntry("forcetouch_weather_add", R.drawable.forcetouch_weather_add),
+            SmartisanIconEntry("secletor_setting_item_icon_about", R.drawable.secletor_setting_item_icon_about),
+            SmartisanIconEntry("secletor_setting_item_icon_application", R.drawable.secletor_setting_item_icon_application),
+            SmartisanIconEntry("secletor_setting_item_icon_brightness", R.drawable.secletor_setting_item_icon_brightness),
+            SmartisanIconEntry("secletor_setting_item_icon_force_touch", R.drawable.secletor_setting_item_icon_force_touch),
+            SmartisanIconEntry("secletor_setting_item_icon_keyguard", R.drawable.secletor_setting_item_icon_keyguard),
+            SmartisanIconEntry("secletor_setting_item_icon_language", R.drawable.secletor_setting_item_icon_language),
+            SmartisanIconEntry("secletor_setting_item_icon_launcher", R.drawable.secletor_setting_item_icon_launcher),
+            SmartisanIconEntry("secletor_setting_item_icon_notification", R.drawable.secletor_setting_item_icon_notification),
+            SmartisanIconEntry("secletor_setting_item_icon_shortcut", R.drawable.secletor_setting_item_icon_shortcut),
+            SmartisanIconEntry("secletor_setting_item_icon_wallpaper", R.drawable.secletor_setting_item_icon_wallpaper),
+            SmartisanIconEntry("selector_setting_item_navbar", R.drawable.selector_setting_item_navbar),
+            SmartisanIconEntry("selector_setting_item_tnt_assist", R.drawable.selector_setting_item_tnt_assist),
+            SmartisanIconEntry("setting_item_icon_about", R.drawable.setting_item_icon_about),
+            SmartisanIconEntry("setting_item_icon_appmanage", R.drawable.setting_item_icon_appmanage),
+            SmartisanIconEntry("setting_item_icon_display", R.drawable.setting_item_icon_display),
+            SmartisanIconEntry("setting_item_icon_focus_about", R.drawable.setting_item_icon_focus_about),
+            SmartisanIconEntry("setting_item_icon_focus_appmanage", R.drawable.setting_item_icon_focus_appmanage),
+            SmartisanIconEntry("setting_item_icon_focus_display", R.drawable.setting_item_icon_focus_display),
+            SmartisanIconEntry("setting_item_icon_focus_force_touch", R.drawable.setting_item_icon_focus_force_touch),
+            SmartisanIconEntry("setting_item_icon_focus_keyboard", R.drawable.setting_item_icon_focus_keyboard),
+            SmartisanIconEntry("setting_item_icon_focus_keyguard", R.drawable.setting_item_icon_focus_keyguard),
+            SmartisanIconEntry("setting_item_icon_focus_launcher", R.drawable.setting_item_icon_focus_launcher),
+            SmartisanIconEntry("setting_item_icon_focus_nav_bar", R.drawable.setting_item_icon_focus_nav_bar),
+            SmartisanIconEntry("setting_item_icon_focus_notification", R.drawable.setting_item_icon_focus_notification),
+            SmartisanIconEntry("setting_item_icon_focus_shortcut", R.drawable.setting_item_icon_focus_shortcut),
+            SmartisanIconEntry("setting_item_icon_focus_wallpaper", R.drawable.setting_item_icon_focus_wallpaper),
+            SmartisanIconEntry("setting_item_icon_force_touch", R.drawable.setting_item_icon_force_touch),
+            SmartisanIconEntry("setting_item_icon_keyboard", R.drawable.setting_item_icon_keyboard),
+            SmartisanIconEntry("setting_item_icon_keyguard", R.drawable.setting_item_icon_keyguard),
+            SmartisanIconEntry("setting_item_icon_launcher", R.drawable.setting_item_icon_launcher),
+            SmartisanIconEntry("setting_item_icon_nav_bar", R.drawable.setting_item_icon_nav_bar),
+            SmartisanIconEntry("setting_item_icon_notification", R.drawable.setting_item_icon_notification),
+            SmartisanIconEntry("setting_item_icon_pencil", R.drawable.setting_item_icon_pencil),
+            SmartisanIconEntry("setting_item_icon_shortcut", R.drawable.setting_item_icon_shortcut),
+            SmartisanIconEntry("setting_item_icon_tnt", R.drawable.setting_item_icon_tnt),
+            SmartisanIconEntry("setting_item_icon_tnt_focus", R.drawable.setting_item_icon_tnt_focus),
+            SmartisanIconEntry("setting_item_icon_wallpaper", R.drawable.setting_item_icon_wallpaper),
+        ),
+    )
+
     /** 多选与复选框（10 个）。 */
     val select: SmartisanIconGroup = SmartisanIconGroup(
         title = "多选与复选框",
@@ -459,7 +540,7 @@ object SmartisanIconSet {
         ),
     )
 
-    /** 其他原版图标（3204 个）。 */
+    /** 其他原版图标（3192 个）。 */
     val other: SmartisanIconGroup = SmartisanIconGroup(
         title = "其他原版图标",
         icons = listOf(
@@ -1520,18 +1601,6 @@ object SmartisanIconSet {
             SmartisanIconEntry("folder_title_arrow_normal", R.drawable.folder_title_arrow_normal),
             SmartisanIconEntry("folder_title_arrow_pressed", R.drawable.folder_title_arrow_pressed),
             SmartisanIconEntry("folder_title_arrow_selector", R.drawable.folder_title_arrow_selector),
-            SmartisanIconEntry("forcetouch_calendar_add", R.drawable.forcetouch_calendar_add),
-            SmartisanIconEntry("forcetouch_mail_add", R.drawable.forcetouch_mail_add),
-            SmartisanIconEntry("forcetouch_mail_important", R.drawable.forcetouch_mail_important),
-            SmartisanIconEntry("forcetouch_mail_new", R.drawable.forcetouch_mail_new),
-            SmartisanIconEntry("forcetouch_mail_search", R.drawable.forcetouch_mail_search),
-            SmartisanIconEntry("forcetouch_mail_unread", R.drawable.forcetouch_mail_unread),
-            SmartisanIconEntry("forcetouch_music_album", R.drawable.forcetouch_music_album),
-            SmartisanIconEntry("forcetouch_music_like", R.drawable.forcetouch_music_like),
-            SmartisanIconEntry("forcetouch_music_search", R.drawable.forcetouch_music_search),
-            SmartisanIconEntry("forcetouch_music_song", R.drawable.forcetouch_music_song),
-            SmartisanIconEntry("forcetouch_record_start", R.drawable.forcetouch_record_start),
-            SmartisanIconEntry("forcetouch_weather_add", R.drawable.forcetouch_weather_add),
             SmartisanIconEntry("fsd", R.drawable.fsd),
             SmartisanIconEntry("full_screen", R.drawable.full_screen),
             SmartisanIconEntry("galleries_actived", R.drawable.galleries_actived),
@@ -3675,6 +3744,7 @@ object SmartisanIconSet {
         titlebar,
         tabbar,
         list,
+        listRow,
         select,
         media,
         clock,
