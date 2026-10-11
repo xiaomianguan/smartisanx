@@ -699,6 +699,13 @@ exactly the `list_item_vertical_gap` (14dp), the same spacing as between any two
 cards' outward shadows overlapping in that band. Our page had the two cards **touching** (gap 0); a
 `SmartisanListVerticalGap()` now sits between them, measuring 50px = 14.3dp on the test device.
 
+While there, the "hand-rolled navigation bar spacer" the sample used to carry moved into the library:
+`SmartisanScaffold` gained `applyNavigationBarInset` (default `true`), which appends a spacer as tall as
+the system navigation bar. `SamplePageScaffold` used to pass such a spacer as its `bottomBar`; that is
+gone and the scaffold handles it — the rendering is pixel-identical (the spacer still sits below the
+content and any bottom bar, with the height taken from `WindowInsets.navigationBars`), and apps built
+on this library no longer have to work that inset out themselves.
+
 While there, the theme page's shape swatches became horizontally scrollable: 36dp × 7 + 8dp × 6 + 18dp
 of content padding on each side = 336dp, exactly the width available on a 360dp screen (the card is
 336dp wide too), so the last one (`large`) was clipped.
