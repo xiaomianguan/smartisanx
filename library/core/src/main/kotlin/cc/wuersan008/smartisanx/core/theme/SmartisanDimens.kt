@@ -230,6 +230,16 @@ object SmartisanDimens {
     /** 字母分组标题左内边距，原版联系人 `list_section.xml` 的 `paddingLeft` 8dp。 */
     val LetterSectionHeaderPaddingStart = 8.dp
 
+    /**
+     * 带 A–Z 索引条的列表里，行内容右侧为索引条预留的留白，原版 `quickbar_number_width`（40dp）。
+     *
+     * 原版字母条是**压在列表上**的：`smart_pinnedlist.xml` 里 `QuickBarEx` 与列表同级，
+     * 而行的文字自己用 `paddingRight="@dimen/quickbar_number_width"` 让开
+     * （见 `MusicPlayer` 的 `item_netmusic_artist_tracks.xml`）。留白比字母条本体
+     * （[LetterIndexBarWidth] 30dp）宽，是因为外面还套了一层 `main_quickbar`（36.8dp）。
+     */
+    val ListIndexContentInset = 40.dp
+
     /** 板块分组标题高度，原版 `list_board_section_title_layout` 里写死的 40dp。 */
     val ListBoardSectionTitleHeight = 40.dp
 

@@ -22,7 +22,7 @@ modules split by responsibility, the demo app as its own module, components grou
 > **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
 > its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
 > in Compose, the library uses the assets the three revival projects recovered from the original
-> APKs (10482 files, including night-mode and per-density variants).
+> APKs (10486 files, including night-mode and per-density variants).
 > Those assets belong to their respective rights holders; please read
 > [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
@@ -320,8 +320,8 @@ packages it as `darkSmartisanColors()`.
 
 Dark mode is therefore **experimental**, with two known limitations:
 
-- only a minority of the original graphic assets have night variants: 195 of 7919 drawables
-  (~2.5%); the remaining 7724 are light-only and will keep showing light artwork in dark mode;
+- only a minority of the original graphic assets have night variants: 195 of 7923 drawables
+  (~2.5%); the remaining 7728 are light-only and will keep showing light artwork in dark mode;
 - the colour state lists under `res/color/` have no night versions at all, so dialog and menu text
   colours fall back to their light values; this library adds a night palette for the Clock revival's
   dialogs and menus on top of that.
@@ -391,7 +391,7 @@ own pressed state.
 
 ### Inventory
 
-`library/ui/src/main/res/` holds **10482** resource files (`drawable*` 10335, `mipmap*` 34,
+`library/ui/src/main/res/` holds **10486** resource files (`drawable*` 10339, `mipmap*` 34,
 `values*` 92, `color` 21), from three sources:
 
 | Source | Contents |

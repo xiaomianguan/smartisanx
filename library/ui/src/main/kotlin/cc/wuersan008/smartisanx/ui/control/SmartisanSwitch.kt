@@ -596,7 +596,9 @@ fun SmartisanSwitchRow(
                 )
                 .padding(
                     start = SmartisanDimens.RowContentStart,
-                    end = SmartisanDimens.ListItemHorizontalMargin,
+                    // 原版右槽的 `right_container_margin`(6dp)：开关位图的固有画布自带内边距，
+                    // 所以可见的开关右沿落在卡片右侧约 12dp 处（与原版设置页实测一致）。
+                    end = SmartisanDimens.ListRowRightContainerMargin,
                 ),
         verticalAlignment = Alignment.CenterVertically,
     ) {

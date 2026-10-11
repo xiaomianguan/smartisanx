@@ -435,4 +435,92 @@ Same scripts, applied to `Modifier.verticalScroll` and `LazyColumn`:
 | clipping | the revealed area is the page texture; content never crosses the scroll area's top edge | matches the original ✅ |
 | `LazyColumn` | the Contacts page translates and springs back the same way | same `LocalOverscrollFactory` ✅ |
 
+## 8. Demo-app visual sweep (2026-10-11)
+
+A page-by-page pass measured against the original. The baseline is the original Settings main menu:
+the `uiautomator` bounds of its title node `smartisanos:id/item_title` are `[180,321][477,379]`
+(= **72dp** from the screen's left edge at 400dpi), the row's left container is a fixed
+`left_icon_area_width` = **60dp** square with the icon centred inside (so the glyph's centre sits at
+42dp), and the right container keeps `right_container_margin` = **6dp**.
+
+### 1. Horizontal geometry: three mismatches fixed
+
+| Item | Original (R2, 400dpi) | Before (nubia, 560dpi) | After |
+| --- | --- | --- | --- |
+| title start (with a leading icon) | 180px = 72dp | 234px = 66.9dp ❌ | 252px = 72dp ✅ |
+| leading glyph centre | 104.5px = 41.8dp | 41.9dp ✅ | 41.9dp ✅ |
+| arrow's right edge from the card's right edge | 31px = 12.4dp | 42.3dp ❌ | 24.3dp from the screen's right ✅ (original 24.4dp) |
+| switch's right edge from the screen's right | 61px = 24.4dp | 30dp ❌ | 24dp ✅ |
+| row height (single summary line) | 150px = 60dp | 59.4dp ✅ | 59.4dp ✅ |
+| title x inside one card | all 180px | the 36dp calendar icon pushed it to 273px ❌ | all 252px ✅ |
+
+Why, and what changed:
+
+- `SmartisanListItem` used to lay out its leading slot from the **icon's intrinsic width**
+  (a 24dp icon put the text at 66.9dp), while the original's left container is a **fixed 60dp**
+  (`left_icon_area_width`) — so inside one card the 36dp calendar icon pushed its title 12dp right.
+  It now uses `widthIn(min = ListRowLeftIconArea)` with the content centred, and only pads the start
+  with `flexible_space` (18dp) when there is **no** leading slot, matching the framework's
+  `mid_container`; `SmartisanListItem` and `SmartisanListRow` now share one horizontal geometry.
+- Right side: `SmartisanListItem` used an 18dp end padding plus `secletor_setting_item_arrow`
+  (a 28.7dp canvas whose ink already leaves 13.3dp on its right), which parked the arrow 42.3dp from
+  the screen's right edge. The original Settings main menu uses the framework's `list_arrow`
+  (22×26.7dp canvas, 6dp of ink padding) with `right_container_margin` (6dp); switching back to it
+  measures 24.3dp (original: 24.4dp).
+- `SmartisanSwitchRow`'s end padding went from `ListItemHorizontalMargin` (12dp) to
+  `ListRowRightContainerMargin` (6dp) — the original's `list_content_right_switch.xml` — moving the
+  switch's right edge from 30dp to 24dp from the screen's right (original: 24.4dp).
+
+### 2. Also fixed in this pass
+
+- **The world clock's offset text duplicated its number**: `smartisan_hours` / `smartisan_minutes`
+  already carry `%1$d`, and the code appended `hours` / `minutes` a second time, rendering
+  "6 6 hours faster than local time".
+- **The A–Z index bar covered row content**: the original's `item_netmusic_artist_tracks.xml` pads the
+  row text with `paddingRight="@dimen/quickbar_number_width"` (40dp) because the letters bar is
+  **drawn on top of the list** (`QuickBarEx` is a sibling of the list in `smart_pinnedlist.xml`). The
+  demo's music and world-clock layouts now reserve `ListIndexContentInset` (40dp), so times are no
+  longer covered by the letters.
+- **The button page's text button** had no `fillMaxWidth()`, so it hugged the left edge while the two
+  buttons above it were centred.
+- **Contact avatars** went from 36dp to 38dp (the original's `listview_photo_width` / `_height`).
+- **The calendar page's switch summary** was too long: it wrapped to two lines and was then
+  ellipsized, so it is now "对应原版 MonthByWeekAdapter#setHasFocus(false)".
+- **The About page's arrow position**: its five link rows used `secletor_setting_item_arrow` (a 28.7dp
+  canvas with 13.3dp of trailing whitespace), which put the arrow 18.3dp from the card's right edge.
+  In the original those rows are `SettingItemText` + `SettingSubItem*Style`, a style chain that ends at
+  the framework's `@smartisanos:style/ListContentItemStyle.*` and therefore uses
+  `selector_list_content_item_arrow` from the master `list_content_right_subtitle_arrow`. Switching to
+  the same arrow measures 12.3dp on device — identical to the home and layout pages (21×35px = 6×10dp,
+  darkest pixel 178, `x=1159..1179`).
+
+### 3. What was reviewed
+
+The home page (top and scrolled to the end), Theme, Text, Icon, Button, Control, Input,
+Layout & list, List interaction, Overlay, Clock & mechanical, Calendar, About, plus all 13
+full-screen pages under "Full-page layouts" (Music library / Now playing, Clock alarm / World clock,
+Contacts, Notes, Calculator, Settings sound & vibration, List → detail, Form, Profile, Empty state,
+Multi-select editing).
+
+### 4. Home row icons now use the original assets
+
+- The "Full-page layouts" row used to borrow the music album page's `btn_album_switch_grid_selector`
+  (a grid glyph); it now uses the settings app's own `selector_setting_item_tnt_assist` — the
+  **display** glyph of the original "TNT desktop" item (`setting_item_icon_tnt.png`, a 72×72px = 24dp
+  canvas with a 63×54px glyph, `#C5C5C7` normally and white when pressed,
+  `setting_item_icon_tnt_focus.png`). Measured on device: 75×64px = 21.4×18.3dp of ink, darkest pixel
+  195 — the same weight as the other settings icons in the card (195–197).
+- The "Calendar" row: the settings icon family has no calendar glyph, so it uses the lock screen's
+  (`KeyguardSmartisan`) `calendar_icon` (153×153px canvas, 74×70px glyph, darkest pixel 205). That
+  canvas is large (51dp at xxhdpi) with the glyph in the middle, so rendering it at 40dp yields a
+  glyph of about 19.3×18.3dp — the same weight as the settings icons; the ink measured on device is
+  62×59px = 17.7×16.9dp (a 250 threshold only catches the core of the artwork, not its pale edges).
+- All four new assets are **byte-identical** to the originals in `~/sos_apps` (identical md5):
+  `kg_calendar_icon.png` ↔ `kg_dec/res/drawable-xxhdpi/calendar_icon.png`, the two
+  `setting_item_icon_tnt*.png` files ↔ the same-named files in `settings_dec`, and
+  `selector_setting_item_tnt_assist.xml` ↔ its same-named original.
+- After the swap every home row title starts at 252px = 72dp (the effect of the fixed 60dp left slot),
+  the 40dp calendar icon no longer pushes its title right, and every arrow sits at `x=1159..1179`.
+
+
 

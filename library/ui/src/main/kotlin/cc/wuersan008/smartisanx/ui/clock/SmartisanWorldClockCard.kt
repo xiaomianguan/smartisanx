@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
@@ -57,6 +58,8 @@ import kotlin.math.abs
  * @param localZone 本地时区，默认系统时区。
  * @param showSecondHand 是否在小表盘上绘制秒针。
  * @param onClick 可选的点击回调；为 null 时该行不可点击。
+ * @param endInset 右侧额外留白，给压在列表上的 A–Z 索引条让位（原版 `quickbar_number_width`
+ *   是 40dp）；不显示索引条的场合保持 0dp。
  */
 @Composable
 fun SmartisanWorldClockCard(
@@ -67,6 +70,7 @@ fun SmartisanWorldClockCard(
     localZone: ZoneId = ZoneId.systemDefault(),
     showSecondHand: Boolean = false,
     onClick: (() -> Unit)? = null,
+    endInset: Dp = 0.dp,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -122,8 +126,11 @@ fun SmartisanWorldClockCard(
                 .heightIn(min = SmartisanDimens.ListItemHeight)
                 .then(clickModifier)
                 .padding(
-                    horizontal = SmartisanDimens.ListItemHorizontalMargin,
-                    vertical = RowVerticalPadding,
+                    start = SmartisanDimens.ListItemHorizontalMargin,
+                    // 右侧时刻要给压在列表上的 A–Z 索引条让位（原版 `quickbar_number_width`）。
+                    end = SmartisanDimens.ListItemHorizontalMargin + endInset,
+                    top = RowVerticalPadding,
+                    bottom = RowVerticalPadding,
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -187,10 +194,12 @@ private fun offsetText(diffMinutes: Int): String {
     val absolute = abs(diffMinutes)
     val hours = absolute / 60
     val minutes = absolute % 60
+    // 时 / 分两条文案自己就带数字（`%1$d 小时`），这里只补前导空格，
+    // 不要再 append 一次数字 —— 否则会渲染成「快 6 6 小时」。
     return buildString {
         append(direction)
-        if (hours > 0) append(' ').append(hours).append(" " + stringResource(R.string.smartisan_hours, hours))
-        if (minutes > 0) append(' ').append(minutes).append(" " + stringResource(R.string.smartisan_minutes, minutes))
+        if (hours > 0) append(' ').append(stringResource(R.string.smartisan_hours, hours))
+        if (minutes > 0) append(' ').append(stringResource(R.string.smartisan_minutes, minutes))
     }
 }
 

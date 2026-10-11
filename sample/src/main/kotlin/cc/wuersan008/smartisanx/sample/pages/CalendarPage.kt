@@ -54,7 +54,7 @@ fun CalendarPage(onBack: () -> Unit) {
         SmartisanGroup {
             SmartisanSwitchRow(
                 text = "把非当月日期灰掉",
-                summary = "对应原版 MonthByWeekAdapter#setHasFocus(false)：整屏都显示日期数字",
+                summary = "对应原版 MonthByWeekAdapter#setHasFocus(false)",
                 checked = greyOutOtherMonths,
                 onCheckedChange = { greyOutOtherMonths = it },
                 position = SmartisanGroupRowPosition.Single,

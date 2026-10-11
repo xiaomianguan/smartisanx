@@ -194,7 +194,8 @@ private fun MessageList(
                         summary = "${message.sender} · ${message.time}",
                         trailing = {
                             SmartisanIcon(
-                                res = SmartisanDrawables.SettingsItemArrow,
+                                // 母版 `list_content_right_subtitle_arrow` 里的箭头。
+                                res = SmartisanDrawables.ListItemArrow,
                                 contentDescription = null,
                             )
                         },

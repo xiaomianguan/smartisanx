@@ -47,7 +47,7 @@ fun ButtonPage(onBack: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     style = SmartisanButtonStyle.Neutral,
                 )
-                SmartisanTextButton(text = "文字按钮", onClick = { clicks++ })
+                SmartisanTextButton(text = "文字按钮", onClick = { clicks++ }, modifier = Modifier.fillMaxWidth())
             }
         }
 

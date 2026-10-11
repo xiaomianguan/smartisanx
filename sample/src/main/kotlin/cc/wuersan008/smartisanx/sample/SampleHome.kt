@@ -22,6 +22,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 
@@ -35,8 +36,9 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
  * 2. 列表整体是**一张卡片**：每一行用原版分组卡片的分段底图（上 / 中 / 下各一张，
  *    自带圆角、1px 描边与向外投影），分组容器本身透明，所以卡片圆角之外露出的正是条纹底纹；
  * 3. 每行是「**黑色 glyph 图标 + 标题 + 灰色副标题 + 右侧小箭头**」——
- *    箭头用原版设置项的 `secletor_setting_item_arrow`（6.3×10dp、30% 黑的小箭头），
- *    不是三点；图标一律取自原版素材，同一档粗细（见 [SamplePage] 的注释）。
+ *    箭头用 framework 列表行母版里的 `list_arrow`（`selector_list_content_item_arrow`，
+ *    6×10dp、30% 黑的小箭头），与设置页主菜单实测的箭头位置一致（右沿距卡片右边界 12dp）；
+ *    图标一律取自原版素材，同一档粗细（见 [SamplePage] 的注释）。
  */
 @Composable
 fun SampleHome(onOpen: (SamplePage) -> Unit) {
@@ -81,7 +83,11 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
                         },
                         trailing = {
                             SmartisanIcon(
-                                res = SmartisanDrawables.SettingsItemArrow,
+                                // 原版设置页主菜单的箭头是 framework 的 `list_arrow`
+                                // （`selector_list_content_item_arrow`，22×26.7dp 画布、
+                                // 6×10dp 的 30% 黑小箭头，画布右侧自带 6dp 留白），
+                                // 配右槽的 6dp 外边距，箭头右沿正好落在卡片右侧 12dp 处。
+                                res = SmartisanDrawables.ListItemArrow,
                                 contentDescription = null,
                             )
                         },
@@ -89,6 +95,10 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
                     )
                 }
             }
+            // 列表底部的留白：原版设置页的列表用 `settings_item_top_bottom_margin`
+            // （= framework 的 `list_item_vertical_gap`，14dp）当上下内边距，
+            // 所以最后一张卡片下面也留同样一段，不要贴着系统栏。
+            SmartisanListVerticalGap()
         }
         Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars))
     }

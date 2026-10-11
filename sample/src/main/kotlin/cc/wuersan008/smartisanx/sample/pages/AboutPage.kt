@@ -122,11 +122,16 @@ fun AboutPage(onBack: () -> Unit) {
     }
 }
 
-/** 设置行右侧的小箭头，用原版设置项的 `setting_item_arrow`。 */
+/** 设置行右侧的小箭头。 */
 @Composable
 private fun AboutRowArrow() {
     SmartisanIcon(
-        res = SmartisanDrawables.SettingsItemArrow,
+        // 原版这几行是 `SettingItemText` + `SettingSubItem*Style`，样式一路继承到
+        // framework 的 `@smartisanos:style/ListContentItemStyle.*`，箭头来自母版
+        // `list_content_right_subtitle_arrow` 里的 `selector_list_content_item_arrow`
+        // （22×26.7dp 画布、右沿自带 6dp 留白），配 `right_container_margin`(6dp)
+        // 正好落在距卡片右边界 12dp 处 —— 与首页同一支箭头、同一个落点。
+        res = SmartisanDrawables.ListItemArrow,
         contentDescription = null,
     )
 }

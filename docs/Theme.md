@@ -124,7 +124,7 @@ Dark mode is therefore **experimental**, with two known limitations:
 
 | Limitation | Detail |
 | --- | --- |
-| Incomplete night artwork | Only 195 of 7919 original drawables (~2.5%) have night variants; the other 7724 are light-only and will keep showing light artwork in dark mode |
+| Incomplete night artwork | Only 195 of 7923 original drawables (~2.5%) have night variants; the other 7728 are light-only and will keep showing light artwork in dark mode |
 | No night colour state lists | There are no night variants under `res/color/` at all, so dialog and menu text colours use their light values; this library adds a night palette for the Clock revival's dialogs and menus |
 
 `SmartisanTheme` writes "is the theme dark" into `LocalSmartisanDarkOverride`, and components resolve
@@ -362,6 +362,7 @@ MenuHorizontalMargin 18  MenuButtonTopMargin 18      MenuButtonBottomMargin 24
 MenuActionEdgeMargin 24  MenuActionGap 18            BottomBarHeight 54
 BottomBarIconSize 30     ScrollbarWidth 3            ScrollbarMargin 2
 LetterIndexBarWidth 30   MinimumTouchTarget 48
+ListIndexContentInset 40
 ```
 
 ## Motion specs

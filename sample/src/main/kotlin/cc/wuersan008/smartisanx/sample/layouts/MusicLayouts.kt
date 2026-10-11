@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
@@ -190,7 +191,8 @@ fun MusicLibraryLayout(onBack: () -> Unit) {
 private fun DurationLabel(text: String) {
     SmartisanText(
         text = text,
-        modifier = Modifier.padding(start = 6.dp),
+        // 右侧要给压在列表上的 A–Z 索引条让位（原版 `quickbar_number_width` = 40dp）。
+        modifier = Modifier.padding(start = 6.dp, end = SmartisanDimens.ListIndexContentInset),
         style = LocalSmartisanTypography.current.listRowTertiary,
         color = LocalSmartisanColors.current.textTertiary,
         maxLines = 1,

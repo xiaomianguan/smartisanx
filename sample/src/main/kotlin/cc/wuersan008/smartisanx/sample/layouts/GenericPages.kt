@@ -143,10 +143,10 @@ fun ProfileLayout(onBack: () -> Unit) {
     }
 }
 
-/** 信息行右侧的小箭头。 */
+/** 信息行右侧的小箭头（`SmartisanListItem` 右槽的母版箭头，与首页一致）。 */
 @Composable
 private fun Arrow() {
-    SmartisanIcon(res = SmartisanDrawables.SettingsItemArrow, contentDescription = null)
+    SmartisanIcon(res = SmartisanDrawables.ListItemArrow, contentDescription = null)
 }
 
 /**

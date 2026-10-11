@@ -110,7 +110,9 @@ fun ContactsLayout(onBack: () -> Unit) {
                                 title = row.contact.name,
                                 summary = row.contact.phone,
                                 leading = {
-                                    SampleAvatar(text = row.contact.name.take(1), size = 36.dp)
+                                    // 原版联系人头像 `listview_photo_width/height` 是 38dp，
+                                    // 居中放在 60dp 的 `list_item_left_width` 里。
+                                    SampleAvatar(text = row.contact.name.take(1), size = 38.dp)
                                 },
                                 showDivider = true,
                                 onClick = {},

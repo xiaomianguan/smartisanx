@@ -835,6 +835,9 @@ Notes:
 - This is the **master** list row of the framework (`list_content_item_layout` plus
   `smartisanos.widget.ListContentItem`), with a 17sp / 16sp primary line. `SmartisanListItem` is the
   other line (15sp, from the three re-implemented apps); both are kept, pick by source.
+  **They share the same horizontal geometry** (fixed 60dp left slot, 6dp right slot, 18dp indent when
+  there is no leading icon), so titles inside one card always line up — `SmartisanListItem` used to
+  size the left slot from the icon's intrinsic width, so the 36dp calendar icon pushed its title 12dp right.
 - `lines` picks the middle text layout: `TwoLine` (17/13.5sp), `TwoLineAlt` (16/12.5sp),
   `ThreeLine` (17/15/13.5sp), `ThreeLineAlt` (16/13.5/12sp) — type sizes copied from the framework dimens.
 - The left slot is a fixed 60dp square (`left_icon_area_width`) whose content is centred and capped at
@@ -1214,6 +1217,7 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
     city: String, zone: ZoneId, modifier: Modifier = Modifier,
     now: Instant = Instant.now(), localZone: ZoneId = ZoneId.systemDefault(),
     showSecondHand: Boolean = false, onClick: (() -> Unit)? = null,
+    endInset: Dp = 0.dp,
 )
 
 @Composable fun SmartisanFlipCard(

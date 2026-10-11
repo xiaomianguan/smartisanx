@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.ui.R
-import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 
 /**
  * 示例应用里的页面。
@@ -27,15 +26,20 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
  * | 基础控件 | `selector_setting_item_navbar`（导航键） |
  * | 文本与输入 | `secletor_setting_item_icon_language`（语言与输入法，glyph 是键盘） |
  * | 布局与列表 | `secletor_setting_item_icon_launcher`（桌面设置） |
- * | 整页布局 | 不用设置页图标，借原版音乐专辑页的 `btn_album_switch_grid_selector`（网格图标） |
+ * | 整页布局 | `selector_setting_item_tnt_assist`（原版「TNT 大屏」设置项的**显示器** glyph，表示「一整屏怎么拼」） |
  * | 列表交互 | `secletor_setting_item_icon_application`（应用管理） |
  * | 浮层 | `secletor_setting_item_icon_notification`（通知） |
  * | 时钟与机械控件 | `secletor_setting_item_icon_keyguard`（锁屏设置，里面就是时钟样式） |
- * | 日历 | `button_small_calendar_selector`（设置页没有日历 glyph，用 framework 里日历应用的日历 glyph） |
+ * | 日历 | 设置页那一套里没有日历 glyph，用锁屏（`KeyguardSmartisan`）的 `calendar_icon` —— 同一档浅灰的实心日历 |
  * | 关于 | `secletor_setting_item_icon_about`（原版设置页最后一项「关于本机」的图标；页面只借它的 `about_settings_layout` 版式，内容是 smartisanx 自己） |
  *
- * [iconSize] 是图标位图的固有尺寸：设置页这套是 24dp 画布（glyph 约 20dp），
- * 按固有尺寸渲染每行的 glyph 视觉大小才一致。
+ * [iconSize] 是图标位图的固有尺寸：设置页这套是 24dp 画布（glyph 42–66px，
+ * 见 `setting_item_icon_*`），按固有尺寸渲染每行的 glyph 视觉大小才一致。
+ * 日历那张来自锁屏，画布是 153px、glyph 只有 74×70px，所以按 40dp 渲染，
+ * 得到的 glyph 约 68×64px，与设置页那一档同粗同大。
+ *
+ * 图标大小**不影响**标题的 x：列表行的左槽是原版固定的 `left_icon_area_width`(60dp)，
+ * 图标在槽里居中（所以 24dp 与 36dp 的图标后面，标题都从距屏幕左 72dp 处开始）。
  */
 enum class SamplePage(
     val title: String,
@@ -88,8 +92,8 @@ enum class SamplePage(
     Layouts(
         title = "整页布局",
         subtitle = "13 张完整页面：原版应用复刻 + 通用骨架",
-        // 唯一一条不用设置页图标的：借原版音乐专辑页的「网格」图标，表示「一整屏怎么拼」。
-        icon = SmartisanDrawables.IconAlbumSwitchGrid,
+        // 原版设置页「TNT 大屏」那一项的显示器 glyph：表示「一整屏怎么拼」。
+        icon = R.drawable.selector_setting_item_tnt_assist,
     ),
     ListInteraction(
         title = "列表交互",
@@ -112,9 +116,10 @@ enum class SamplePage(
     Calendar(
         title = "日历",
         subtitle = "月视图、单周视角、点标题跳转日期",
-        // 设置页没有日历 glyph，用 framework 的 `button_small_calendar_selector`（17dp glyph）。
-        icon = R.drawable.button_small_calendar_selector,
-        iconSize = 36.dp,
+        // 设置页那一套里没有日历 glyph，用锁屏（KeyguardSmartisan）的 `calendar_icon`：
+        // 153px 画布、glyph 74×70px，按 40dp 渲染后与设置页那一档同粗同大。
+        icon = R.drawable.kg_calendar_icon,
+        iconSize = 40.dp,
     ),
     About(
         title = "关于",

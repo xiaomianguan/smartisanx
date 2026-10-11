@@ -137,7 +137,8 @@ fun SettingsSoundLayout(onBack: () -> Unit) {
                     summary = "定时静音、允许的联系人",
                     trailing = {
                         SmartisanIcon(
-                            res = SmartisanDrawables.SettingsItemArrow,
+                            // 母版 `list_content_right_subtitle_arrow` 里的箭头。
+                            res = SmartisanDrawables.ListItemArrow,
                             contentDescription = null,
                         )
                     },

@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.clock.SmartisanAnalogClock
 import cc.wuersan008.smartisanx.ui.clock.SmartisanWorldClockCard
@@ -221,6 +222,8 @@ fun ClockWorldLayout(onBack: () -> Unit) {
                                 zone = row.zone,
                                 now = now,
                                 onClick = {},
+                                // 右侧时刻给压在列表上的 A–Z 索引条让位。
+                                endInset = SmartisanDimens.ListIndexContentInset,
                             )
                     }
                 }

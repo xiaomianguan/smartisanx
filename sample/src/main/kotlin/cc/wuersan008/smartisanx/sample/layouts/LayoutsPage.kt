@@ -99,7 +99,10 @@ private fun LayoutsList(
                         },
                         trailing = {
                             SmartisanIcon(
-                                res = SmartisanDrawables.SettingsItemArrow,
+                                // 与首页同一支箭头：`SmartisanListItem` 的右槽照抄 framework
+                                // 列表行母版 `list_content_right_subtitle_arrow`，那里面用的就是
+                                // `selector_list_content_item_arrow`（22×26.7dp 画布）。
+                                res = SmartisanDrawables.ListItemArrow,
                                 contentDescription = null,
                             )
                         },
