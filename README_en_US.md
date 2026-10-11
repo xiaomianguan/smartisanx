@@ -51,10 +51,11 @@ modules split by responsibility, the demo app as its own module, components grou
   back to English elsewhere.
 - **Original transitions**: regular pages slide in from the right, modal pages slide up from the
   bottom, with timings taken from the original `anim/` resources and the revival projects.
-- **Original scroll overscroll**: pulling a list past its edge is the original **rigid translation
-  plus spring-back** (drag damping 1/3, limit 1/3 of the container height, critically damped spring
-  ω ≈ 22) rather than the Material stretch; `SmartisanTheme` provides it to every scrolling component
-  in the hierarchy. Values and measurements:
+- **Original scroll overscroll**: pulling a list past its edge is the original **rigid
+  translation plus a decelerating coast and a quartic ease-out spring-back** (drag damping
+  1/3, limit 1/3 of the container height, the spring-back duration derived from
+  `sqrt(2·Δ/GRAVITY)`) rather than the Material stretch; `SmartisanTheme` provides it to every
+  scrolling component in the hierarchy. Values and measurements:
   [Theme and design tokens](docs/Theme.md#overscroll-bounce).
 - **All the original assets**: graphics from the 12 factory APKs and the nut R2 framework dump, fonts
   from the nut R2 factory ROM dump; every PNG losslessly optimised with oxipng.

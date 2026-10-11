@@ -370,9 +370,10 @@ framework's `menu_dialog_horizontal_distance` (18dp) / `menu_dialog_btn_margin_v
 
 ## 7. Scroll overscroll bounce (measured on the original R2 and on the test device)
 
-The original overscroll is **not** the Material stretch; it is a rigid translation plus a spring-back.
-First the R2 framework constants, then recordings of the R2's behaviour, then the same scripts applied
-to this library's implementation on the test device (nubia P0110).
+The original overscroll is **not** the Material stretch; it is a rigid translation plus a
+decelerating coast and a quartic ease-out spring-back. First the R2 framework constants, then
+recordings of the R2's behaviour, then the same scripts applied to this library's implementation on
+the test device (nubia P0110).
 
 ### 1. Original framework constants (Nut R2, `android.widget.AbsListView`)
 
@@ -388,15 +389,50 @@ protected void onLayout(...) {
 
 In `ScrollView.java` the same block sits behind `ScrollViewSmtEx.mSmartisanosOverScrollEnable`
 (switched off only for `com.buzzfeed.android`), so this is a **system-wide** behaviour rather than
-something an app does for itself. The `OverScroller` in `smartisanos.jar` also changes the return:
-`GRAVITY` raised from AOSP's 2000 to 8000 and `startSpringback` using a quartic ease-out over
-`mOver/|Δ|` — but the curve measured on the device is not that one (below), so this library
-reproduces the **measured** one.
+something an app does for itself.
+
+The return lives in `android.widget.OverScroller` inside `framework.jar` (jadx, `classes3.dex`):
+
+```java
+static final float GRAVITY = 8000.0f;                     // AOSP uses 2000
+
+private void startSpringback(int start, int end, int velocity) {
+    int delta = start - end;
+    this.mDeceleration = getDeceleration(delta);          // ±GRAVITY
+    this.mVelocity = -delta;
+    this.mOver = Math.abs(delta);
+    this.mDuration = ((int) (Math.sqrt(((double) delta) * (-2.0d) / ((double) this.mDeceleration))
+        * 1000.0d)) + (Math.abs(velocity) / 10);          // = sqrt(2·Δ/GRAVITY)·1000 + |v|/10
+}
+
+// update(), state == 1 (spring-back): quartic ease-out
+distance = ((double) (this.mOver * sign)) * (1.0d - Math.pow(1.0f - t2, 4.0d));
+
+// Flinging into the edge: startBounceAfterEdge → onEdgeReached(), a coast first (state 2)
+private void onEdgeReached() {
+    float velocitySquared = mVelocity * mVelocity;
+    float distance = velocitySquared / (Math.abs(this.mDeceleration) * 2.0f);   // v²/(2·GRAVITY)
+    if (distance > mOver) {                               // beyond the allowance: rescale a to stop there
+        this.mDeceleration = ((-sign) * velocitySquared) / (i2 * 2.0f);
+        distance = i2;
+    }
+    this.mOver = (int) distance;
+    this.mDuration = -((int) ((this.mVelocity * 1000.0f) / this.mDeceleration));
+}
+
+// continueWhenFinished() also has a Smartisan-added line: scale the allowance by the velocity
+this.mOver = Math.round((this.mOver * Math.abs(this.mVelocity)) / OverScrollerSmtEx.mMaximumVelocity);
+```
+
+In other words: **the return is a quartic ease-out `(1-t/T)^4` with `T = sqrt(2·Δ/GRAVITY)`**, and
+**a fling into the edge first coasts with `v²/(2·GRAVITY)` of deceleration, its distance capped by
+`|v| / mMaximumVelocity`** (mMaximumVelocity = `ViewConfiguration.getScaledMaximumFlingVelocity()`
+= 8000dp/s × density).
 
 ### 2. Measured on the R2 (1080×2340 @400dpi, Settings ListView 2100px tall)
 
-Captured with `screenrecord`, resampled to 60fps with `ffmpeg`, tracking the centre of the first text
-band:
+Captured with `screenrecord`, resampled to 60fps with `ffmpeg`, splitting rows on their 1px separators
+and tracking the centre of the first text band (the same scripts as on the test device):
 
 | Finger travel | Content travel | Ratio |
 | --- | --- | --- |
@@ -406,34 +442,55 @@ band:
 
 → **drag damping of 1/3** (the spread comes from touch slop and the resolution of the injected events).
 
-Fitting the return curve (peak 503px) against several models — the critically damped spring wins:
+Fitting the return curve against several models, this time on two curves (drag release, peak 540px;
+fling, peak 523px):
 
-| Model | Best parameters | rms |
+| Model | Drag release (540px) | Fling (523px) |
 | --- | --- | --- |
-| critically damped spring `(1+ωt)e^{-ωt}` | ω = 22.04 (≈ √500) | **6.2px** |
-| quartic ease-out (the one in the framework) | T = 0.44s | 21.4px |
-| cubic ease-out | T = 0.35s | 18.5px |
-| exponential decay | τ = 94ms | 31.8px |
-| sine ease-out | T = 0.24s | 13.2px |
+| quartic ease-out `(1-s)^4` (the one in the framework) | T = 408ms, rms **6.99px** | T = 394ms, rms **5.75px** |
+| critically damped spring `(1+ωs)e^{-ωs}` | ω = 20.4, rms 8.31px | ω = 21.0, rms 7.49px |
+| cubic ease-out `(1-s)^3` | T = 360ms, rms 8.47px | T = 384ms, rms 6.73px |
+| exponential decay `e^{-s}` | τ = 70ms, rms 11.20px | τ = 70ms, rms 11.80px |
 
-Also measured: the **row pitch stays 150px throughout** (card heights and gaps never change) = a rigid
-translation, not a stretch; and the return **starts from rest** (the velocity rises then falls rather
-than continuing the release velocity).
+→ **the quartic ease-out wins**, matching the framework source; the fitted T is within 10% of
+`sqrt(2·Δ/8000)·1000` (540px → 367ms, 523px → 362ms). **This corrects the previous revision of this
+record**, which measured a single curve and fitted the *progress* form `1-(1-s)^4` instead of the
+*remaining* form `(1-s)^4`, and therefore concluded the spring was closer.
+
+Also measured:
+
+- the **row pitch stays 150px throughout** (card heights and gaps never change) = a rigid translation,
+  not a stretch;
+- a drag release returns **from rest** (the velocity rises then falls rather than continuing the
+  release velocity);
+- a fling (finger 1200px / 100ms) does **not stop at the release point** but keeps coasting: the
+  offset goes 94 → 523px in 87ms with decreasing 20ms increments (180 / 95 / 45 / 39px) = constant
+  deceleration; 523px matches half the height 1050px × |v|/20000 (v ≈ 9000px/s → 472px).
 
 ### 3. This library's implementation (test device nubia P0110, 1264×2800 @560dpi)
 
-Same scripts, applied to `Modifier.verticalScroll` and `LazyColumn`:
+Same scripts, applied to `Modifier.verticalScroll` and `LazyColumn` (container height 2436px):
 
 | Item | Measured | Expected |
 | --- | --- | --- |
 | drag damping (900px) | 291px (0.323) | 1/3 ✅ |
 | drag damping (1300px) | 424px (0.326) | 1/3 ✅ |
 | drag damping (2000px) | ~700px (0.35) | 1/3 ✅ |
-| return curve fit | critically damped, ω = 21.6, rms **2.7px** | the R2's 22.0 ✅ |
-| settling | screenshot 1.5s after release is byte-identical to the one before | returns exactly ✅ |
+| drag limit | 688–812px (capped at a third of the 2436px container) | `MaxDragFraction` ✅ |
+| release bounce (688px drag) | **300ms**, landing exactly; at t = 200ms only 1.3% is left | `sqrt(2·Δ/GRAVITY)` = 350ms ✅ |
+| fling overscroll (finger 1300px / 100ms into the edge) | coasts to **554px (134ms)**, then bounces back in **283ms** | the R2's 523px / 87ms / 300ms ✅ |
+| fling into the edge (long list, only 133px of overscroll) | coasts 67ms to 133px, then bounces back in ~250ms | allowance ×`\|v\|/28000` = 130px ✅ |
 | row pitch | unchanged throughout (band spacing identical before/after) | rigid translation ✅ |
 | clipping | the revealed area is the page texture; content never crosses the scroll area's top edge | matches the original ✅ |
-| `LazyColumn` | the Contacts page translates and springs back the same way | same `LocalOverscrollFactory` ✅ |
+| `LazyColumn` | the Contacts page translates and coasts back the same way | same `LocalOverscrollFactory` ✅ |
+
+The same gestures before the switch to the quartic ease-out (critically damped spring, ω = 22.36):
+
+| Case | Before | After | R2 measured |
+| --- | --- | --- | --- |
+| 688px drag, released | 450ms, the last 20px crawling for 240ms | 300ms, landing exactly | 300ms |
+| finger 1300px / 100ms into the edge | stops at the release point (424px), bounces back in 466ms | coasts to 554px (134ms), bounces back in 283ms | 523px / 87ms / 300ms |
+| long-list fling into the edge | jumps out in a single frame, crawls back for ~400ms | coasts 67ms to 133px, bounces back in ~250ms | — |
 
 ## 8. Demo-app visual sweep (2026-10-11)
 

@@ -122,7 +122,7 @@ same, but there is only one place to maintain.
 `SmartisanTheme` writes a `SmartisanOverscrollFactory` into Compose's `LocalOverscrollFactory`, so
 every scrolling component in the hierarchy (`LazyColumn`, `Modifier.verticalScroll`,
 `Modifier.scrollableArea`, `HorizontalPager`, …) switches from the Material **stretch** to the
-original **rigid translation plus spring-back**.
+original **rigid translation plus a decelerating coast and a quartic ease-out spring-back**.
 
 Two things to keep in mind when migrating:
 

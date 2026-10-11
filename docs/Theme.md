@@ -383,8 +383,10 @@ ListIndexContentInset 40
 ## Overscroll bounce
 
 The original Smartisan OS overscroll is **not** the Material stretch (which deforms the
-content); it is a **rigid translation plus a spring-back**: the whole content slides out,
-revealing the background at the edge, and then springs back.
+content); it is a **rigid translation plus a decelerating coast and a quartic ease-out
+spring-back**: the whole content slides out, revealing the background at the edge, keeps
+coasting along the original deceleration curve while the velocity still points outwards,
+and then eases back.
 `SmartisanTheme` provides this by default to every scrolling component in the hierarchy
 (`LazyColumn`, `Modifier.verticalScroll`, `Modifier.scrollableArea`, `HorizontalPager`, …),
 so nothing has to be passed per component.
@@ -393,9 +395,15 @@ so nothing has to be passed per component.
 | --- | --- |
 | `DragDivisor` = 3 | Overscroll drag damping: offset = finger delta / 3 |
 | `MaxDragFraction` = 1/3 | Drag overscroll limit: one third of the container size |
-| `MaxFlingFraction` = 1/2 | Fling overscroll limit: half of the container size |
-| `Stiffness` = 500 | Spring-back stiffness (ω ≈ 22.36) |
-| `DampingRatio` = 1 | Critical damping: settles without overshooting |
+| `MaxFlingFraction` = 1/2 | Fling overscroll limit: half of the container size, scaled by `|v| / MaxFlingVelocity` |
+| `Gravity` = 8000 | Coast / spring-back acceleration (px/s², the original raw constant, rescaled by the reference density) |
+| `GravityReferenceDensity` = 2.5 | Reference density of `Gravity` (the nut R2 is 400dpi) |
+| `MaxFlingVelocity` = 8000 | Maximum fling velocity (dp/s), used to scale the fling overscroll limit |
+
+The spring-back duration is `sqrt(2·Δ / GRAVITY)` — **a square-root relation with the
+overscroll distance**, so the further you pull the faster each frame moves; the curve is the
+original `startSpringback` `Δ·(1-t/T)^4`, which lands exactly on the edge instead of
+trailing off.
 
 ```kotlin
 // Replace the whole behaviour (e.g. back to the Material stretch, or none at all)
@@ -411,16 +419,19 @@ LazyColumn(modifier = Modifier.overscroll(effect!!)) { /* ... */ }
 
 | Name | Purpose |
 | --- | --- |
-| `SmartisanOverscrollDefaults` | The five values above |
+| `SmartisanOverscrollDefaults` | The values above |
 | `SmartisanOverscrollFactory` | Creates the effect; provided to `LocalOverscrollFactory` |
-| `SmartisanOverscrollEffect` | The implementation: drag damping, limits, spring-back, fling impulse |
+| `SmartisanOverscrollEffect` | The implementation: drag damping, limits, coast and quartic spring-back |
 
 > Where the numbers come from: in the framework of the Nut R2
 > (`SMARTISAN/aries/aries:11/RKQ1.201217.002`), `android.widget.AbsListView` sets
 > `mOverscrollDistance` to the full height, `mOverflingDistance` to half the height and
-> `mOverscrollMax` to `(b - t) / 3`, and declares `OVERSCROLL_LIMIT_DIVISOR = 3`.
-> Frame-by-frame pixel measurements of device recordings give the 1/3 drag damping, and
-> fitting the spring-back curve gives a critically damped spring with ω ≈ 22.
+> `mOverscrollMax` to `(b - t) / 3`, and declares `OVERSCROLL_LIMIT_DIVISOR = 3`; the same jar's
+> `android.widget.OverScroller` has `GRAVITY = 8000`, a quartic ease-out over
+> `sqrt(2·Δ/GRAVITY)`, and a decelerating coast when a fling reaches the edge.
+> Frame-by-frame pixel measurements of device recordings give the 1/3 drag damping, a quartic
+> ease-out return (rms 5.75–6.99px) that beats the critically damped spring (7.49–8.31px), and a
+> fling that keeps coasting for 87ms out to 523px.
 > See the [verification record](ComponentVerification.md).
 
 ## Overriding and extending
