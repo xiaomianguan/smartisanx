@@ -931,6 +931,12 @@ object SmartisanSnackbarDefaults
   single line, ellipsised, 18dp / 10dp margins. With an action it shows the golden
   `toast_action_btn_selector` button (40dp tall); with an icon it adds a 2px vertical divider and a
   40dp icon button.
+- **The bar hugs its content, it is not full width**: the original `CustomToast.TN` window is
+  `params.width/height = -2` (`WRAP_CONTENT`), so it is only slightly wider than "message + button".
+  Also, the nine-patch's content insets (41px left/right, 25px top, 57px bottom @3x ≈
+  13.4 / 8 / 13.4 / 18.6dp) are applied **automatically** as View padding on Android but not in
+  Compose — read them once with `rememberSmartisanDrawablePadding`, or the transparent margins of
+  the artwork swallow the whole bar and squash it flat.
 - Tapping the action dismisses the bar first and then fires the callback, exactly like the original
   `CustomToast`; `SmartisanSnackbarHost` mounts a state-driven bar at the bottom of the page.
 

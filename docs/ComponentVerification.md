@@ -706,6 +706,28 @@ gone and the scaffold handles it — the rendering is pixel-identical (the space
 content and any bottom bar, with the height taken from `WindowInsets.navigationBars`), and apps built
 on this library no longer have to work that inset out themselves.
 
+The snackbar (`SmartisanSnackbar`) was wrong in the same family of ways: it used `fillMaxWidth()` to
+span the screen and **never applied the nine-patch's content insets**, so it rendered as a pale yellow
+strip that was simultaneously squashed and stretched, with its rounded corners squeezed into right
+angles. Both causes map onto the original:
+
+- the original `CustomToast.TN` window is `params.width = -2` / `params.height = -2`
+  (`WRAP_CONTENT`): the bar **hugs its content** and is only slightly wider than "message + button";
+- the visible part of `toast_frame_smartisanos` is exactly its **content area** (122×122px = 40.7dp
+  inside a 204×204px image, with transparent margins of 41px left/right, 25px top and 57px bottom @3x).
+  Android applies a nine-patch's content insets as View padding **automatically**; Compose does not —
+  without them the transparent margins eat the bar's height and the corners collapse.
+
+The fix drops `fillMaxWidth()`, gives the message `weight(1f, fill = false)` (long text still
+ellipsises, short text no longer stretches) and reads the same insets with
+`rememberSmartisanDrawablePadding` (measured 13.4 / 8 / 13.4 / 18.6dp). On the nubia P0110:
+
+| | before | after (action / icon) |
+| --- | --- | --- |
+| visible frame width | 1194px = 341dp (nearly the whole screen) | 609px = 174dp / 532px = 152dp |
+| visible frame height | 99px = 28.3dp (corners squeezed out) | 138px = 39.4dp (≈ the artwork's 40.7dp content area) |
+| message ink from the frame's left edge | 20dp (18dp margin + 2dp bearing) | unchanged |
+
 While there, the theme page's shape swatches became horizontally scrollable: 36dp × 7 + 8dp × 6 + 18dp
 of content padding on each side = 336dp, exactly the width available on a 360dp screen (the card is
 336dp wide too), so the last one (`large`) was clipped.

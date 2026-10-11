@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +33,7 @@ import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePadding
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
@@ -56,6 +56,16 @@ import kotlinx.coroutines.delay
  * 这里保持一致）。
  *
  * 还原要点：
+ * - **提示条包住内容，不是满宽**：原版 `CustomToast.TN` 的窗口是
+ *   `params.width = -2` / `params.height = -2`（`WRAP_CONTENT`），
+ *   而且底图 nine-patch 的内容内边距（左右 41px、上 25px、下 57px @3x =
+ *   13.7 / 8.3 / 13.7 / 19dp）会被 Android **自动**加到 View 的 padding 上 ——
+ *   所以原版提示条比一行文字高得多，宽度只比「文案 + 按钮」宽一点点。
+ *   本组件用 `rememberSmartisanDrawablePadding` 取同一份内边距，文案用
+ *   `weight(fill = false)` 包住内容，两个细节缺一个都会变成「压扁 + 拉长的一条」；
+ * - 原版 `SnackbarWithButton` 是 `LinearLayout` + `setGravity(16)`（垂直居中），
+ *   里面的 `RelativeLayout` 让文案 `layout_width = match_parent` 且 `layout_toLeftOf`
+ *   按钮 —— 也就是「先量按钮、文案占剩下的空间」，本组件用同一套测量顺序；
  * - 文案样式照抄 `values/styles.xml` 的 `SnackbarMessageStyle`：加粗、`#996b3d`、
  *   `maxLines = 1`、`ellipsize = end`、`gravity = center_vertical`、外边距 18dp / 10dp；
  * - 操作按钮底图 `toast_action_btn_selector`（`snack_button_normal` / `snack_button_pressed`），
@@ -298,20 +308,28 @@ private fun SmartisanSnackbarBar(
     onAction: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
+    // 原版把底图给一个 wrap_content 的 LinearLayout，Android 会**自动**把 nine-patch 的
+    // 内容内边距（左右 41px、上 25px、下 57px @3x）加进 View 的 padding；
+    // Compose 不会自动加，必须显式取一次。少了它，文字会贴着圆角画、提示条被压成一条。
+    val framePadding = rememberSmartisanDrawablePadding(SmartisanSnackbarDefaults.Background)
     Row(
         modifier =
             modifier
                 .smartisanDrawableBackground(SmartisanSnackbarDefaults.Background)
-                .fillMaxWidth()
+                .padding(framePadding)
                 // 竖分隔线要撑满提示条高度，用最小固有高度确定行高。
                 .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SmartisanText(
             text = message,
+            // weight(fill = false)：文案最多占满按钮之外的空间，但**不会**把提示条撑到满宽。
+            // 原版提示条的窗口是 `WRAP_CONTENT`（见 `CustomToast.TN` 的
+            // `params.width = -2`），提示条是**包住内容**的；`fill = false` 才能同时做到
+            // 「长文案省略号截断」和「短文案不拉伸」。
             modifier =
                 Modifier
-                    .weight(1f)
+                    .weight(1f, fill = false)
                     .padding(
                         start = SnackbarMessageHorizontalMargin,
                         end = SnackbarMessageHorizontalMargin,
