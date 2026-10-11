@@ -246,8 +246,9 @@ small bitmap instead of using text: `DisplayInputView` uses `dot_array_*` (53 as
 line and `DisplayResultView` uses `pic*` (18 assets, 90x114px) for the result line. Asset check: both sets in
 this library's `drawable-xxhdpi` / `drawable-400dpi` are **pixel-identical** to the decoded original APK
 (64 of the 67 files differ only in bytes because apktool/aapt2 re-encode them, `magick compare -metric AE`
-is 0 for all of them; the other 3 are byte-identical too). The only gap was `pic_error.png`, which the original
-has and this library did not — it was copied into both density buckets in this change.
+is 0 for all of them; the other 3 are byte-identical too). The only gap was `pic_error.png`, missing from the
+`drawable-xxhdpi` bucket (the `drawable-400dpi` copy was already there and pixel-identical to the original) —
+it was copied into the xxhdpi bucket in this change.
 
 > The original calculator has been replaced on the Nut R2 by a newer rewrite (`com.obric.calculator`, dark and
 > without the dot matrix), and the R2's `/system/framework` has no smartisanos framework, so the original APK
