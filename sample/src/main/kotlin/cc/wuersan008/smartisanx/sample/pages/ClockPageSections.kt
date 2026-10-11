@@ -27,6 +27,7 @@ import cc.wuersan008.smartisanx.ui.clock.SmartisanFlipClock
 import cc.wuersan008.smartisanx.ui.clock.SmartisanTimePicker
 import cc.wuersan008.smartisanx.ui.clock.SmartisanWheelPicker
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 三列时间滚轮示例。 */
 @Composable
@@ -35,7 +36,7 @@ fun TimePickerSection() {
     val typography = LocalSmartisanTypography.current
     var hour by remember { mutableIntStateOf(8) }
     var minute by remember { mutableIntStateOf(30) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(
             modifier = Modifier.fillMaxWidth().background(colors.surface).padding(vertical = 12.dp),
         ) {
@@ -65,7 +66,7 @@ fun WheelPickerSection() {
     val typography = LocalSmartisanTypography.current
     val cities = listOf("北京", "上海", "广州", "深圳", "成都", "杭州", "西安")
     var cityIndex by remember { mutableIntStateOf(0) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
             SmartisanWheelPicker(
                 items = cities,
@@ -113,7 +114,7 @@ fun FlipClockSection() {
         }
     }
 
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(
             modifier = Modifier.fillMaxWidth().background(colors.surface).padding(vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

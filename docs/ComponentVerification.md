@@ -102,7 +102,7 @@ Components verified this way so far:
 | `SmartisanAboutStaticItem` | row pitch | 52.9dp (185px) between separators; the original adds up to 7 + 13.5sp line + 3 + 12sp line + 7 + 1px + 5dp ≈ 52.5dp |
 | | separator | 1px, x = 105..1210 (30dp start indent / 15dp end inset, both straight from the original dimens) |
 | | text inset | title ink starts at x = 116px = the 30dp box plus the glyph's left bearing |
-| | About page logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo is 88dp tall and 40dp below the card top (the original red lockup occupied 40..127.7dp); the version line's ink lands at 145dp and the trademark line's at 167dp (original 143dp / 165.7dp) |
+| | About page logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo is 88dp tall and 40dp below the card top (the original red lockup occupied 40..127.7dp); the version line's ink lands at 145dp and the trademark line's at 167dp (original 143dp / 165.7dp); the card is **as wide as** the five setting rows below it (12dp each side: measured x = 43..1220 vs 42..1220; on the original R2 both cards measure x = 30..1049 = 12dp) |
 | `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
 | | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
 | | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |
@@ -646,4 +646,42 @@ light chip, so the icon page's chip colour moved from `surfaceRaised` (#F7F8F9) 
 contrast.
 
 
+
+
+### 7. Demo-app card sweep (2026-10-11)
+
+Every place in the demo app where components sat **directly on the linen texture** was moved into a
+card. `SmartisanGroup` is **transparent by default** (the rows draw the card backgrounds themselves),
+so any group whose content is custom-composed (colour swatches, rows of buttons, clock faces, text
+fields, switch rows, shape swatches, …) has to pass `position` explicitly:
+
+- **40 groups** got `position = SmartisanGroupRowPosition.Single` (buttons / clock / clock ruler /
+  icons / input / layout / overlay / text / original controls / original layouts pages; the script
+  replaced exact line numbers);
+- **9 more** were done by hand: the theme page's light/dark radio group, the "experimental" note card,
+  the swatch / typography / shape cards and the two swipe sections;
+- groups whose content **is** list rows now take their background by position instead:
+  `SmartisanListItem` → `SmartisanGroupItem` (clock page 3 rows, layout page 6 rows, overlay page 12
+  rows), `SmartisanListRow` → the page-local `MatrixRow` (7 groups, 14 rows), and the swipe rows draw
+  their own background (the row is the foreground and must stay opaque, otherwise the delete actions
+  show through);
+- the home page and the "basic controls" page were already right (rows take the top / middle / bottom
+  segments); they served as the template for the rest.
+
+After the sweep the sample has 75 `SmartisanGroup` calls: 46 pass `position`, and the remaining 29
+contain only rows that draw their own card — nothing sits on the texture any more.
+
+The About page's logo card used to be **11dp narrower** than the list card below it (measured
+x = 85..1178 vs 46..1217): it used the settings sub-item `sub_item_back_ground_single` 9-patch, whose
+**own transparent margin** is already 37px = 12.3dp, so adding the 12dp outer margin squeezed the card
+to 24.3dp on each side. In the original "About this Phone" page the logo card
+(`ListContentItemStyle.Single`) and the five setting rows belong to the same `ListContentItemStyle`
+family and are equally wide (measured on a Nut R2: both cards x = 30..1049, i.e. 12dp each side).
+Using the same `group_list_item_bg_single` (white + 10dp corners + 1px stroke) plus
+`list_content_item_single_shadow` as the list rows, the logo card now measures x = 43..1220 and the
+list card x = 42..1220 (the 1px difference is the measuring row landing on the 10dp corner).
+
+While there, the theme page's shape swatches became horizontally scrollable: 36dp × 7 + 8dp × 6 + 18dp
+of content padding on each side = 336dp, exactly the width available on a 360dp screen (the card is
+336dp wide too), so the last one (`large`) was clipped.
 

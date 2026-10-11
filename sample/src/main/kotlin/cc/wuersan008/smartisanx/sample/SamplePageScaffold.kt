@@ -22,6 +22,8 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
@@ -108,6 +110,9 @@ fun SampleFootnote(text: String) {
  * 用来标注「原版 Smartisan OS 没有、由三个复刻项目或本库新增」的特性。
  * 目前主要用于深色模式：原版只有浅色一套设计，深色是复刻项目自行补的，
  * 而且原版图形资源里带夜间变体的只是一小部分。
+ *
+ * 提示本身**也是一张卡片**：原版的提示行（`SettingItemTipsStyle`）同样长在白色卡片里，
+ * 直接落在条纹底纹上不是 Smartisan 的做法。
  */
 @Composable
 fun ExperimentalNote(
@@ -117,19 +122,22 @@ fun ExperimentalNote(
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    Column(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
+    SmartisanGroup(
+        modifier = modifier,
+        position = SmartisanGroupRowPosition.Single,
     ) {
-        SmartisanText(
-            text = "实验性 · $title",
-            style = typography.sectionTitle,
-            color = colors.warning,
-        )
-        SmartisanText(
-            text = body,
-            modifier = Modifier.padding(top = 4.dp),
-            style = typography.caption,
-            color = colors.textTertiary,
-        )
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
+            SmartisanText(
+                text = "实验性 · $title",
+                style = typography.sectionTitle,
+                color = colors.warning,
+            )
+            SmartisanText(
+                text = body,
+                modifier = Modifier.padding(top = 4.dp),
+                style = typography.caption,
+                color = colors.textTertiary,
+            )
+        }
     }
 }

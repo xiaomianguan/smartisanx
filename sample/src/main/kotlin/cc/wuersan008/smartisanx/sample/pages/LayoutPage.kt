@@ -42,7 +42,6 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupDivider
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
-import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
@@ -54,7 +53,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarSurface
 fun LayoutPage(onBack: () -> Unit) {
     SamplePageScaffold(title = "布局与列表", onBack = onBack) {
         SampleSectionHeader("标题栏")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column {
                 SmartisanTitleBar(
                     title = "仅标题",
@@ -95,19 +94,23 @@ fun LayoutPage(onBack: () -> Unit) {
 
         SampleSectionHeader("列表行")
         val feedback = LocalSampleFeedback.current
+        // 行自己画卡片底图：按位置取分组卡片的上 / 中 / 下三段，圆角只出现在首尾。
         SmartisanGroup {
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Top,
                 title = "只有标题",
                 onClick = { feedback("只有标题 · 纯展示行") },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "标题与说明",
                 summary = "二级说明文字 12.5sp",
                 onClick = { feedback("标题与说明 · 纯展示行") },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "带前置图标",
                 summary = "来自锤子音乐的资料库行",
                 leading = {
@@ -121,7 +124,8 @@ fun LayoutPage(onBack: () -> Unit) {
                 onClick = { feedback("带前置图标 · 纯展示行") },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "带后置箭头",
                 trailing = {
                     // 原版列表箭头（selector_list_content_item_arrow）。
@@ -134,13 +138,19 @@ fun LayoutPage(onBack: () -> Unit) {
                 onClick = { feedback("带后置箭头 · 纯展示行") },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "选中态（蓝色多选底色）",
                 selected = true,
                 onClick = { feedback("选中态 · 纯展示行") },
             )
             SmartisanRowDivider()
-            SmartisanListItem(title = "禁用态", summary = "不可点击", enabled = false)
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Bottom,
+                title = "禁用态",
+                summary = "不可点击",
+                enabled = false,
+            )
         }
 
         SampleSectionHeader("分组卡片（原版底图）")
@@ -294,7 +304,7 @@ private fun ContainerSection() {
 private fun TransitionSection() {
     var secondary by remember { mutableStateOf(false) }
     var modalVisible by remember { mutableStateOf(false) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp)) {
             SmartisanPageTransition(
                 secondary = secondary,
@@ -354,4 +364,3 @@ private fun TransitionSection() {
         }
     }
 }
-

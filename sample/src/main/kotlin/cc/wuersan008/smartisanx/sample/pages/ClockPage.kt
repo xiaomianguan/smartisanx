@@ -28,7 +28,8 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanDatePickerDialog
 import cc.wuersan008.smartisanx.ui.control.SmartisanDateTimePickerDialog
 import cc.wuersan008.smartisanx.ui.control.SmartisanTimePickerDialog
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
-import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 时钟页：机械表盘、小表盘、时间滚轮。 */
 @Composable
@@ -38,7 +39,7 @@ fun ClockPage(onBack: () -> Unit) {
 
     SamplePageScaffold(title = "时钟与机械控件", onBack = onBack) {
         SampleSectionHeader("机械表盘")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +60,7 @@ fun ClockPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("无数字表盘")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                 horizontalArrangement = Arrangement.Center,
@@ -81,7 +82,7 @@ fun ClockPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("小表盘")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -150,20 +151,24 @@ private fun PickerDialogSection() {
     var dateTime by remember { mutableLongStateOf(1_760_000_000_000L) }
     var time by remember { mutableStateOf(Pair(9, 30)) }
 
+    // 行自己画卡片底图：按位置取分组卡片的上 / 中 / 下三段，圆角只出现在首尾。
     SmartisanGroup {
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Top,
             title = "日期选择（SmartisanDatePickerDialog）",
             summary = "当前：%d-%02d-%02d".format(date.first, date.second, date.third),
             onClick = { showDate = true },
         )
         SmartisanRowDivider()
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Middle,
             title = "日期 + 时间（SmartisanDateTimePickerDialog）",
             summary = "当前时间戳：$dateTime",
             onClick = { showDateTime = true },
         )
         SmartisanRowDivider()
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Bottom,
             title = "时间选择（SmartisanTimePickerDialog）",
             summary = "当前：%02d:%02d".format(time.first, time.second),
             onClick = { showTime = true },

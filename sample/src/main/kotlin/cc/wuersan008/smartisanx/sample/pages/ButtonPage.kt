@@ -21,6 +21,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanTextButton
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 按钮页：强调、中性、文字三种按钮。 */
 @Composable
@@ -31,7 +32,7 @@ fun ButtonPage(onBack: () -> Unit) {
 
     SamplePageScaffold(title = "按钮", onBack = onBack) {
         SampleSectionHeader("三种样式")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(18.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -52,7 +53,7 @@ fun ButtonPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("状态")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(18.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -73,7 +74,7 @@ fun ButtonPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("交互")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.fillMaxWidth().padding(18.dp)) {
                 SmartisanText(
                     text = "已点击 $clicks 次（按下时会播放系统点击音效）",

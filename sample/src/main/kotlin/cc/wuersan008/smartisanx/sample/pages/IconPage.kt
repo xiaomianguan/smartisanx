@@ -24,6 +24,7 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanIconSet
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /**
  * 图标页：展示从原厂 APK 里提取的**原版 UI 图标**。
@@ -39,7 +40,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 fun IconPage(onBack: () -> Unit) {
     SamplePageScaffold(title = "原版图标", onBack = onBack) {
         SampleSectionHeader("总览")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.fillMaxWidth().padding(18.dp)) {
                 SmartisanText(
                     text = "共 ${SmartisanIconSet.size} 个原版图标，分为 ${SmartisanIconSet.groups.size} 组。",
@@ -72,7 +73,7 @@ fun IconPage(onBack: () -> Unit) {
 private fun IconGrid(icons: List<SmartisanIconEntry>) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         icons.chunked(4).forEach { row ->
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),

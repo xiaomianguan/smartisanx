@@ -177,7 +177,15 @@ private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = SmartisanDimens.ListItemHorizontalMargin)
                 .smartisanShadowBackground(
-                    backgroundRes = SmartisanDrawables.SettingSubItemSingle,
+                    // 底图必须与下面五行设置行用**同一张**分组卡片底图。
+                    // 原版「关于本机」页的 logo 卡片（`ListContentItemStyle.Single`）与五行
+                    // 设置行（`SettingSubItemTop/Mid/BottomStyle`）同属 `ListContentItemStyle`
+                    // 一族，两张卡片一样宽 —— 坚果 R2 实测左右各 30px = 12dp。
+                    //
+                    // 这里原本用的是设置页子项那张 `sub_item_back_ground_single` 9-patch：
+                    // 它自己的透明边距就有 37px = 12.3dp，再叠上 [SmartisanDimens.ListItemHorizontalMargin]
+                    // 的 12dp，卡片两侧会缩到 24.3dp —— 实测 85px，比下面的列表卡片（46px）窄 11dp。
+                    backgroundRes = SmartisanDrawables.GroupRowSingle,
                     shadowRes = SmartisanDrawables.GroupRowSingleShadow,
                     pressed = pressed,
                 )

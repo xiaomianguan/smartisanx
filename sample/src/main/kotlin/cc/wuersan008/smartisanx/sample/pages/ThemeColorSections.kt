@@ -20,6 +20,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 色板一览。 */
 @Composable
@@ -45,7 +46,7 @@ fun ColorSwatchSection() {
             "selectionBackground" to colors.selectionBackground,
             "pressedHighlight" to colors.pressedHighlight,
         )
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         swatches.forEach { (name, color) ->
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp),
@@ -81,7 +82,7 @@ fun ColorSwatchSection() {
 fun TypographySection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
             SmartisanText("标题栏标题 titleBar 20sp", style = typography.titleBar, color = colors.textPrimary)
             SmartisanText("页面标题 title 20sp", style = typography.title, color = colors.textPrimary)

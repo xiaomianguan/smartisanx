@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.sample.LocalSampleFeedback
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
@@ -34,7 +35,9 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
-import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.smartisanGroupRowBackground
 import cc.wuersan008.smartisanx.ui.list.SmartisanHiddenRowAction
 import cc.wuersan008.smartisanx.ui.list.SmartisanHiddenRowActions
 import cc.wuersan008.smartisanx.ui.list.SmartisanLetterIndexBar
@@ -72,7 +75,7 @@ private fun ReorderSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val items = remember { mutableStateListOf("世界时钟 · 北京", "世界时钟 · 伦敦", "世界时钟 · 纽约", "世界时钟 · 东京") }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         SmartisanReorderableColumn(
             items = items,
             onMove = { from, to ->
@@ -107,14 +110,22 @@ private fun SwipeDeleteSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val alarms = remember { mutableStateListOf("07:30 工作日", "09:00 周末", "13:00 午休") }
-    SmartisanGroup {
+    // 侧滑行自己画卡片底图：行是前景，必须不透明（否则后面的删除动作会透出来），
+    // 所以卡片底图只能由行来画；分组只负责整张卡片的投影。
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         alarms.forEachIndexed { index, alarm ->
+            val position =
+                when (index) {
+                    0 -> SmartisanGroupRowPosition.Top
+                    alarms.lastIndex -> SmartisanGroupRowPosition.Bottom
+                    else -> SmartisanGroupRowPosition.Middle
+                }
             SmartisanSwipeToDelete(onDelete = { alarms.removeAt(index) }) {
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .height(60.dp)
-                        .background(colors.surface)
+                        .smartisanDrawableBackground(smartisanGroupRowBackground(position))
                         .padding(horizontal = 18.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
@@ -123,7 +134,8 @@ private fun SwipeDeleteSection() {
             }
         }
         if (alarms.isEmpty()) {
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Single,
                 title = "已全部删除",
                 summary = "重新进入页面即可恢复",
                 onClick = { feedback("已全部删除 · 纯展示行") },
@@ -138,8 +150,15 @@ private fun HiddenActionsSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val mails = remember { mutableStateListOf("邮件 · 项目周报", "邮件 · 账单提醒", "邮件 · 设计稿评审") }
-    SmartisanGroup {
+    // 同上：侧滑行自己画卡片底图，分组负责整张卡片的投影。
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         mails.forEachIndexed { index, mail ->
+            val position =
+                when (index) {
+                    0 -> SmartisanGroupRowPosition.Top
+                    mails.lastIndex -> SmartisanGroupRowPosition.Bottom
+                    else -> SmartisanGroupRowPosition.Middle
+                }
             SwipeToRevealActions(
                 actions = {
                     SmartisanHiddenRowActions(
@@ -163,7 +182,7 @@ private fun HiddenActionsSection() {
                     Modifier
                         .fillMaxWidth()
                         .height(60.dp)
-                        .background(colors.surface)
+                        .smartisanDrawableBackground(smartisanGroupRowBackground(position))
                         .padding(horizontal = 18.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
@@ -172,7 +191,8 @@ private fun HiddenActionsSection() {
             }
         }
         if (mails.isEmpty()) {
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Single,
                 title = "已全部删除",
                 summary = "重新进入页面即可恢复",
                 onClick = { feedback("已全部删除 · 纯展示行") },
@@ -232,7 +252,7 @@ private fun LetterIndexSection() {
     val typography = LocalSmartisanTypography.current
     val letters = remember { smartisanDefaultLetterIndex() }
     var active by remember { mutableStateOf<Char?>(null) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Row(
             modifier = Modifier.fillMaxWidth().height(220.dp).background(colors.surface),
             verticalAlignment = Alignment.CenterVertically,

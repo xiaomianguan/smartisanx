@@ -1,6 +1,7 @@
 package cc.wuersan008.smartisanx.sample.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +20,8 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.sample.LocalSampleFeedback
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
-import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 形状一览。 */
 @Composable
@@ -36,9 +39,12 @@ fun ShapeSection() {
             "sheet" to shapes.sheet,
             "large" to shapes.large,
         )
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 18.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -63,28 +69,35 @@ fun ShapeSection() {
 fun DimensSection() {
     // 样例行没有业务动作，点一下弹条提示，避免「点了没反应」。
     val feedback = LocalSampleFeedback.current
+    // 尺寸常量是纯展示行：行自己画卡片底图，按位置取分组卡片的上 / 中 / 下三段，
+    // 圆角只出现在首尾（与原版设置页一致）。
     SmartisanGroup {
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Top,
             title = "标题栏高度",
             summary = "SmartisanDimens.TitleBarHeight = 48dp",
             onClick = { feedback("标题栏高度 · 纯展示行") },
         )
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Middle,
             title = "图标尺寸",
             summary = "SmartisanDimens.IconSize = 36dp",
             onClick = { feedback("图标尺寸 · 纯展示行") },
         )
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Middle,
             title = "列表行最小高度",
             summary = "SmartisanDimens.ListItemMinHeight = 48dp",
             onClick = { feedback("列表行最小高度 · 纯展示行") },
         )
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Middle,
             title = "弹窗宽度",
             summary = "SmartisanDimens.DialogWidth = 308dp",
             onClick = { feedback("弹窗宽度 · 纯展示行") },
         )
-        SmartisanListItem(
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Bottom,
             title = "底部栏高度",
             summary = "SmartisanDimens.BottomBarHeight = 50dp",
             onClick = { feedback("底部栏高度 · 纯展示行") },

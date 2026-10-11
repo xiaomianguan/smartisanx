@@ -37,6 +37,7 @@ import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
 import cc.wuersan008.smartisanx.ui.input.SmartisanPasswordField
 import cc.wuersan008.smartisanx.ui.input.SmartisanSearchBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /**
  * 文本与输入页：展示 5 个原版文本 / 输入类组件的移植结果。
@@ -156,7 +157,7 @@ private fun MessageFieldSection() {
 @Composable
 private fun MarqueeSection() {
     val colors = LocalSmartisanColors.current
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             SmartisanMarqueeText(
                 title = "锤子音乐 · 世界经典钢琴曲精选集（1998 重制版）",
@@ -238,7 +239,7 @@ private fun AutoFitTextSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
 
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -272,7 +273,7 @@ private fun JustifyTextSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
 
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(18.dp)) {
             SmartisanJustifyText(
                 text = "  锤子音乐的弹窗正文使用两端对齐：除最后一行、空行与以换行符结尾的行之外，" +
@@ -293,7 +294,7 @@ private fun PasswordFieldSection() {
     var password by remember { mutableStateOf("") }
     var revealed by remember { mutableStateOf(false) }
 
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -329,7 +330,7 @@ private fun ClearableFieldSection() {
     var text by remember { mutableStateOf("") }
     var cleared by remember { mutableIntStateOf(0) }
 
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),

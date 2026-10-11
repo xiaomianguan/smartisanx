@@ -23,6 +23,7 @@ import cc.wuersan008.smartisanx.ui.clock.SmartisanWeekdayChips
 import cc.wuersan008.smartisanx.ui.clock.SmartisanWeekdayPicker
 import cc.wuersan008.smartisanx.ui.clock.SmartisanWorldClockCard
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 计时标尺示例：横向卡尺与竖向拉环。 */
 @Composable
@@ -31,7 +32,7 @@ fun RulerPickerSection() {
     val typography = LocalSmartisanTypography.current
     var caliperMinutes by remember { mutableIntStateOf(25) }
     var ringMinutes by remember { mutableIntStateOf(10) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
             SmartisanText(
                 text = "横向卡尺（TimerRulerView）",
@@ -80,7 +81,7 @@ fun WeekdayPickerSection() {
         mutableStateOf(setOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY))
     }
     var chipDays by remember { mutableStateOf(setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)) }
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
             SmartisanWeekdayPicker(selectedDays = days, onSelectedDaysChange = { days = it })
             SmartisanText(
@@ -111,7 +112,7 @@ fun WorldClockSection() {
             "纽约" to "America/New_York",
             "东京" to "Asia/Tokyo",
         )
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         zones.forEach { (city, zone) ->
             SmartisanWorldClockCard(city = city, zone = ZoneId.of(zone), onClick = {})
         }

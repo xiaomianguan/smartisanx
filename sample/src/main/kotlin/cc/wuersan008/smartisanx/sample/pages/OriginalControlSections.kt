@@ -51,6 +51,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanTips
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /**
  * 基础控件页里「原版控件移植」这一段。
@@ -165,7 +166,7 @@ private fun ButtonTabGroupSection() {
     // 带图标那一段也要能选中，否则点上去像是坏掉了。
     var iconTab by remember { mutableIntStateOf(0) }
     SampleSectionHeader("分段按钮组（ButtonTabGroup）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             // 连续分段：首 / 中 / 尾三段圆角不同，相邻分段按原版负边距互相压住。
             SmartisanButtonTabGroup(
@@ -209,7 +210,7 @@ private fun ButtonTabGroupSection() {
 private fun CalculatorButtonSection() {
     var pressedTimes by remember { mutableIntStateOf(0) }
     SampleSectionHeader("计算器按键（原版 com.smartisanos.calculator.HammerButton）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SmartisanCalculatorButton(
@@ -261,7 +262,7 @@ private fun ChipsSection() {
     var selected by remember { mutableStateOf(emptySet<String>()) }
     var removable by remember { mutableStateOf(tags) }
     SampleSectionHeader("标签（framework ChipsView）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
             SmartisanChips(
                 chips = tags,
@@ -298,7 +299,7 @@ private fun SmoothSeekBarSection() {
     var volume by remember { mutableFloatStateOf(0.3f) }
     var stepped by remember { mutableFloatStateOf(0.5f) }
     SampleSectionHeader("滑杆（framework SmoothSeekBar）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
             SmartisanText(
                 text = "亮度  ${(brightness * 100).roundToInt()}%",
@@ -337,7 +338,7 @@ private fun IconSliderSection() {
     var volume by remember { mutableFloatStateOf(0.6f) }
     var alone by remember { mutableFloatStateOf(0.35f) }
     SampleSectionHeader("带图标的滑杆（framework SliderWithIcons）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp)) {
             SmartisanText(
                 text = "音量  ${(volume * 100).roundToInt()}%",
@@ -414,7 +415,7 @@ private fun IconSliderSection() {
 private fun NumberPickerSection() {
     var minute by remember { mutableIntStateOf(30) }
     SampleSectionHeader("数字滚轮（NumberPicker）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 SmartisanNumberPicker(
@@ -443,7 +444,7 @@ private fun PageIndicatorSection() {
     var page by remember { mutableIntStateOf(0) }
     val pageCount = 5
     SampleSectionHeader("页面指示器（IndicatorView）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 SmartisanPageIndicator(pageCount = pageCount, currentPage = page)
@@ -474,7 +475,7 @@ private fun PageIndicatorSection() {
 @Composable
 private fun ProgressIndicatorSection() {
     SampleSectionHeader("环形下载进度（DownloadProgressView）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -501,7 +502,7 @@ private fun ProgressIndicatorSection() {
 @Composable
 private fun TipsSection() {
     SampleSectionHeader("轻量提示条（TipsView）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth()) {
             SmartisanTips("同步后会覆盖本地内容，请先确认。")
             SmartisanTips(
@@ -590,4 +591,3 @@ private fun PreviewOptionsSection() {
         color = LocalSmartisanColors.current.textTertiary,
     )
 }
-

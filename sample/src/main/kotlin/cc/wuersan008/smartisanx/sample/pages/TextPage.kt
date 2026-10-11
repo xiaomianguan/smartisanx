@@ -14,6 +14,7 @@ import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.basic.SmartisanPixelText
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 文字页：展示 [SmartisanText] 与 [SmartisanPixelText] 的用法。 */
 @Composable
@@ -26,7 +27,7 @@ fun TextPage(onBack: () -> Unit) {
         TypographySection()
 
         SampleSectionHeader("像素字号")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
                 SmartisanPixelText(
                     text = "13.5dp 字号（原版弹窗按钮）",
@@ -47,7 +48,7 @@ fun TextPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("等宽数字")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
                 SmartisanText(
                     text = "01:23:45.678",
@@ -63,7 +64,7 @@ fun TextPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("颜色与截断")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
                 SmartisanText("一级文字 textPrimary", color = colors.textPrimary)
                 SmartisanText("二级文字 textSecondary", color = colors.textSecondary)

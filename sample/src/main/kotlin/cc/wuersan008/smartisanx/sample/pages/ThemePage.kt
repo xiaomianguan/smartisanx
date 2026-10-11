@@ -8,6 +8,7 @@ import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
 import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.control.SmartisanRadioRow
 
 /** 主题页：展示色板、文字样式、形状，并提供深浅色切换。 */
@@ -15,7 +16,9 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanRadioRow
 fun ThemePage(controller: ThemeController, onBack: () -> Unit) {
     SamplePageScaffold(title = "主题与设计变量", onBack = onBack) {
         SampleSectionHeader("深浅色模式")
-        SmartisanGroup {
+        // 单选行自己不画卡片（原版的单选行也长在设置页的白色卡片里），
+        // 所以整个分组按「单行分组」传 position，由分组统一画上原版卡片底图与投影。
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             SmartisanRadioRow(
                 text = "浅色（默认）",
                 summary = "原版 Smartisan OS 的原始设计，也是本库默认值",

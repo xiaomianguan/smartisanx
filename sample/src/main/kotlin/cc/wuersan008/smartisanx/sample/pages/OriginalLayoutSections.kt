@@ -14,6 +14,7 @@ import cc.wuersan008.smartisanx.sample.SampleSectionHeader
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanFlowLayout
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 
 /** 示例用的姓氏，对应原版姓氏选择弹层里的数据。 */
 private val SampleSurnames =
@@ -34,7 +35,7 @@ fun OriginalLayoutSections() {
     val shapes = LocalSmartisanShapes.current
     val typography = LocalSmartisanTypography.current
     SampleSectionHeader("流式布局（SurnameFlowLayout）")
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp)) {
             // 原版按行自动换行；这里额外给了 8dp 行列间距（原版靠子项外边距留缝，默认 0dp）。
             SmartisanFlowLayout(

@@ -25,6 +25,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBarItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanCard
 import cc.wuersan008.smartisanx.ui.layout.SmartisanEmptyHint
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTabRow
 import cc.wuersan008.smartisanx.ui.layout.smartisanVerticalScrollbar
 
@@ -84,7 +85,7 @@ fun TabSection() {
             SmartisanBottomBarItem(label = "收藏", iconRes = SmartisanOriginalIcons.TabFavorite),
             SmartisanBottomBarItem(label = "更多", iconRes = SmartisanOriginalIcons.TabMore),
         )
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Column {
             SmartisanTabRow(
                 tabs = tabs,
@@ -113,7 +114,7 @@ fun ScrollbarSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val scrollState = rememberScrollState()
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         Box(
             Modifier
                 .fillMaxWidth()
@@ -144,7 +145,7 @@ fun ScrollbarSection() {
 /** 空态示例。 */
 @Composable
 fun EmptyHintSection() {
-    SmartisanGroup {
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
         // 空态插图用原版 blank_folder，与锤子音乐资料库空态一致。
         SmartisanEmptyHint(
             title = "这里还没有内容",

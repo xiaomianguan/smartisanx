@@ -28,7 +28,8 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanDialogAppInfo
 import cc.wuersan008.smartisanx.ui.control.SmartisanDialogSectionGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanDialogSingleChoiceRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
-import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
 import cc.wuersan008.smartisanx.ui.layout.rememberSmartisanSnackbarState
 import cc.wuersan008.smartisanx.ui.basic.SmartisanRowDivider
@@ -71,31 +72,36 @@ fun OverlayPage(onBack: () -> Unit) {
     SamplePageScaffold(title = "浮层", onBack = onBack) {
         SampleSectionHeader("弹窗")
         SmartisanGroup {
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Top,
                 title = "SmartisanDialog",
                 summary = "带标题栏与按钮的居中弹窗",
                 onClick = { showDialog = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanConfirmDialog",
                 summary = "标题 + 说明 + 确定/取消",
                 onClick = { showConfirm = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanMenuDialog",
                 summary = "贴底的全宽动作菜单",
                 onClick = { showMenu = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanProgressDialog",
                 summary = "246dp 进度卡片：标题 + 48dp 圆环 + 文案",
                 onClick = { showProgress = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanProgressDialog（深色）",
                 summary = "setDarkTheme(true)：深色底图 + 白字",
                 onClick = {
@@ -104,31 +110,36 @@ fun OverlayPage(onBack: () -> Unit) {
                 },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanModalWindow",
                 summary = "自定义内容弹窗（标题栏 + 按钮自己排）",
                 onClick = { showModalWindow = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanSheetScaffold",
                 summary = "挂在页面里的弹层（自带遮罩与进出动画）",
                 onClick = { showSheetScaffold = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanTwistGuide",
                 summary = "手势切横竖屏提示（全屏遮罩 + 303×453dp 面板 + 右上角关闭）",
                 onClick = { showTwistGuide = true },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanSnackbar（带操作）",
                 summary = "金色操作按钮，2 秒后自动收起",
                 onClick = { snackbar.show("已加入收藏", actionText = "撤销") { lastAction = "撤销" } },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanSnackbar（带图标）",
                 summary = "右侧 2px 分隔线 + 40dp 图标按钮",
                 onClick = {
@@ -139,7 +150,8 @@ fun OverlayPage(onBack: () -> Unit) {
                 },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Middle,
                 title = "SmartisanBhmSheet",
                 summary = "带标题的列表弹层：分组标题 + 计数徽标 + 两列切换",
                 onClick = {
@@ -148,7 +160,8 @@ fun OverlayPage(onBack: () -> Unit) {
                 },
             )
             SmartisanRowDivider()
-            SmartisanListItem(
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Bottom,
                 title = "SmartisanBottomSheet",
                 summary = "带进出动画的底部弹层",
                 onClick = { showSheet = true },
@@ -156,7 +169,7 @@ fun OverlayPage(onBack: () -> Unit) {
         }
 
         SampleSectionHeader("最近一次操作")
-        SmartisanGroup {
+        SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
                 SmartisanText(
                     text = lastAction,
