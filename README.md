@@ -86,7 +86,8 @@ smartisanx/
 
 | 中文文档 | English | 内容 |
 | --- | --- | --- |
-| [docs/快速开始.md](docs/快速开始.md) | [QuickStart.md](docs/QuickStart.md) | 环境要求、引入依赖、第一个界面、深浅色、常见问题 |
+| [docs/快速开始.md](docs/快速开始.md) | [QuickStart.md](docs/QuickStart.md) | 环境要求、引入依赖、第一个界面、页面结构、转场、长列表、弹层、深浅色、打包、常见问题 |
+| [docs/开发指南.md](docs/开发指南.md) | [DevelopmentGuide.md](docs/DevelopmentGuide.md) | 页面骨架与行 / 分组规则、七种页面配方、主题与素材、常见坑、真机核对、加组件的约定、上线清单 |
 | [docs/组件总览.md](docs/组件总览.md) | [Components.md](docs/Components.md) | 全部组件的 API 与参数说明 |
 | [docs/主题与设计变量.md](docs/主题与设计变量.md) | [Theme.md](docs/Theme.md) | 色板、文字样式、形状、尺寸、动画规格的完整取值 |
 | [docs/从三个复刻项目迁移.md](docs/从三个复刻项目迁移.md) | [Migration.md](docs/Migration.md) | 原文件与 smartisanx 组件的逐项对照、迁移注意事项 |
@@ -174,6 +175,12 @@ SmartisanTheme {
 图标在 `ui` 模块里：**优先用原版位图**（`SmartisanDrawables` / `SmartisanOriginalIcons`，
 selector 自带按下 / 禁用态），原版没有对应素材时才用 `SmartisanIcon(imageVector = ...)` 传自己的 `ImageVector`。
 
+### 4. 接着往下看
+
+上面是一个最小可运行的应用。页面骨架怎么拼、设置页 / 列表页 / 表单页 / 弹层页 / 多选页怎么做、
+哪些坑一定会踩、往库里加组件守什么规矩 —— 都在[开发指南](docs/开发指南.md)里，
+每一节都配可直接复制的模板。
+
 ## 组件总览
 
 ### 主题（`cc.wuersan008.smartisanx.core.theme`）
@@ -181,7 +188,7 @@ selector 自带按下 / 禁用态），原版没有对应素材时才用 `Smarti
 | 名称 | 说明 |
 | --- | --- |
 | `SmartisanTheme` | 提供色板、文字样式、形状，以及滚动越界回弹 |
-| `ThemeController` / `rememberSmartisanThemeController` | 跟随系统 / 浅色 / 深色 |
+| `SmartisanThemeController` / `rememberSmartisanThemeController` | 跟随系统 / 浅色 / 深色 |
 | `SmartisanColors` | 30 个语义色，浅色与深色各一套 |
 | `SmartisanTypography` | 标题栏、正文、列表一二级、按钮、弹窗、等宽数字等 |
 | `SmartisanShapes` | 直角、2/4/8/10/16dp 圆角 |

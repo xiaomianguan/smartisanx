@@ -24,9 +24,9 @@ All public APIs grouped by package. Every component must be wrapped in `Smartisa
 | --- | --- |
 | `SmartisanTheme(colors, typography, shapes, content)` | Provides the theme, **light by default** |
 | `SmartisanTheme(controller, typography, shapes, content)` | Controller-based, switchable at runtime |
-| `rememberSmartisanThemeController(mode)` | Creates a `ThemeController`, defaults to `Light` |
-| `ThemeController.colorSchemeMode` | `System` / `Light` / `Dark` (**dark is experimental** — the original had no dark mode) |
-| `ThemeController.isDark()` / `colors()` | Current state |
+| `rememberSmartisanThemeController(mode)` | Creates a `SmartisanThemeController`, defaults to `Light` |
+| `SmartisanThemeController.colorSchemeMode` | `System` / `Light` / `Dark` (**dark is experimental** — the original had no dark mode) |
+| `SmartisanThemeController.isDark()` / `colors()` | Current state |
 | `lightSmartisanColors()` / `darkSmartisanColors()` | Default palettes (dark is experimental) |
 | `SmartisanColors` | 30 semantic colors (see [Theme.md](Theme.md)) |
 | `SmartisanTypography` | 12 text styles |
@@ -708,6 +708,8 @@ Notes:
     titleBar: (@Composable () -> Unit)? = null,
     bottomBar: (@Composable () -> Unit)? = null,
     containerColor: Color = LocalSmartisanColors.current.pageBackground,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.PageBackground,
+    applyNavigationBarInset: Boolean = true,   // reserves the navigation bar height at the bottom
     content: @Composable () -> Unit,
 )
 
@@ -757,7 +759,7 @@ class SmartisanTitleBarAction private constructor(
 
 @Composable fun SmartisanGroup(modifier, shape, color, horizontalMargin, content)
 @Composable fun SmartisanGroupDivider(modifier, startIndent)
-@Composable fun SmartisanGroupItem(position, title, modifier, summary, leading, trailing, enabled, selected, showDivider, ...)   // SmartisanListItem + the original group background per position
+@Composable fun SmartisanGroupItem(position, title, modifier, summary, leading, trailing, enabled, selected, showDivider, dividerStartIndent, minHeight, contentPadding, ...)   // SmartisanListItem + the original group background per position
 @Composable fun SmartisanSectionTitle(text: String, modifier: Modifier = Modifier, startIndent: Dp)
 @Composable fun SmartisanCard(modifier, shape, color, content)
 
@@ -1085,8 +1087,6 @@ data class SmartisanHiddenRowAction(
     title: String? = null, scrimColor: Color = LocalSmartisanColors.current.scrim,
     content: @Composable ColumnScope.() -> Unit,
 )
-```
-
 @Composable fun SmartisanProgressDialog(
     onDismissRequest: () -> Unit, modifier: Modifier = Modifier,
     title: String? = null, message: String? = null,
@@ -1262,7 +1262,7 @@ indices under `cc.wuersan008.smartisanx.ui.asset`:
 | --- | --- |
 | `SmartisanOriginalIcons` | Commonly used icons named by purpose (`Back` / `More` / `Search` / `Play` / `Settings` …); each constant points at an original selector with pressed / disabled states |
 | `SmartisanDrawables` | The original artwork the components use by default (title bar, dialogs, list rows, group cards, dials, tab bar, calculator keys, …) |
-| `SmartisanIconSet` | The full index of the 3617 icons extracted from the factory APKs, in 9 groups (title bar 72 / tab bar 51 / list 158 / **list rows 49** / select 10 / media 25 / clock 30 / editor 30 / other 3192); the demo app's "original icons" page walks through them |
+| `SmartisanIconSet` | The full index of the 3617 icons extracted from the factory APKs, in 9 groups (title bar 72 / tab bar 51 / list 158 / **list rows 49** / select 10 / media 25 / clock 30 / editor 30 / other 3192); the demo app's "original icons" page walks through them. Look one up by name with `SmartisanIconSet.find("name")` or `SmartisanIconSet.listRow.find("name")` |
 
 See the asset index below for usage; for a custom vector icon, both
 `SmartisanIcon(imageVector = ...)` and `SmartisanTitleBarAction(imageVector, ...)` accept any

@@ -18,7 +18,7 @@ import androidx.core.view.WindowCompat
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanTheme
-import cc.wuersan008.smartisanx.core.theme.ThemeController
+import cc.wuersan008.smartisanx.core.theme.SmartisanThemeController
 import cc.wuersan008.smartisanx.core.theme.rememberSmartisanThemeController
 import cc.wuersan008.smartisanx.sample.layouts.LayoutsPage
 import cc.wuersan008.smartisanx.sample.pages.AboutPage
@@ -37,7 +37,7 @@ import cc.wuersan008.smartisanx.sample.pages.ThemePage
 /**
  * 示例应用根组件。
  *
- * 用 [ThemeController] 管理深浅色，用简单的状态路由在首页与各组件页之间切换，
+ * 用 [SmartisanThemeController] 管理深浅色，用简单的状态路由在首页与各组件页之间切换，
  * 不引入任何导航库，方便直接阅读。
  */
 @Composable

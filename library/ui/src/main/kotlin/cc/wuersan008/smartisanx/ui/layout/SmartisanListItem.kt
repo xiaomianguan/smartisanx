@@ -50,6 +50,11 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * 左右槽都**不能按内容宽度算**：原版左槽是固定 60dp，所以 24dp 与 36dp 的图标
  * 后面文字都落在同一个 x 上（有左图标时距屏幕左 72dp）。副标题 / 箭头所在的右槽
  * 左边留 `flexible_space`(18dp)，右边留 6dp。
+ *
+ * **什么时候用它**：单独一行，自带整张卡片底图与向外投影，直接放在页面底纹上，
+ * 上下用 [SmartisanListVerticalGap] 分隔。
+ * 要拼成**一张**卡片的分组（原版设置页那样）请用 [SmartisanGroupItem]；
+ * 需要「一 / 二 / 三行」自适应版式请用 [SmartisanListRow]。
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

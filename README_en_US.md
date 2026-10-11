@@ -97,11 +97,13 @@ smartisanx/
 
 | Document | Contents |
 | --- | --- |
-| [QuickStart.md](docs/QuickStart.md) | Requirements, adding the dependency, first screen, dark mode, FAQ |
+| [QuickStart.md](docs/QuickStart.md) | Requirements, adding the dependency, first screen, page structure, transitions, long lists, overlays, dark mode, packaging, FAQ |
+| [DevelopmentGuide.md](docs/DevelopmentGuide.md) | Page skeleton and row / group rules, seven screen recipes, theming and artwork, common pitfalls, on-device verification, component conventions, release checklist |
 | [Components.md](docs/Components.md) | API and parameters for every component |
 | [Theme.md](docs/Theme.md) | Full values for colors, text styles, shapes, dimensions and motion |
 | [Migration.md](docs/Migration.md) | File-by-file mapping from the three revival projects, migration notes |
 | [ComponentVerification.md](docs/ComponentVerification.md) | Per-component comparison against the originals, known differences |
+| [原版应用组件清单.md](docs/原版应用组件清单.md) | Reverse-engineering inventory of the 12 original APKs and the gap analysis (Chinese only) |
 | [固件组件清单.md](docs/固件组件清单.md) | Firmware app inventory and components not yet ported (Chinese only) |
 
 Chinese originals: [docs/快速开始.md](docs/快速开始.md) · [docs/组件总览.md](docs/组件总览.md) ·
@@ -187,6 +189,13 @@ Icons live in the `ui` module: **prefer the original bitmaps** (`SmartisanDrawab
 `SmartisanOriginalIcons`, whose selectors carry the pressed / disabled states); when no original asset
 exists, pass your own `ImageVector` to `SmartisanIcon(imageVector = ...)`.
 
+### 4. Where to go next
+
+That is a minimal working app. How to assemble the page skeleton, how to build settings / list / form /
+overlay / multi-select screens, which pitfalls you will hit, and the conventions for adding components
+to the library all live in [DevelopmentGuide.md](docs/DevelopmentGuide.md), each section with a
+copy-pasteable template.
+
 ## Component overview
 
 ### Theme (`cc.wuersan008.smartisanx.core.theme`)
@@ -194,7 +203,7 @@ exists, pass your own `ImageVector` to `SmartisanIcon(imageVector = ...)`.
 | Name | Description |
 | --- | --- |
 | `SmartisanTheme` | Provides colors, text styles, shapes and the scroll overscroll bounce |
-| `ThemeController` / `rememberSmartisanThemeController` | System / light / dark |
+| `SmartisanThemeController` / `rememberSmartisanThemeController` | System / light / dark |
 | `SmartisanColors` | 30 semantic colors, one set for light and one for dark |
 | `SmartisanTypography` | Title bar, body, list primary/secondary, button, dialog, tabular numerals |
 | `SmartisanShapes` | Square plus 2/4/8/10/16dp corners |

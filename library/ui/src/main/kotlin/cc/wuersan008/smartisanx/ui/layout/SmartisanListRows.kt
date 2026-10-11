@@ -117,6 +117,10 @@ private val SmartisanListRowLines.hasTertiary: Boolean
  * 城市行（一级 15sp），本组件对应 framework 的原始矩阵（一级 17sp / 16sp）。
  * 两者都保留，按需要选用。
  *
+ * **选择顺序**：单独一行（自带整张卡片底图）→ [SmartisanListItem]；
+ * 要拼成一张卡片的分组 → [SmartisanGroupItem]；需要 2 / 3 行文字或 framework 的原始字号
+ * → 本组件。三者的槽位几何一致，标题永远对齐，可以在同一页里混用。
+ *
  * @param tertiary 第三行文字，仅在 [SmartisanListRowLines.ThreeLine] / [ThreeLineAlt] 下显示。
  * @param leading 左槽内容，自动放进 60dp 的方形图标区；传 `null` 时改用 [contentPadding] 缩进。
  * @param contentPadding 没有 [leading] 时的行内容左缩进，对应原版 `flexible_space`(18dp)。

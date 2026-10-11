@@ -189,7 +189,22 @@ fun smartisanGroupRowBackground(position: SmartisanGroupRowPosition): Int =
 /**
  * 分组里的列表行：自动使用对应位置的原版分组底图。
  *
- * 这是 [SmartisanListItem] 的便捷包装，保留了后者的全部参数。
+ * 这是 [SmartisanListItem] 的便捷包装：参数完全一致，只多了一个必须传的 [position]
+ * —— 位置决定取上 / 中 / 下 / 单张哪一段卡片底图（圆角只出现在首尾）。
+ *
+ * **什么时候用它**：内容要拼成**一张**卡片时（原版设置页、列表页的分组）。
+ * 分组里的每一行都按自己的位置取底图，`SmartisanGroup` 本身保持透明：
+ *
+ * ```kotlin
+ * SmartisanGroup {
+ *     SmartisanGroupItem(SmartisanGroupRowPosition.Top, "第一行")
+ *     SmartisanGroupItem(SmartisanGroupRowPosition.Middle, "第二行", showDivider = true)
+ *     SmartisanGroupItem(SmartisanGroupRowPosition.Bottom, "最后一行")
+ * }
+ * ```
+ *
+ * **什么时候不用它**：只想单独放一行（自带整张卡片底图）时用 [SmartisanListItem]；
+ * 需要「一 / 二 / 三行」自适应版式时用 [SmartisanListRow]。
  */
 @Composable
 fun SmartisanGroupItem(
@@ -202,6 +217,9 @@ fun SmartisanGroupItem(
     enabled: Boolean = true,
     selected: Boolean = false,
     showDivider: Boolean = false,
+    dividerStartIndent: Dp = SmartisanDimens.RowContentStart,
+    minHeight: Dp = SmartisanDimens.ListItemMinHeight,
+    contentPadding: Dp = SmartisanDimens.RowContentStart,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
 ) {
@@ -214,6 +232,9 @@ fun SmartisanGroupItem(
         enabled = enabled,
         selected = selected,
         showDivider = showDivider,
+        dividerStartIndent = dividerStartIndent,
+        minHeight = minHeight,
+        contentPadding = contentPadding,
         rowBackgroundRes = smartisanGroupRowBackground(position),
         rowShadowRes = smartisanGroupRowShadow(position),
         onClick = onClick,

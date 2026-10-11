@@ -14,13 +14,18 @@
 
 1. API 覆盖：文档里写的 `Smartisan*` 名字是否真的存在
    （`SmartisanXStatusIcons` 这种已删除的就会报出来）。
-2. 签名：文档 kotlin 代码块里的 `fun X(...)` 参数名与真实签名比对。
-3. 主题取值：色板表（浅色 / 深色）、尺寸常量、文字样式、形状四张表逐项比对。
-4. 文档配对：README ↔ README_en_US、组件总览 ↔ Components、主题与设计变量 ↔ Theme、
-   快速开始 ↔ QuickStart、组件核对记录 ↔ ComponentVerification、迁移文档 ↔ Migration
-   的名字集合必须一致。
-5. 多语言：`values-*/smartisanx_strings.xml` 的 key 集合与默认语言比对。
-6. 资源数量：`library/ui/src/main/res` 的文件总数、分类与夜间变体数量，
+2. 反向覆盖：库里每个公开 API 名字是否都至少出现在一篇文档里
+   （新组件忘了写文档会在这里报出来）。
+3. 签名：文档 kotlin 代码块里的 `fun X(...)` 参数名与真实签名比对。
+4. 主题取值：色板表（浅色 / 深色）、尺寸常量、文字样式、形状四张表逐项比对。
+5. 文档配对：README ↔ README_en_US、组件总览 ↔ Components、主题与设计变量 ↔ Theme、
+   快速开始 ↔ QuickStart、开发指南 ↔ DevelopmentGuide、组件核对记录 ↔ ComponentVerification、
+   迁移文档 ↔ Migration 的名字集合必须一致。
+6. 结构配对：成对文档的标题层级序列、代码块数量、表格行数量必须一致
+   （一边加了小节、另一边忘了跟就会报出来）。
+7. 数字：文档里写的资源文件总数与图标总数必须和实际一致。
+8. 多语言：`values-*/smartisanx_strings.xml` 的 key 集合与默认语言比对。
+9. 资源数量：`library/ui/src/main/res` 的文件总数、分类与夜间变体数量，
    用来核对 README「资源清单」里的数字。
 """
 
@@ -76,7 +81,8 @@ def params_after(text: str, i: int) -> str:
 
 
 def param_names(param_str: str) -> list[str]:
-    # 先按行去掉 `//` 注释（注释里可能有逗号，会让下面的切分跑偏）
+    # 先去掉注释（注释里可能有逗号，会让下面的切分跑偏）
+    param_str = re.sub(r"/\*.*?\*/", " ", param_str, flags=re.S)
     param_str = "\n".join(line.split("//")[0] for line in param_str.splitlines())
     names = []
     for part in split_top(param_str):
@@ -117,6 +123,8 @@ DOCS = [
     "docs/Components.md",
     "docs/快速开始.md",
     "docs/QuickStart.md",
+    "docs/开发指南.md",
+    "docs/DevelopmentGuide.md",
     "docs/主题与设计变量.md",
     "docs/Theme.md",
     "docs/组件核对记录.md",
@@ -130,6 +138,7 @@ PAIRS = [
     ("docs/组件总览.md", "docs/Components.md"),
     ("docs/主题与设计变量.md", "docs/Theme.md"),
     ("docs/快速开始.md", "docs/QuickStart.md"),
+    ("docs/开发指南.md", "docs/DevelopmentGuide.md"),
     ("docs/组件核对记录.md", "docs/ComponentVerification.md"),
     ("docs/从三个复刻项目迁移.md", "docs/Migration.md"),
 ]
@@ -287,6 +296,70 @@ def check_doc_pairs() -> None:
     report("中英文档配对", lines)
 
 
+def check_api_documented() -> None:
+    """反向覆盖：库里每个公开 API 名字都要在文档里出现过。
+
+    正向检查（[check_api_coverage]）保证「文档里写的都存在」；
+    这一项保证「代码里有的都写了」—— 新组件忘了写文档就会在这里报出来。
+    """
+    lib_text = "\n".join(p.read_text(encoding="utf-8") for p in library_sources())
+    docs_text = "\n".join(read(d) for d in DOCS)
+    names: set[str] = set()
+    for m in re.finditer(
+        r"^(?:@Composable\s+)?(?:fun|class|interface|object|enum class|data class|sealed class|typealias)\s+"
+        r"(Smartisan[A-Za-z0-9_]*)",
+        lib_text,
+        re.M,
+    ):
+        names.add(m.group(1))
+    for m in re.finditer(r"^val\s+(Smartisan[A-Za-z0-9_]*)", lib_text, re.M):
+        names.add(m.group(1))
+    for m in re.finditer(r"^fun\s+(?:[A-Za-z0-9_.<>?]+\.)?(smartisan[A-Za-z0-9_]*)", lib_text, re.M):
+        names.add(m.group(1))
+    missing = sorted(n for n in names if n not in docs_text)
+    report("库里每个公开 API 是否都写进了文档", ["文档里没出现过：%s" % n for n in missing])
+
+
+def check_pair_structure() -> None:
+    """成对文档的结构必须一致：标题层级序列、代码块数量、表格行数量。
+
+    中英两边内容翻译不同，但**结构**应当一一对应；结构对不上通常意味着
+    一边加了小节而另一边忘了跟。
+    """
+    lines = []
+    for zh, en in PAIRS:
+        a, b = read(zh), read(en)
+        checks = (
+            ("标题层级", lambda t: [len(m) for m in re.findall(r"^(#{1,6})\s", t, re.M)]),
+            ("代码块数", lambda t: re.findall(r"^```", t, re.M)),
+            ("表格行数", lambda t: re.findall(r"^\|", t, re.M)),
+        )
+        for label, extract in checks:
+            ca, cb = extract(a), extract(b)
+            if ca != cb:
+                lines.append(
+                    "%s 与 %s 的%s不一致：%s vs %s" % (zh, en, label, len(ca), len(cb))
+                )
+    report("中英文档结构配对", lines)
+
+
+def check_doc_numbers() -> None:
+    """文档里写的资源总数与图标总数必须和代码 / 资源目录一致。"""
+    res = ROOT / "library/ui/src/main/res"
+    total = sum(1 for p in res.rglob("*") if p.is_file())
+    icon_set = ROOT / "library/ui/src/main/kotlin/cc/wuersan008/smartisanx/ui/asset/SmartisanIconSet.kt"
+    icons = len(re.findall(r'SmartisanIconEntry\("', icon_set.read_text(encoding="utf-8")))
+    lines = []
+    for doc in DOCS:
+        for m in re.finditer(r"(\d{3,6})\*{0,2}\s*个(?:资源)?文件", read(doc)):
+            if int(m.group(1)) != total:
+                lines.append("%s 写了 %s 个文件，实际 %d" % (doc, m.group(1), total))
+        for m in re.finditer(r"(\d{3,6})\*{0,2}\s*个(?:原版)?图标", read(doc)):
+            if int(m.group(1)) != icons:
+                lines.append("%s 写了 %s 个图标，实际 %d" % (doc, m.group(1), icons))
+    report("文档里的资源 / 图标数量", lines)
+
+
 def check_locales() -> None:
     res = ROOT / "library/ui/src/main/res"
     pattern = r'<(?:string|plurals) name="([^"]+)"'
@@ -352,9 +425,12 @@ def main() -> int:
     args = parser.parse_args()
 
     check_api_coverage()
+    check_api_documented()
     check_signatures()
     check_theme_tokens()
     check_doc_pairs()
+    check_pair_structure()
+    check_doc_numbers()
     check_locales()
     check_resources()
 

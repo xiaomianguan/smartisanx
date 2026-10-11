@@ -2,7 +2,7 @@ package cc.wuersan008.smartisanx.sample.pages
 
 import androidx.compose.runtime.Composable
 import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
-import cc.wuersan008.smartisanx.core.theme.ThemeController
+import cc.wuersan008.smartisanx.core.theme.SmartisanThemeController
 import cc.wuersan008.smartisanx.sample.ExperimentalNote
 import cc.wuersan008.smartisanx.sample.SampleFootnote
 import cc.wuersan008.smartisanx.sample.SamplePageScaffold
@@ -13,7 +13,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanRadioRow
 
 /** 主题页：展示色板、文字样式、形状，并提供深浅色切换。 */
 @Composable
-fun ThemePage(controller: ThemeController, onBack: () -> Unit) {
+fun ThemePage(controller: SmartisanThemeController, onBack: () -> Unit) {
     SamplePageScaffold(title = "主题与设计变量", onBack = onBack) {
         SampleSectionHeader("深浅色模式")
         // 单选行自己不画卡片（原版的单选行也长在设置页的白色卡片里），

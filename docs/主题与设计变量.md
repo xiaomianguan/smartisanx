@@ -16,7 +16,7 @@ fun SmartisanTheme(
 
 @Composable
 fun SmartisanTheme(
-    controller: ThemeController,
+    controller: SmartisanThemeController,
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
     overscrollFactory: OverscrollFactory? = SmartisanOverscrollFactory(),

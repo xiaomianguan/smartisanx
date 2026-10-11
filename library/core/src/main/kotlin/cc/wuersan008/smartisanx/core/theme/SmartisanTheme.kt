@@ -63,7 +63,7 @@ enum class SmartisanColorSchemeMode {
  * ```
  */
 @Stable
-class ThemeController(
+class SmartisanThemeController(
     colorSchemeMode: SmartisanColorSchemeMode = SmartisanColorSchemeMode.Light,
 ) {
     /** 当前主题模式，可直接赋值以切换深浅色。 */
@@ -86,7 +86,7 @@ class ThemeController(
 }
 
 /**
- * 创建一个 [ThemeController]。
+ * 创建一个 [SmartisanThemeController]。
  *
  * 默认 [SmartisanColorSchemeMode.Light]；需要跟随系统或强制深色时显式传入，
  * 但那两种模式属于实验性，见 [SmartisanColorSchemeMode]。
@@ -94,8 +94,8 @@ class ThemeController(
 @Composable
 fun rememberSmartisanThemeController(
     colorSchemeMode: SmartisanColorSchemeMode = SmartisanColorSchemeMode.Light,
-): ThemeController =
-    remember(colorSchemeMode) { ThemeController(colorSchemeMode) }
+): SmartisanThemeController =
+    remember(colorSchemeMode) { SmartisanThemeController(colorSchemeMode) }
 
 /**
  * 当前 smartisanx 主题是否为深色；`null` 表示未包裹主题、跟随系统。
@@ -108,7 +108,7 @@ val LocalSmartisanDarkOverride: ProvidableCompositionLocal<Boolean?> =
     staticCompositionLocalOf { null }
 
 /** 由 [SmartisanTheme] 提供的当前控制器。 */
-val LocalSmartisanThemeController: ProvidableCompositionLocal<ThemeController?> =
+val LocalSmartisanThemeController: ProvidableCompositionLocal<SmartisanThemeController?> =
     staticCompositionLocalOf { null }
 
 /**
@@ -126,7 +126,7 @@ fun systemSmartisanColors(): SmartisanColors =
  * 提供色板、文字样式与形状，必须包裹所有 smartisanx 组件。
  *
  * **默认是浅色**（与原版 Smartisan OS 一致）。
- * 需要跟随系统或强制深色时，请用接收 [ThemeController] 的重载，
+ * 需要跟随系统或强制深色时，请用接收 [SmartisanThemeController] 的重载，
  * 那两种模式属于实验性，见 [SmartisanColorSchemeMode]。
  *
  * ```kotlin
@@ -167,11 +167,11 @@ fun SmartisanTheme(
 }
 
 /**
- * 使用 [ThemeController] 的 [SmartisanTheme] 重载，支持运行时切换深浅色。
+ * 使用 [SmartisanThemeController] 的 [SmartisanTheme] 重载，支持运行时切换深浅色。
  */
 @Composable
 fun SmartisanTheme(
-    controller: ThemeController,
+    controller: SmartisanThemeController,
     typography: SmartisanTypography = SmartisanTypography(),
     shapes: SmartisanShapes = SmartisanShapes(),
     fonts: SmartisanFonts = SmartisanFonts.Original,

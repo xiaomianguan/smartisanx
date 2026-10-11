@@ -12,7 +12,19 @@ import cc.wuersan008.smartisanx.ui.R
 class SmartisanIconEntry(val name: String, @DrawableRes val res: Int)
 
 /** 一组原版图标。 */
-class SmartisanIconGroup(val title: String, val icons: List<SmartisanIconEntry>)
+class SmartisanIconGroup(val title: String, val icons: List<SmartisanIconEntry>) {
+    /**
+     * 按资源名精确查一个图标，找不到返回 `null`。
+     *
+     * ```kotlin
+     * SmartisanIconSet.listRow.find("setting_item_icon_pencil")?.let {
+     *     SmartisanIcon(res = it, contentDescription = null)
+     * }
+     * ```
+     */
+    @DrawableRes
+    fun find(name: String): Int? = icons.firstOrNull { it.name == name }?.res
+}
 
 /**
  * **原版 UI 图标总表（只收录图标，不含按钮/面板底图）。**
@@ -3754,4 +3766,13 @@ object SmartisanIconSet {
 
     /** 图标总数。 */
     val size: Int get() = groups.sumOf { it.icons.size }
+
+    /**
+     * 按资源名在**所有分组**里查一个图标，找不到返回 `null`。
+     *
+     * 组内查找用 [SmartisanIconGroup.find]；只想在某一组里找（例如「列表行图标」那一组）
+     * 就用 `SmartisanIconSet.listRow.find("...")`。
+     */
+    @DrawableRes
+    fun find(name: String): Int? = groups.firstNotNullOfOrNull { it.find(name) }
 }
