@@ -102,7 +102,7 @@ Components verified this way so far:
 | `SmartisanAboutStaticItem` | row pitch | 52.9dp (185px) between separators; the original adds up to 7 + 13.5sp line + 3 + 12sp line + 7 + 1px + 5dp ≈ 52.5dp |
 | | separator | 1px, x = 105..1210 (30dp start indent / 15dp end inset, both straight from the original dimens) |
 | | text inset | title ink starts at x = 116px = the 30dp box plus the glyph's left bearing |
-| | About page logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo is 88dp tall and 40dp below the card top (the original red lockup occupied 40..127.7dp); the product name `smartisanx` is 20sp in the brand accent with its ink landing at 133..148dp, and the 8.6sp grey version line's ink at 160..166dp (the original's 98..115dp row is "smartisan os" with the version at 143dp; the 165.7dp Google trademark line is dropped here); the card is **as wide as** the five setting rows below it (12dp each side: measured x = 43..1220 vs 42..1220; on the original R2 both cards measure x = 30..1049 = 12dp); the two cards are separated by the original's 14dp `list_item_vertical_gap` (measured 50px = 14.3dp; the R2 measures 36px = 14.4dp) |
+| | About page logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo (88dp) plus the product name `smartisanx` (20sp in the brand accent, 1sp letter spacing, 2dp below the logo) form **one block centred vertically** in the card (measured: logo 33.1..120.9dp with the logo's own centre at 77.0dp, 12.7dp above the card's centre 89.7dp; the name's ink at 126.9..141.7dp), while the 8.6sp grey version line stays pinned at 158dp (ink 159.7..165.7dp) (in the original 40..127.7dp is one block of "red lockup + smartisan os + based on Android™" whose centre 84dp sits slightly above the card's centre 90dp, with the version at 143dp and the 165.7dp Google trademark line dropped here); the card is **as wide as** the five setting rows below it (12dp each side: measured x = 43..1220 vs 42..1220; on the original R2 both cards measure x = 30..1049 = 12dp); the two cards are separated by the original's 14dp `list_item_vertical_gap` (measured 50px = 14.3dp; the R2 measures 36px = 14.4dp) |
 | `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
 | | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
 | | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |
@@ -681,12 +681,15 @@ Using the same `group_list_item_bg_single` (white + 10dp corners + 1px stroke) p
 `list_content_item_single_shadow` as the list rows, the logo card now measures x = 43..1220 and the
 list card x = 42..1220 (the 1px difference is the measuring row landing on the 10dp corner).
 
-The three text lines inside that card were then re-laid-out for the project: in the original
-"smartisan os" and "based on Android™" are **baked into the `about_logo` 9-patch** (measured at
-98..115dp), while our logo is just the project's kraft-box icon (40..128dp, taller than the original
-lockup), so the card now stacks "icon + product name `smartisanx` (20sp in the brand accent, 1sp
-letter spacing) + version (8.6sp grey)" — measured: the name's ink at 133..148dp, the version's at
-160..166dp (the card is 180dp tall, leaving 13dp at the bottom). The original's bottom line
+The text inside that card was then re-laid-out for the project: in the original "red lockup +
+smartisan os + based on Android™" is **one block baked into the `about_logo` 9-patch**
+(40..127.7dp, its centre 84dp sitting slightly above the card's centre at 90dp), while our logo is
+just the project's kraft-box icon — so the card now groups "logo (88dp) + product name `smartisanx`
+(20sp in the brand accent, 1sp letter spacing, 2dp below the logo)" into **one block centred
+vertically** in the card (reproducing the original's "block centred, lockup above the midline"
+relationship), with the 8.6sp grey version line pinned separately at 158dp. Measured: logo
+33.1..120.9dp (the logo's own centre 77.0dp is 12.7dp above the card's centre 89.7dp), the name's ink
+at 126.9..141.7dp, the version's ink at 159.7..165.7dp. The original's bottom line
 "- Android is a trademark of Google LLC. -" (165.7dp) is dropped.
 
 The gap between the two cards was restored as well: in the original `about_settings_layout` the logo

@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -54,9 +56,10 @@ import java.util.Locale
  *
  * 1. **logo 卡片**（原版 `ListContentItemText` + `ListContentItemStyle.Single`）：
  *    原版这里放的是那张「smartisan os / based on Android™」锁图（`about_logo` 9-patch，
- *    336×180dp），本页换成「项目牛皮纸盒 logo（`R.drawable.about_logo`，88dp 高，距卡片顶
- *    40dp）+ 产品名 `smartisanx`（20sp 品牌红）+ 示例应用版本（8.6sp 灰字）」三行；
- *    原版图里最下面那行 Google 商标说明本页删掉了。
+ *    336×180dp），本页换成「项目牛皮纸盒 logo（`R.drawable.about_logo`，88dp 高）+
+ *    产品名 `smartisanx`（20sp 品牌红）」一整块**居中**（原版那张图里锁图与那两行字也是
+ *    烙在一起的一整块，居中之后 logo 自己略高于卡片中线），再单独压一行示例应用版本
+ *    （8.6sp 灰字）；原版图里最下面那行 Google 商标说明本页删掉了。
  * 2. **五行可点设置行**（原版 `SettingItemText`，`SettingSubItemTop/Mid/BottomStyle`）：
  *    源码仓库 / 组件文档 / 问题反馈 / 更新日志 / 开源许可，点一下用浏览器打开对应网址。
  * 3. **只读信息行**（原版 `AboutStaticItem`，即 [SmartisanAboutStaticItem]）：
@@ -146,20 +149,17 @@ private fun AboutRowArrow() {
 /** logo 卡片高度，等于原版 `about_logo` 9-patch 的固有高度（540px @ xxhdpi）。 */
 private val LogoCardHeight = 180.dp
 
-/** logo 距卡片顶的距离，原版红色锁图占 40dp..127.7dp 这一段。 */
-private val LogoTop = 40.dp
-
-/** logo 的图形高度，与原版红色锁图那一段等高。 */
+/**
+ * logo 的图形高度，与原版红色锁图那一整块等高（原版 40..127.7dp）。
+ *
+ * 原版这张图里「红色锁图 + smartisan os + based on Android™」是烙在一起的一整块，
+ * 本页把「项目 logo + 产品名」也当成一整块，整体在卡片里居中（见 [AboutLogoCard]），
+ * 所以这里不再有「距卡片顶 40dp」这种绝对定位。
+ */
 private val LogoHeight = 88.dp
 
-/**
- * 产品名距卡片顶的距离。
- *
- * 原版这一行（「smartisan os」）是**烙在 `about_logo` 图里**的，量出来在 98..115dp；
- * 本页的 logo 只是项目那只牛皮纸盒图标（40..128dp，比原版锁图高），所以产品名放在
- * 图标下面 2dp 处，再往下接版本号。
- */
-private val LogoNameTop = 130.dp
+/** logo 与产品名之间的间距，原版锁图与「smartisan os」之间量出来是 2dp。 */
+private val LogoNameGap = 2.dp
 
 /** 产品名的字号，原版图里那行字量出来约 20sp（红色、带字距）。 */
 private val LogoNameSize = 20.sp
@@ -176,13 +176,16 @@ private val LogoTextSize = 8.6.sp
 /**
  * 原版那张 logo 卡片（`ListContentItemText` + `ListContentItemStyle.Single`）。
  *
- * 卡片 180dp 高（原版 9-patch 的固有高度），自上而下三样东西：
- * 项目 logo（距顶 40dp、高 88dp）、产品名 `smartisanx`（20sp 红色、带字距）、
- * 版本号（8.6sp 灰字）。
+ * 卡片 180dp 高（原版 9-patch 的固有高度），里面是「一整块 logo + 产品名」再压一行版本号：
  *
- * 原版那张图里从上到下是「红色锁图 + smartisan os + based on Android™」，
- * 再往下才是 143dp 处的版本号与 165.7dp 处的 Google 商标说明 ——
- * 本页只留「图标 + 产品名 + 版本号」三行，商标说明那行删掉了。
+ * - **logo + 产品名**（项目 logo 88dp + 2dp 间距 + 20sp 品牌红字距 1sp 的 `smartisanx`）
+ *   作为一个 [Column] **整体在卡片里垂直居中** —— 对应原版那张图里
+ *   「红色锁图 + smartisan os + based on Android™」本来就是烙在一起的一整块
+ *   （40..127.7dp，块中心 84dp，比卡片中心 90dp 略高）。居中之后 logo 自己落在
+ *   卡片中线**之上**（logo 中心 77dp vs 卡片中心 90dp），产品名压在它下面。
+ * - **版本号**（8.6sp 灰字）单独钉在距卡片顶 158dp 处，与原版 143dp 那行同一个角色。
+ *
+ * 原版图里最下面那行「- Android is a trademark of Google LLC. -」（165.7dp）本页删掉了。
  *
  * 卡片本身可点（原版的 logo 也是可点的，用来触发连点彩蛋），底图用与下面五行设置行
  * 同一张分组卡片底图，所以按下会换成原版的按压位图。
@@ -223,25 +226,33 @@ private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
                 .height(LogoCardHeight),
         contentAlignment = Alignment.TopCenter,
     ) {
-        SmartisanIcon(
-            res = R.drawable.about_logo,
-            contentDescription = null,
-            modifier = Modifier.padding(top = LogoTop),
-            size = LogoHeight,
-        )
-        SmartisanText(
-            text = "smartisanx",
-            modifier = Modifier.fillMaxWidth().padding(top = LogoNameTop),
-            style =
-                typography.title.copy(
-                    fontSize = LogoNameSize,
-                    letterSpacing = LogoNameSpacing,
-                    fontWeight = FontWeight.Medium,
-                ),
-            color = colors.accent,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-        )
+        // logo 与产品名合成**一整块**再居中 —— 对应原版那张图里「红色锁图 + smartisan os +
+        // based on Android™」本来就是烙在一起的一整块（40..127.7dp，块中心 84dp，比卡片中心
+        // 90dp 略高一点）。居中之后 logo 自己就落在卡片中线之上（logo 中心 77dp vs 卡片中心
+        // 90dp），产品名压在它下面，版本号单独钉在 [LogoVersionTop]。
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(LogoNameGap),
+        ) {
+            SmartisanIcon(
+                res = R.drawable.about_logo,
+                contentDescription = null,
+                size = LogoHeight,
+            )
+            SmartisanText(
+                text = "smartisanx",
+                style =
+                    typography.title.copy(
+                        fontSize = LogoNameSize,
+                        letterSpacing = LogoNameSpacing,
+                        fontWeight = FontWeight.Medium,
+                    ),
+                color = colors.accent,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+            )
+        }
         SmartisanText(
             text = version,
             modifier = Modifier.fillMaxWidth().padding(top = LogoVersionTop),
