@@ -102,7 +102,7 @@ Components verified this way so far:
 | `SmartisanAboutStaticItem` | row pitch | 52.9dp (185px) between separators; the original adds up to 7 + 13.5sp line + 3 + 12sp line + 7 + 1px + 5dp ≈ 52.5dp |
 | | separator | 1px, x = 105..1210 (30dp start indent / 15dp end inset, both straight from the original dimens) |
 | | text inset | title ink starts at x = 116px = the 30dp box plus the glyph's left bearing |
-| | About page logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo is 88dp tall and 40dp below the card top (the original red lockup occupied 40..127.7dp); the version line's ink lands at 145dp and the trademark line's at 167dp (original 143dp / 165.7dp); the card is **as wide as** the five setting rows below it (12dp each side: measured x = 43..1220 vs 42..1220; on the original R2 both cards measure x = 30..1049 = 12dp) |
+| | About page logo card | 180dp tall (the original `about_logo` 9-patch is 540px @ xxhdpi); the project logo is 88dp tall and 40dp below the card top (the original red lockup occupied 40..127.7dp); the product name `smartisanx` is 20sp in the brand accent with its ink landing at 133..148dp, and the 8.6sp grey version line's ink at 160..166dp (the original's 98..115dp row is "smartisan os" with the version at 143dp; the 165.7dp Google trademark line is dropped here); the card is **as wide as** the five setting rows below it (12dp each side: measured x = 43..1220 vs 42..1220; on the original R2 both cards measure x = 30..1049 = 12dp); the two cards are separated by the original's 14dp `list_item_vertical_gap` (measured 50px = 14.3dp; the R2 measures 36px = 14.4dp) |
 | `SmartisanEditorRow` | row height | 44.0dp (label centres of adjacent rows are exactly 154px = 44dp apart) |
 | | background | position-dependent original 9-patch; the seam between rows is the two 9-patch borders stacked into a 2px line (gray 211) |
 | | leading label | 12sp, text gray 153 ⇒ `editor_label_text_color` (40% black); 12dp start margin (text starts at 30dp = 12dp card margin + 6dp row padding + 12dp) |
@@ -680,6 +680,21 @@ family and are equally wide (measured on a Nut R2: both cards x = 30..1049, i.e.
 Using the same `group_list_item_bg_single` (white + 10dp corners + 1px stroke) plus
 `list_content_item_single_shadow` as the list rows, the logo card now measures x = 43..1220 and the
 list card x = 42..1220 (the 1px difference is the measuring row landing on the 10dp corner).
+
+The three text lines inside that card were then re-laid-out for the project: in the original
+"smartisan os" and "based on Android™" are **baked into the `about_logo` 9-patch** (measured at
+98..115dp), while our logo is just the project's kraft-box icon (40..128dp, taller than the original
+lockup), so the card now stacks "icon + product name `smartisanx` (20sp in the brand accent, 1sp
+letter spacing) + version (8.6sp grey)" — measured: the name's ink at 133..148dp, the version's at
+160..166dp (the card is 180dp tall, leaving 13dp at the bottom). The original's bottom line
+"- Android is a trademark of Google LLC. -" (165.7dp) is dropped.
+
+The gap between the two cards was restored as well: in the original `about_settings_layout` the logo
+card and the five setting rows are separated by an `item_bottom_shadow_layout`; on the R2 the logo
+card's bottom edge sits at y = 724 and the list card's top edge at y = 760, i.e. 36px = **14.4dp** —
+exactly the `list_item_vertical_gap` (14dp), the same spacing as between any two groups, with both
+cards' outward shadows overlapping in that band. Our page had the two cards **touching** (gap 0); a
+`SmartisanListVerticalGap()` now sits between them, measuring 50px = 14.3dp on the test device.
 
 While there, the theme page's shape swatches became horizontally scrollable: 36dp × 7 + 8dp × 6 + 18dp
 of content padding on each side = 336dp, exactly the width available on a 360dp screen (the card is

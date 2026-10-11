@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,9 +54,9 @@ import java.util.Locale
  *
  * 1. **logo 卡片**（原版 `ListContentItemText` + `ListContentItemStyle.Single`）：
  *    原版这里放的是那张「smartisan os / based on Android™」锁图（`about_logo` 9-patch，
- *    336×180dp），本页换成项目的牛皮纸盒 logo（`R.drawable.about_logo`，88dp 高，
- *    位置与原版红色锁图相同：距卡片顶 40dp）；原版压在图上那行 8.6sp 小字
- *    （`about_logo_os_vertion`，距卡片顶 143dp）放的是系统版本，这里放示例应用版本。
+ *    336×180dp），本页换成「项目牛皮纸盒 logo（`R.drawable.about_logo`，88dp 高，距卡片顶
+ *    40dp）+ 产品名 `smartisanx`（20sp 品牌红）+ 示例应用版本（8.6sp 灰字）」三行；
+ *    原版图里最下面那行 Google 商标说明本页删掉了。
  * 2. **五行可点设置行**（原版 `SettingItemText`，`SettingSubItemTop/Mid/BottomStyle`）：
  *    源码仓库 / 组件文档 / 问题反馈 / 更新日志 / 开源许可，点一下用浏览器打开对应网址。
  * 3. **只读信息行**（原版 `AboutStaticItem`，即 [SmartisanAboutStaticItem]）：
@@ -89,6 +90,11 @@ fun AboutPage(onBack: () -> Unit) {
                 if (taps >= 15) showFullVersion = true
             },
         )
+        // 原版两张卡片之间隔着 `item_bottom_shadow_layout`：坚果 R2 实测 logo 卡片下沿
+        // y = 724、下面列表卡片上沿 y = 760，中间 36px = **14.4dp**，正好是
+        // `list_item_vertical_gap`(14dp) —— 和两个分组之间的间距一模一样，
+        // 两张卡片的向外投影就落在这一段里互相重叠。
+        SmartisanListVerticalGap()
         // 五行设置行：位置决定取分组底图的哪一段（圆角只出现在首尾），
         // 对应原版四套 SettingSubItem*Style；内容换成仓库 / 文档 / 反馈等链接。
         SmartisanGroup {
@@ -116,8 +122,9 @@ fun AboutPage(onBack: () -> Unit) {
             "版式借自坚果 R2 设置页：about_settings_layout（logo 卡片 + 五行设置行 + " +
                 "只读信息行）与 about_static_item_layout（SmartisanAboutStaticItem）；" +
                 "内容换成 smartisanx 自己的 —— logo 卡片里原版那张「smartisan os / based on " +
-                "Android™」锁图换成项目 logo，设置行换成仓库 / 文档 / 反馈等链接，" +
-                "只读信息行换成组件库与示例应用的事实。",
+                "Android™」锁图换成项目 logo + 产品名 + 版本号三行，设置行换成仓库 / 文档 / " +
+                "反馈等链接，只读信息行换成组件库与示例应用的事实。卡片间距照原版：" +
+                "logo 卡片与下面列表卡片之间同样是 14dp 的 list_item_vertical_gap。",
         )
     }
 }
@@ -145,25 +152,43 @@ private val LogoTop = 40.dp
 /** logo 的图形高度，与原版红色锁图那一段等高。 */
 private val LogoHeight = 88.dp
 
-/** 版本号距卡片顶的距离，原版 `about_logo_os_vertion` 的 `layout_marginTop`（143dp）。 */
-private val LogoVersionTop = 143.dp
+/**
+ * 产品名距卡片顶的距离。
+ *
+ * 原版这一行（「smartisan os」）是**烙在 `about_logo` 图里**的，量出来在 98..115dp；
+ * 本页的 logo 只是项目那只牛皮纸盒图标（40..128dp，比原版锁图高），所以产品名放在
+ * 图标下面 2dp 处，再往下接版本号。
+ */
+private val LogoNameTop = 130.dp
 
-/** 底部商标说明距卡片顶的距离，原版锁图里那行灰字量出来在 165.7dp。 */
-private val LogoTrademarkTop = 164.dp
+/** 产品名的字号，原版图里那行字量出来约 20sp（红色、带字距）。 */
+private val LogoNameSize = 20.sp
 
-/** 图上两行小字的字号，原版写死 `8.599976sp`。 */
+/** 产品名的字距，照原版那行稍作拉开。 */
+private val LogoNameSpacing = 1.sp
+
+/** 版本号距卡片顶的距离。原版 `about_logo_os_vertion` 是 143dp，本页因为多了一行产品名而下移。 */
+private val LogoVersionTop = 158.dp
+
+/** 版本号的字号，原版写死 `8.599976sp`。 */
 private val LogoTextSize = 8.6.sp
 
 /**
  * 原版那张 logo 卡片（`ListContentItemText` + `ListContentItemStyle.Single`）。
  *
- * 卡片 180dp 高（原版 9-patch 的固有高度），里面的三样东西都按原版量出来的位置摆：
- * logo 距顶 40dp、高 88dp；版本号距顶 143dp；底部那行 Google 商标说明距顶 164dp。
- * 卡片本身可点（原版的 logo 也是可点的，用来触发连点彩蛋），底图用设置页子项卡片的
- * selector，所以按下会换成原版的按压位图。
+ * 卡片 180dp 高（原版 9-patch 的固有高度），自上而下三样东西：
+ * 项目 logo（距顶 40dp、高 88dp）、产品名 `smartisanx`（20sp 红色、带字距）、
+ * 版本号（8.6sp 灰字）。
  *
- * 版本号与商标说明原版写死 `#a4a4a4`（约 36% 黑），这里用主题的 `textTertiary`
- * （浅色 40% 黑），深色模式能跟随。
+ * 原版那张图里从上到下是「红色锁图 + smartisan os + based on Android™」，
+ * 再往下才是 143dp 处的版本号与 165.7dp 处的 Google 商标说明 ——
+ * 本页只留「图标 + 产品名 + 版本号」三行，商标说明那行删掉了。
+ *
+ * 卡片本身可点（原版的 logo 也是可点的，用来触发连点彩蛋），底图用与下面五行设置行
+ * 同一张分组卡片底图，所以按下会换成原版的按压位图。
+ *
+ * 版本号原版写死 `#a4a4a4`（约 36% 黑），这里用主题的 `textTertiary`（浅色 40% 黑），
+ * 深色模式能跟随；产品名用主题的 `accent`（原版那行就是品牌红）。
  */
 @Composable
 private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
@@ -205,15 +230,21 @@ private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
             size = LogoHeight,
         )
         SmartisanText(
-            text = version,
-            modifier = Modifier.fillMaxWidth().padding(top = LogoVersionTop),
-            style = typography.caption.copy(fontSize = LogoTextSize),
-            color = colors.textTertiary,
+            text = "smartisanx",
+            modifier = Modifier.fillMaxWidth().padding(top = LogoNameTop),
+            style =
+                typography.title.copy(
+                    fontSize = LogoNameSize,
+                    letterSpacing = LogoNameSpacing,
+                    fontWeight = FontWeight.Medium,
+                ),
+            color = colors.accent,
             textAlign = TextAlign.Center,
+            maxLines = 1,
         )
         SmartisanText(
-            text = "- Android is a trademark of Google LLC. -",
-            modifier = Modifier.fillMaxWidth().padding(top = LogoTrademarkTop),
+            text = version,
+            modifier = Modifier.fillMaxWidth().padding(top = LogoVersionTop),
             style = typography.caption.copy(fontSize = LogoTextSize),
             color = colors.textTertiary,
             textAlign = TextAlign.Center,
