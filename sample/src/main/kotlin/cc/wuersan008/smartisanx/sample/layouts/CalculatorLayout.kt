@@ -1,7 +1,6 @@
 package cc.wuersan008.smartisanx.sample.layouts
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -13,20 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
-import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIconButton
-import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButtonStyle
+import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorDisplay
+import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorDisplayDefaults
 
 /** 计算器的一个按键。 */
 @Composable
@@ -57,7 +53,7 @@ private fun RowScope.CalcKey(
  * | --- | --- |
  * | 根底色 | `cal_bg`（9-patch） |
  * | 显示区 | `typebox`（9-patch），左右 `typebox_margin_left/right` = 12dp、上 `top_marginTop` = 12dp，内容底部对齐 |
- * | 输入 / 结果 | `DisplayInputView`（结果用 `display_text_size` = 50sp，输入行字号原版写在代码里） |
+ * | 输入 / 结果 | `DisplayInputView` + `DisplayResultView` → [SmartisanCalculatorDisplay]（点阵输入行 + 段码结果行，尺寸取 `display_input_view_margin_right` 19dp / `display_result_view_margin_right` 16dp / `input_field_bottom` 20dp / `result_field_bottom` 26dp） |
  * | 记忆键行 | `mc` / `madd` / `mminus` / `mr`，黑色按键 `cal_selector_btn_black` |
  * | 功能键行 | `del` / `addminus` / `div` / `multiply`，灰色按键 `cal_selector_btn_grey_focus` |
  * | 数字键盘 | `d7`…`d0` 白色按键；`minus` / `add` 是灰底；`0` 双宽（`selector_digit_0`）、`=` 双高（`selector_amount`） |
@@ -71,8 +67,6 @@ private fun RowScope.CalcKey(
  */
 @Composable
 fun CalculatorLayout(onBack: () -> Unit) {
-    val colors = LocalSmartisanColors.current
-    val typography = LocalSmartisanTypography.current
     Column(
         Modifier
             .fillMaxSize()
@@ -94,25 +88,16 @@ fun CalculatorLayout(onBack: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(top = 12.dp, start = 12.dp, end = 12.dp)
-                .smartisanDrawableBackground(R.drawable.typebox)
-                .padding(horizontal = 19.dp, vertical = 20.dp),
+                .padding(
+                    top = SmartisanCalculatorDisplayDefaults.TypeBoxTopMargin,
+                    start = SmartisanCalculatorDisplayDefaults.TypeBoxHorizontalMargin,
+                    end = SmartisanCalculatorDisplayDefaults.TypeBoxHorizontalMargin,
+                )
+                .smartisanDrawableBackground(R.drawable.typebox),
             verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SmartisanText(
-                text = "12 × 34",
-                style = typography.displayNumeric.copy(fontSize = 30.sp),
-                color = colors.textTertiary,
-                maxLines = 1,
-            )
-            SmartisanText(
-                text = "408",
-                modifier = Modifier.padding(top = 3.dp),
-                style = typography.displayNumeric.copy(fontSize = 50.sp),
-                color = colors.textPrimary,
-                maxLines = 1,
-            )
+            // 原版显示区是两块自绘 View（点阵输入行 + 段码结果行），字形全是位图。
+            SmartisanCalculatorDisplay(expression = "12×34", result = "408")
         }
         // 键盘：六行等高的按键，最后一行双高（`=` 跨两行、`0` 双宽）。
         Column(

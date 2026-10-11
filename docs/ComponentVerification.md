@@ -239,6 +239,43 @@ The demo app's empty-state page therefore uses the icon-only form. Measured on d
 - the 20sp title, the 13.5sp description and the button's `blankview_actionbtn_margintop` (84dp) top margin
   all follow framework `SmartisanBlankView`'s dimens, and nothing overlaps the icon.
 
+### `SmartisanCalculatorDisplay` (calculator dot-matrix display)
+
+The original `CalculatorSmartisan` (8.1.0) display area is two custom views that draw every character as a
+small bitmap instead of using text: `DisplayInputView` uses `dot_array_*` (53 assets, 38x46px) for the input
+line and `DisplayResultView` uses `pic*` (18 assets, 90x114px) for the result line. Asset check: both sets in
+this library's `drawable-xxhdpi` / `drawable-400dpi` are **pixel-identical** to the decoded original APK
+(64 of the 67 files differ only in bytes because apktool/aapt2 re-encode them, `magick compare -metric AE`
+is 0 for all of them; the other 3 are byte-identical too). The only gap was `pic_error.png`, which the original
+has and this library did not — it was copied into both density buckets in this change.
+
+> The original calculator has been replaced on the Nut R2 by a newer rewrite (`com.obric.calculator`, dark and
+> without the dot matrix), and the R2's `/system/framework` has no smartisanos framework, so the original APK
+> cannot be installed back. This entry therefore has **no live original app to compare against**; it is checked
+> by "assets pixel-for-pixel" plus "measure this component's pixels on the device against the original dimens".
+
+Measured on device (nubia P0110, 560dpi = 3.5px/dp; assets come from the xxhdpi bucket, so 90px -> 105px and
+38px -> 44.3px):
+
+| What | Original source | Expected | Measured |
+| --- | --- | --- | --- |
+| input line height | `dot_array_*` is 46px tall (3x) | 53.7px | 54px (1209–1262) ✓ |
+| result line height | `pic*` is 114px tall (3x) | 133px | 133px (1333–1465) ✓ |
+| gap between the lines | `input_field_bottom` 20dp | 70px | 70.3px ✓ |
+| result line to the panel bottom | `result_field_bottom` 26dp | 91px | 90px ✓ |
+| result cell | 90px (3x) = 30dp | 105px | 105px between glyph starts ✓ |
+| input cell | 38px (3x) + `display_input_gap` 3dp | 54.8px | 5 cells right-aligned, glyph dots inside the expected cells ✓ |
+| input line right inset | `display_input_view_margin_right` 19dp | 66.5px | glyph right edge 1154 (expected 1155.5) ✓ |
+| result line right inset | `display_result_view_margin_right` 16dp | 56px | last cell 1061–1166, glyph 1068–1158 ✓ |
+| panel side margin | `typebox_margin_left/right` 12dp (`values-sw360dp`) | 42px | panel spans 42–1222 ✓ |
+| thousands separator x | `width5 + glyphWidth + (result_number_margin − commaWidth) / 2` | cell left 641 + 106.75 = 747.75 | 747–756 (10px = 9px@3x) ✓ |
+| thousands separator y | same `y` as the digits (cell top) | starts at line top 1333 | 1333–1345 (13px ≈ 14px@3x) ✓ |
+| decimal point | bottom right corner of the cell, takes no cell | ends at line bottom 1465 | 1454–1465 (12px ≈ 10px@3x) ✓ |
+
+Both "12×34 = 408" (what the demo page shows) and "1234×5.6 = 6,910.4" (a temporary probe, reverted after
+measuring) were measured item by item: the separator lands between "6" and "9" and the decimal point sits in
+the bottom right corner of the "0" cell, matching the two formulas above.
+
 ### Screenshot colours are Display P3
 
 Colour pixels in a device screenshot are **Display P3** encoded, not sRGB: theme `accent` `#E64040`

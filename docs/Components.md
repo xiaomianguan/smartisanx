@@ -204,6 +204,24 @@ enum class SmartisanCalculatorButtonStyle { White, Grey, Black, GreyFocus, Black
     contentDescription: String? = null, iconPadding: PaddingValues = PaddingValues(...),
 )
 
+object SmartisanCalculatorDrawables {
+    val InputCell: Int; val ResultCell: Int; val Error: Int; val Comma: Int; val Point: Int
+    val InputMinus: Int; val InputNegative: Int; val MoreDigit: Int
+    val InputGlyphs: Map<Char, Int>; val ResultGlyphs: Map<Char, Int>
+}
+
+object SmartisanCalculatorDisplayDefaults {
+    val InputHorizontalMargin: Dp; val ResultHorizontalMargin: Dp
+    val InputBottomMargin: Dp; val ResultBottomMargin: Dp
+    val InputGlyphGap: Dp; val CommaMargin: Dp
+    val TypeBoxHorizontalMargin: Dp; val TypeBoxTopMargin: Dp; val TypeBoxHeight: Dp
+}
+
+@Composable fun SmartisanCalculatorDisplay(
+    expression: String, result: String, modifier: Modifier = Modifier,
+    isError: Boolean = false, contentDescription: String? = null,
+)
+
 @Composable fun SmartisanNumberPicker(
     value: Int, onValueChange: (Int) -> Unit, modifier: Modifier = Modifier,
     minValue: Int = 0, maxValue: Int = 9, wrap: Boolean = true,
@@ -347,6 +365,7 @@ durations and interpolators are copied from the originals:
 | `SmartisanProgressIndicator` | `smartisanos.widget.DownloadProgressView` | Calendar, Mail (2) |
 | `SmartisanTips` | `smartisanos.widget.TipsView` | Calendar, Mail (2) |
 | `SmartisanCalculatorButton` | `com.smartisanos.calculator.HammerButton` | Calculator (1) |
+| `SmartisanCalculatorDisplay` | `com.smartisanos.calculator.DisplayInputView` / `DisplayResultView` | Calculator (dot-matrix input line + segmented result line) |
 | `SmartisanSelectionMark` | The original radio check bitmap (`btn_selected_on_smartisanos_light` / `ringtone_picker_radio_normal`, the same 80x80 blue tick in this library) | Music, Clock (2) |
 | `SmartisanSpinner` | `smartisanos.widget.SmartisanSpinnerView` | framework dropdown (Settings etc.; no layout file, the original builds it in code) |
 | the `SmartisanCircleProgress` family | `smartisanos.widget.CircleProgressView` / `CircleProgressPopup` | framework circular progress (download, pause, retry, processing) |
@@ -373,6 +392,23 @@ highlighted unit suffix semantics.
 `SmartisanCalculatorButton` gets its press offset from the original selectors themselves (the pressed bitmap is
 inset by about 1dp), draws the highlight badge at the original `highlight_padding_right / top` (portrait and
 landscape differ), and repeats on long press at the original `500ms` delay then `150ms` intervals.
+
+`SmartisanCalculatorDisplay` is the original calculator's **dot-matrix display**: the original draws every
+character as a small bitmap instead of using text. The input line comes from `DisplayInputView` and uses
+`dot_array_*` (53 assets, 38x46px each) — the whole row is first tiled with the dot cell background
+`dot_array_bg`, then the glyphs are drawn right to left with a `display_input_gap = 3dp` gap; the result line
+comes from `DisplayResultView` and uses `pic*` (18 assets, 90x114px each) — every cell is filled with `pic_bg`
+before the segmented glyph goes on top, a `comma` is inserted every three digits, the decimal `point` is drawn
+at the cell's bottom right corner without taking a cell, the remaining space to the left keeps being tiled with
+`pic_bg`, and the error state draws the five-cell-wide `pic_error`. Line heights are the assets' own heights
+(the original's `onMeasure` is `setMeasuredDimension(width, glyphHeight)`) and the spacing is copied from the
+original dimens: `input_field_bottom = 20dp` between the lines, `result_field_bottom = 26dp` below the result,
+`display_input_view_margin_right = 19dp` and `display_result_view_margin_right = 16dp` on the sides.
+Both asset sets are pixel-identical in `drawable-400dpi` and `drawable-xxhdpi` (this library copies both), so
+the same glyph yields a different dp size per density bucket (90px is 30dp in the xxhdpi bucket and 36dp in the
+400dpi bucket), exactly like the original. The original input line can be dragged left and right
+(`movePosition`); this component is always right-aligned and clips the left overflow (the original's `an = 0`
+initial state).
 
 Some colours and radii of `SmartisanPageIndicator` and `SmartisanProgressIndicator` live in the
 **Smartisan private framework** (not available here), so they fall back to theme semantic colours and a 2dp

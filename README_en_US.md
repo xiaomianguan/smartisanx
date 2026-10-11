@@ -22,7 +22,7 @@ modules split by responsibility, the demo app as its own module, components grou
 > **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
 > its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
 > in Compose, the library uses the assets the three revival projects recovered from the original
-> APKs (10481 files, including night-mode and per-density variants).
+> APKs (10482 files, including night-mode and per-density variants).
 > Those assets belong to their respective rights holders; please read
 > [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
@@ -386,7 +386,7 @@ own pressed state.
 
 ### Inventory
 
-`library/ui/src/main/res/` holds **10481** resource files (`drawable*` 10334, `mipmap*` 34,
+`library/ui/src/main/res/` holds **10482** resource files (`drawable*` 10335, `mipmap*` 34,
 `values*` 92, `color` 21), from three sources:
 
 | Source | Contents |
