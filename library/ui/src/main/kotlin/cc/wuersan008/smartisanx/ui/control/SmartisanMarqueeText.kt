@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.utils.smartisanTopMargin
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -71,8 +71,8 @@ fun SmartisanMarqueeText(
     title: String,
     modifier: Modifier = Modifier,
     subTitle: String? = null,
-    titleColor: Color = colorResource(R.color.smartisan_button_normal_text_color),
-    subTitleColor: Color = colorResource(R.color.sub_title_text_color),
+    titleColor: Color = smartisanColor(R.color.smartisan_button_normal_text_color),
+    subTitleColor: Color = smartisanColor(R.color.sub_title_text_color),
     titleTextSize: TextUnit = SmartisanMarqueeDefaults.TitleTextSize,
     subTitleTextSize: TextUnit = SmartisanMarqueeDefaults.SubTitleTextSize,
     titleFontWeight: FontWeight? = FontWeight.Bold,

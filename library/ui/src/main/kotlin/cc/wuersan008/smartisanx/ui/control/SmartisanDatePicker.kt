@@ -56,10 +56,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanColors
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
@@ -173,7 +173,7 @@ enum class SmartisanPickerVariant {
 @Composable
 internal fun smartisanPickerTextColors(variant: SmartisanPickerVariant): Pair<Color, Color> {
     val normal =
-        colorResource(
+        smartisanColor(
             if (variant == SmartisanPickerVariant.Enhanced) {
                 R.color.date_pick_ex_normal_day_color
             } else {
@@ -181,7 +181,7 @@ internal fun smartisanPickerTextColors(variant: SmartisanPickerVariant): Pair<Co
             }
         )
     val selected =
-        colorResource(
+        smartisanColor(
             when (variant) {
                 SmartisanPickerVariant.Standard -> R.color.date_pick_select_day_color
                 SmartisanPickerVariant.Enhanced -> R.color.date_pick_ex_select_day_color
@@ -306,7 +306,7 @@ internal fun SmartisanPickerDivider(width: Dp) {
         modifier =
             Modifier.width(width)
                 .fillMaxHeight()
-                .background(colorResource(R.color.date_time_picker_divider_bg)),
+                .background(smartisanColor(R.color.date_time_picker_divider_bg)),
     )
 }
 

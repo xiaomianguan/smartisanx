@@ -1,7 +1,6 @@
 package cc.wuersan008.smartisanx.ui.control
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,19 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
-import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanStateListColor
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
 /** 原版 `dimen/item_block_gap`：根容器与下一块之间的间距。 */
@@ -163,7 +162,7 @@ fun SmartisanPreviewOptions(
                                 blurRadius = HeadTitleShadowRadius,
                             ),
                     ),
-                color = colorResource(R.color.setting_item_summary_text_color),
+                color = smartisanColor(R.color.setting_item_summary_text_color),
             )
         }
         val backgroundModifier =
@@ -225,8 +224,6 @@ fun SmartisanPreviewOptionCell(
 ) {
     val interaction = rememberSmartisanInteractionSource()
     val haptic = smartisanHaptic()
-    val previewPainter = rememberSmartisanDrawablePainter(option.previewRes, enabled = enabled)
-    val checkPainter = rememberSmartisanDrawablePainter(checkRes, enabled = enabled)
     val clickModifier =
         if (onClick != null) {
             Modifier.smartisanClickable(
@@ -244,16 +241,21 @@ fun SmartisanPreviewOptionCell(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(Modifier.padding(horizontal = PreviewImageHorizontalPadding)) {
-            Image(
-                painter = previewPainter,
+            // 用 `SmartisanIcon` 而不是 `Image(painter)`：`Image` 内部的 `PainterNode`
+            // `getShouldAutoInvalidate()` 是 false，selector 的 enabled 切换不会重绘
+            // （原因见 `smartisanRepaintOnStateChange` 的说明）。
+            SmartisanIcon(
+                res = option.previewRes,
                 contentDescription = null,
+                enabled = enabled,
                 modifier = Modifier.padding(top = PreviewImageTopMargin),
             )
             if (checked) {
                 // 原版角标上边缘对齐「父容器顶部」（不是图片顶部），所以贴在图片槽的顶边。
-                Image(
-                    painter = checkPainter,
+                SmartisanIcon(
+                    res = checkRes,
                     contentDescription = null,
+                    enabled = enabled,
                     modifier = Modifier.align(Alignment.TopEnd),
                 )
             }

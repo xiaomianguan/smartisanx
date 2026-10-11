@@ -297,6 +297,17 @@ object SmartisanDrawables {
     /** 列表多选删除按钮背景。 */
     @DrawableRes val ListRemoveBackground = R.drawable.list_edit_remove_background
 
+    // ---- 空态（framework smartisanos.widget.SmartisanBlankView） ----
+    /**
+     * 空态操作按钮底图（原版 `blank_option_btn_selector`，含按下 / 禁用态）。
+     *
+     * ⚠️ 三张位图里**自带齿轮图标**：framework 的 `empty_action_btn` 是图标按钮
+     * （原版 `blank_view.xml` 里它是个空 TextView，应用要么不设文案、要么先用
+     * `SmartisanBlankView_style` 的 `emptyActionBackground` 换掉底图再设文案），
+     * 所以不要把文字直接压在这张底图上。
+     */
+    @DrawableRes val BlankOptionButton = R.drawable.blank_option_btn_selector
+
     // ---- 评分 ----
     /** 评分星（满）。 */
     @DrawableRes val ScoreFull = R.drawable.score_full

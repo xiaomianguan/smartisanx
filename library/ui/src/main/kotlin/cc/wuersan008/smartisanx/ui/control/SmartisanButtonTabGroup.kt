@@ -45,7 +45,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +53,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
@@ -260,7 +260,7 @@ private fun SmartisanButtonTabGroupSegment(
     val textColor =
         when {
             contentColor != Color.Unspecified -> contentColor
-            standardStyle -> colorResource(R.color.title_or_btn_text_color)
+            standardStyle -> smartisanColor(R.color.title_or_btn_text_color)
             else ->
                 smartisanStateListColor(
                     colorRes = R.color.filter_button_text_color,

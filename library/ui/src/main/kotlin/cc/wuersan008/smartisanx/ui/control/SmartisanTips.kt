@@ -29,11 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
@@ -67,7 +67,7 @@ fun SmartisanTips(
 ) {
     // 原版 onLayout：行数 > 1 时左对齐，否则居中。
     var lineCount by remember(text) { mutableIntStateOf(1) }
-    val resolvedColor = if (color == Color.Unspecified) colorResource(R.color.tips_or_section_title_text_color) else color
+    val resolvedColor = if (color == Color.Unspecified) smartisanColor(R.color.tips_or_section_title_text_color) else color
     SmartisanText(
         text = text,
         modifier =

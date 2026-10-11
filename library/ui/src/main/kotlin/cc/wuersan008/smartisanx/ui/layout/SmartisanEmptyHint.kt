@@ -24,6 +24,7 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.R
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
@@ -95,7 +96,12 @@ enum class SmartisanBlankStyle {
  * @param blankStyle 空态版式，默认 [SmartisanBlankStyle.Normal]（大图标）。
  *   未显式传 [iconRes] / [icon] 时按版式取原版素材（`blank_icon_large` / `blank_icon_small`）。
  * @param actionText 原版 60dp 圆形操作按钮的文案（`empty_action_btn`）；`null` 时不显示该按钮。
+ *   ⚠️ 默认底图 [SmartisanDrawables.BlankOptionButton] 的位图里**自带齿轮图标**（原版是
+ *   「去设置」这类图标按钮），文字会压在齿轮上。要文字按钮就同时传 [actionBackgroundRes]
+ *   换一张不带图标的底图。
  * @param onActionClick 点击圆形操作按钮的回调。
+ * @param actionBackgroundRes 圆形操作按钮的底图，默认原版 `blank_option_btn_selector`，
+ *   对应 framework `SmartisanBlankView_style` 的 `emptyActionBackground` 属性。
  */
 @Composable
 fun SmartisanEmptyHint(
@@ -109,6 +115,7 @@ fun SmartisanEmptyHint(
     blankStyle: SmartisanBlankStyle = SmartisanBlankStyle.Normal,
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null,
+    @DrawableRes actionBackgroundRes: Int = SmartisanDrawables.BlankOptionButton,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -168,42 +175,73 @@ fun SmartisanEmptyHint(
             )
         }
         if (action != null) {
-            Column(modifier = Modifier.padding(top = 20.dp)) { action() }
+            // 插槽内容自己决定与上方文案的间距（原版空态操作按钮用
+            // SmartisanBlankDefaults.ActionButtonMarginTop，见 SmartisanEmptyActionButton）。
+            action()
         }
         if (actionText != null) {
-            SmartisanBlankActionButton(text = actionText, onClick = onActionClick)
+            SmartisanEmptyActionButton(
+                modifier = Modifier.padding(top = SmartisanBlankDefaults.ActionButtonMarginTop),
+                text = actionText,
+                onClick = onActionClick,
+                backgroundRes = actionBackgroundRes,
+            )
         }
     }
 }
 
 /**
- * 原版 `blank_view.xml` 的 `empty_action_btn`：60dp 圆形按钮，底图
- * `blank_option_btn_selector`（`blank_option_btn` / `_pressed` / `_disabled`）。
+ * 原版 `blank_view.xml` 的 `empty_action_btn`：60dp 圆形操作按钮。
+ *
+ * 底图默认 [SmartisanDrawables.BlankOptionButton]（原版 `blank_option_btn_selector`，
+ * 含按下 / 禁用态）。注意这张位图里**自带齿轮图标**，所以原版这个按钮是**图标按钮**：
+ * 要文字按钮请传 [text] 并同时用 [backgroundRes] 换一张不带图标的底图。
+ *
+ * 与上方文案的间距由调用方给（[SmartisanEmptyHint] 用
+ * [SmartisanBlankDefaults.ActionButtonMarginTop]，即原版 `blankview_actionbtn_margintop`）。
+ *
+ * ```kotlin
+ * // 原版「去设置」图标按钮
+ * SmartisanEmptyActionButton(onClick = { openSettings() })
+ *
+ * // 文字按钮（底图换成不带齿轮的）
+ * SmartisanEmptyActionButton(text = "重试", onClick = { reload() }, backgroundRes = myCircleRes)
+ * ```
+ *
+ * @param modifier 外部修饰符。
+ * @param text 按钮文案；`null` 时只显示底图（原版默认用法：底图自带齿轮）。
+ * @param onClick 点击回调；`null` 时按钮不可点（走底图的禁用态）。
+ * @param backgroundRes 按钮底图，默认原版 `blank_option_btn_selector`。
+ * @param enabled 是否可用。
  */
 @Composable
-private fun SmartisanBlankActionButton(
-    text: String,
-    onClick: (() -> Unit)?,
+fun SmartisanEmptyActionButton(
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    onClick: (() -> Unit)? = null,
+    @DrawableRes backgroundRes: Int = SmartisanDrawables.BlankOptionButton,
+    enabled: Boolean = true,
 ) {
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     Box(
         modifier =
-            Modifier
-                .padding(top = SmartisanBlankDefaults.ActionButtonMarginTop)
+            modifier
                 .size(SmartisanBlankDefaults.ActionButtonSize)
-                .smartisanDrawableBackground(R.drawable.blank_option_btn_selector, pressed = pressed)
+                .smartisanDrawableBackground(backgroundRes, enabled = enabled, pressed = pressed)
                 .smartisanClickable(
                     interactionSource = interaction,
-                    enabled = onClick != null,
+                    enabled = enabled && onClick != null,
                     onClick = { onClick?.invoke() },
                 ),
         contentAlignment = Alignment.Center,
     ) {
-        SmartisanText(
-            text = text,
-            maxLines = 1,
-        )
+        if (text != null) {
+            SmartisanText(
+                text = text,
+                maxLines = 1,
+            )
+        }
     }
 }
 

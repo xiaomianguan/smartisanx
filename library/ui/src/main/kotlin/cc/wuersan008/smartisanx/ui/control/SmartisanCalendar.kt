@@ -106,7 +106,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -134,7 +133,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -142,16 +140,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePadding
-import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.core.utils.smartisanThemedResources
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -559,9 +558,14 @@ private fun SmartisanCalendarArrow(
     if (!visible) return
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
-    Image(
-        painter = rememberSmartisanDrawablePainter(iconRes, enabled = enabled, pressed = pressed),
+    // 这里用 `SmartisanIcon` 而不是 `Image(painter)`：`Image` 内部的 `PainterNode`
+    // `getShouldAutoInvalidate()` 是 false，selector 的 enabled / pressed 切换不会重绘
+    // （原因见 `smartisanRepaintOnStateChange` 的说明）。
+    SmartisanIcon(
+        res = iconRes,
         contentDescription = contentDescription,
+        enabled = enabled,
+        pressed = pressed,
         modifier =
             modifier
                 .size(SmartisanCalendarDefaults.ArrowSize)
@@ -579,7 +583,7 @@ private fun SmartisanCalendarDayLabels(weekStart: DayOfWeek) {
     val density = LocalDensity.current
     val labels = remember(weekStart) { smartisanCalendarDayLabels(weekStart) }
     val textSize = with(density) { dimensionResource(R.dimen.monthview_day_label_text_size).toSp() }
-    val color = colorResource(R.color.black_60)
+    val color = smartisanColor(R.color.black_60)
     Row(
         Modifier
             .fillMaxWidth()
@@ -718,9 +722,9 @@ private fun SmartisanCalendarGrid(
                     baselineWeek = SmartisanCalendarDefaults.DayNumberBaselineWeek.toPx(),
                     dayNumberSize = dimensionResource(R.dimen.text_size_month_number).toPx(),
                     todayTextSize = dimensionResource(R.dimen.today_text_size_month_number).toPx(),
-                    normalColor = colorResource(R.color.black_60).toArgb(),
-                    otherMonthColor = colorResource(R.color.month_day_number_other).toArgb(),
-                    todayColor = colorResource(R.color.month_today_number).toArgb(),
+                    normalColor = smartisanColor(R.color.black_60).toArgb(),
+                    otherMonthColor = smartisanColor(R.color.month_day_number_other).toArgb(),
+                    todayColor = smartisanColor(R.color.month_today_number).toArgb(),
                     progress = progress,
                     hasFocus = hasFocus,
                 )

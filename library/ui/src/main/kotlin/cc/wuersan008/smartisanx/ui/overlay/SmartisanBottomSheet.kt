@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.colorResource
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
@@ -112,7 +112,7 @@ fun SmartisanBottomSheet(
                 SmartisanDialogTitleBar(title = title, onDismiss = dismiss)
                 // 与原版一致：标题栏下面是一条 1px 的 smartisan_menu_divider。
                 SmartisanDivider(
-                    color = colorResource(R.color.smartisan_menu_divider),
+                    color = smartisanColor(R.color.smartisan_menu_divider),
                     thickness = smartisanOnePixel(),
                 )
             }
@@ -240,7 +240,7 @@ fun SmartisanSheetScaffold(
                     SmartisanDialogTitleBar(title = title, onDismiss = onDismissRequest)
                     // 与原版一致：标题栏下面是一条 1px 的 smartisan_menu_divider。
                     SmartisanDivider(
-                        color = colorResource(R.color.smartisan_menu_divider),
+                        color = smartisanColor(R.color.smartisan_menu_divider),
                         thickness = smartisanOnePixel(),
                     )
                 }

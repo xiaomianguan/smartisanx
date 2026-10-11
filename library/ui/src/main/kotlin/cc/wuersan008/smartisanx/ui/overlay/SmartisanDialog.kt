@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
@@ -370,7 +370,7 @@ fun SmartisanDialog(
                 modifier = Modifier.padding(horizontal = DialogTitleHorizontalPadding),
                 style = DialogModalTitleStyle,
                 // 原版弹窗底图没有夜间变体（始终浅色），所以标题固定用原版深色文字。
-                color = colorResource(R.color.smartisan_modal_title_text),
+                color = smartisanColor(R.color.smartisan_modal_title_text),
                 textAlign = TextAlign.Center,
                 maxLines = 2,
             )
@@ -399,7 +399,7 @@ fun SmartisanDialog(
                 modifier =
                     Modifier.fillMaxHeight()
                         .width(smartisanOnePixel())
-                        .background(colorResource(R.color.smartisan_modal_border)),
+                        .background(smartisanColor(R.color.smartisan_modal_border)),
             )
             SmartisanDialogButton(
                 text = confirmLabel,
@@ -452,7 +452,7 @@ fun SmartisanConfirmDialog(
             modifier = Modifier.fillMaxWidth(),
             style = LocalSmartisanTypography.current.body,
             // 弹窗内容区始终是白底（原版底图没有夜间变体），所以说明文字固定用原版深色文字。
-            color = colorResource(R.color.smartisan_text_primary),
+            color = smartisanColor(R.color.smartisan_text_primary),
             textAlign = TextAlign.Center,
         )
     }

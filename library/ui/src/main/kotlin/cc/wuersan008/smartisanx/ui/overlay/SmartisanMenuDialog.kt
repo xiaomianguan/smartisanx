@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
@@ -133,7 +133,7 @@ fun SmartisanMenuDialog(
                     SmartisanDialogTitleBar(title = title, onDismiss = dismiss)
                     // 原版标题栏下面是 1px 的 smartisan_menu_divider。
                     SmartisanDivider(
-                        color = colorResource(R.color.smartisan_menu_divider),
+                        color = smartisanColor(R.color.smartisan_menu_divider),
                         thickness = smartisanOnePixel(),
                     )
                 }

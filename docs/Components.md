@@ -733,7 +733,16 @@ data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val 
 @Composable fun Modifier.smartisanVerticalScrollbar(state: ScrollState, width, margin, color): Modifier   // library-original; the original ships no bitmap
 @Composable fun Modifier.smartisanVerticalScrollbar(state: LazyListState, width, margin, color): Modifier
 
-@Composable fun SmartisanEmptyHint(title: String, modifier, description, icon, action)
+@Composable fun SmartisanEmptyHint(
+    title: String, modifier: Modifier = Modifier, description: String? = null, icon: ImageVector? = null,
+    action: (@Composable () -> Unit)? = null, iconRes: Int? = null, iconResSize: Dp = 120.dp,
+    blankStyle: SmartisanBlankStyle = SmartisanBlankStyle.Normal, actionText: String? = null,
+    onActionClick: (() -> Unit)? = null, actionBackgroundRes: Int = SmartisanDrawables.BlankOptionButton,
+)
+@Composable fun SmartisanEmptyActionButton(
+    modifier: Modifier = Modifier, text: String? = null, onClick: (() -> Unit)? = null,
+    backgroundRes: Int = SmartisanDrawables.BlankOptionButton, enabled: Boolean = true,
+)
 
 @Composable fun SmartisanFlowLayout(
     modifier: Modifier = Modifier, itemSpacing: Dp = 0.dp, lineSpacing: Dp = 0.dp,
@@ -753,6 +762,11 @@ Notes:
   (the surname picker popup in Calendar, Clock, Messages and Music): children are laid out left to
   right and wrap once the container width is exceeded, with each row as tall as its tallest child.
   The original spaced children with their own margins, so `itemSpacing` / `lineSpacing` default to `0.dp`.
+- `SmartisanEmptyHint`'s `actionText` button uses the original `blank_option_btn_selector`, whose bitmap
+  **bakes in a gear glyph** (the original used it as an icon button such as "go to settings"), so the text
+  lands right on top of that gear. Pass a different `actionBackgroundRes` for a text button, or lay the
+  button out yourself with `SmartisanEmptyActionButton` (the demo app's empty-state page uses the icon-only
+  form).
 
 ### framework list-row matrix (the `SmartisanListRow` family)
 

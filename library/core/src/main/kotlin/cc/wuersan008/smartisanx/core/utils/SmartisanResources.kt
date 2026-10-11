@@ -1,6 +1,5 @@
 package cc.wuersan008.smartisanx.core.utils
 
-import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.annotation.ColorRes
@@ -11,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
-import androidx.core.content.ContextCompat
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanDarkOverride
 
 /**
@@ -64,6 +62,25 @@ fun smartisanWantsNightResources(
 ): Boolean = darkOverride ?: isSystemInDarkTheme()
 
 /**
+ * 按 **smartisanx 主题** 解析颜色（与 [smartisanThemedResources] 同一套规则）。
+ *
+ * 不要用 `colorResource(...)`：它读的是 `LocalContext` 的 [Resources]，
+ * 只会按**系统** uiMode 选 `values-night`。应用内把主题固定成浅色、而系统是深色时
+ * （示例应用就是 `SmartisanColorSchemeMode.Light`），
+ * 底图走 [smartisanThemedResources] 拿到的是浅色素材、颜色却拿到 `values-night` 的深色值，
+ * 于是出现「浅色底图 + 深色文字」这种看不清的组合（底部操作按钮组就是一例）。
+ *
+ * ```kotlin
+ * SmartisanText(text = "取消", color = smartisanColor(R.color.title_or_btn_text_color))
+ * ```
+ */
+@Composable
+fun smartisanColor(@ColorRes colorRes: Int): Color {
+    val resources = smartisanThemedResources()
+    return remember(resources, colorRes) { Color(resources.getColor(colorRes, null)) }
+}
+
+/**
  * 取原版「颜色状态表」（`res/color` 下的 `_colorlist.xml`，例如 `preview_title_text_colorlist`）
  * 里当前状态的颜色。
  *
@@ -72,6 +89,8 @@ fun smartisanWantsNightResources(
  *
  * 状态集必须**写全**（同 [smartisanDrawableState]）：像 `state_enabled="false"` 这种否定项，
  * 在「空状态集」下同样会被判定为命中，所以只传 `state_pressed` 之类的部分状态是不够的。
+ *
+ * 状态表同样按**应用主题**解析（见 [smartisanColor]），否则会和底图选到不同的日夜变体。
  *
  * @param colorRes 颜色状态表资源。
  * @param enabled 当前是否可用。
@@ -89,9 +108,9 @@ fun rememberSmartisanStateListColor(
     checked: Boolean = false,
     activated: Boolean = false,
 ): Color {
-    val context = LocalContext.current
-    val stateList = remember(context, colorRes) { ContextCompat.getColorStateList(context, colorRes) }
-    return remember(context, colorRes, stateList, enabled, pressed, selected, checked, activated) {
+    val resources = smartisanThemedResources()
+    val stateList = remember(resources, colorRes) { resources.getColorStateList(colorRes, null) }
+    return remember(resources, colorRes, stateList, enabled, pressed, selected, checked, activated) {
         val state =
             smartisanDrawableState(
                 enabled = enabled,
@@ -102,7 +121,7 @@ fun rememberSmartisanStateListColor(
             )
         val argb =
             stateList?.getColorForState(state, stateList.defaultColor)
-                ?: ContextCompat.getColor(context, colorRes)
+                ?: resources.getColor(colorRes, null)
         Color(argb)
     }
 }

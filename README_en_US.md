@@ -285,8 +285,11 @@ interactive demos:
 ```
 
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
-buttons, controls, text and input, layout and lists, list interaction, overlays, clock and
-mechanical controls, calendar, about.
+buttons, controls, text and input, layout and lists, full-screen layouts, list interaction,
+overlays, clock and mechanical controls, calendar, about. The "full-screen layouts" page holds 13
+complete screens: the upper half is assembled like the original apps (music, clock, contacts,
+notes, calculator, settings), the lower half is reusable skeletons (list → detail, multi-select
+editing, form entry, empty state, …) and each one can be copied as a starting point.
 
 ## Design notes
 

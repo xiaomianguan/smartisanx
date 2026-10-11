@@ -3,12 +3,16 @@ package cc.wuersan008.smartisanx.ui.basic
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableState
+import cc.wuersan008.smartisanx.core.utils.smartisanRepaintOnStateChange
 
 /**
  * 使用**原始图形资源**绘制图标。
@@ -49,13 +53,42 @@ fun SmartisanIcon(
             selected = selected,
             checked = checked,
         )
-    Image(
-        painter = painter,
-        contentDescription = contentDescription,
-        modifier = if (size != null) modifier.size(size) else modifier,
-        alignment = alignment,
-        contentScale = contentScale,
-    )
+    val stateKey =
+        smartisanDrawableState(
+                enabled = enabled,
+                pressed = pressed,
+                selected = selected,
+                checked = checked,
+            )
+            .contentHashCode()
+    // 这里多套一层 Box 是必须的：`Image` 会在传入的 modifier 后面追加自己的
+    // `clipToBounds()`，于是挂在 `Image` 上的绘制块并不落在「带 layer 的区段」里，
+    // drawable 状态变化时不会重绘（原因见 `smartisanRepaintOnStateChange`）。
+    // 套一层 Box 之后，绘制块紧跟在 Box 的 `graphicsLayer()` 后面，
+    // 而 Box 的 layer 正好包住里面这张图，`invalidateDraw()` 就能命中它。
+    Box(
+        modifier =
+            (if (size != null) modifier.size(size) else modifier)
+                .smartisanRepaintOnStateChange(stateKey),
+        contentAlignment = alignment,
+        // 与原版 `ImageView` 一致：父容器给的 min 约束继续传给图片本身，
+        // 否则 `contentScale = FillBounds` 这类按控件尺寸缩放的用法会取到位图固有尺寸。
+        propagateMinConstraints = true,
+    ) {
+        // `Image` 自己还会建一层 layer（`clipToBounds()`），而 `PainterNode` 的
+        // `getShouldAutoInvalidate()` 是 false：换 painter / 改 drawable 状态都不会
+        // 让它 invalidate，那层 layer 于是永远画缓存里的旧图。
+        // 因此按状态指纹换一次 key：节点重建 → 新 layer 必然重录 → 新状态画得出来。
+        // 视觉结果与原来完全一致（还是同一个 `Image` + 同一个 painter）。
+        key(stateKey) {
+            Image(
+                painter = painter,
+                contentDescription = contentDescription,
+                alignment = alignment,
+                contentScale = contentScale,
+            )
+        }
+    }
 }
 
 /**
@@ -80,11 +113,22 @@ fun SmartisanIntrinsicImage(
             enabled = enabled,
             pressed = pressed,
         )
-    Image(
-        painter = painter,
-        contentDescription = contentDescription,
-        modifier = modifier,
-        contentScale = ContentScale.None,
-        alpha = alpha,
-    )
+    // 与 `SmartisanIcon` 同样多套一层 Box + 换 key：只有让绘制节点重建，
+    // `Image` 自己那层缓存 layer 才会重录，drawable 的 selector 状态（按下 / 禁用）
+    // 变化才画得出来。
+    Box(
+        modifier =
+            modifier.smartisanRepaintOnStateChange(
+                smartisanDrawableState(enabled = enabled, pressed = pressed).contentHashCode(),
+            ),
+    ) {
+        key(smartisanDrawableState(enabled = enabled, pressed = pressed).contentHashCode()) {
+            Image(
+                painter = painter,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.None,
+                alpha = alpha,
+            )
+        }
+    }
 }

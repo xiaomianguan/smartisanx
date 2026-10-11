@@ -57,9 +57,9 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
 import cc.wuersan008.smartisanx.ui.R
@@ -229,7 +229,7 @@ fun SmartisanProgressIndicator(
 @Composable
 private fun Color.orOriginal(
     @ColorRes colorRes: Int,
-): Color = if (this == Color.Unspecified) colorResource(colorRes) else this
+): Color = if (this == Color.Unspecified) smartisanColor(colorRes) else this
 
 /**
  * 原版 `onDraw` 的绘制顺序：两圈底色 → 两条进度弧（外环用渐变、内环用渐变，

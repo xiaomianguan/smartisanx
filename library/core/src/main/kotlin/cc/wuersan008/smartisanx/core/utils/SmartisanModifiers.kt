@@ -9,6 +9,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.graphics.painter.Painter
@@ -20,9 +21,49 @@ import android.graphics.Rect
  * 用 [Painter] 作为背景绘制。
  *
  * 对应原版把 nine-patch / selector 直接设为 `View.background` 的做法，但不创建 View 宿主。
+ *
+ * @param stateKey 当前 drawable 状态的指纹，见 [smartisanRepaintOnStateChange]。
+ *   默认 0 表示「这块底图不会随状态变」。
  */
-fun Modifier.smartisanPainterBackground(painter: Painter): Modifier =
-    drawBehind { with(painter) { draw(size) } }
+fun Modifier.smartisanPainterBackground(painter: Painter, stateKey: Int = 0): Modifier =
+    // layer 必须建在绘制块**前面**（原因见 smartisanRepaintOnStateChange）：
+    // 这样绘制块才落在「拥有该 layer 的那个 coordinator」的区段里。
+    graphicsLayer().drawBehind {
+        stateKey
+        with(painter) { draw(size) }
+    }
+
+/**
+ * 让「用 drawable / painter 画出来的东西」跟随 selector 状态真正刷新。
+ *
+ * 原版把这些素材设成 `View.background` / `ImageView`，状态一变系统自己就会重绘；
+ * Compose 里没有这个机制，实测下来有两层坑：
+ *
+ * 1. [androidx.compose.foundation.Image]`(painter)` 内部是 `PainterNode`，
+ *    而 `PainterNode.getShouldAutoInvalidate()` 是 **false**（已对 1.12.1 的
+ *    字节码核对过），所以只换 painter 实例并不会触发 `invalidateDraw()`；
+ * 2. 绘制阶段读 snapshot 状态（[SmartisanDrawablePainter] 在 `onDraw` 里读
+ *    `invalidation` 就是为了这个）确实会被记录，但观察者的回调是
+ *    `coordinator.layer?.invalidate()`——coordinator 自己没有 layer 时**什么都不发生**；
+ *    同理元素更新走的 `invalidateDraw()` → `NodeCoordinator.invalidateLayer()`
+ *    也只会沿着 `wrappedBy` 往外找 layer，绘制节点不在带 layer 的区段里就白跑。
+ *
+ * 于是现象就是「语义里 `checked` 已经是 true、圆圈还是空心的」：
+ * 多选列表的勾选框、列表行按压 / 多选高亮底图都踩这个坑。
+ *
+ * 修法是先给节点建一层 layer（`graphicsLayer()`，实测 `placeWithLayer` 一定会
+ * 创建 layer），再把绘制块挂在它**紧后面**；同时让绘制块闭包捕获 [stateKey]，
+ * 每次状态变化都会生成新的 `DrawBehindElement`（`equals` 比的是闭包引用）→
+ * `autoInvalidateUpdatedNode` → `invalidateDraw()` → 命中 layer → 重绘。
+ *
+ * @param stateKey 当前 drawable 状态的指纹，直接传
+ *   `smartisanDrawableState(...).contentHashCode()`。
+ */
+fun Modifier.smartisanRepaintOnStateChange(stateKey: Int): Modifier =
+    graphicsLayer().drawBehind {
+        // 这里不画任何东西：只要闭包捕获 stateKey（见上面的说明）。
+        stateKey
+    }
 
 /** 用 drawable 资源作为背景绘制，并按状态切换。 */
 @Composable
@@ -45,7 +86,17 @@ fun Modifier.smartisanDrawableBackground(
             checked = checked,
             activated = activated,
         )
-    return smartisanPainterBackground(painter)
+    val stateKey =
+        smartisanDrawableState(
+                enabled = enabled,
+                pressed = pressed,
+                selected = selected,
+                focused = focused,
+                checked = checked,
+                activated = activated,
+            )
+            .contentHashCode()
+    return smartisanPainterBackground(painter, stateKey)
 }
 
 /**

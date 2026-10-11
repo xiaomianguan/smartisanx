@@ -20,6 +20,7 @@ import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanTheme
 import cc.wuersan008.smartisanx.core.theme.ThemeController
 import cc.wuersan008.smartisanx.core.theme.rememberSmartisanThemeController
+import cc.wuersan008.smartisanx.sample.layouts.LayoutsPage
 import cc.wuersan008.smartisanx.sample.pages.AboutPage
 import cc.wuersan008.smartisanx.sample.pages.ButtonPage
 import cc.wuersan008.smartisanx.sample.pages.CalendarPage
@@ -71,6 +72,7 @@ fun SampleApp() {
                     SamplePage.Control -> ControlPage(onBack = back)
                     SamplePage.Input -> InputPage(onBack = back)
                     SamplePage.Layout -> LayoutPage(onBack = back)
+                    SamplePage.Layouts -> LayoutsPage(onBack = back)
                     SamplePage.ListInteraction -> ListInteractionPage(onBack = back)
                     SamplePage.Overlay -> OverlayPage(onBack = back)
                     SamplePage.Clock -> ClockPage(onBack = back)

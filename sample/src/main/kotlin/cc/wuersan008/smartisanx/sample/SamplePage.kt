@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.ui.R
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 
 /**
  * 示例应用里的页面。
@@ -26,6 +27,7 @@ import cc.wuersan008.smartisanx.ui.R
  * | 基础控件 | `selector_setting_item_navbar`（导航键） |
  * | 文本与输入 | `secletor_setting_item_icon_language`（语言与输入法，glyph 是键盘） |
  * | 布局与列表 | `secletor_setting_item_icon_launcher`（桌面设置） |
+ * | 整页布局 | 不用设置页图标，借原版音乐专辑页的 `btn_album_switch_grid_selector`（网格图标） |
  * | 列表交互 | `secletor_setting_item_icon_application`（应用管理） |
  * | 浮层 | `secletor_setting_item_icon_notification`（通知） |
  * | 时钟与机械控件 | `secletor_setting_item_icon_keyguard`（锁屏设置，里面就是时钟样式） |
@@ -82,6 +84,12 @@ enum class SamplePage(
         subtitle = "标题栏、列表行、分组、标签栏、滚动条、空态、流式布局",
         // 原版设置页「桌面设置」的图标。
         icon = R.drawable.secletor_setting_item_icon_launcher,
+    ),
+    Layouts(
+        title = "整页布局",
+        subtitle = "13 张完整页面：原版应用复刻 + 通用骨架",
+        // 唯一一条不用设置页图标的：借原版音乐专辑页的「网格」图标，表示「一整屏怎么拼」。
+        icon = SmartisanDrawables.IconAlbumSwitchGrid,
     ),
     ListInteraction(
         title = "列表交互",

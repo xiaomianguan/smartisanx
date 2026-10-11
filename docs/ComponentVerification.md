@@ -197,6 +197,48 @@ Still **not** verified item by item:
 If you want, I can take one specific component and diff its drawing code against the original
 `onDraw` line by line.
 
+### Selector states not repainting (a pitfall the demo app's "full-screen layouts" page exposed)
+
+The original sets selector bitmaps as a `View.background` / `ImageView`, and the framework repaints by itself
+whenever the state changes; in Compose, swapping a `Painter` does not. On device: after tapping a row in the
+multi-select list the semantics already report `checked = true` while the circle stays hollow, and the pressed
+states of keys / title-bar icons never show up. Two things stack up (both checked against the bytecode of
+Compose UI 1.12.1):
+
+1. `Image(painter)` is backed by `PainterNode`, and `PainterNode.getShouldAutoInvalidate()` is **false**, so
+   neither a new painter instance nor a drawable state change triggers `invalidateDraw()`;
+2. the draw-phase snapshot observer's callback is `coordinator.layer?.invalidate()`, and the element-update
+   path (`invalidateDraw()` → `NodeCoordinator.invalidateLayer()`) only walks `wrappedBy` outwards looking
+   for a layer. The layer `Image` creates for itself (`clipToBounds()`) is never invalidated, so it keeps
+   drawing the cached bitmap.
+
+The fix: `Modifier.smartisanRepaintOnStateChange(stateKey)` = `graphicsLayer().drawBehind { stateKey }`
+(the layer is created **before** the draw node so the draw node lands in the coordinator that owns it, and
+the block captures the state fingerprint so the element changes → `invalidateDraw()` hits that layer), plus
+`SmartisanIcon` / `SmartisanIntrinsicImage` re-keying the inner `Image` by the same fingerprint so its cached
+layer is recorded again (visually identical), and the same fingerprint on `smartisanPainterBackground` /
+`smartisanDrawableBackground` / `smartisanShadowBackground`.
+
+Re-checked on device (nubia P0110, 560dpi, light):
+
+| Item | Before | After |
+| --- | --- | --- |
+| checkbox after tapping "周会纪要" on "full-screen layouts → multi-select" | semantics `checked = true`, still a hollow circle, whole region differs by **AE = 0** | a filled circle plus a white tick inside the 24dp (84px) mark box: the circle measures 56px and its centre pixel is `#D56155` (the accent as encoded by the P3 screenshot) |
+| calculator "=" key, held vs released | — | the two frames differ by 86155px (2.4%): the pressed bitmap appears ✓ |
+| "Settings → Sound & vibration", tapping the "静音" row | — | the tick moves from "清澈" to "静音" ✓ (both drawables repaint within the same frame) |
+| list-row `state_pressed` bitmap | no repaint | repaints (`smartisanDrawableBackground` carries the state fingerprint) |
+
+### Empty-state action button (`SmartisanEmptyActionButton`)
+
+The original `blank_option_btn_selector` bitmap **bakes in a gear glyph** (the original used it as an icon
+button such as "go to settings"), so using it as a text button puts the label right on top of that gear.
+The demo app's empty-state page therefore uses the icon-only form. Measured on device (560dpi):
+
+- hit area 60dp x 60dp (210px x 210px); the asset is a 180px canvas (= 60dp) whose visible ring is 120px
+  (= 40dp) with the gear centred at about 18dp;
+- the 20sp title, the 13.5sp description and the button's `blankview_actionbtn_margintop` (84dp) top margin
+  all follow framework `SmartisanBlankView`'s dimens, and nothing overlaps the icon.
+
 ### Screenshot colours are Display P3
 
 Colour pixels in a device screenshot are **Display P3** encoded, not sRGB: theme `accent` `#E64040`

@@ -174,5 +174,15 @@ fun Modifier.smartisanShadowBackground(
             checked = checked,
             activated = activated,
         )
-    return smartisanPainterBackground(painter)
+    val stateKey =
+        smartisanDrawableState(
+                enabled = enabled,
+                pressed = pressed,
+                selected = selected,
+                focused = focused,
+                checked = checked,
+                activated = activated,
+            )
+            .contentHashCode()
+    return smartisanPainterBackground(painter, stateKey)
 }

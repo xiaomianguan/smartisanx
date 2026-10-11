@@ -30,13 +30,13 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
 import cc.wuersan008.smartisanx.core.utils.smartisanThemedResources
@@ -102,7 +102,7 @@ fun SmartisanCircleProgress(
     progress: Float?,
     modifier: Modifier = Modifier,
     size: Dp = SmartisanCircleProgressDefaults.Size,
-    arcColor: Color = colorResource(R.color.circle_progress_view_arc_color),
+    arcColor: Color = smartisanColor(R.color.circle_progress_view_arc_color),
     state: SmartisanCircleProgressState? = null,
     stateIconSize: Dp = SmartisanCircleProgressDefaults.StateIconSize,
     durationMillis: Int = SmartisanCircleProgressDefaults.CircleAnimDuration,
@@ -158,7 +158,7 @@ fun SmartisanCircleProgress(
 fun SmartisanCircleProgressIndeterminate(
     modifier: Modifier = Modifier,
     size: Dp = SmartisanCircleProgressDefaults.Size,
-    arcColor: Color = colorResource(R.color.circle_progress_view_arc_color),
+    arcColor: Color = smartisanColor(R.color.circle_progress_view_arc_color),
     durationMillis: Int = SmartisanCircleProgressDefaults.CircleAnimDuration,
     state: SmartisanCircleProgressState? = null,
     stateIconSize: Dp = SmartisanCircleProgressDefaults.StateIconSize,
@@ -257,7 +257,7 @@ fun SmartisanCircleProgressPopup(
     visible: Boolean,
     modifier: Modifier = Modifier,
     size: Dp = SmartisanCircleProgressDefaults.Size,
-    arcColor: Color = colorResource(R.color.circle_progress_view_arc_color),
+    arcColor: Color = smartisanColor(R.color.circle_progress_view_arc_color),
     durationMillis: Int = SmartisanCircleProgressDefaults.CircleAnimDuration,
     contentDescription: String? = null,
 ) {
