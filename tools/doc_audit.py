@@ -320,6 +320,30 @@ def check_api_documented() -> None:
     report("库里每个公开 API 是否都写进了文档", ["文档里没出现过：%s" % n for n in missing])
 
 
+def doc_structure(text: str) -> tuple[list[int], int, int]:
+    """(标题层级序列, 代码块数, 表格行数)，跳过代码块内部的行。
+
+    代码块里的 `#` 注释和 `|` 管道符不是文档结构，必须排除，否则会误判。
+    """
+    levels: list[int] = []
+    fences = 0
+    rows = 0
+    in_fence = False
+    for line in text.splitlines():
+        if line.startswith("```"):
+            fences += 1
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        m = re.match(r"^(#{1,6})\s", line)
+        if m:
+            levels.append(len(m.group(1)))
+        elif line.startswith("|"):
+            rows += 1
+    return levels, fences, rows
+
+
 def check_pair_structure() -> None:
     """成对文档的结构必须一致：标题层级序列、代码块数量、表格行数量。
 
@@ -328,17 +352,11 @@ def check_pair_structure() -> None:
     """
     lines = []
     for zh, en in PAIRS:
-        a, b = read(zh), read(en)
-        checks = (
-            ("标题层级", lambda t: [len(m) for m in re.findall(r"^(#{1,6})\s", t, re.M)]),
-            ("代码块数", lambda t: re.findall(r"^```", t, re.M)),
-            ("表格行数", lambda t: re.findall(r"^\|", t, re.M)),
-        )
-        for label, extract in checks:
-            ca, cb = extract(a), extract(b)
-            if ca != cb:
+        a, b = doc_structure(read(zh)), doc_structure(read(en))
+        for label, i in (("标题层级", 0), ("代码块数", 1), ("表格行数", 2)):
+            if a[i] != b[i]:
                 lines.append(
-                    "%s 与 %s 的%s不一致：%s vs %s" % (zh, en, label, len(ca), len(cb))
+                    "%s 与 %s 的%s不一致：%s vs %s" % (zh, en, label, len(a[i]), len(b[i]))
                 )
     report("中英文档结构配对", lines)
 
