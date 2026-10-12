@@ -41,6 +41,12 @@
  * 3. 原版禁用态是把整个按钮的透明度降到 0.3（`ShadowButton` 的 `_disabled` 位图），
  *    这里用同样的 0.3 alpha 叠在 selector 的禁用底图上。
  *
+ * **系统导航栏**：`includeNavigationBar`（默认 `true`）把导航栏高度作为栏自己的内边距，
+ * 栏底色（`secondary_bar` 是 9-patch，中间一行可纵向拉伸）一直铺到屏幕最底下，
+ * 透明导航栏下也能看到它，按钮仍在导航栏之上。把它当 [SmartisanScaffold] 的 `bottomBar`
+ * 用时不用再管别的 —— 骨架发现底部栏在，就不会另补一条留白。放在页面**中间**演示
+ * （不在屏幕底部）时传 `false`。
+ *
  * 用法：
  *
  * ```kotlin
@@ -60,11 +66,14 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -149,6 +158,8 @@ data class SmartisanActionButton(
  * @param leftAction 左端的图标按钮（原版 `mLeftActionButton`）。
  * @param rightAction 右端的图标按钮（原版 `mRightActionButton`）。
  * @param showShadow 是否画栏上方那条投影（原版 `setActionButtonGroupShadowVisibility`）。
+ * @param includeNavigationBar 是否把系统导航栏的高度作为栏的内边距（默认 `true`，
+ *   让栏底色铺到屏幕最底下）。放在页面中间演示时传 `false`。
  * @param barRes 栏底图；默认原版 `secondary_bar`。
  * @param shadowRes 栏上投影；默认原版 `smartisan_secondary_bar_shadow`。
  */
@@ -159,6 +170,7 @@ fun SmartisanActionButtonGroup(
     leftAction: SmartisanActionButton? = null,
     rightAction: SmartisanActionButton? = null,
     showShadow: Boolean = true,
+    includeNavigationBar: Boolean = true,
     @DrawableRes barRes: Int = SmartisanDrawables.SecondaryBarBackground,
     @DrawableRes shadowRes: Int = SmartisanDrawables.ActionButtonGroupShadow,
 ) {
@@ -166,43 +178,53 @@ fun SmartisanActionButtonGroup(
         if (showShadow) {
             Box(Modifier.fillMaxWidth().smartisanDrawableBackground(shadowRes))
         }
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(SmartisanActionButtonGroupDefaults.BarHeight)
-                    .smartisanDrawableBackground(barRes)
-                    .padding(
-                        horizontal = SmartisanActionButtonGroupDefaults.BarHorizontalPadding,
-                    ),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            leftAction?.let {
-                SmartisanActionButtonGroupIconButton(
-                    action = it,
-                    modifier =
-                        Modifier.padding(end = SmartisanActionButtonGroupDefaults.IconButtonGap),
-                )
-            }
-            actions.forEachIndexed { index, action ->
-                if (index > 0) {
-                    Box(Modifier.size(SmartisanActionButtonGroupDefaults.ButtonGap))
+        // 底色画在外层 Box 上：栏底色要一直铺到屏幕最底下（透明导航栏下也能看到），
+        // 导航栏高度作为栏**内容**的内边距 —— 与底部标签栏同一个做法。
+        Box(Modifier.fillMaxWidth().smartisanDrawableBackground(barRes)) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (includeNavigationBar) {
+                                Modifier.windowInsetsPadding(WindowInsets.navigationBars)
+                            } else {
+                                Modifier
+                            },
+                        )
+                        .height(SmartisanActionButtonGroupDefaults.BarHeight)
+                        .padding(
+                            horizontal = SmartisanActionButtonGroupDefaults.BarHorizontalPadding,
+                        ),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                leftAction?.let {
+                    SmartisanActionButtonGroupIconButton(
+                        action = it,
+                        modifier =
+                            Modifier.padding(end = SmartisanActionButtonGroupDefaults.IconButtonGap),
+                    )
                 }
-                SmartisanActionButtonGroupTextButton(
-                    action = action,
-                    index = index,
-                    count = actions.size,
-                    // 原版右图标模式（ACTION_MODE_BOTH）把文字按钮的 gravity 设成 start|center。
-                    textAlign = if (rightAction != null) TextAlign.Start else TextAlign.Center,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-            rightAction?.let {
-                SmartisanActionButtonGroupIconButton(
-                    action = it,
-                    modifier =
-                        Modifier.padding(start = SmartisanActionButtonGroupDefaults.IconButtonGap),
-                )
+                actions.forEachIndexed { index, action ->
+                    if (index > 0) {
+                        Box(Modifier.size(SmartisanActionButtonGroupDefaults.ButtonGap))
+                    }
+                    SmartisanActionButtonGroupTextButton(
+                        action = action,
+                        index = index,
+                        count = actions.size,
+                        // 原版右图标模式（ACTION_MODE_BOTH）把文字按钮的 gravity 设成 start|center。
+                        textAlign = if (rightAction != null) TextAlign.Start else TextAlign.Center,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                rightAction?.let {
+                    SmartisanActionButtonGroupIconButton(
+                        action = it,
+                        modifier =
+                            Modifier.padding(start = SmartisanActionButtonGroupDefaults.IconButtonGap),
+                    )
+                }
             }
         }
     }

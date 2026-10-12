@@ -315,7 +315,7 @@ data class SmartisanActionButton(
 @Composable fun SmartisanActionButtonGroup(
     actions: List<SmartisanActionButton>, modifier: Modifier = Modifier,
     leftAction: SmartisanActionButton? = null, rightAction: SmartisanActionButton? = null,
-    showShadow: Boolean = true,
+    showShadow: Boolean = true, includeNavigationBar: Boolean = true,
     @DrawableRes barRes: Int = SmartisanDrawables.SecondaryBarBackground,
     @DrawableRes shadowRes: Int = SmartisanDrawables.ActionButtonGroupShadow,
 )
@@ -468,6 +468,7 @@ radius, all overridable per parameter.
     leftAction: SmartisanActionButton? = null,  // 60x48dp icon button at the start
     rightAction: SmartisanActionButton? = null, // 60x48dp icon button at the end
     showShadow: Boolean = true,                 // the shadow above the bar
+    includeNavigationBar: Boolean = true,       // navigation bar height as the bar's own padding (bar background reaches the screen bottom)
     barRes: Int = SmartisanDrawables.SecondaryBarBackground,     // bar background
     shadowRes: Int = SmartisanDrawables.ActionButtonGroupShadow, // shadow asset
 )
@@ -488,6 +489,11 @@ radius, all overridable per parameter.
   an icon on the right) are one API here; passing `rightAction` also left-aligns the text, which is
   what the original's `ACTION_MODE_BOTH` does with `setGravity(start|center)`. Disabled buttons use an
   overall alpha of 0.3, matching the original `ShadowButton`'s disabled bitmap plus 0.3 alpha.
+- **System navigation bar**: `includeNavigationBar` (default `true`) takes the navigation bar height as
+  the bar's own padding, so the bar background (the `secondary_bar` 9-patch stretches along its middle
+  row) reaches the very bottom of the screen and stays visible under a transparent navigation bar while
+  the buttons stay above it. Used as the `bottomBar` of `SmartisanScaffold` the scaffold adds no inset
+  of its own; pass `false` when the bar is shown in the **middle** of a page instead.
 
 ### Calendar (`SmartisanCalendar`)
 
@@ -716,7 +722,8 @@ Notes:
     bottomBar: (@Composable () -> Unit)? = null,
     containerColor: Color = LocalSmartisanColors.current.pageBackground,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.PageBackground,
-    applyNavigationBarInset: Boolean = true,   // reserves the navigation bar height at the bottom
+    contentScrollable: Boolean = false,        // scrolling content: reaches the screen bottom, the inset moves to the end of the scroll
+    applyNavigationBarInset: Boolean = true,   // the scaffold owns the navigation bar inset (pass false to handle insets yourself)
     content: @Composable () -> Unit,
 )
 

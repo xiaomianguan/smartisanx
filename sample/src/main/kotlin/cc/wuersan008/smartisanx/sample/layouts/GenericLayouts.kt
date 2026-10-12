@@ -25,6 +25,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanActionButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanActionButtonGroup
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
+import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
 import cc.wuersan008.smartisanx.ui.layout.SmartisanEditorRow
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
@@ -155,6 +156,8 @@ private fun MessageList(
 ) {
     SmartisanScaffold(
         modifier = Modifier.fillMaxSize(),
+        // 内容会滚动：内容区一直画到屏幕最底下，导航栏留白补在滚动内容的末尾。
+        contentScrollable = true,
         titleBar = {
             SmartisanTitleBar(
                 title = "收件箱",
@@ -180,7 +183,15 @@ private fun MessageList(
             )
         },
     ) {
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    // 留白加在滚动修饰符之后：它属于滚动内容（列表能滚到导航栏底下，
+                    // 滚到底时最后一行还在导航栏之上）。
+                    .padding(bottom = LocalSmartisanContentBottomInset.current),
+        ) {
             SmartisanGroup {
                 SampleMessages.forEachIndexed { index, message ->
                     SmartisanGroupItem(

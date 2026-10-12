@@ -2,7 +2,9 @@ package cc.wuersan008.smartisanx.sample.layouts
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
+import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
@@ -74,6 +77,8 @@ fun ContactsLayout(onBack: () -> Unit) {
         }
     SmartisanScaffold(
         modifier = Modifier.fillMaxSize(),
+        // 内容会滚动：内容区一直画到屏幕最底下，导航栏留白补在滚动内容的末尾。
+        contentScrollable = true,
         titleBar = {
             SmartisanTitleBar(
                 title = "联系人",
@@ -100,7 +105,12 @@ fun ContactsLayout(onBack: () -> Unit) {
         },
     ) {
         Box(Modifier.fillMaxSize()) {
-            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                // 列表可以滚到透明导航栏底下，末尾这条留白让最后一行还能整个滚上来。
+                contentPadding = PaddingValues(bottom = LocalSmartisanContentBottomInset.current),
+            ) {
                 items(rows) { row ->
                     when (row) {
                         is ContactRow.Section ->
@@ -153,6 +163,8 @@ fun NotesLayout(onBack: () -> Unit) {
     var notes by remember { mutableStateOf(SampleNotes) }
     SmartisanScaffold(
         modifier = Modifier.fillMaxSize(),
+        // 内容会滚动：内容区一直画到屏幕最底下，导航栏留白补在滚动内容的末尾。
+        contentScrollable = true,
         titleBar = {
             SmartisanTitleBar(
                 title = "全部笔记",
@@ -178,7 +190,15 @@ fun NotesLayout(onBack: () -> Unit) {
             )
         },
     ) {
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    // 留白加在滚动修饰符之后：它属于滚动内容（列表能滚到导航栏底下，
+                    // 滚到底时最后一行还在导航栏之上）。
+                    .padding(bottom = LocalSmartisanContentBottomInset.current),
+        ) {
             SmartisanGroup {
                 notes.forEachIndexed { index, note ->
                     SmartisanGroupItem(

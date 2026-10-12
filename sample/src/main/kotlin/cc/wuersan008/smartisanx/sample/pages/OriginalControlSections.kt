@@ -111,6 +111,8 @@ private fun ActionButtonGroupSection() {
         color = LocalSmartisanColors.current.textTertiary,
     )
     // 三个文字按钮：多个按钮按位置取 filter_left / middle / right 分段底图。
+    // 这几条是**页面中间**的演示，不在屏幕底部，所以关掉导航栏内边距
+    // （`includeNavigationBar = false`）—— 贴底时才需要它把栏底色铺到屏幕最底下。
     SmartisanActionButtonGroup(
         actions =
             listOf(
@@ -118,11 +120,13 @@ private fun ActionButtonGroupSection() {
                 SmartisanActionButton("移动") { lastAction = "移动" },
                 SmartisanActionButton("删除") { lastAction = "删除" },
             ),
+        includeNavigationBar = false,
     )
     Box(Modifier.height(8.dp))
     // 单个文字按钮：走 SmallButton.Standard 的整块底图。
     SmartisanActionButtonGroup(
         actions = listOf(SmartisanActionButton("完成") { lastAction = "完成" }),
+        includeNavigationBar = false,
     )
     Box(Modifier.height(8.dp))
     // 左图标 + 四个文字按钮（原版 ACTION_MODE_LEFT，文字居中）。
@@ -139,6 +143,7 @@ private fun ActionButtonGroupSection() {
                 iconRes = SmartisanDrawables.IconComplete,
                 contentDescription = "全选",
             ) { lastAction = "全选" },
+        includeNavigationBar = false,
     )
     Box(Modifier.height(8.dp))
     // 两个文字按钮 + 右图标（原版 ACTION_MODE_BOTH，文字左对齐）。
@@ -154,6 +159,7 @@ private fun ActionButtonGroupSection() {
                 contentDescription = "设置",
             ) { lastAction = "设置" },
         showShadow = false,
+        includeNavigationBar = false,
     )
     SmartisanRowDivider()
 }

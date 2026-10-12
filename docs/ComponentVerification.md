@@ -701,10 +701,32 @@ cards' outward shadows overlapping in that band. Our page had the two cards **to
 
 While there, the "hand-rolled navigation bar spacer" the sample used to carry moved into the library:
 `SmartisanScaffold` gained `applyNavigationBarInset` (default `true`), which appends a spacer as tall as
-the system navigation bar. `SamplePageScaffold` used to pass such a spacer as its `bottomBar`; that is
-gone and the scaffold handles it — the rendering is pixel-identical (the spacer still sits below the
-content and any bottom bar, with the height taken from `WindowInsets.navigationBars`), and apps built
-on this library no longer have to work that inset out themselves.
+the system navigation bar.
+
+**Transparent navigation bar and the bottom of the page (fixed 2026-10-12)**: that spacer sat *outside*
+the content area, so a list stopped at the navigation bar and the bottom 16dp showed nothing but the
+page texture (measured on device: the home list's scroll area ended at y = 2744 and 2744..2799 was the
+`common_bg` `#F1F1F1` pinstripe), while a bottom bar that already applies the navigation bar inset got
+a second one from the scaffold — the inset was doubled (the Music tab bar was pushed to 2499..2744 with
+56px of texture below it). It is now two separate things:
+
+1. **Bottom bars own the navigation bar inset.** `SmartisanBottomBar` already did
+   (`includeNavigationBar`, default `true`); `SmartisanActionButtonGroup` gained the same switch and now
+   paints its background on an outer `Box` with the navigation bar height as the **content** padding of
+   the bar, so the bar background reaches the very bottom of the screen while the buttons stay above the
+   navigation bar (measured on the form page: the bar spans 2576..2799 = 224px = 64dp = 48dp + 16dp,
+   the button ink stops at 2704 and the navigation bar starts at 2744). The scaffold adds no second
+   inset once a `bottomBar` is present.
+2. **The content area may reach the bottom of the screen.** With `contentScrollable = true` the scaffold
+   no longer reserves the navigation bar height outside the content; the content adds that inset at the
+   **end of its scroll content** instead (`LocalSmartisanContentBottomInset`, applied *after* the scroll
+   modifier so that it is part of the scrollable content). The sample's `SamplePageScaffold`, home page,
+   contacts, notes, inbox, profile and settings pages all do this: the list scrolls under the navigation
+   bar, and at the end of the scroll the last row is still fully visible above it (measured on the home
+   page: the last card's bottom edge at y = 2694 with the navigation bar starting at 2744 — the 50px in
+   between is exactly the original `list_item_vertical_gap`). Non-scrolling pages (now playing, empty
+   state) keep the default `contentScrollable = false` and the inset is still applied outside the content
+   area, rendering pixel-identically to before.
 
 The snackbar (`SmartisanSnackbar`) was wrong in the same family of ways: it used `fillMaxWidth()` to
 span the screen and **never applied the nine-patch's content insets**, so it rendered as a pale yellow

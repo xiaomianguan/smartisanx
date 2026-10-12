@@ -167,10 +167,13 @@ Four things you must know from this snippet:
 1. **`SmartisanTheme` is mandatory** — see the previous section.
 2. **`SmartisanScaffold` already looks like the original page**: the whole page is the `common_bg`
    pinstripe texture, the title bar reserves the status bar and draws its shadow outside its own
-   bounds, and the bottom reserves the system navigation bar. Pass `backgroundRes = null` for a flat
+   bounds, and the system navigation bar inset is its job too. Pass `backgroundRes = null` for a flat
    colour, or `applyNavigationBarInset = false` to handle insets yourself.
 3. **The content area does not scroll by itself**: put `Modifier.verticalScroll(...)` or a
-   `LazyColumn` inside it if you need scrolling.
+   `LazyColumn` inside it and pass `contentScrollable = true` to the scaffold — the content can then
+   be drawn all the way to the bottom of the screen (the list shows through a transparent navigation
+   bar) and the navigation bar inset moves to the **end of the scroll content**
+   (`LocalSmartisanContentBottomInset`), so the last row is never hidden behind the navigation bar.
 4. **`SmartisanGroupItem` must be told its `position`**: the original splits a group card into
    top / middle / bottom / single artwork, with the rounded corners only on the first and last rows,
    so every row has to know which segment it is (next section).

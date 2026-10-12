@@ -21,6 +21,7 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
@@ -37,7 +38,7 @@ import cc.wuersan008.smartisanx.ui.layout.rememberSmartisanSnackbarState
  */
 val LocalSampleFeedback = staticCompositionLocalOf<(String) -> Unit> { {} }
 
-/** 组件示例页的统一骨架：标题栏 + 可滚动内容 + 底部系统栏留白 + 轻量反馈提示条。 */
+/** 组件示例页的统一骨架：标题栏 + 可滚动内容 + 轻量反馈提示条。 */
 @Composable
 fun SamplePageScaffold(
     title: String,
@@ -48,10 +49,13 @@ fun SamplePageScaffold(
 ) {
     val snackbar = rememberSmartisanSnackbarState()
     Box(modifier.fillMaxSize()) {
-        // 页面骨架直接用库里的 SmartisanScaffold（标题栏 + 内容 + 底部栏 + 原版页面底纹），
+        // 页面骨架直接用库里的 SmartisanScaffold（标题栏 + 内容 + 原版页面底纹），
         // 示例本身也是这套组件的使用者。
         SmartisanScaffold(
             modifier = Modifier.fillMaxSize(),
+            // 内容会滚动：内容区一直画到屏幕最底下（透明导航栏下能看到列表），
+            // 导航栏那条留白改由下面自己补在滚动内容的末尾。
+            contentScrollable = true,
             titleBar = {
                 SmartisanTitleBar(
                     title = title,
@@ -70,7 +74,13 @@ fun SamplePageScaffold(
                 LocalSampleFeedback provides { message -> snackbar.show(message) },
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            // 留白加在滚动修饰符**之后**，它才是滚动内容的一部分：
+                            // 列表能滚到导航栏底下，滚到底时最后一行也还在导航栏之上。
+                            .padding(bottom = LocalSmartisanContentBottomInset.current),
                     content = content,
                 )
             }

@@ -82,7 +82,10 @@ fun SettingsScreen(onBack: () -> Unit) {
 Key points:
 
 1. `SmartisanScaffold` already provides the texture, the title bar (status bar inset plus the shadow
-   drawn outside it) and the navigation bar inset; the content area only decides whether it scrolls.
+   drawn outside it) and the navigation bar inset: pass `contentScrollable = true` when the content
+   **scrolls** and the inset moves to the end of the scroll content instead (see 4.2), so the list can
+   be drawn all the way to the bottom of the screen; when the content does not scroll the scaffold
+   applies it outside the content area;
 2. **Leave a gap at both ends**: the original's `settings_item_top_bottom_margin` gives the list 14dp
    above and below.
 3. **No** gap around a section title — `SmartisanSectionTitle` carries its own (19.5dp above, 5.5dp
@@ -200,6 +203,10 @@ Box(Modifier.fillMaxSize()) {
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize().smartisanVerticalScrollbar(listState),
+        // with contentScrollable = true on the scaffold, the navigation bar inset goes here,
+        // at the end of the list: it can scroll under a transparent navigation bar and the
+        // last row still ends up above it.
+        contentPadding = PaddingValues(bottom = LocalSmartisanContentBottomInset.current),
     ) {
         item { SmartisanListVerticalGap() }
         itemsIndexed(contacts, key = { _, c -> c.id }) { index, contact ->
@@ -275,9 +282,13 @@ SmartisanScaffold(
 }
 ```
 
-`SmartisanBottomBar` brings its own navigation bar inset (`includeNavigationBar = true`). If you pass it
-as the `bottomBar` of `SmartisanScaffold`, remember to pass `applyNavigationBarInset = false` as well,
-otherwise you get the inset twice.
+`SmartisanBottomBar` brings its own navigation bar inset (`includeNavigationBar = true`): the bar
+background reaches the very bottom of the screen (still visible under a transparent navigation bar)
+while the buttons stay above it. Pass it as the `bottomBar` of `SmartisanScaffold` and there is
+**nothing else** to do — the scaffold sees the bottom bar and adds no second inset.
+`SmartisanActionButtonGroup` has the same switch; a bottom bar of your own should do the same
+(`Modifier.windowInsetsPadding(WindowInsets.navigationBars)` on the bar **content**, with the
+background drawn outside it).
 
 ### 4.4 Form page
 
@@ -502,6 +513,8 @@ Prefer reusing these defaults when you write your own components so everything k
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | "SmartisanColors not found" is thrown | no `SmartisanTheme` | wrap the outermost `setContent` |
+| A list stops at the navigation bar with a strip of texture below it | the content scrolls but `contentScrollable = true` was not passed, so the scaffold applied the inset outside the content area | pass `contentScrollable = true` and add `LocalSmartisanContentBottomInset` at the end of the scroll content (see 4.2) |
+
 | Content is hidden behind the system bar | you handle insets yourself, or used `applyNavigationBarInset = false` | add `Modifier.windowInsetsPadding(WindowInsets.navigationBars)` |
 | The keyboard covers the field | no IME insets | add `Modifier.imePadding()` to the content |
 | Rounded corners appear on a middle row | wrong row `position` | see 3.2 |

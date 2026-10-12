@@ -3,10 +3,13 @@ package cc.wuersan008.smartisanx.sample.layouts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanCheckbox
+import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
 import cc.wuersan008.smartisanx.ui.layout.SmartisanBlankDefaults
 import cc.wuersan008.smartisanx.ui.layout.SmartisanEmptyActionButton
 import cc.wuersan008.smartisanx.ui.layout.SmartisanEmptyHint
@@ -57,6 +61,8 @@ fun ProfileLayout(onBack: () -> Unit) {
     val typography = LocalSmartisanTypography.current
     SmartisanScaffold(
         modifier = Modifier.fillMaxSize(),
+        // 内容会滚动：内容区一直画到屏幕最底下，导航栏留白补在滚动内容的末尾。
+        contentScrollable = true,
         titleBar = {
             SmartisanTitleBar(
                 title = "个人资料",
@@ -77,7 +83,15 @@ fun ProfileLayout(onBack: () -> Unit) {
             )
         },
     ) {
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    // 留白加在滚动修饰符之后：它属于滚动内容（列表能滚到导航栏底下，
+                    // 滚到底时最后一行还在导航栏之上）。
+                    .padding(bottom = LocalSmartisanContentBottomInset.current),
+        ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -264,15 +278,20 @@ fun MultiSelectLayout(onBack: () -> Unit) {
         bottomBar = {
             if (editing) {
                 // 原版多选条：红色纹理底图 list_edit_remove_background，高 48dp。
+                // 底图画在外层 Box 上、导航栏高度作为内容的内边距：栏底色一直铺到屏幕
+                // 最底下（透明导航栏下也能看到），删除按钮仍在导航栏之上。
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
                         .smartisanDrawableBackground(SmartisanOriginalIcons.RemoveBarBackground),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 24.dp),
+                        modifier =
+                            Modifier
+                                .windowInsetsPadding(WindowInsets.navigationBars)
+                                .height(48.dp)
+                                .padding(horizontal = 24.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         SmartisanIconButton(

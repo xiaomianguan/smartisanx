@@ -24,6 +24,7 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanIconSlider
 import cc.wuersan008.smartisanx.ui.control.SmartisanRadioRow
 import cc.wuersan008.smartisanx.ui.control.SmartisanSliderIcon
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
+import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
@@ -59,6 +60,8 @@ fun SettingsSoundLayout(onBack: () -> Unit) {
     val ringtones = remember { listOf("清澈", "铃音", "静音") }
     SmartisanScaffold(
         modifier = Modifier.fillMaxSize(),
+        // 内容会滚动：内容区一直画到屏幕最底下，导航栏留白补在滚动内容的末尾。
+        contentScrollable = true,
         titleBar = {
             SmartisanTitleBar(
                 title = "声音与振动",
@@ -71,7 +74,15 @@ fun SettingsSoundLayout(onBack: () -> Unit) {
             )
         },
     ) {
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    // 留白加在滚动修饰符之后：它属于滚动内容（列表能滚到导航栏底下，
+                    // 滚到底时最后一行还在导航栏之上）。
+                    .padding(bottom = LocalSmartisanContentBottomInset.current),
+        ) {
             SmartisanSectionTitle("铃声与振动")
             SmartisanGroup {
                 SmartisanSwitchRow(

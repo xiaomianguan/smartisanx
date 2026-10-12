@@ -82,6 +82,12 @@ data class SmartisanBottomBarItem(
  * 否则线会落到 54dp 栏体中间，看着像栏里多了一道缝。
  *
  * 图标 30dp、文字 10sp；选中项使用 `accent` 色，按压时轻微缩放。
+ *
+ * **系统导航栏**：`includeNavigationBar`（默认 `true`）把导航栏高度作为标签栏自己的
+ * 内边距，于是栏底色一直画到屏幕最底下（透明导航栏下也能看到它）。把它当
+ * [SmartisanScaffold] 的 `bottomBar` 用时不用再管别的 —— 骨架发现底部栏在，就不会
+ * 另补一条留白（留白不会翻倍）。自己写的底部栏请照做
+ * （`Modifier.windowInsetsPadding(WindowInsets.navigationBars)`）。
  */
 @Composable
 fun SmartisanBottomBar(

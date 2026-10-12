@@ -1,13 +1,9 @@
 package cc.wuersan008.smartisanx.sample
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -15,14 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
-import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
+import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 
@@ -44,14 +41,22 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 fun SampleHome(onOpen: (SamplePage) -> Unit) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    Column(
-        Modifier
-            .fillMaxSize()
-            .smartisanDrawableBackground(SmartisanDrawables.PageBackground),
+    // 首页也用库里的 SmartisanScaffold：标题栏、原版页面底纹都由骨架提供，
+    // 与所有子页面共用同一套结构。
+    SmartisanScaffold(
+        modifier = Modifier.fillMaxSize(),
+        titleBar = { SmartisanTitleBar(title = "smartisanx 组件示例") },
+        // 内容会滚动：内容区一直画到屏幕最底下，导航栏那条留白补在滚动内容的末尾。
+        contentScrollable = true,
     ) {
-        SmartisanTitleBar(title = "smartisanx 组件示例")
         Column(
-            modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    // 留白加在滚动修饰符**之后**：它属于滚动内容，列表能滚到透明导航栏底下，
+                    // 滚到底时最后一张卡片仍然完整露在导航栏之上。
+                    .padding(bottom = LocalSmartisanContentBottomInset.current),
         ) {
             SmartisanText(
                 text = "锤子风格 Compose 组件库。组件来自锤子音乐、锤子天气、锤子时钟三个复刻项目，" +
@@ -100,6 +105,5 @@ fun SampleHome(onOpen: (SamplePage) -> Unit) {
             // 所以最后一张卡片下面也留同样一段，不要贴着系统栏。
             SmartisanListVerticalGap()
         }
-        Box(Modifier.fillMaxWidth().windowInsetsBottomHeight(WindowInsets.navigationBars))
     }
 }
