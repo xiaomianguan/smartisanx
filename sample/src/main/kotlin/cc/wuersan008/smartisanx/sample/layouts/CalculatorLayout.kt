@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -23,6 +25,18 @@ import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorButtonStyle
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorDisplay
 import cc.wuersan008.smartisanx.ui.control.SmartisanCalculatorDisplayDefaults
+
+/** 键盘高度，原版 `values-sw360dp/dimens.xml` 的 `controller_height`（432dp 档是 532.8dp）。 */
+private val ControllerHeight = 444.dp
+
+/** 键盘左右外边距，原版 `controller_padding_horizontal` = 5.33dp。 */
+private val ControllerHorizontalMargin = 5.33.dp
+
+/** 键盘上外边距，原版 `controller_margin_top` = 40dp。 */
+private val ControllerTopMargin = 40.dp
+
+/** 键盘下外边距，原版 `controller_margin_bottom` = 18dp。 */
+private val ControllerBottomMargin = 18.dp
 
 /** 计算器的一个按键。 */
 @Composable
@@ -58,6 +72,7 @@ private fun RowScope.CalcKey(
  * | 功能键行 | `del` / `addminus` / `div` / `multiply`，灰色按键 `cal_selector_btn_grey_focus` |
  * | 数字键盘 | `d7`…`d0` 白色按键；`minus` / `add` 是灰底；`0` 双宽（`selector_digit_0`）、`=` 双高（`selector_amount`） |
  * | 键盘外边距 | `controller_padding_horizontal` = 5.33dp、`controller_margin_top` = 40dp、`controller_margin_bottom` = 18dp |
+ * | 键盘高度 | `controller_height` = 444dp（`values-sw360dp`；432dp 档是 532.8dp）—— 原版是**固定高度**，不是权重 |
  *
  * 按键本身是 [SmartisanCalculatorButton]：底图按 [SmartisanCalculatorButtonStyle] 取，
  * 键面是原版位图（`d1`…`amount`），长按连按由 `onRepeat` 支持。
@@ -100,11 +115,15 @@ fun CalculatorLayout(onBack: () -> Unit) {
             SmartisanCalculatorDisplay(expression = "12×34", result = "408")
         }
         // 键盘：六行等高的按键，最后一行双高（`=` 跨两行、`0` 双宽）。
+        // 原版 `controller` 是固定 444dp 高（`values-sw360dp/dimens.xml` 的 `controller_height`），
+        // 用权重会把键压扁（数字看着偏上、键面变成扁片）；
+        // 上下那 40dp / 18dp 是 **margin**（在 444dp 之外），所以这里用 Spacer 而不是 padding。
+        Spacer(Modifier.height(ControllerTopMargin))
         Column(
             Modifier
                 .fillMaxWidth()
-                .weight(1f)
-                .padding(start = 5.dp, end = 5.dp, top = 40.dp, bottom = 18.dp),
+                .height(ControllerHeight)
+                .padding(horizontal = ControllerHorizontalMargin),
         ) {
             // 记忆键（黑底）。
             Row(Modifier.fillMaxWidth().weight(1f)) {
@@ -152,5 +171,6 @@ fun CalculatorLayout(onBack: () -> Unit) {
                 CalcKey(R.drawable.amount, SmartisanCalculatorButtonStyle.Equal, "等于")
             }
         }
+        Spacer(Modifier.height(ControllerBottomMargin))
     }
 }

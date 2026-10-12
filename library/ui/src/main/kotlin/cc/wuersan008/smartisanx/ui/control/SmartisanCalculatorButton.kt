@@ -16,14 +16,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
 import cc.wuersan008.smartisanx.core.interaction.smartisanClick
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.interaction.smartisanHaptic
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
+import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePadding
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
-import cc.wuersan008.smartisanx.ui.R
 import kotlinx.coroutines.delay
 
 /**
@@ -42,6 +41,11 @@ import kotlinx.coroutines.delay
  * | [SmartisanCalculatorButtonStyle.Equal] | `selector_amount`（等号，红色双高） |
  *
  * selector 自带按下态，所以不需要再手绘按压反馈。
+ *
+ * 键面位图（`d1`…`amount`）按 `fitCenter` 画在键里，和原版 `HammerButton extends ImageButton`
+ * 的默认 `scaleType` 一致；画之前先吃掉底图 nine-patch 自己声明的内边距（`btn_white_n.9.png`
+ * 是左右 6px、上 1px、下 20px），原版的 `ImageButton` 就是这么用背景 padding 的
+ * —— 也正因为下方那 20px，原版的数字才是**略高于键面中线**的。
  */
 @Composable
 fun SmartisanCalculatorButton(
@@ -52,7 +56,8 @@ fun SmartisanCalculatorButton(
     highlighted: Boolean = false,
     onRepeat: (() -> Unit)? = null,
     contentDescription: String? = null,
-    iconPadding: PaddingValues = PaddingValues(horizontal = KeyIconHorizontalInset),
+    iconPadding: PaddingValues =
+        rememberSmartisanDrawablePadding(style.backgroundRes(highlighted)),
 ) {
     val interaction = rememberSmartisanInteractionSource()
     val iconPainter = rememberSmartisanDrawablePainter(iconRes)
@@ -103,9 +108,6 @@ fun SmartisanCalculatorButton(
         )
     }
 }
-
-/** 按键图标左右内缩，与原版 nine-patch 的内容区一致。 */
-private val KeyIconHorizontalInset = 6.dp
 
 /** 长按连发的起始延迟，原版删除键。 */
 private const val RepeatStartDelayMillis = 500L

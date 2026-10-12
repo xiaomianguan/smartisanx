@@ -164,6 +164,16 @@ object SmartisanDimens {
      */
     val LetterIndexBarWidth = 30.dp
 
+    /**
+     * 字母索引栏里每个字母至少占的高度，原版 `letters_bar_single_letter_min_height` = 12dp。
+     *
+     * 放不下时原版 `LettersBar` 会隔几个字母画一个（`ui` 模块的 `SmartisanLetterIndexBar` 照抄了这个行为）。
+     */
+    val LetterIndexMinLetterHeight = 12.dp
+
+    /** 字母索引栏上下留白，原版 `smartisan_quickbar_letterbar_margin` = 3dp。 */
+    val LetterBarMargin = 3.dp
+
     /** 通用图标按钮的点击区域，保证至少 48dp 的可点范围。 */
     val MinimumTouchTarget = 48.dp
 

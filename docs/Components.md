@@ -201,7 +201,8 @@ enum class SmartisanCalculatorButtonStyle { White, Grey, Black, GreyFocus, Black
     iconRes: Int, onClick: () -> Unit, modifier: Modifier = Modifier,
     style: SmartisanCalculatorButtonStyle = SmartisanCalculatorButtonStyle.White,
     highlighted: Boolean = false, onRepeat: (() -> Unit)? = null,
-    contentDescription: String? = null, iconPadding: PaddingValues = PaddingValues(...),
+    contentDescription: String? = null,
+    iconPadding: PaddingValues = rememberSmartisanDrawablePadding(style.backgroundRes(highlighted)),
 )
 
 object SmartisanCalculatorDrawables {
@@ -392,6 +393,12 @@ highlighted unit suffix semantics.
 `SmartisanCalculatorButton` gets its press offset from the original selectors themselves (the pressed bitmap is
 inset by about 1dp), draws the highlight badge at the original `highlight_padding_right / top` (portrait and
 landscape differ), and repeats on long press at the original `500ms` delay then `150ms` intervals.
+The key faces are drawn `fitCenter` (the default `scaleType` of the original
+`HammerButton extends ImageButton`), and before drawing they eat the padding the background 9-patch declares
+(`btn_white_n.9.png` is 6px left/right, 1px top, 20px bottom) — that is how the original `ImageButton` uses a
+background padding, and that bottom 20px is exactly why the original digits sit **slightly above the key's
+centre** (measured at 560dpi: 74dp keys, the digit ink's centre is 10.3dp above the key's centre, i.e. 13.9%
+of the key height).
 
 `SmartisanCalculatorDisplay` is the original calculator's **dot-matrix display**: the original draws every
 character as a small bitmap instead of using text. The input line comes from `DisplayInputView` and uses
@@ -767,6 +774,9 @@ class SmartisanTitleBarAction private constructor(
 
 data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val selectedIcon: ImageVector = icon)
 @Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground)
+// Structure = the original sb_tab_bar.xml: a standalone tab_bar_shadow strip (26.7dp whose last two
+// rows are the dividing line) sits above the 54dp bar itself; do not draw another divider, or the
+// line lands in the middle of the bar.
 
 @Composable fun Modifier.smartisanVerticalScrollbar(state: ScrollState, width, margin, color): Modifier   // library-original; the original ships no bitmap
 @Composable fun Modifier.smartisanVerticalScrollbar(state: LazyListState, width, margin, color): Modifier
@@ -1003,9 +1013,11 @@ Notes:
 
 @Composable fun SmartisanLetterIndexBar(
     letters: List<Char>, onLetterSelected: (Char) -> Unit, modifier: Modifier = Modifier,
-    activeLetter: Char? = null, letterHeight: Dp = 13.dp, showOverlay: Boolean = true,
+    activeLetter: Char? = null, showOverlay: Boolean = true,
+    minLetterHeight: Dp = SmartisanDimens.LetterIndexMinLetterHeight,   // 12dp
+    backgroundRes: Int? = SmartisanDrawables.LetterBarBackground,       // shown only while held
 )
-fun smartisanDefaultLetterIndex(): List<Char>   // '#' + A-Z
+fun smartisanDefaultLetterIndex(): List<Char>   // A–Z + '#'
 fun smartisanIndexLetter(name: String): Char
 
 @Composable fun SmartisanHiddenRowActions(
@@ -1026,6 +1038,14 @@ data class SmartisanHiddenRowAction(
   committed once on release.
 - `SmartisanSwipeToDelete`'s physics come from the Clock revival: the first 65dp move 1:1, further
   travel is damped to 1/5 speed, and the maximum is 360dp.
+- `SmartisanLetterIndexBar` reproduces the framework `LettersBar`: it **fills the list height**
+  (`quickbar_ex.xml` uses `match_parent`), letters are spread over "available height / visible letter
+  count" with 3dp at the top and bottom (`smartisan_quickbar_letterbar_margin`), and each letter takes
+  at least 12dp; when they do not fit, the original **draws every n-th one**
+  (`calculateVisibleLettersIndexes()`, always including the first and last). The finger position is
+  mapped **linearly across the whole bar onto the whole alphabet** (`y / bar height * count`), not per
+  cell; the `letters_bar_background` shows **only while held**, and the held letter turns white and
+  bold inside the 20dp `letters_bar_highlight_icon` (drawn inside the bar, behind the letter).
 - `SmartisanHiddenRowActions` ports the framework's `smartisanos.widget.HiddenListActionLayout`: a
   horizontal strip of icon buttons with 12dp on both sides (`hidden_list_action_left_right_padding`),
   6dp between icons (`hidden_list_action_icon_gap`), icons at `wrap_content` and vertically centred,
@@ -1080,7 +1100,8 @@ data class SmartisanHiddenRowAction(
 
 @Composable fun SmartisanMenuItem(
     text: String, onClick: () -> Unit, modifier: Modifier = Modifier,
-    enabled: Boolean = true, showDivider: Boolean = true, danger: Boolean = false,
+    enabled: Boolean = true, showDivider: Boolean = false, danger: Boolean = false,
+    backgroundRes: Int? = SmartisanDrawables.MenuDialogItemSelector,   // rounded 9-patch
 )
 
 @Composable fun SmartisanBottomSheet(
@@ -1144,6 +1165,13 @@ object SmartisanBhmDefaults   // row 48dp / icon 18dp / title 16sp bold / header
   the window being destroyed while the animation was still running.
 - `SmartisanSheetScaffold` is for sheets hosted inside the page rather than in their own window
   (for example a side panel or an embedded surface).
+- The action rows of `SmartisanMenuDialog` (`SmartisanMenuItem`) use the original
+  `menu_dialog_item_selector` as their background: a **rounded** 9-patch (white / `#F8F8F8` pressed /
+  30% white disabled), 48dp tall, 17sp bold, text colour from the original `normal_btn_text_color`
+  (`#9A000000`); there is **no divider** between action rows — the original list's `divider` is
+  transparent and only the 18dp `dividerHeight` separates them (this library uses
+  `Arrangement.spacedBy`). Note it is *not* the same asset as the square, 1px-stroked
+  `menu_item_selector` used by the original grid menu (`menu_list_item.xml`).
 - `SmartisanTwistGuide` ports the framework's `smartisanos.widget.TwistGuideView` (the "you just
   activated rotate-by-gesture" hint): the original is a `WindowManager`-level full-screen overlay with
   a `0x98000000` dim and a panel sized 303x453dp in portrait and 453x297dp in landscape (inset by

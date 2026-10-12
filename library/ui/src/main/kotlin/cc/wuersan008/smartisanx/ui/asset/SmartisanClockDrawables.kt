@@ -26,8 +26,14 @@ object SmartisanClockDrawables {
     /** 顶部「12」夜间变体。 */
     @DrawableRes val NumeralTopTwelveNight = R.drawable.d12_white
 
-    /** 右侧「3」。 */
-    @DrawableRes val NumeralRightThree = R.drawable.d3
+    /**
+     * 右侧「3」。
+     *
+     * 原版文件名是 `d3`，但计算器的数字键面也叫 `d3`（两张图不同源），所以按库里的重名约定
+     * 重命名保存为 `sos_clock_drawable_d3`：否则在 560dpi 设备上 `R.drawable.d3` 会解析到
+     * 时钟这张 72×72 的表盘数字，计算器的「3」就会被放大成一团。
+     */
+    @DrawableRes val NumeralRightThree = R.drawable.sos_clock_drawable_d3
 
     /** 右侧「3」夜间变体。 */
     @DrawableRes val NumeralRightThreeNight = R.drawable.d3_white

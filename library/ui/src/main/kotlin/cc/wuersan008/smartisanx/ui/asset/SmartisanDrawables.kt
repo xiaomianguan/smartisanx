@@ -279,8 +279,17 @@ object SmartisanDrawables {
     /** 页面列表底色（weather 的 list_bg，含夜间变体）。 */
     @DrawableRes val ListBackground = R.drawable.list_bg
 
-    /** 菜单项按压背景。 */
+    /** 菜单项按压背景（原版 `menu_item_selector`，方角 + 1px 描边；原版 `menu_list_item.xml` 的九宫格菜单用它）。 */
     @DrawableRes val MenuItemSelector = R.drawable.menu_item_selector
+
+    /**
+     * 带标题的列表弹层里那一行**圆角**动作按钮的底图（原版 `menu_dialog_item_selector`，
+     * 常态 / 按下 / 禁用三张 9-patch，角半径约 20px）。
+     *
+     * 原版 `menu_dialog_list_item.xml` 是一个 `ShadowButton`，底图取它；与
+     * [MenuItemSelector] 那张方角底图不是同一份素材 —— 弹层里的动作项要用这张。
+     */
+    @DrawableRes val MenuDialogItemSelector = R.drawable.menu_dialog_item_selector
 
     /** 列表分组分隔线。 */
     @DrawableRes val ListDivider = R.drawable.list_devider_bg

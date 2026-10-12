@@ -73,8 +73,15 @@ data class SmartisanBottomBarItem(
 /**
  * 锤子风格底部标签栏。
  *
- * 高 54dp（原版 `smartisan_bottom_bar_height`）、顶部 0.67dp 分隔线、图标 30dp、文字 10sp；
- * 选中项使用 `accent` 色，按压时轻微缩放。
+ * 结构照抄原版 `res/layout/sb_tab_bar.xml`（`LinearLayout(vertical)`）：
+ * 上面是一条**独立**的投影（`tab_bar_shadow`，9-patch 内容高 80px ⇒ 26.7dp，不可纵向拉伸），
+ * 下面才是高 54dp（`smartisan_bottom_bar_height`）的标签栏本体，底色 `sb_repeat_tabbar_bg`
+ * （内部平铺 `sb_tabbar_bg`：白 → #F7F7F7 的竖向渐变）。
+ *
+ * 那条分界线是**投影素材自己的最后两行**（alpha 12.5%），所以不要再另画一条 divider：
+ * 否则线会落到 54dp 栏体中间，看着像栏里多了一道缝。
+ *
+ * 图标 30dp、文字 10sp；选中项使用 `accent` 色，按压时轻微缩放。
  */
 @Composable
 fun SmartisanBottomBar(
@@ -87,7 +94,7 @@ fun SmartisanBottomBar(
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomBarBackground,
 ) {
     val colors = LocalSmartisanColors.current
-    // 原版：底色是 sb_repeat_tabbar_bg，上方叠一张 tab_bar_shadow 再叠一条 0.67dp 分隔线。
+    // 原版：底色是 sb_repeat_tabbar_bg，上方叠一张 tab_bar_shadow。
     val backgroundModifier =
         if (backgroundRes != null) {
             Modifier.smartisanDrawableBackground(backgroundRes)
@@ -99,45 +106,42 @@ fun SmartisanBottomBar(
             rememberSmartisanDrawablePainter(SmartisanDrawables.BottomBarShadow)
                 .intrinsicSize.height.toDp()
         }
-    Box(modifier.fillMaxWidth().then(backgroundModifier)) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    // 原版把导航栏 insets 作为 Row 的内边距，底色会一起盖住。
-                    .then(
-                        if (includeNavigationBar) {
-                            Modifier.windowInsetsPadding(WindowInsets.navigationBars)
-                        } else {
-                            Modifier
-                        },
-                    )
-                    .height(SmartisanDimens.BottomBarHeight),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            items.forEachIndexed { index, item ->
-                SmartisanBottomBarItemView(
-                    item = item,
-                    selected = index == selectedIndex,
-                    modifier = Modifier.weight(1f),
-                    onClick = { onSelected(index) },
-                )
-            }
-        }
+    Column(modifier.fillMaxWidth()) {
         if (showTopDivider) {
+            // 原版 sb_tab_bar.xml 的第一条子 View：一条 match_parent 宽、wrap_content 高的
+            // ImageView，背景就是 tab_bar_shadow。它自己最后两行就是那条分界线。
             Box(
-                Modifier.align(Alignment.TopCenter)
-                    .fillMaxWidth()
+                Modifier.fillMaxWidth()
                     .height(shadowHeight)
                     .smartisanDrawableBackground(SmartisanDrawables.BottomBarShadow),
             )
-            Box(
-                Modifier.align(Alignment.TopCenter)
-                    .fillMaxWidth()
-                    .height(SmartisanDimens.DividerThickness)
-                    .background(colors.divider),
-            )
+        }
+        Box(Modifier.fillMaxWidth().then(backgroundModifier)) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        // 原版把导航栏 insets 作为 Row 的内边距，底色会一起盖住。
+                        .then(
+                            if (includeNavigationBar) {
+                                Modifier.windowInsetsPadding(WindowInsets.navigationBars)
+                            } else {
+                                Modifier
+                            },
+                        )
+                        .height(SmartisanDimens.BottomBarHeight),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                items.forEachIndexed { index, item ->
+                    SmartisanBottomBarItemView(
+                        item = item,
+                        selected = index == selectedIndex,
+                        modifier = Modifier.weight(1f),
+                        onClick = { onSelected(index) },
+                    )
+                }
+            }
         }
     }
 }

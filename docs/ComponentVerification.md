@@ -21,9 +21,9 @@ similar".
 | `SmartisanCompactClock` | Clock `SmallWorldClockView` | ✅ anchors 6.7/8, 7.2/8, 6.5/8 and the 4px shadow offset match; 18:00–06:00 night dial matches |
 | `SmartisanRulerPicker` | Clock `TimerRulerView` | ✅ "one minute = one scale bitmap width" tiling matches, as do the three caliper layers |
 | `SmartisanModal` / `SmartisanDialog` | Music `SmartisanModal` + Clock `SmartisanModalDialog` | ✅ 308dp width, 5dp radius, 48dp title bar and buttons, 1px divider, 0.54 scrim all match |
-| `SmartisanMenuDialog` | Clock `SmartisanMenuDialog` | ✅ bottom-anchored, 18dp sides, 18/24dp button margins, 48dp buttons match |
+| `SmartisanMenuDialog` | framework `smartisanos.widget.MenuDialog` (`menu_dialog*.xml`) + Clock bottom menu | ✅ bottom-anchored, 18dp sides, 18/24dp button margins, 48dp buttons, action rows on the rounded `menu_dialog_item_selector`, no divider between rows (18dp gap only) all match |
 | `SmartisanBottomSheet` | Music `SmartisanAnimatedSheet` | ✅ slides up from the bottom, 300ms in / 250ms out match |
-| `SmartisanLetterIndexBar` | Music letter quick bar + Clock `QuickBarEx` | ✅ hold-and-drag selection and the magnifier bubble match |
+| `SmartisanLetterIndexBar` | framework `smartisanos.widget.letters.LettersBar` (Music library / Contacts / Clock `QuickBarEx`) | ✅ fills the list height, letters spread over "available height / visible count", every n-th letter when they do not fit, background only while held, held letter white + bold inside the 20dp bubble all match |
 | `SmartisanPageTransition` | Music `PageStackTransition` | ✅ right slide, 300ms, `Smooth` / `Decelerate` match |
 | `SmartisanModalPageTransition` | Weather `pop_up_in` / `slide_down_out` | ✅ bottom slide, 100%→0 and 0→109%, `decelerate_cubic` match |
 | `SmartisanListRow` family | framework `list_content_*` / `list_section_title_layout` / `list_board_section_title_layout` + Contacts `list_section.xml` | ✅ 60dp row height, 60dp left icon slot (content centred at 42dp), divider indents 18dp / 60dp, 30dp section title, 40dp board title, the Contacts 18dp letter band + 1dp shadow, all four type scales match; verified pixel by pixel on a real device (see section 4) |
@@ -731,4 +731,72 @@ ellipsises, short text no longer stretches) and reads the same insets with
 While there, the theme page's shape swatches became horizontally scrollable: 36dp × 7 + 8dp × 6 + 18dp
 of content padding on each side = 336dp, exactly the width available on a 360dp screen (the card is
 336dp wide too), so the last one (`large`) was clipped.
+
+## 9. Demo-app visual sweep (2026-10-12)
+
+Five fixes this round; every one was traced back to the original resources first.
+
+### 1. The calculator's "3" was the Clock's dial numeral (duplicate asset name)
+
+`d3` exists twice with completely different content: the Clock's is a 72x72 dial numeral, the
+Calculator's is a 252x207 key face. `library/ui` merges both APKs into one resource directory, and on
+a 560dpi device `R.drawable.d3` can only resolve to the `drawable-xxhdpi` copy — the Clock's numeral —
+so the calculator's "3" was blown up into a blob with the wrong typeface (measured: the other digits'
+ink is 18.3dp tall; that "3" filled the whole key). Following the library's duplicate-name convention
+the **Clock** copy is now `sos_clock_drawable_d3` (`SmartisanClockDrawables.NumeralRightThree`); the
+calculator's `d0`…`d9` keep their original names.
+
+### 2. Calculator keypad height: the original is a fixed 444dp, not a weight
+
+The original `controller` is `layout_height="@dimen/controller_height"`, and
+`values-sw360dp/dimens.xml` sets that to 444dp (the 432dp bucket uses 532.8dp) with 40dp / 18dp as
+**margins** (outside the 444dp). The demo used `weight(1f)` with the margins as padding, so each key
+row came out 50.8dp instead of 74dp and the digits looked pushed up on a flat plate. Measured on the
+nubia P0110 (1264x2800 @560dpi = 3.5px/dp):
+
+| | before | after |
+| --- | --- | --- |
+| key row pitch | 153px = 43.7dp | 259px = 74.0dp (= 444dp / 6) |
+| digit ink height | 14.9dp | 18.3dp |
+| digit ink centre above the key centre | 3.7dp | 10.3dp = 13.9% of the key height |
+
+The digit being *above* the centre is the original's own look, and it comes from the background
+9-patch: `btn_white_n.9.png` declares 6px left/right, 1px top and 20px bottom of padding, and the
+original's `HammerButton extends ImageButton` eats that as its drawable padding. The component now
+reads the same insets with `rememberSmartisanDrawablePadding` instead of a hardcoded 6dp.
+
+### 3. The bottom tab bar's stray "seam"
+
+The original `res/layout/sb_tab_bar.xml` is a `LinearLayout(vertical)` with an **independent**
+`tab_bar_shadow` ImageView (9-patch content 80px = 26.7dp, not vertically stretchable) above the 54dp
+`RadioGroup`. The library drew the shadow *on top of* the bar plus a separate 0.67dp divider, so the
+shadow's own last two rows (alpha 12.5%, the actual dividing line) landed 26.7dp inside the 54dp bar
+and read as a seam. The shadow strip now sits above the bar, as in the original, and the extra divider
+is gone (measured: the line moved from 740.3dp to 713.7dp, i.e. to the bar's top edge; the bar's
+gradient then runs 714.6dp → the bottom).
+
+### 4. Menu action rows now use the rounded background
+
+The original `res/layout/menu_dialog_list_item.xml` is a `ShadowButton` whose background is
+`menu_dialog_item_selector` — a **rounded** 9-patch (122x146, corner radius ≈ 20px; white / `#F8F8F8`
+pressed / 30% white disabled) — 48dp tall, 17sp bold, text `normal_btn_text_color` (`#9A000000`), and
+the list's `divider` is transparent (rows are separated only by the 18dp `dividerHeight`). The library
+used `menu_item_selector` (square `action_menu_grid_bg` + a 1px stroke), drew a divider under every
+row and dimmed disabled rows with `alpha`. `SmartisanMenuItem` now defaults to
+`SmartisanDrawables.MenuDialogItemSelector`, `showDivider = false`, and lets the selector's
+`_disabled` state carry the disabled look.
+
+### 5. The A–Z letter bar fills the list height
+
+The original `LettersBar` is `layout_height="match_parent"` inside `quickbar_ex.xml`: letters are
+spread over "available height / visible letter count" (`singleLetterHeight = max(h / count, 12dp)`,
+`smartisan_quickbar_letterbar_margin` = 3dp at the top and bottom), the touch position maps
+**linearly across the whole bar onto the whole alphabet** (`y / bar height * count`), the
+`letters_bar_background` shows only while held, and the held letter turns white and bold inside the
+20dp `letters_bar_highlight_icon` drawn *inside* the bar. The library used a fixed 13dp per letter in
+a centred column, always showed the background, offset the 48dp bubble *outside* the bar and coloured
+the active letter with the accent colour. Measured on the music library page (20 letters, list area
+603dp): pitch 104.5px = 29.86dp, first letter's centre 105.4dp, last 669.6dp — matching the original's
+formula. `smartisanDefaultLetterIndex()` now returns A–Z then `#`, matching
+`LettersConfig.ENGLISH_LETTERS` plus the default `mPoundPosition = 2` (bottom).
 
