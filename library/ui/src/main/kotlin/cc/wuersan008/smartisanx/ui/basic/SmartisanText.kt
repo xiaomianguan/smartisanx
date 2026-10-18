@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
+import cc.wuersan008.smartisanx.core.theme.LocalSmartisanFonts
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanContentColor
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import kotlin.math.roundToInt
@@ -126,8 +127,12 @@ internal fun rememberSmartisanTextStyle(
             contentColor != Color.Unspecified -> contentColor
             else -> colors.textPrimary
         }
+    // Styles built inline (dialog titles and buttons, tab groups, tips...) name
+    // no font; they get the theme's text font instead of the system default.
+    val fontFamily = style.fontFamily ?: LocalSmartisanFonts.current.text
     return style.copy(
         color = resolvedColor,
+        fontFamily = fontFamily,
         fontWeight = fontWeight ?: style.fontWeight,
         fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
         textAlign = textAlign ?: style.textAlign,
