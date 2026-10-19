@@ -2,23 +2,68 @@ package cc.wuersan008.smartisanx.ui.basic
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.ResolvedTextDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanFonts
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanContentColor
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import kotlin.math.roundToInt
+
+/**
+ * 为 true 时，[SmartisanText] 的省略号（[TextOverflow.Ellipsis]，带 `maxLines` 时）
+ * 换成末行末端的渐隐：按段落方向淡出到透明，与底色无关（遮罩的是文字本身的 alpha）。
+ * 默认 false，保持省略号。
+ */
+val LocalSmartisanTextFadeOverflow = staticCompositionLocalOf { false }
+
+/** 文字溢出时，末行朝书写方向的末端在 [width] 内淡出。 */
+private fun Modifier.fadeOverflow(width: androidx.compose.ui.unit.Dp = 32.dp, layout: () -> TextLayoutResult?): Modifier =
+    graphicsLayer {
+        // 只有溢出时才离屏合成，其余文字照常绘制。
+        compositingStrategy = if (layout()?.hasVisualOverflow == true) CompositingStrategy.Offscreen else CompositingStrategy.Auto
+    }.drawWithContent {
+        drawContent()
+        val l = layout()?.takeIf { it.hasVisualOverflow } ?: return@drawWithContent
+        val line = l.lineCount - 1
+        val top = l.getLineTop(line)
+        val w = minOf(width.toPx(), size.width)
+        val rtl = l.getParagraphDirection(l.getLineStart(line)) == ResolvedTextDirection.Rtl
+        val start = if (rtl) 0f else size.width - w
+        drawRect(
+            Brush.horizontalGradient(
+                if (rtl) listOf(Color.Transparent, Color.Black) else listOf(Color.Black, Color.Transparent),
+                startX = start, endX = start + w,
+            ),
+            topLeft = Offset(start, top),
+            size = Size(w, l.getLineBottom(line) - top),
+            blendMode = BlendMode.DstIn,
+        )
+    }
 
 /**
  * smartisanx 的基础文字组件。
@@ -42,12 +87,19 @@ fun SmartisanText(
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
 ) {
     val resolved = rememberSmartisanTextStyle(style, color, fontWeight, fontSize, textAlign)
+    val fade = LocalSmartisanTextFadeOverflow.current && overflow == TextOverflow.Ellipsis && maxLines != Int.MAX_VALUE
+    var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
     BasicText(
         text = text,
-        modifier = modifier,
+        modifier = if (fade) modifier.fadeOverflow { layout } else modifier,
         style = resolved,
-        onTextLayout = onTextLayout,
-        overflow = overflow,
+        onTextLayout = {
+            if (fade) layout = it
+            onTextLayout?.invoke(it)
+        },
+        overflow = if (fade) TextOverflow.Clip else overflow,
+        // 单行不折行：截断落在字中间，渐隐才看得出来（折行会在词边整词丢掉）。
+        softWrap = !(fade && maxLines == 1),
         maxLines = maxLines,
         minLines = minLines,
     )
@@ -69,12 +121,19 @@ fun SmartisanText(
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
 ) {
     val resolved = rememberSmartisanTextStyle(style, color, fontWeight, fontSize, textAlign)
+    val fade = LocalSmartisanTextFadeOverflow.current && overflow == TextOverflow.Ellipsis && maxLines != Int.MAX_VALUE
+    var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
     BasicText(
         text = text,
-        modifier = modifier,
+        modifier = if (fade) modifier.fadeOverflow { layout } else modifier,
         style = resolved,
-        onTextLayout = onTextLayout,
-        overflow = overflow,
+        onTextLayout = {
+            if (fade) layout = it
+            onTextLayout?.invoke(it)
+        },
+        overflow = if (fade) TextOverflow.Clip else overflow,
+        // 单行不折行：截断落在字中间，渐隐才看得出来（折行会在词边整词丢掉）。
+        softWrap = !(fade && maxLines == 1),
         maxLines = maxLines,
         minLines = minLines,
     )
