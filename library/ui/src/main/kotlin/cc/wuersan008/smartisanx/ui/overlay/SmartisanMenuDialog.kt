@@ -2,6 +2,8 @@ package cc.wuersan008.smartisanx.ui.overlay
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -140,10 +142,14 @@ fun SmartisanMenuDialog(
                     )
                 }
                 // 动作区：原版 smartisan_menu_actions，左右 18dp、上下 24dp 留白，动作间距 18dp。
+                // 动作多到放不下时（长列表、横屏、小屏）只占标题栏与确认区之外的剩余高度并在其中滚动，
+                // 否则窗口按内容高度排布，末尾几项会被屏幕裁掉且无法滑到。
                 Column(
                     modifier =
                         Modifier.fillMaxWidth()
+                            .weight(1f, fill = false)
                             .then(contentBackgroundModifier)
+                            .verticalScroll(rememberScrollState())
                             .padding(
                                 horizontal = SmartisanDimens.MenuHorizontalMargin,
                                 vertical = SmartisanDimens.MenuActionEdgeMargin,
