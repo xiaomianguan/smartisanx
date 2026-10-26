@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -16,14 +17,21 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.ResolvedTextDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -32,11 +40,13 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanFonts
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanContentColor
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import android.icu.text.BreakIterator
 import kotlin.math.roundToInt
 
 /**
  * 为 true 时，[SmartisanText] 的省略号（[TextOverflow.Ellipsis]，带 `maxLines` 时）
  * 换成末行末端的渐隐：按段落方向淡出到透明，与底色无关（遮罩的是文字本身的 alpha）。
+ * 多行（`maxLines` > 1）时末行排满再淡出，见 [SmartisanFadingLinesText]。
  * 默认 false，保持省略号。
  */
 val LocalSmartisanTextFadeOverflow = staticCompositionLocalOf { false }
@@ -66,6 +76,76 @@ private fun Modifier.fadeOverflow(width: androidx.compose.ui.unit.Dp = 32.dp, la
     }
 
 /**
+ * 多行渐隐：[maxLines] 行放不下时，末行不在词边折行，而是把剩下的文字接成一段排满整行，
+ * 截断落在行尾、由 [fadeOverflow] 淡出（否则末行在词边提前结束，渐隐落在空白上，看不出被截断）。
+ * 没有空格可折的长串（文件名之类）先在 `.`、`_`、`/` 后给出折行点。
+ */
+@Composable
+private fun SmartisanFadingLinesText(
+    text: AnnotatedString,
+    modifier: Modifier,
+    style: TextStyle,
+    maxLines: Int,
+    onTextLayout: ((TextLayoutResult) -> Unit)?,
+) {
+    val measurer = rememberTextMeasurer()
+    val breakable = remember(text) { text.ifPlain { it.withTokenBreaks() } }
+    var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
+    // 逐行贪心折行：末行改写后，前面各行的折行点不变。
+    val lineStyle = style.copy(lineBreak = LineBreak.Simple)
+    Layout(
+        modifier = modifier
+            .semantics { this.text = text }
+            .fadeOverflow { layout }
+            .drawBehind { layout?.let { drawText(it) } },
+    ) { _, constraints ->
+        val c = Constraints(maxWidth = constraints.maxWidth)
+        fun measure(t: AnnotatedString) =
+            measurer.measure(t, lineStyle, TextOverflow.Clip, softWrap = true, maxLines = maxLines, constraints = c)
+        var r = measure(breakable)
+        if (r.hasVisualOverflow) {
+            val start = r.getLineStart(r.lineCount - 1)
+            val rest = breakable.subSequence(start, breakable.length).ifPlain { it.unbreakable() }
+            r = measure(breakable.subSequence(0, start) + rest)
+        }
+        layout = r
+        onTextLayout?.invoke(r)
+        layout(
+            r.size.width.coerceIn(constraints.minWidth, constraints.maxWidth),
+            r.size.height.coerceIn(constraints.minHeight, constraints.maxHeight),
+        ) {}
+    }
+}
+
+/** 只改没有样式区段的文字（插入字符会让区段错位）。 */
+private inline fun AnnotatedString.ifPlain(f: (String) -> String): AnnotatedString =
+    if (spanStyles.isEmpty() && paragraphStyles.isEmpty()) AnnotatedString(f(text)) else this
+
+private val LongToken = Regex("""\S{16,}""")
+
+/** 16 字以上不含空格的串，在 `.`、`_`、`/` 后加零宽空格作折行点。 */
+private fun String.withTokenBreaks(): String =
+    LongToken.replace(this) { m ->
+        buildString { for (ch in m.value) { append(ch); if (ch == '.' || ch == '_' || ch == '/') append('\u200B') } }
+    }
+
+/** 去掉所有折行点（空格换成不换行空格，字素之间加 WORD JOINER），只能在行宽处硬断。 */
+private fun String.unbreakable(): String {
+    val s = replace("\u200B", "").replace('\n', '\u00A0').replace(' ', '\u00A0')
+    val it = BreakIterator.getCharacterInstance().apply { setText(s) }
+    return buildString {
+        var a = it.first()
+        var b = it.next()
+        while (b != BreakIterator.DONE) {
+            if (a > 0) append('\u2060')
+            append(s, a, b)
+            a = b
+            b = it.next()
+        }
+    }
+}
+
+/**
  * smartisanx 的基础文字组件。
  *
  * 不依赖 Material，直接使用 `BasicText`，因此可以在任何 Compose 工程里使用。
@@ -88,6 +168,10 @@ fun SmartisanText(
 ) {
     val resolved = rememberSmartisanTextStyle(style, color, fontWeight, fontSize, textAlign)
     val fade = LocalSmartisanTextFadeOverflow.current && overflow == TextOverflow.Ellipsis && maxLines != Int.MAX_VALUE
+    if (fade && maxLines > 1 && minLines == 1) {
+        SmartisanFadingLinesText(AnnotatedString(text), modifier, resolved, maxLines, onTextLayout)
+        return
+    }
     var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
     BasicText(
         text = text,
@@ -122,6 +206,10 @@ fun SmartisanText(
 ) {
     val resolved = rememberSmartisanTextStyle(style, color, fontWeight, fontSize, textAlign)
     val fade = LocalSmartisanTextFadeOverflow.current && overflow == TextOverflow.Ellipsis && maxLines != Int.MAX_VALUE
+    if (fade && maxLines > 1 && minLines == 1) {
+        SmartisanFadingLinesText(text, modifier, resolved, maxLines, onTextLayout)
+        return
+    }
     var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
     BasicText(
         text = text,

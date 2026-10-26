@@ -192,10 +192,10 @@ fun SmartisanProgressDialogCard(
             ) {
                 SmartisanText(
                     text = title,
-                    // 原版 18sp、单行居中、超长省略；没有加粗。
+                    // 原版 18sp、单行居中、超长省略；没有加粗。这里放宽到两行。
                     style = typography.body.copy(fontSize = SmartisanProgressDialogDefaults.TitleTextSize),
                     color = if (titleColor == Color.Unspecified) defaultTextColor else titleColor,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                 )
@@ -221,7 +221,8 @@ fun SmartisanProgressDialogCard(
                     text = message,
                     style = typography.body.copy(fontSize = SmartisanProgressDialogDefaults.MessageTextSize),
                     color = if (messageColor == Color.Unspecified) defaultTextColor else messageColor,
-                    maxLines = 1,
+                    // 进度说明（文件名、步骤）常常很长：最多三行。
+                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                 )

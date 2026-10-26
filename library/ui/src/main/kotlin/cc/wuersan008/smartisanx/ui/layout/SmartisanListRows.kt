@@ -265,7 +265,7 @@ fun SmartisanListRow(
     }
 }
 
-/** 行内的第二 / 第三行文字：原版行间距是 `mid_container_summary_margin`(2dp)，最多一行。 */
+/** 行内的第二 / 第三行文字：原版行间距是 `mid_container_summary_margin`(2dp)，最多两行。 */
 @Composable
 private fun RowTextLine(text: String, style: TextStyle, color: Color) {
     SmartisanText(
@@ -273,7 +273,7 @@ private fun RowTextLine(text: String, style: TextStyle, color: Color) {
         modifier = Modifier.padding(top = SmartisanDimens.ListRowTextLineGap),
         style = style,
         color = color,
-        maxLines = 1,
+        maxLines = 2,
     )
 }
 
@@ -303,7 +303,7 @@ fun SmartisanListRowArrow(
                 modifier = Modifier.widthIn(max = subtitleMaxWidth),
                 style = typography.listRowTertiary,
                 color = if (enabled) colors.textSecondary else colors.textDisabled,
-                maxLines = 1,
+                maxLines = 2,
             )
         }
         // 原版箭头用 selector 的固有尺寸（selector_list_content_item_arrow）。

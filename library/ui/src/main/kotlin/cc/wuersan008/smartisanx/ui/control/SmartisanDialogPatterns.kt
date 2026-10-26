@@ -135,7 +135,7 @@ fun SmartisanDialogAppInfo(
                     text = summary,
                     color = colors.textTertiary,
                     fontSize = SmartisanDialogPatternDefaults.SecondaryTextSize,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -257,7 +257,7 @@ fun SmartisanDialogSingleChoiceRow(
                     // 原版 colorlist：按下时白字（配深色按下底图），常态 40% 黑。
                     color = if (pressed) Color(0x4C_FFFFFF) else colors.textTertiary,
                     fontSize = SmartisanDialogPatternDefaults.SecondaryTextSize,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
