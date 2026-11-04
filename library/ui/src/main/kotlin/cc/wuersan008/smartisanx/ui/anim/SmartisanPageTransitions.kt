@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.graphicsLayer
@@ -86,6 +87,9 @@ fun SmartisanPageTransition(
     LaunchedEffect(secondary) {
         if (secondary) {
             retained = true
+            // 第一次打开时新页面的代码还是冷的，那一帧很慢；等它先组合、绘制完一帧再开始动画，
+            // 否则动画在下一帧到来前就已经结束，页面会直接跳出来。
+            withFrameNanos { }
             progress.animateTo(
                 1f,
                 tween(SmartisanNavigationDuration, easing = SmartisanNavigationOpenEasing),
@@ -107,7 +111,7 @@ fun SmartisanPageTransition(
         ) {
             primary()
         }
-        if (retained) {
+        if (secondary || retained) {
             Box(
                 Modifier.fillMaxSize()
                     .graphicsLayer {
@@ -143,6 +147,7 @@ fun SmartisanModalPageTransition(
 ) {
     val progress = remember { Animatable(if (visible) 1f else 0f) }
     LaunchedEffect(visible) {
+        if (visible) withFrameNanos { }
         progress.animateTo(
             if (visible) 1f else 0f,
             tween(SmartisanNavigationDuration, easing = SmartisanDecelerateCubic),
