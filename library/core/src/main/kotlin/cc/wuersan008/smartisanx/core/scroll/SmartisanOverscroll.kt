@@ -166,6 +166,14 @@ class SmartisanOverscrollEffect internal constructor(
     /** 新一轮触摸是否打断了动画。 */
     private var interrupted = false
 
+    /**
+     * 每次 [applyToScroll] / [applyToFling] 加一。手势兜底回弹（[BounceNode]）用它判断
+     * 抬手之后滚动体系是否还在处理这次手势：draggable 排队的最后几次拖拽、随后的
+     * 甩动都晚于抬手事件到达。兜底若抢先开始回弹，这些迟到的拖拽会把它打断、甩动又从
+     * 半路再起一段 —— 看上去就是越界动画「同时播了两次」。
+     */
+    private var scrollGeneration = 0
+
     override val isInProgress: Boolean
         get() = offset != Offset.Zero || animating
 
@@ -179,8 +187,10 @@ class SmartisanOverscrollEffect internal constructor(
         if (containerSize == IntSize.Zero) {
             return performScroll(delta)
         }
+        scrollGeneration++
         // 手指回来了：先打断还在跑的动画（原版也是「按下即停在当前位置」）。
-        interrupted = true
+        // 只有手指拖动算：甩动 / 动画自己的滚动不该停掉越界动画。
+        if (source == NestedScrollSource.UserInput) interrupted = true
 
         // 1. 反向拖拽先把已经拉出的位移 1:1 收回去（原版 overScrollBy 的还原段）。
         val released = releaseOffset(delta)
@@ -203,6 +213,7 @@ class SmartisanOverscrollEffect internal constructor(
         velocity: Velocity,
         performFling: suspend (Velocity) -> Velocity,
     ) {
+        scrollGeneration++
         if (offset != Offset.Zero) {
             // 松手时已经在越界：原版 OverScroller.startAfterEdge —— 速度还朝外就继续
             // 滑行（startBounceAfterEdge），否则直接回弹（startSpringback）。
@@ -337,13 +348,16 @@ class SmartisanOverscrollEffect internal constructor(
                             awaitFirstDown(requireUnconsumed = false)
                             waitForUpOrCancellation()
                         }
-                        if (offset != Offset.Zero && !animating) {
-                            // 先让同一次抬手里的 applyToFling 跑（它会带上速度做滑行），
-                            // 一帧后还没人接手才兜底：按「松手速度不参与」的实测行为回弹。
+                        // 先让同一次抬手里迟到的拖拽和 applyToFling 跑完（甩动会带上速度做滑行），
+                        // 连续两帧没有任何滚动、也没人接手，才兜底：按「松手速度不参与」的实测行为回弹。
+                        var quietFrames = 0
+                        while (offset != Offset.Zero && !animating && quietFrames < 2) {
+                            val generation = scrollGeneration
                             withFrameNanos { }
-                            if (offset != Offset.Zero && !animating) {
-                                runOverscrollAnimation(Offset.Zero)
-                            }
+                            quietFrames = if (generation == scrollGeneration) quietFrames + 1 else 0
+                        }
+                        if (offset != Offset.Zero && !animating) {
+                            runOverscrollAnimation(Offset.Zero)
                         }
                     }
                 },

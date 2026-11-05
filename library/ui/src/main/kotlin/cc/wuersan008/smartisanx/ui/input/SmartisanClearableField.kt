@@ -82,8 +82,10 @@ fun SmartisanClearableField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
+            // Centered like the clear icon: the box is as tall as the taller of the two.
             modifier =
                 Modifier
+                    .align(Alignment.CenterStart)
                     .fillMaxWidth()
                     .padding(end = reservedEnd),
             enabled = enabled,
