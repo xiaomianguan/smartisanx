@@ -6,89 +6,76 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.pointer.SuspendingPointerInputModifierNode
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.node.DelegatableNode
 import androidx.compose.ui.node.DelegatingNode
-import androidx.compose.ui.node.DrawModifierNode
-import androidx.compose.ui.node.LayoutAwareModifierNode
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.node.LayoutModifierNode
+import androidx.compose.ui.node.invalidatePlacement
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Velocity
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sqrt
+import kotlin.math.cbrt
+import kotlin.math.exp
+import kotlin.math.round
+import kotlin.math.sign
 
 /**
- * 原版滚动越界的实测参数。
+ * 滚动越界的取值。
  *
- * 数字来自 Smartisan R2（`SMARTISAN/aries/aries:11/RKQ1.201217.002`，
- * SmartisanOS 8.5.3）上的 `com.android.settings`，以及它的 framework：
+ * 原版（坚果 R2 `SMARTISAN/aries/aries:11/RKQ1.201217.002`，SmartisanOS 8.5.3）的越界是
+ * **刚性平移**：内容整块被拉出、露出底色，松手后弹回；`AbsListView` 里原厂把拖拽上限
+ * 改成了 `mOverscrollMax = (b - t) / 3`。
  *
- * * `AbsListView.java` 里原厂把三个量都改成按视图高度算：
- *   `mOverscrollDistance = b - t`（拖拽上限 = 整屏高）、
- *   `mOverflingDistance = (b - t) / 2`（甩动上限 = 半屏高）、
- *   `mOverscrollMax = (b - t) / 3`，并声明了常量 `OVERSCROLL_LIMIT_DIVISOR = 3`；
- * * 拖拽过程按 **1/3 阻尼**：手指走 400 / 800 / 1200px，内容分别被拉出
- *   125 / 302 / 398px（60fps 录像逐帧量像素，误差在触摸 slop 之内）；
- * * 松手后是**四元缓出** `1-(1-t/T)^4`，时长 `T = sqrt(2·Δ/GRAVITY)`：
- *   真机录像逐帧量位移曲线，四元缓出 rms 5.8–7.0px 优于临界阻尼弹簧 7.5–8.3px、
- *   三次缓出 6.7–8.5px、指数衰减 11.2–11.8px；`framework.jar` 里
- *   `OverScroller.SplineOverScroller.startSpringback` 写的正是
- *   `mDuration = sqrt(-2·delta/deceleration)·1000 + |velocity|/10`，
- *   减速度是 `GRAVITY = 8000`，两条独立证据对上（实测 T 与公式相差 10% 以内）；
- * * 甩到边界时**先滑行再回弹**：`onEdgeReached` 用 `v²/(2·GRAVITY)` 算滑行距离，
- *   超过允许值就把减速度放大到刚好停在上限；允许值又被
- *   `continueWhenFinished` 里那句 `mOver = mOver · |v| / mMaximumVelocity` 按速度缩放
- *   （真机 9000px/s 的甩动 → 上限 472px，实测滑到 523px、滑行 87ms）；
- * * 回弹**从静止开始**（速度序列先涨后落，释放速度不参与），
- *   也就是弹簧的初速度项在真机上观察不到，公式里的 `|velocity|/10` 不参与。
+ * 旧实现照原版 framework 的数字做：拖拽按固定 1/3 阻尼、到上限硬卡住，松手后从静止起
+ * 四元缓出。量出来的位移曲线对得上，但手上的感觉是「硬」：一拉就只走三分之一、拉到头
+ * 突然拉不动，甩到边界时速度先被丢掉再起一段滑行，衔接处会顿一下。
  *
- * 也就是说原版不是 Material 的「拉伸」（内容被拉伸变形），而是**刚性平移**：
- * 内容整块被拉出、上面露出底色，然后滑行 + 回弹。
+ * 现在的手感照 miuix（compose-miuix-ui，HyperOS 的做法，比 Material 更接近原版坚果）：
+ *
+ * * 拖拽走一条**渐硬的橡皮筋曲线**：设手指累计越界 `d`、范围 `R`（容器尺寸），
+ *   `x = |d| / R`，位移 `= R·(x - x² + x³/3)`。起步斜率是 1（刚拉时跟手），越拉越沉，
+ *   手指走满一个 `R` 时正好停在 `R/3` —— 也就是原版的 `mOverscrollMax`，只是平滑地到达；
+ * * 反向拖拽沿同一条曲线收回（按手指累计量倒推），不会跳；
+ * * 松手、甩到边界都交给**临界阻尼弹簧**，并把当时的速度带进去：甩到头时内容顺势冲出去
+ *   再落回，没有「停一下再滑」的接缝；弹簧周期 0.4 s，速度很大时放慢到 0.55 s；
+ * * 弹回途中手指按下，从当前位置接着拖（曲线反解出对应的手指累计量）。
  */
 object SmartisanOverscrollDefaults {
-    /** 越界拖拽的阻尼系数：位移 = 手指位移 / 3。 */
-    const val DragDivisor: Float = 3f
+    /** 橡皮筋曲线的范围 `R` 占容器尺寸的比例；拖拽越界最多到 `R/3`（原版 `(b - t) / 3`）。 */
+    const val RangeFraction: Float = 1f
 
-    /** 拖拽越界上限：容器高度的 1/3（原版 `mOverscrollMax = (b - t) / 3`）。 */
-    const val MaxDragFraction: Float = 1f / 3f
+    /** 回弹弹簧的周期（秒），临界阻尼。 */
+    const val SpringPeriod: Float = 0.4f
 
-    /** 甩动越界上限：容器高度的 1/2（原版 `mOverflingDistance = (b - t) / 2`）。 */
-    const val MaxFlingFraction: Float = 1f / 2f
+    /** 速度超过 [FastVelocity] 时用的周期（秒）：冲得远的回得慢一点，免得一闪而过。 */
+    const val FastSpringPeriod: Float = 0.55f
 
-    /**
-     * 原版 framework 的回弹加速度 `GRAVITY`（px/s²）。
-     *
-     * 这是 R2 上的**裸 px 常数**（400dpi），所以按 [GravityReferenceDensity] 折算成密度无关的
-     * 加速度再乘当前密度 —— 这样同一次手势在不同密度的机器上滑行距离一样。
-     */
-    const val Gravity: Float = 8000f
+    /** 「速度很大」的界限（dp/s）。 */
+    const val FastVelocity: Float = 2000f
 
-    /** [Gravity] 对应的基准密度（坚果 R2 是 400dpi）。 */
-    const val GravityReferenceDensity: Float = 2.5f
+    /** 甩到边界时剩下的速度带进弹簧前除以这个数（miuix 同值），冲出去的距离才和原版相当。 */
+    const val EdgeVelocityDivisor: Float = 1.53333f
 
-    /**
-     * 甩动速度上限（dp/s）：原版 `ViewConfiguration.getScaledMaximumFlingVelocity()`，
-     * 用来按速度缩放甩动越界的上限（原版 `mOver · |v| / mMaximumVelocity`）。
-     */
-    const val MaxFlingVelocity: Float = 8000f
+    /** 越界中反向甩动：内容的甩动速度除以这个数，先把越界收回来再滚。 */
+    const val InwardFlingDivisor: Float = 2.13333f
 }
 
 /**
- * 把原版越界滑行 + 回弹装进 Compose 的滚动体系。
+ * 把越界回弹装进 Compose 的滚动体系。
  *
  * 提供到 [androidx.compose.foundation.LocalOverscrollFactory] 之后，
  * 层级里所有滚动组件（`LazyColumn`、`Modifier.verticalScroll`、
- * `Modifier.scrollableArea` ……）都会自动换成原版行为；
+ * `Modifier.scrollableArea` ……）都会自动换成这套行为；
  * [SmartisanTheme] 已经默认提供，一般不需要自己传。
  *
  * ```kotlin
@@ -97,116 +84,86 @@ object SmartisanOverscrollDefaults {
  * LazyColumn(modifier = Modifier.overscroll(effect!!)) { /* ... */ }
  * ```
  *
- * @param dragDivisor 越界拖拽阻尼，见 [SmartisanOverscrollDefaults.DragDivisor]。
- * @param maxDragFraction 拖拽上限占容器尺寸的比例。
- * @param maxFlingFraction 甩动上限占容器尺寸的比例。
- * @param gravity 回弹加速度，见 [SmartisanOverscrollDefaults.Gravity]。
- * @param maxFlingVelocity 甩动速度上限（dp/s），见 [SmartisanOverscrollDefaults.MaxFlingVelocity]。
+ * @param rangeFraction 橡皮筋范围占容器尺寸的比例，见 [SmartisanOverscrollDefaults.RangeFraction]。
+ * @param springPeriod 回弹弹簧周期（秒），见 [SmartisanOverscrollDefaults.SpringPeriod]。
+ * @param fastSpringPeriod 高速时的弹簧周期（秒）。
+ * @param fastVelocity 「高速」的界限（dp/s）。
  */
 @Stable
 data class SmartisanOverscrollFactory(
-    private val dragDivisor: Float = SmartisanOverscrollDefaults.DragDivisor,
-    private val maxDragFraction: Float = SmartisanOverscrollDefaults.MaxDragFraction,
-    private val maxFlingFraction: Float = SmartisanOverscrollDefaults.MaxFlingFraction,
-    private val gravity: Float = SmartisanOverscrollDefaults.Gravity,
-    private val maxFlingVelocity: Float = SmartisanOverscrollDefaults.MaxFlingVelocity,
+    private val rangeFraction: Float = SmartisanOverscrollDefaults.RangeFraction,
+    private val springPeriod: Float = SmartisanOverscrollDefaults.SpringPeriod,
+    private val fastSpringPeriod: Float = SmartisanOverscrollDefaults.FastSpringPeriod,
+    private val fastVelocity: Float = SmartisanOverscrollDefaults.FastVelocity,
 ) : OverscrollFactory {
     override fun createOverscrollEffect(): OverscrollEffect =
-        SmartisanOverscrollEffect(
-            dragDivisor = dragDivisor,
-            maxDragFraction = maxDragFraction,
-            maxFlingFraction = maxFlingFraction,
-            gravity = gravity,
-            maxFlingVelocity = maxFlingVelocity,
-        )
+        SmartisanOverscrollEffect(rangeFraction, springPeriod, fastSpringPeriod, fastVelocity)
 }
 
 /**
- * 原版 Smartisan 的滚动越界（刚性平移 + 匀减速滑行 + 四元缓出回弹）。
+ * 坚果的滚动越界：刚性平移 + 橡皮筋拖拽 + 带速度的临界阻尼回弹（见 [SmartisanOverscrollDefaults]）。
  *
- * 与 Material 的 `StretchOverscrollNode`（把内容拉伸变形）不同，这里做的是原版的行为：
- *
- * 1. 越界拖拽按 1/3 阻尼，位移上限是容器尺寸的 1/3（原版 `mOverscrollMax`）；
- * 2. 内容整块平移，不做任何形变（实测行距、卡片高度全程不变）；
- * 3. 松手 / 甩到边界时，速度朝外就先**匀减速滑行**到原版算出的顶点
- *    （`onEdgeReached`），再**四元缓出**回弹（`startSpringback`）；
- * 4. 回弹时长是 `sqrt(2·Δ/GRAVITY)` —— 与越界距离是平方根关系，
- *    所以拉得再远也是「越远越快」，不会越拉越慢。
- *
- * 实例由 [SmartisanOverscrollFactory] 创建，也可以在 `CompositionLocal` 里
- * 单独提供；[androidx.compose.foundation.rememberOverscrollEffect] 会从
- * 当前 factory 取一个。
+ * 内容在布局阶段整块平移（不形变，点击区域跟着走）。
+ * 实例由 [SmartisanOverscrollFactory] 创建；[androidx.compose.foundation.rememberOverscrollEffect]
+ * 会从当前 factory 取一个。
  */
 @Stable
 class SmartisanOverscrollEffect internal constructor(
-    private val dragDivisor: Float = SmartisanOverscrollDefaults.DragDivisor,
-    private val maxDragFraction: Float = SmartisanOverscrollDefaults.MaxDragFraction,
-    private val maxFlingFraction: Float = SmartisanOverscrollDefaults.MaxFlingFraction,
-    private val gravity: Float = SmartisanOverscrollDefaults.Gravity,
-    private val maxFlingVelocity: Float = SmartisanOverscrollDefaults.MaxFlingVelocity,
+    private val rangeFraction: Float = SmartisanOverscrollDefaults.RangeFraction,
+    private val springPeriod: Float = SmartisanOverscrollDefaults.SpringPeriod,
+    private val fastSpringPeriod: Float = SmartisanOverscrollDefaults.FastSpringPeriod,
+    private val fastVelocity: Float = SmartisanOverscrollDefaults.FastVelocity,
 ) : OverscrollEffect {
+    private val x = Axis()
+    private val y = Axis()
+
     /**
      * 当前内容被拉出的位移（px）。
      *
      * 正 y = 内容整体向下平移 = 列表顶部越界（手指往下拖、列表已经在顶部）；
      * 负 y = 底部越界。x 轴同理，供横向列表使用。
      */
-    var offset: Offset by mutableStateOf(Offset.Zero)
-        private set
+    val offset: Offset get() = Offset(x.offset, y.offset)
 
-    /** 滚动容器的尺寸，用来算越界上限；由 [node] 在测量时回报。 */
-    private var containerSize: IntSize = IntSize.Zero
-
-    /** 当前密度，用来把原版的裸 px 常数折算成密度无关的加速度；由 [node] 在绘制时回报。 */
-    private var density: Float = 1f
-
-    /** 越界动画是否在跑。 */
-    private var animating = false
-
-    /** 新一轮触摸是否打断了动画。 */
-    private var interrupted = false
-
-    /**
-     * 每次 [applyToScroll] / [applyToFling] 加一。手势兜底回弹（[BounceNode]）用它判断
-     * 抬手之后滚动体系是否还在处理这次手势：draggable 排队的最后几次拖拽、随后的
-     * 甩动都晚于抬手事件到达。兜底若抢先开始回弹，这些迟到的拖拽会把它打断、甩动又从
-     * 半路再起一段 —— 看上去就是越界动画「同时播了两次」。
-     */
+    /** 每次 [applyToScroll] / [applyToFling] 加一；手势兜底回弹用它判断滚动体系是否还在处理这次手势。 */
     private var scrollGeneration = 0
 
-    override val isInProgress: Boolean
-        get() = offset != Offset.Zero || animating
+    /** 挂上的节点：弹簧的协程作用域、密度、重新摆放。 */
+    private var attached: OverscrollNode? = null
 
-    override val node: DelegatableNode = BounceNode()
+    override val isInProgress: Boolean
+        get() = x.active || y.active
+
+    override val node: DelegatableNode = OverscrollNode()
 
     override fun applyToScroll(
         delta: Offset,
         source: NestedScrollSource,
         performScroll: (Offset) -> Offset,
     ): Offset {
-        if (containerSize == IntSize.Zero) {
-            return performScroll(delta)
-        }
         scrollGeneration++
-        // 手指回来了：先打断还在跑的动画（原版也是「按下即停在当前位置」）。
-        // 只有手指拖动算：甩动 / 动画自己的滚动不该停掉越界动画。
-        if (source == NestedScrollSource.UserInput) interrupted = true
-
-        // 1. 反向拖拽先把已经拉出的位移 1:1 收回去（原版 overScrollBy 的还原段）。
-        val released = releaseOffset(delta)
-        val left = delta - released
-
-        // 2. 剩下的交给真正的滚动。
-        val consumed = performScroll(left)
-        val remaining = left - consumed
-
-        // 3. 只有手指拖动才把滚不动的那部分按 1/3 阻尼变成越界位移（原版拖拽路径）。
-        //    甩动动画自己的 delta 不吃掉、也不平移 —— 让它停在这里，剩余速度由
-        //    applyToFling 走原版的滑行（AbsListView 也是靠 overScroller 停下再 bounce）。
         if (source != NestedScrollSource.UserInput) {
-            return released + consumed
+            // 甩动 / 程序滚动：不越界，交给 applyToFling 收尾；弹簧被打断过、内容又能滚了，
+            // 就顺着把残留的越界收掉。
+            val consumed = performScroll(delta)
+            x.unwind(consumed.x)
+            y.unwind(consumed.y)
+            return consumed
         }
-        return released + consumed + pullOffset(remaining)
+        // 手指接管：停掉弹簧，从当前位置接着拖。
+        x.grab()
+        y.grab()
+        // 反向拖拽先沿曲线把越界收回去。
+        val released = Offset(x.release(delta.x), y.release(delta.y))
+        val left = delta - released
+        val consumed = performScroll(left)
+        x.unwind(consumed.x)
+        y.unwind(consumed.y)
+        // 滚不动的部分全部变成越界（曲线自己负责越拉越沉），返回值吃掉它。
+        val remaining = left - consumed
+        x.pull(remaining.x)
+        y.pull(remaining.y)
+        return released + consumed + remaining
     }
 
     override suspend fun applyToFling(
@@ -214,262 +171,192 @@ class SmartisanOverscrollEffect internal constructor(
         performFling: suspend (Velocity) -> Velocity,
     ) {
         scrollGeneration++
-        if (offset != Offset.Zero) {
-            // 松手时已经在越界：原版 OverScroller.startAfterEdge —— 速度还朝外就继续
-            // 滑行（startBounceAfterEdge），否则直接回弹（startSpringback）。
-            runOverscrollAnimation(Offset(velocity.x, velocity.y))
-            return
-        }
-        val consumed = performFling(velocity)
-        val leftover = velocity - consumed
-        if (leftover.x != 0f || leftover.y != 0f) {
-            // 甩到边界：没被吃掉的速度变成滑行 + 回弹（原版 notifyEdgeReached）。
-            runOverscrollAnimation(Offset(leftover.x, leftover.y))
-        }
+        // 越界中：朝外的速度全给弹簧（内容不滚）；朝内的分一部分给内容。
+        val vx = x.flingFromOverscroll(velocity.x)
+        val vy = y.flingFromOverscroll(velocity.y)
+        val consumed = performFling(Velocity(vx, vy))
+        // 甩到边界：剩下的速度带进弹簧，内容顺势冲出去再落回。
+        val left = Velocity(vx, vy) - consumed
+        x.settleAfterFling(left.x / SmartisanOverscrollDefaults.EdgeVelocityDivisor)
+        y.settleAfterFling(left.y / SmartisanOverscrollDefaults.EdgeVelocityDivisor)
     }
 
-    /** 把已经拉出的位移按 1:1 收回去，返回被吃掉的 delta（与 [delta] 同号）。 */
-    private fun releaseOffset(delta: Offset): Offset {
-        val current = offset
-        if (current == Offset.Zero) return Offset.Zero
-        val releasedX = releaseAxis(current.x, delta.x)
-        val releasedY = releaseAxis(current.y, delta.y)
-        if (releasedX != 0f || releasedY != 0f) {
-            offset = Offset(current.x - releasedX, current.y - releasedY)
-        }
-        return Offset(releasedX, releasedY)
-    }
-
-    /**
-     * 单轴还原：位移与 delta 反号时，delta 就是「把内容推回边缘」的方向，
-     * 按 1:1 抵消，最多抵消到位移归零；返回被吃掉的 delta。
-     */
-    private fun releaseAxis(offsetValue: Float, deltaValue: Float): Float {
-        if (offsetValue == 0f || deltaValue == 0f) return 0f
-        if ((offsetValue > 0f) == (deltaValue > 0f)) return 0f
-        return if (abs(deltaValue) <= abs(offsetValue)) deltaValue else offsetValue
-    }
-
-    /**
-     * 把滚不动的 delta 变成越界位移：先按 [dragDivisor] 阻尼，再卡在
-     * [maxDragFraction] 倍容器尺寸上；返回被吃掉的 delta（未吃掉的还给上层）。
-     *
-     * 符号实测自真机：`Modifier.verticalScroll` 在列表顶部往下拖 300px，
-     * 传进来的 delta.y 为正、内容要往下走，所以位移 = +delta / 3。
-     */
-    private fun pullOffset(remaining: Offset): Offset {
-        val damped = Offset(remaining.x / dragDivisor, remaining.y / dragDivisor)
-        if (damped == Offset.Zero) return Offset.Zero
-        val maxX = containerSize.width * maxDragFraction
-        val maxY = containerSize.height * maxDragFraction
-        val current = offset
-        val target = Offset(
-            (current.x + damped.x).coerceIn(-maxX, maxX),
-            (current.y + damped.y).coerceIn(-maxY, maxY),
-        )
-        val moved = target - current
-        if (moved == Offset.Zero) return Offset.Zero
-        offset = target
-        // 换算回「滚动 delta」：位移是按 1/3 阻尼来的，还回去要乘 3。
-        return Offset(moved.x * dragDivisor, moved.y * dragDivisor)
-    }
-
-    /**
-     * 滑行 + 回弹：逐帧按 [OverscrollAxisAnimation] 的闭式曲线推进。
-     *
-     * 两段的时长都是算出来的、到点精确落回 0 —— 没有「慢慢收尾」的尾巴，也不用
-     * 阈值判断，所以同一段越界的时长每次完全一致（这正是原版的手感）。
-     *
-     * @param velocity 与 [offset] 同号的越界速度（px/s）：同号 = 继续往外拉，
-     *   先滑行再回弹；反号或为 0 = 直接回弹（原版 startSpringback）。
-     */
-    private suspend fun runOverscrollAnimation(velocity: Offset) {
-        if (animating) return
-        val gravityPx = gravity * density / SmartisanOverscrollDefaults.GravityReferenceDensity
-        val maxVelocityPx = maxFlingVelocity * density
-        val axisX = OverscrollAxisAnimation(
-            start = offset.x,
-            velocity = velocity.x,
-            size = containerSize.width.toFloat(),
-            gravityPx = gravityPx,
-            maxFlingVelocityPx = maxVelocityPx,
-            maxFlingFraction = maxFlingFraction,
-        )
-        val axisY = OverscrollAxisAnimation(
-            start = offset.y,
-            velocity = velocity.y,
-            size = containerSize.height.toFloat(),
-            gravityPx = gravityPx,
-            maxFlingVelocityPx = maxVelocityPx,
-            maxFlingFraction = maxFlingFraction,
-        )
-        if (axisX.isIdle && axisY.isIdle) {
-            offset = Offset.Zero
-            return
-        }
-        animating = true
-        interrupted = false
-        try {
-            val total = max(axisX.duration, axisY.duration)
-            var elapsed = 0f
-            var lastFrame = 0L
-            while (true) {
-                withFrameNanos { now ->
-                    if (lastFrame != 0L) {
-                        // 掉帧时最多按 50ms 推进，免得一步跨过整段曲线。
-                        elapsed += ((now - lastFrame) / 1_000_000_000f).coerceAtMost(0.05f)
-                    }
-                    lastFrame = now
+    /** 一根轴的越界状态：手指累计越界量、位移、回弹弹簧。 */
+    private inner class Axis {
+        /** 当前位移（px），由 [raw] 经曲线算出，或由弹簧推动。 */
+        var offset = 0f
+            private set(value) {
+                if (field == value) return
+                field = value
+                if (round(value) != placed) {
+                    placed = round(value)
+                    attached?.invalidatePlacement()
                 }
-                // 手指按下来了：停在当前位置，交给拖拽。
-                if (interrupted) return
-                if (elapsed >= total) break
-                offset = Offset(axisX.positionAt(elapsed), axisY.positionAt(elapsed))
             }
-            offset = Offset.Zero
-        } finally {
-            animating = false
+
+        /** 上次布局用的整数位移：只有变了才重新摆放。 */
+        var placed = 0f
+
+        /** 手指累计越界量（px，带符号），夹在 ±range。 */
+        private var raw = 0f
+
+        /** 橡皮筋范围 R（px），由节点在测量时按容器尺寸设定。 */
+        var range = 0f
+
+        private var spring: Job? = null
+
+        val active get() = abs(offset) >= 0.5f || spring?.isActive == true
+
+        /** `R·(t - t² + t³/3)`，`t = |d|/R`：起步跟手，越拉越沉，`|d| = R` 时到 `R/3`。 */
+        private fun curve(d: Float): Float {
+            if (range <= 0f) return 0f
+            val t = (abs(d) / range).coerceAtMost(1f)
+            return sign(d) * range * (t - t * t + t * t * t / 3f)
+        }
+
+        /** [curve] 的反函数：位移 → 手指累计量（`1 - t = cbrt(1 - 3·o/R)`）。 */
+        private fun inverse(o: Float): Float {
+            if (range <= 0f) return 0f
+            val u = (abs(o) / range).coerceAtMost(1f / 3f)
+            return sign(o) * range * (1f - cbrt(1f - 3f * u))
+        }
+
+        fun grab() {
+            if (spring?.isActive == true) {
+                spring?.cancel()
+                raw = inverse(offset)
+            }
+        }
+
+        /** 与越界反向的 delta 先沿曲线收回；返回吃掉的部分。 */
+        fun release(delta: Float): Float {
+            if (offset == 0f || delta == 0f || sign(delta) == sign(raw)) return 0f
+            if (abs(delta) >= abs(raw)) {
+                val eaten = -raw
+                reset()
+                return eaten
+            }
+            raw += delta
+            offset = curve(raw)
+            return delta
+        }
+
+        /** 内容滚回来了（甩动穿过边缘、或被打断的残留），越界跟着收。 */
+        fun unwind(consumed: Float) {
+            if (offset == 0f || consumed == 0f || spring?.isActive == true) return
+            if (raw == 0f) raw = inverse(offset)
+            if (sign(consumed) != sign(raw)) return
+            if (abs(raw) <= abs(consumed)) reset() else { raw -= consumed; offset = curve(raw) }
+        }
+
+        fun pull(delta: Float) {
+            if (delta == 0f || range <= 0f) return
+            raw = (raw + delta).coerceIn(-range, range)
+            offset = curve(raw)
+        }
+
+        /** 甩动开始时还在越界：返回交给内容的速度。 */
+        fun flingFromOverscroll(v: Float): Float {
+            if (!active) return v
+            settle(v)
+            return if (v != 0f && sign(v) == sign(offset)) 0f else v / SmartisanOverscrollDefaults.InwardFlingDivisor
+        }
+
+        /** 甩动结束：撞到边界的速度起弹簧；没撞到而越界还在（弹簧已经在跑就不打扰）也收回去。 */
+        fun settleAfterFling(v: Float) {
+            if (v != 0f || spring?.isActive != true) settle(v)
+        }
+
+        /** 从当前位移带着速度 [v] 起一个回到 0 的临界阻尼弹簧。 */
+        fun settle(v: Float) {
+            if (abs(offset) < 0.5f && v == 0f) {
+                if (spring?.isActive != true) reset()
+                return
+            }
+            val n = attached ?: run { reset(); return }
+            spring?.cancel()
+            val fast = abs(v) > fastVelocity * n.density
+            val omega = 2f * PI.toFloat() / (if (fast) fastSpringPeriod else springPeriod)
+            val x0 = offset
+            spring = n.coroutineScope.launch {
+                // 临界阻尼的闭式解 x(t) = (x0 + (v0 + ω·x0)·t)·e^(-ωt)：与帧率无关，按时间取值。
+                var start = 0L
+                while (true) {
+                    val t = withFrameNanos { now ->
+                        if (start == 0L) start = now
+                        (now - start) / 1_000_000_000f
+                    }
+                    val e = exp(-omega * t)
+                    val pos = (x0 + (v + omega * x0) * t) * e
+                    val vel = (v - omega * (v + omega * x0) * t) * e
+                    if (t > 0f && abs(pos) < 0.5f && abs(vel) < 60f) break
+                    offset = pos
+                }
+                reset()
+            }
+        }
+
+        fun reset() {
+            raw = 0f
+            offset = 0f
+        }
+
+        fun detach() {
+            spring?.cancel()
+            spring = null
+            reset()
         }
     }
 
+    /** 布局阶段平移内容 + 手势结束兜底回弹。 */
+    private inner class OverscrollNode : DelegatingNode(), LayoutModifierNode {
+        var density = 1f
 
+        override fun onAttach() {
+            attached = this
+        }
 
-    /** 越界位移的绘制节点 + 手势结束兜底。 */
-    private inner class BounceNode : DelegatingNode() {
+        override fun onDetach() {
+            attached = null
+            x.detach()
+            y.detach()
+        }
+
         init {
-            delegate(BounceDrawNode())
             delegate(
                 SuspendingPointerInputModifierNode {
-                    // 每次手势：等它结束（抬起 / 取消），再兜底回弹。
-                    // 兜底要放在 awaitEachGesture 外面 —— 受限协程作用域里
-                    // 不能调用带 withFrameNanos 的普通挂起函数。
+                    // 正常情况下抬手后滚动体系会调 applyToFling（速度为 0 也调）；
+                    // 父级抢走手势等少数情况不会，这里兜底：等两帧没有任何滚动再回弹。
                     while (true) {
                         awaitEachGesture {
                             awaitFirstDown(requireUnconsumed = false)
                             waitForUpOrCancellation()
                         }
-                        // 先让同一次抬手里迟到的拖拽和 applyToFling 跑完（甩动会带上速度做滑行），
-                        // 连续两帧没有任何滚动、也没人接手，才兜底：按「松手速度不参与」的实测行为回弹。
-                        var quietFrames = 0
-                        while (offset != Offset.Zero && !animating && quietFrames < 2) {
+                        var quiet = 0
+                        while (quiet < 2 && isInProgress) {
                             val generation = scrollGeneration
                             withFrameNanos { }
-                            quietFrames = if (generation == scrollGeneration) quietFrames + 1 else 0
+                            quiet = if (generation == scrollGeneration) quiet + 1 else 0
                         }
-                        if (offset != Offset.Zero && !animating) {
-                            runOverscrollAnimation(Offset.Zero)
-                        }
+                        x.settle(0f)
+                        y.settle(0f)
                     }
                 },
             )
         }
-    }
 
-    private inner class BounceDrawNode : Modifier.Node(), DrawModifierNode, LayoutAwareModifierNode {
-        override fun onRemeasured(size: IntSize) {
-            containerSize = size
-        }
-
-        override fun ContentDrawScope.draw() {
-            this@SmartisanOverscrollEffect.density = this.density
-            val current = offset
-            if (current == Offset.Zero) {
-                drawContent()
-                return
+        override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {
+            this@OverscrollNode.density = density
+            val placeable = measurable.measure(constraints)
+            x.range = placeable.width * rangeFraction
+            y.range = placeable.height * rangeFraction
+            return layout(placeable.width, placeable.height) {
+                // 原版是刚性平移：整块内容挪出去，不做任何形变。
+                placeable.placeWithLayer(0, 0) {
+                    translationX = x.placed
+                    translationY = y.placed
+                }
             }
-            // 原版是刚性平移：整块内容挪出去，不做任何形变。
-            val content = this
-            translate(current.x, current.y) { content.drawContent() }
         }
-    }
-}
-
-/**
- * 单轴越界动画：匀减速滑行 + 四元缓出回弹，两段都是闭式解。
- *
- * 1. **滑行**（原版 `SplineOverScroller.onEdgeReached` 的 BALLISTIC 状态）：
- *    从边缘起以速度 v 匀减速滑出 `min(v²/(2·GRAVITY), 上限)`；超过上限时原版把
- *    减速度放大到刚好停在上限，这里等价地取 `a = v²/(2d)`；已经拉出去的位置按
- *    `fitOnBounceCurve` 的做法对齐到曲线上（求出当前位置在曲线上对应的时间），
- *    所以只会滑「剩下的那一段」。
- * 2. **回弹**（原版 `startSpringback` 的 CUBIC 状态）：`Δ·(1-t/T)^4`，
- *    时长 `T = sqrt(2·Δ/GRAVITY)`。
- *
- * @param start 当前越界位移（带符号）。
- * @param velocity 越界速度（px/s），与 [start] 同号 = 继续往外拉。
- */
-private class OverscrollAxisAnimation(
-    private val start: Float,
-    velocity: Float,
-    size: Float,
-    gravityPx: Float,
-    maxFlingVelocityPx: Float,
-    maxFlingFraction: Float,
-) {
-    /** 越界方向：+1 = 内容往下 / 往右，-1 = 反之。 */
-    private val sign: Float = when {
-        velocity > 0f -> 1f
-        velocity < 0f -> -1f
-        start >= 0f -> 1f
-        else -> -1f
-    }
-
-    private val coastSpeed: Float
-    private val coastDeceleration: Float
-
-    /** 当前位置在滑行曲线上已经走过的时间（原版 `fitOnBounceCurve` 的对齐量）。 */
-    private val coastElapsed: Float
-    private val coastSeconds: Float
-
-    /** 滑行终点 = 回弹起点。 */
-    private val apex: Float
-    private val springSeconds: Float
-
-    /** 整段动画的时长（秒）。 */
-    val duration: Float
-
-    /** 这根轴有没有事可做（位移与速度都是 0）。 */
-    val isIdle: Boolean
-
-    init {
-        val speed = abs(velocity)
-        // 原版 mOverflingDistance · |v| / mMaximumVelocity：甩得越慢，允许的越界越小。
-        val ratio = if (maxFlingVelocityPx > 0f) speed / maxFlingVelocityPx else 1f
-        val allowed = maxFlingFraction * size * min(1f, ratio)
-        var distance = if (gravityPx > 0f) speed * speed / (2f * gravityPx) else 0f
-        if (distance > allowed) distance = allowed
-        val outward = speed > 0f && (start == 0f || (start > 0f) == (velocity > 0f))
-        if (outward && distance > abs(start)) {
-            coastSpeed = speed
-            coastDeceleration = speed * speed / (2f * distance)
-            val travelled = abs(start)
-            coastElapsed = (
-                speed -
-                    sqrt((speed * speed - 2f * coastDeceleration * travelled).coerceAtLeast(0f))
-                ) / coastDeceleration
-            coastSeconds = speed / coastDeceleration - coastElapsed
-            apex = sign * distance
-        } else {
-            coastSpeed = 0f
-            coastDeceleration = 0f
-            coastElapsed = 0f
-            coastSeconds = 0f
-            apex = start
-        }
-        springSeconds = if (apex == 0f || gravityPx <= 0f) 0f else sqrt(2f * abs(apex) / gravityPx)
-        duration = coastSeconds + springSeconds
-        isIdle = coastSeconds <= 0f && springSeconds <= 0f
-    }
-
-    /** 动画开始后 [elapsed] 秒（闭式）的越界位移。 */
-    fun positionAt(elapsed: Float): Float {
-        if (coastSeconds > 0f && elapsed < coastSeconds) {
-            val t = coastElapsed + elapsed
-            return sign * (coastSpeed * t - coastDeceleration * t * t / 2f)
-        }
-        if (springSeconds <= 0f) return 0f
-        val progress = ((elapsed - coastSeconds) / springSeconds).coerceIn(0f, 1f)
-        val remaining = 1f - progress
-        return apex * remaining * remaining * remaining * remaining
     }
 }
