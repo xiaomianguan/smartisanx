@@ -422,7 +422,7 @@ SmartisanScaffold {                       // 默认已带平铺底纹
 | `SmartisanTitleBar` | 锤子音乐 `SmartisanTitleBar` + 锤子天气 `WeatherTitleBar` |
 | `SmartisanModal` / `SmartisanDialog` | 锤子音乐 `SmartisanModal` + 锤子时钟 `SmartisanModalDialog` |
 | `SmartisanMenuDialog` | 锤子音乐底部菜单弹窗 + 锤子时钟 `SmartisanMenuDialog` |
-| `SmartisanButton` | 锤子音乐红色收缩按钮 + 锤子天气操作按钮 |
+| `SmartisanButton` | 锤子音乐收缩长按钮（普通操作蓝色、危险操作红色）+ 锤子天气操作按钮 |
 | 投影阴影修饰符 | 锤子音乐 `ShadowDrawable` + 锤子时钟 `SmartisanShadowDrawable` |
 | 拖拽排序 | 锤子音乐 `SmartisanListDrag` + 锤子时钟 `WorldClockListView` |
 | 字母索引栏 | 锤子音乐字母快捷栏 + 锤子时钟 `QuickBarEx` |

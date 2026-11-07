@@ -8,10 +8,12 @@
  * - 锤子天气（Compose）`ui/components/WeatherComponents.kt` 的 `WeatherButton`：
  *   48dp 高、左右 12dp 内边距、加粗文字、按下切换按压态颜色。
  *
- * 三种样式都直接用原版 nine-patch selector 当底图，常态 / 按下 / 禁用三态由 `enabled`、
+ * 各样式都直接用原版 nine-patch selector 当底图，常态 / 按下 / 禁用三态由 `enabled`、
  * `pressed` 交给 drawable 自动切换，不再用 `accentPressed` 这类手绘换色：
- * - [SmartisanButtonStyle.Accent]：`shrink_long_btn_red_selector` + 配套的
- *   `shadow_button_shrink_shadow_selector`，这是**长按钮**（高 48dp），只有它才配红色底图；
+ * - [SmartisanButtonStyle.Accent]：蓝色 `shrink_long_btn_highlight_selector` + 配套的
+ *   `shadow_button_shrink_shadow_selector`，这是**长按钮**（高 48dp），用于普通操作；
+ * - [SmartisanButtonStyle.Destructive]：同一套长按钮的红色版 `shrink_long_btn_red_selector`，
+ *   只用于删除这类危险操作（原版锤子系统里红色长按钮就是危险操作的颜色）；
  * - [SmartisanButtonStyle.Neutral]：`revone_dialog_button_bg_selector`；
  * - [SmartisanButtonStyle.Text]：不加底图，文字取 `link` / `linkPressed`。
  *
@@ -65,8 +67,11 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 
 /** 按钮的三种样式。 */
 enum class SmartisanButtonStyle {
-    /** 锤子红实心按钮，对应原版 `shrink_long_btn_red_selector`。 */
+    /** 蓝色实心长按钮，对应原版 `shrink_long_btn_highlight_selector`：普通操作。 */
     Accent,
+
+    /** 红色实心长按钮，对应原版 `shrink_long_btn_red_selector`：删除这类危险操作。 */
+    Destructive,
 
     /** 中性按钮，对应原版 `revone_dialog_button_bg_selector`，用于次要操作。 */
     Neutral,
@@ -157,7 +162,8 @@ internal fun Modifier.smartisanDrawableButtonBackground(
 /** 原版成对的「底图 → 投影」资源；没有配套投影时返回 null。 */
 private fun smartisanPairedShadowRes(@DrawableRes backgroundRes: Int): Int? =
     when (backgroundRes) {
-        SmartisanDrawables.DialogButtonAccent -> SmartisanDrawables.DialogButtonAccentShadow
+        SmartisanDrawables.DialogButtonAccent,
+        SmartisanDrawables.DialogButtonDestructive -> SmartisanDrawables.DialogButtonAccentShadow
         SmartisanDrawables.DialogConfirmBackground -> SmartisanDrawables.DialogConfirmShadow
         else -> null
     }
@@ -216,7 +222,7 @@ private fun SmartisanButtonSpinner(
  * 圆角、按下收缩、投影都由原版 nine-patch / selector 自己完成。
  *
  * @param contentColorOverride 仅文字按钮使用；为 `Color.Unspecified` 时按样式取默认色。
- * @param backgroundRes 原版底图；为 null 时强调色按钮取 `shrink_long_btn_red_selector`，
+ * @param backgroundRes 原版底图；为 null 时强调色按钮取 `shrink_long_btn_highlight_selector`、危险按钮取 `shrink_long_btn_red_selector`，
  *   中性按钮取 `revone_dialog_button_bg_selector`，文字按钮不加底图。
  * @param shadowRes 原版投影；为 null 时按底图自动配对。
  * @param showShadow 是否绘制原版投影。
@@ -240,14 +246,16 @@ private fun SmartisanButtonSurface(
     val pressed by interaction.collectSmartisanPressedAsState()
     val active = enabled && !loading
     val pressActive = pressed && active
-    // 底图全部来自原版 selector：强调色是红色长按钮（shrink_long_btn_red_selector +
-    // shadow_button_shrink_shadow_selector），中性是原版弹窗中性按钮
+    // 底图全部来自原版 selector：强调色是蓝色长按钮（shrink_long_btn_highlight_selector），
+    // 危险操作是红色长按钮（shrink_long_btn_red_selector），两者共用投影
+    // shadow_button_shrink_shadow_selector；中性是原版弹窗中性按钮
     // （revone_dialog_button_bg_selector），文字按钮不加底图。
     // 圆角、按下收缩与投影都由底图自己完成，这里不再叠加任何自绘圆角。
     val resolvedBackgroundRes =
         backgroundRes
             ?: when (style) {
                 SmartisanButtonStyle.Accent -> SmartisanDrawables.DialogButtonAccent
+                SmartisanButtonStyle.Destructive -> SmartisanDrawables.DialogButtonDestructive
                 SmartisanButtonStyle.Neutral -> SmartisanDrawables.DialogButtonNeutral
                 SmartisanButtonStyle.Text -> null
             }
@@ -264,7 +272,7 @@ private fun SmartisanButtonSurface(
             contentColorOverride != Color.Unspecified ->
                 if (enabled) contentColorOverride else colors.textDisabled
 
-            style == SmartisanButtonStyle.Accent -> colors.onAccent
+            style == SmartisanButtonStyle.Accent || style == SmartisanButtonStyle.Destructive -> colors.onAccent
 
             style == SmartisanButtonStyle.Neutral ->
                 if (enabled) colors.textPrimary else colors.textDisabled
@@ -274,7 +282,8 @@ private fun SmartisanButtonSurface(
             else -> colors.link
         }
     val textStyle =
-        if (style == SmartisanButtonStyle.Accent) typography.dialogButton else typography.button
+        if (style == SmartisanButtonStyle.Accent || style == SmartisanButtonStyle.Destructive) typography.dialogButton
+        else typography.button
     Box(
         modifier =
             modifier
@@ -316,7 +325,7 @@ private fun SmartisanButtonSurface(
  * ```
  *
  * @param loading 加载中：显示自绘旋转指示器，并暂时屏蔽点击。
- * @param backgroundRes 原版底图；为 null 时强调色样式使用 `shrink_long_btn_red_selector`，
+ * @param backgroundRes 原版底图；为 null 时强调色样式使用 `shrink_long_btn_highlight_selector`、危险样式使用 `shrink_long_btn_red_selector`，
  *   中性样式使用 `revone_dialog_button_bg_selector`，文字样式不加底图。
  * @param shadowRes 原版投影；为 null 时按底图自动配对。
  * @param showShadow 是否绘制原版投影。

@@ -146,10 +146,13 @@ object SmartisanDrawables {
     /** 底部菜单弹窗内容底色（含夜间变体）。 */
     @DrawableRes val MenuDialogBackground = R.drawable.menu_dialog_background
 
-    /** 弹窗红色长按钮（selector）。 */
-    @DrawableRes val DialogButtonAccent = R.drawable.shrink_long_btn_red_selector
+    /** 蓝色长按钮（selector，原版 `shrink_long_btn_highlight_selector`）：普通操作。 */
+    @DrawableRes val DialogButtonAccent = R.drawable.shrink_long_btn_highlight_selector
 
-    /** 弹窗红色长按钮的投影（selector）。 */
+    /** 红色长按钮（selector，原版 `shrink_long_btn_red_selector`）：删除这类危险操作。 */
+    @DrawableRes val DialogButtonDestructive = R.drawable.shrink_long_btn_red_selector
+
+    /** 蓝色、红色长按钮共用的投影（selector）。 */
     @DrawableRes val DialogButtonAccentShadow = R.drawable.shadow_button_shrink_shadow_selector
 
     /** 弹窗确认按钮底色。 */

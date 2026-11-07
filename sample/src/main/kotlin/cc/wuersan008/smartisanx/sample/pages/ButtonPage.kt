@@ -31,16 +31,22 @@ fun ButtonPage(onBack: () -> Unit) {
     var clicks by remember { mutableIntStateOf(0) }
 
     SamplePageScaffold(title = "按钮", onBack = onBack) {
-        SampleSectionHeader("三种样式")
+        SampleSectionHeader("四种样式")
         SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(18.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SmartisanButton(
-                    text = "强调按钮（原版红色收缩按钮）",
+                    text = "强调按钮（原版蓝色收缩按钮）",
                     onClick = { clicks++ },
                     modifier = Modifier.fillMaxWidth(),
+                )
+                SmartisanButton(
+                    text = "危险按钮（原版红色收缩按钮）",
+                    onClick = { clicks++ },
+                    modifier = Modifier.fillMaxWidth(),
+                    style = SmartisanButtonStyle.Destructive,
                 )
                 SmartisanButton(
                     text = "中性按钮",
@@ -85,7 +91,7 @@ fun ButtonPage(onBack: () -> Unit) {
         }
 
         SampleFootnote(
-            "按钮合并了锤子音乐的红色收缩长按钮（shrink_long_btn_red_selector）与" +
+            "按钮合并了锤子音乐的收缩长按钮（蓝色 shrink_long_btn_highlight_selector、红色 shrink_long_btn_red_selector）与" +
                 "锤子天气的操作按钮（WeatherButton）；按压时切换按压态底色与文字色，不使用涟漪。",
         )
     }
