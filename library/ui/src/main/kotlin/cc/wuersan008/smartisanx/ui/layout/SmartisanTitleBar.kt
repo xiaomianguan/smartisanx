@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -60,7 +61,6 @@ fun SmartisanTitleBar(
     val typography = LocalSmartisanTypography.current
     val leftActions = listOfNotNull(navigationIcon) + navigationActions
     val rightActions = listOfNotNull(action) + actions
-    val hasIcons = leftActions.isNotEmpty() || rightActions.isNotEmpty()
     val backgroundModifier =
         if (backgroundRes != null) {
             Modifier.smartisanDrawableBackground(backgroundRes)
@@ -73,36 +73,55 @@ fun SmartisanTitleBar(
             if (includeStatusBar) {
                 Box(Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars))
             }
-            Box(Modifier.fillMaxWidth().height(contentHeight)) {
-                if (centerContent != null) {
+            if (centerContent != null) {
+                Box(Modifier.fillMaxWidth().height(contentHeight)) {
                     Box(Modifier.align(Alignment.Center)) { centerContent() }
-                } else {
-                    SmartisanText(
-                        text = title,
-                        modifier =
-                            Modifier.align(Alignment.Center)
-                                .padding(horizontal = if (hasIcons) 60.dp else 0.dp),
-                        style = typography.titleBar,
-                        color = colors.textSecondary,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                    )
+                    TitleBarActions(leftActions, rightActions)
                 }
-                Row(
-                    modifier =
-                        Modifier.align(Alignment.CenterStart)
-                            .padding(start = SmartisanDimens.TitleBarHorizontalMargin),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    leftActions.forEach { item -> SmartisanTitleBarIcon(item) }
-                }
-                Row(
-                    modifier =
-                        Modifier.align(Alignment.CenterEnd)
-                            .padding(end = SmartisanDimens.TitleBarHorizontalMargin),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    rightActions.forEach { item -> SmartisanTitleBarIcon(item) }
+            } else {
+                // The title is centred on the bar and kept clear of the
+                // buttons beside it, by at least [TitleMinGap]; it is cut short
+                // only where a button really is (a bar with no right button lets
+                // a long title run toward the right edge rather than cut it off
+                // as far from the edge as from the left button).
+                Layout(
+                    modifier = Modifier.fillMaxWidth().height(contentHeight),
+                    content = {
+                        SmartisanText(
+                            text = title,
+                            style = typography.titleBar,
+                            color = colors.textSecondary,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                        )
+                        Row(
+                            Modifier.padding(start = SmartisanDimens.TitleBarHorizontalMargin),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) { leftActions.forEach { item -> SmartisanTitleBarIcon(item) } }
+                        Row(
+                            Modifier.padding(end = SmartisanDimens.TitleBarHorizontalMargin),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) { rightActions.forEach { item -> SmartisanTitleBarIcon(item) } }
+                    },
+                ) { ms, c ->
+                    val w = c.maxWidth
+                    val h = c.maxHeight
+                    val loose = c.copy(minWidth = 0, minHeight = 0)
+                    val left = ms[1].measure(loose)
+                    val right = ms[2].measure(loose)
+                    val gap = TitleMinGap.roundToPx()
+                    val edge = SmartisanDimens.TitleBarHorizontalMargin.roundToPx()
+                    val from = if (leftActions.isNotEmpty()) left.width + gap else edge
+                    val to = if (rightActions.isNotEmpty()) w - right.width - gap else w - edge
+                    val room = (to - from).coerceAtLeast(0)
+                    val titleP = ms[0].measure(loose.copy(maxWidth = room))
+                    // Centred if it fits there, else pushed just clear of the buttons.
+                    val x = ((w - titleP.width) / 2).coerceIn(from, (to - titleP.width).coerceAtLeast(from))
+                    layout(w, h) {
+                        titleP.placeRelative(x, (h - titleP.height) / 2)
+                        left.placeRelative(0, (h - left.height) / 2)
+                        right.placeRelative(w - right.width, (h - right.height) / 2)
+                    }
                 }
             }
         }
@@ -122,6 +141,25 @@ fun SmartisanTitleBar(
             )
         }
     }
+}
+
+/** The least space between a title bar button and the title. */
+private val TitleMinGap = 8.dp
+
+/** The buttons at the bar's two ends (with [SmartisanTitleBar]'s centre content). */
+@Composable
+private fun androidx.compose.foundation.layout.BoxScope.TitleBarActions(
+    leftActions: List<SmartisanTitleBarAction>,
+    rightActions: List<SmartisanTitleBarAction>,
+) {
+    Row(
+        modifier = Modifier.align(Alignment.CenterStart).padding(start = SmartisanDimens.TitleBarHorizontalMargin),
+        verticalAlignment = Alignment.CenterVertically,
+    ) { leftActions.forEach { item -> SmartisanTitleBarIcon(item) } }
+    Row(
+        modifier = Modifier.align(Alignment.CenterEnd).padding(end = SmartisanDimens.TitleBarHorizontalMargin),
+        verticalAlignment = Alignment.CenterVertically,
+    ) { rightActions.forEach { item -> SmartisanTitleBarIcon(item) } }
 }
 
 /** 标题栏下方的原版投影（NinePatch，含夜间变体）。 */
