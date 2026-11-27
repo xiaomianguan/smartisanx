@@ -82,6 +82,7 @@ fun SampleApp(gallery: Boolean = false) {
                     SamplePage.Calendar -> CalendarPage(onBack = back)
                     SamplePage.Messages -> MessagesDemo(back)
                     SamplePage.Cleaner -> CleanerDemo(back)
+                    SamplePage.NotesPhotos -> NotesPhotosDemo(back)
                     SamplePage.About -> AboutPage(onBack = back)
                     null -> Unit
                 }

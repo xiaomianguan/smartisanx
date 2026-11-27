@@ -45,7 +45,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * 底部标签栏的一项。
  *
  * 对应锤子音乐的可排序底部导航与锤子时钟的四页底部栏：
- * 选中态用强调色并轻微放大，未选中态用三级文字色。
+ * 选中态用一级文字色，未选中态用三级文字色。
  *
  * 图标支持两种来源，原版素材优先：
  *
@@ -82,7 +82,7 @@ data class SmartisanBottomBarItem(
  * 那条分界线是**投影素材自己的最后两行**（alpha 12.5%），所以不要再另画一条 divider：
  * 否则线会落到 54dp 栏体中间，看着像栏里多了一道缝。
  *
- * 图标 30dp、文字 10sp；选中项使用 `accent` 色，按压时轻微缩放。
+ * 图标 30dp、文字 10sp；选中项使用一级文字色，按压时轻微缩放。
  *
  * **系统导航栏**：`includeNavigationBar`（默认 `true`）把导航栏高度作为标签栏自己的
  * 内边距，于是栏底色一直画到屏幕最底下（透明导航栏下也能看到它）。把它当
@@ -99,9 +99,9 @@ fun SmartisanBottomBar(
     includeNavigationBar: Boolean = true,
     showTopDivider: Boolean = true,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomBarBackground,
-    selectedColor: Color = LocalSmartisanColors.current.accent,
+    selectedColor: Color = LocalSmartisanColors.current.textPrimary,
     unselectedColor: Color = LocalSmartisanColors.current.textTertiary,
-    tintResourceIcons: Boolean = !LocalSmartisanColors.current.isLight,
+    tintResourceIcons: Boolean = true,
 ) {
     val colors = LocalSmartisanColors.current
     // 原版：底色是 sb_repeat_tabbar_bg，上方叠一张 tab_bar_shadow。

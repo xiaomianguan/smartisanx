@@ -120,7 +120,7 @@ fun lightSmartisanColors(): SmartisanColors =
  * 深色色板，沿用锤子天气复刻的炭灰色基线。
  *
  * **实验性**：原版 Smartisan OS 没有深色模式，这套炭灰色板由复刻项目新增；
- * 并且图形资源里约 4.4%（7931 个 drawable 中的 350 个）带夜间变体，深色下的还原度不如浅色。
+ * 并且图形资源里约 4.4%（7936 个 drawable 中的 350 个）带夜间变体，深色下的还原度不如浅色。
  */
 fun darkSmartisanColors(): SmartisanColors =
     SmartisanColors(

@@ -78,7 +78,6 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
                 items = galleryTabs,
                 selectedIndex = pager.currentPage,
                 onSelected = { index -> scope.launch { pager.animateScrollToPage(index) } },
-                tintResourceIcons = true,
             )
         },
     ) { insets ->
@@ -130,7 +129,7 @@ private fun LazyListScope.homeSections(onOpen: (SamplePage) -> Unit) {
     )
     galleryLinks(
         "布局示例",
-        listOf(SamplePage.Messages, SamplePage.Cleaner, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
+        listOf(SamplePage.Messages, SamplePage.Cleaner, SamplePage.NotesPhotos, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
         onOpen,
     )
 }

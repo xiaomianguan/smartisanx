@@ -849,3 +849,11 @@ The Gallery now uses the compact Smartisan title bar throughout. The R2 reported
 On the 400 dpi R2, stock Settings ended its title bar at y = 240 px and began its first row at y = 275 px. Gallery now applies the same 35 px gap (14 dp) to all five tabs. Its Home search text moved from y = 278 to y = 313 px. About is accessible through the Settings group in both themes. The five tab bitmaps use the same 72 × 72 px xxhdpi Settings icon family; all five assets were compared byte for byte with the stock Settings APK.
 
 The stock Cleaner dial bounds were x = 349–731 and y = 301–683 (382 × 382 px), matching the dial area in the sample. The xxhdpi dial and needle PNGs match CleanerSmartisan byte for byte. Two frames of the running sample showed different needle positions; the same 382 × 382 px crop was pixel-identical to idle after stopping. The sample uses the library page texture around the dial.
+
+### Wordmark, monochrome tabs, Cleaner progress and Notes photo tile
+
+The stock Settings APK's `about_logo.9.png` and the R2 About phone screenshot both contain opaque `#D92127`. The sample wordmark now measures `#D92127` in light and dark mode. The stock Contacts labels measured `#656565` active and `#999999` inactive. The Gallery labels measured `#323232` and `#959595` respectively, using the library's primary and tertiary text colors.
+
+The Cleaner progress demo was exercised at 0%, 50%, and 94% on the R2. The three layer PNGs are byte-identical to those in the stock APK. The demo supplies controlled progress to the dial. The stock cleaning service was outside the verification scope.
+
+The Notes sample thumbnails measured 264 × 264 px inside 270 × 270 px cells, with a 53 × 53 px preview target at the top end. Selection and the separate preview action were exercised. The stock Notes insertion action opened Gallery on this R2, so the internal Notes picker geometry was checked against the APK layout and code.

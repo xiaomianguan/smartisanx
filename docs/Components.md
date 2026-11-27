@@ -1340,7 +1340,7 @@ Every `@DrawableRes` parameter is replaceable — pass your own resource id to s
 
 Use the `topBar` overload of `SmartisanScaffold` to draw content behind the bars. Pass the supplied `PaddingValues` to the scrolling content and give the optional `snackbarHost` slot a wrap-content host. A custom bottom bar owns its navigation inset.
 
-Place `SmartisanTitleBarTextAction` in the title bar's `trailingContent`. Ordinary text titles are measured against the space taken by the actions. `SmartisanSwitchRow` can use the same 60dp leading icon slot as grouped rows. Asset-backed `SmartisanIcon` accepts an optional `tint`; use it with monochrome artwork. For monochrome bottom navigation, pass the primary and tertiary text colors and enable `tintResourceIcons`.
+Place `SmartisanTitleBarTextAction` in the title bar's `trailingContent`. Ordinary text titles are measured against the space taken by the actions. `SmartisanSwitchRow` can use the same 60dp leading icon slot as grouped rows. Asset-backed `SmartisanIcon` accepts an optional `tint`; use it with monochrome artwork. Bottom navigation defaults to primary text color for the selected item and tertiary text color for inactive items, including resource icons. Set `tintResourceIcons = false` to use the artwork’s own colors.
 
 Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent controls its expanded state and can supply menu items that close it after a selection.
 
@@ -1349,3 +1349,5 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 `SmartisanClearableField` also accepts a Compose `TextFieldState`, `InputTransformation`, and `TextFieldLineLimits`. Wrap a vertically scrollable child in `SmartisanPullToRefresh` to show the Smartisan progress ring and run a refresh after pulling past the threshold. The caller owns `isRefreshing`.
 
 `SmartisanCleanerDial(scanning, modifier, content)` draws the stock Cleaner dial and animates its scan needle. Use the centered content slot for your scan status.
+
+`SmartisanCleanerProgress(progress, modifier, content)` uses the stock Cleaner half-dials and mask to display determinate progress. `SmartisanPhotoSelectionTile` uses the stock Notes square thumbnail, selection artwork, and optional separate preview action.

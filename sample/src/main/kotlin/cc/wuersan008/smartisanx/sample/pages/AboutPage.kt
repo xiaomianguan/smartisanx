@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -191,7 +192,7 @@ private val LogoTextSize = 8.6.sp
  * 同一张分组卡片底图，所以按下会换成原版的按压位图。
  *
  * 版本号原版写死 `#a4a4a4`（约 36% 黑），这里用主题的 `textTertiary`（浅色 40% 黑），
- * 深色模式能跟随；产品名用主题的 `accent`（原版那行就是品牌红）。
+ * 深色模式能跟随；产品名使用原版设置 APK 中 about_logo.9.png 的品牌红 #D92127。
  */
 @Composable
 private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
@@ -248,7 +249,7 @@ private fun AboutLogoCard(version: String, onLogoClick: () -> Unit) {
                         letterSpacing = LogoNameSpacing,
                         fontWeight = FontWeight.Medium,
                     ),
-                color = colors.accent,
+                color = Color(0xFFD92127),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
             )

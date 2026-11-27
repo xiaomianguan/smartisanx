@@ -47,7 +47,7 @@ fun SmartisanCleanerDial(
             )
             val opacity = remember { Animatable(0f) }
             LaunchedEffect(Unit) {
-                opacity.animateTo(1f, tween(300, delayMillis = 200, easing = Easing { 1f - (1f - it) * (1f - it) }))
+                opacity.animateTo(1f, tween(300, delayMillis = 200, easing = CleanerDecelerate))
             }
             SmartisanIcon(
                 res = R.drawable.cleaner_scan_needle,
@@ -61,3 +61,5 @@ fun SmartisanCleanerDial(
         content()
     }
 }
+
+internal val CleanerDecelerate = Easing { 1f - (1f - it) * (1f - it) }

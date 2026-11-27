@@ -142,6 +142,11 @@ enum class SamplePage(
         subtitle = "原版扫描表盘与指针动画",
         icon = R.drawable.setting_item_icon_advanced,
     ),
+    NotesPhotos(
+        title = "便签图片选择",
+        subtitle = "原版照片选择标记与独立预览操作",
+        icon = R.drawable.setting_item_icon_wallpaper,
+    ),
     About(
         title = "关于",
         subtitle = "组件库与示例应用的信息，版式照抄坚果 R2 设置页",
