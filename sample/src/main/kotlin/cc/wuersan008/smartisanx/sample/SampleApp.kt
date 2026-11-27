@@ -81,6 +81,7 @@ fun SampleApp(gallery: Boolean = false) {
                     SamplePage.Clock -> ClockPage(onBack = back)
                     SamplePage.Calendar -> CalendarPage(onBack = back)
                     SamplePage.Messages -> MessagesDemo(back)
+                    SamplePage.Cleaner -> CleanerDemo(back)
                     SamplePage.About -> AboutPage(onBack = back)
                     null -> Unit
                 }

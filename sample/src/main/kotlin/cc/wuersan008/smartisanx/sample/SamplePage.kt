@@ -137,6 +137,11 @@ enum class SamplePage(
         subtitle = "收发气泡与消息输入栏",
         icon = R.drawable.secletor_setting_item_icon_notification,
     ),
+    Cleaner(
+        title = "垃圾清理",
+        subtitle = "原版扫描表盘与指针动画",
+        icon = R.drawable.setting_item_icon_advanced,
+    ),
     About(
         title = "关于",
         subtitle = "组件库与示例应用的信息，版式照抄坚果 R2 设置页",

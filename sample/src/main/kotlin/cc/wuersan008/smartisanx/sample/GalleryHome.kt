@@ -24,10 +24,12 @@ import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanThemeController
+import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.sample.pages.ColorSwatchSection
 import cc.wuersan008.smartisanx.sample.pages.IconGrid
 import cc.wuersan008.smartisanx.sample.pages.TypographySection
+import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanIconSet
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
@@ -45,16 +47,14 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
-import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
-import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarTextAction
 import kotlinx.coroutines.launch
 
 private val galleryTabs = listOf(
-    SmartisanBottomBarItem(label = "首页", iconRes = SamplePage.Layouts.icon),
-    SmartisanBottomBarItem(label = "图标", iconRes = SamplePage.Icon.icon),
-    SmartisanBottomBarItem(label = "色彩", iconRes = SamplePage.Theme.icon),
-    SmartisanBottomBarItem(label = "文字", iconRes = SamplePage.Text.icon),
-    SmartisanBottomBarItem(label = "设置", iconRes = SmartisanDrawables.IconSettings),
+    SmartisanBottomBarItem(label = "首页", iconRes = R.drawable.setting_item_icon_launcher),
+    SmartisanBottomBarItem(label = "图标", iconRes = R.drawable.setting_item_icon_appmanage),
+    SmartisanBottomBarItem(label = "色彩", iconRes = R.drawable.setting_item_icon_wallpaper),
+    SmartisanBottomBarItem(label = "文字", iconRes = R.drawable.setting_item_icon_keyboard),
+    SmartisanBottomBarItem(label = "设置", iconRes = R.drawable.setting_item_icon_advanced),
 )
 
 @Composable
@@ -68,24 +68,10 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
     val settings = rememberLazyListState()
     val lists = listOf(home, icons, colors, text, settings)
     var swipeEnabled by rememberSaveable { mutableStateOf(true) }
-    var searchExpanded by rememberSaveable { mutableStateOf(false) }
 
     SmartisanScaffold(
         topBar = {
-            SmartisanTitleBar(
-                title = galleryTabs[pager.currentPage].label,
-                action = if (pager.currentPage == 0) {
-                    SmartisanTitleBarAction(SmartisanDrawables.IconSearch, "搜索组件", onClick = {
-                        scope.launch {
-                            home.scrollToItem(0)
-                            searchExpanded = true
-                        }
-                    })
-                } else null,
-                trailingContent = if (pager.currentPage == galleryTabs.lastIndex) {
-                    { SmartisanTitleBarTextAction("关于", onClick = { onOpen(SamplePage.About) }) }
-                } else null,
-            )
+            SmartisanTitleBar(title = galleryTabs[pager.currentPage].label)
         },
         bottomBar = {
             SmartisanBottomBar(
@@ -105,12 +91,12 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
                 state = lists[index],
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    top = insets.calculateTopPadding(),
+                    top = insets.calculateTopPadding() + SmartisanDimens.ListItemVerticalGap,
                     bottom = insets.calculateBottomPadding() + 12.dp,
                 ),
             ) {
                 when (index) {
-                    0 -> homeSections(searchExpanded, { searchExpanded = it }, onOpen)
+                    0 -> homeSections(onOpen)
                     1 -> {
                         SmartisanIconSet.groups.forEach { group ->
                             item {
@@ -135,12 +121,8 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
     }
 }
 
-private fun LazyListScope.homeSections(
-    searchExpanded: Boolean,
-    onSearchExpandedChange: (Boolean) -> Unit,
-    onOpen: (SamplePage) -> Unit,
-) {
-    item { HomeControls(searchExpanded, onSearchExpandedChange, onOpen) }
+private fun LazyListScope.homeSections(onOpen: (SamplePage) -> Unit) {
+    item { HomeControls(onOpen) }
     galleryLinks(
         "交互示例",
         listOf(SamplePage.Input, SamplePage.Control, SamplePage.Button, SamplePage.Overlay, SamplePage.ListInteraction),
@@ -148,29 +130,26 @@ private fun LazyListScope.homeSections(
     )
     galleryLinks(
         "布局示例",
-        listOf(SamplePage.Messages, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
+        listOf(SamplePage.Messages, SamplePage.Cleaner, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
         onOpen,
     )
 }
 
 @Composable
-private fun HomeControls(
-    searchExpanded: Boolean,
-    onSearchExpandedChange: (Boolean) -> Unit,
-    onOpen: (SamplePage) -> Unit,
-) {
+private fun HomeControls(onOpen: (SamplePage) -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
+    var searchExpanded by rememberSaveable { mutableStateOf(false) }
     var switched by rememberSaveable { mutableStateOf(true) }
     var checked by rememberSaveable { mutableStateOf(false) }
     SmartisanSearchBar(
         query = query,
         onQueryChange = { query = it },
         expanded = searchExpanded,
-        onExpandedChange = onSearchExpandedChange,
+        onExpandedChange = { searchExpanded = it },
         placeholder = "搜索组件",
         onCancel = {
             query = ""
-            onSearchExpandedChange(false)
+            searchExpanded = false
         },
         showShadow = false,
     )

@@ -23,7 +23,7 @@ clock & mechanical, calendar, about). The "full-page layouts" page holds 13 comp
 which can be copied as a starting point.
 
 The APK is ~45MB because Smartisan's style is skeuomorphic: the texture comes from the original
-bitmaps and NinePatches (10669 resource files in total), not from Compose redrawing them. More on
+bitmaps and NinePatches (10672 resource files in total), not from Compose redrawing them. More on
 that under "Packaging and size".
 
 ## 1. Requirements
@@ -396,7 +396,7 @@ override fun attachBaseContext(newBase: Context) {
 
 ## 12. Packaging and size
 
-- **Most of the APK is original artwork**: `library/ui/src/main/res` holds 10669 resource files and the
+- **Most of the APK is original artwork**: `library/ui/src/main/res` holds 10672 resource files and the
   debug APK is ~45MB. R8 affects code only, not resources — to slim it down, delete the `drawable*`
   folders you do not use, or keep only the assets you need (every component's artwork entry point is a
   parameter, so you can swap in your own images).

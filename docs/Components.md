@@ -1347,3 +1347,5 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 `SmartisanMessageBubble` renders the incoming and outgoing text bubbles from the stock Messages app. `SmartisanMessageTimestamp` takes a formatted timestamp label. Both can be combined with `SmartisanMessageField` to build a thread. Open the Messages demo from either sample launcher.
 
 `SmartisanClearableField` also accepts a Compose `TextFieldState`, `InputTransformation`, and `TextFieldLineLimits`. Wrap a vertically scrollable child in `SmartisanPullToRefresh` to show the Smartisan progress ring and run a refresh after pulling past the threshold. The caller owns `isRefreshing`.
+
+`SmartisanCleanerDial(scanning, modifier, content)` draws the stock Cleaner dial and animates its scan needle. Use the centered content slot for your scan status.
