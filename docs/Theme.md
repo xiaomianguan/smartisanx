@@ -74,12 +74,12 @@ duplicates it has 30 entries.
 
 | Name | Light | Dark | Usage |
 | --- | --- | --- | --- |
-| `accent` | `#E64040` | `#E64040` | Smartisan red, brand accent |
-| `accentPressed` | `#C14352` | `#FF5A5A` | Accent pressed |
-| `accentDisabled` | `#66E64040` | `#66E64040` | Accent disabled |
+| `accent` | `#3D70EF` | `#5C89F2` | Default blue accent |
+| `accentPressed` | `#315DCC` | `#5079DF` | Accent pressed |
+| `accentDisabled` | `#663D70EF` | `#665C89F2` | Accent disabled |
 | `onAccent` | `#FFFFFF` | `#FFFFFF` | Text on accent |
-| `link` | `#5E80D0` | `#FF7839` | Links, tappable text |
-| `linkPressed` | `#8A8A8A` | `#FF9A6D` | Link pressed |
+| `link` | `#5E80D0` | `#8CADFF` | Links, tappable text |
+| `linkPressed` | `#8A8A8A` | `#ADC4FF` | Link pressed |
 | `success` | `#72B27E` | `#72B27E` | Success, switch indicator green |
 | `warning` | `#E65C53` | `#FF7433` | Warning |
 
@@ -124,7 +124,7 @@ Dark mode is therefore **experimental**, with two known limitations:
 
 | Limitation | Detail |
 | --- | --- |
-| Incomplete night artwork | Only 195 of 7922 original drawables (~2.5%) have night variants; the other 7727 are light-only and will keep showing light artwork in dark mode |
+| Incomplete night artwork | Only 350 of 7928 drawables (~4.4%) have night variants; the other 7578 are light-only and will keep showing light artwork in dark mode |
 | No night colour state lists | There are no night variants under `res/color/` at all, so dialog and menu text colours use their light values; this library adds a night palette for the Clock revival's dialogs and menus |
 
 `SmartisanTheme` writes "is the theme dark" into `LocalSmartisanDarkOverride`, and components resolve

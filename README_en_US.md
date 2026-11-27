@@ -22,7 +22,7 @@ modules split by responsibility, the demo app as its own module, components grou
 > **This library ships the original graphic assets.** Smartisan's style is skeuomorphic —
 > its texture comes from NinePatches, bitmaps and selectors — so instead of redrawing everything
 > in Compose, the library uses the assets the three revival projects recovered from the original
-> APKs (10485 files, including night-mode and per-density variants).
+> APKs (10669 files, including night-mode and per-density variants).
 > Those assets belong to their respective rights holders; please read
 > [Asset sources and licensing](#asset-sources-and-licensing) before using them.
 
@@ -299,6 +299,8 @@ interactive demos:
 # output: sample/build/outputs/apk/debug/sample-debug.apk
 ```
 
+The APK also installs **SmartisanX Gallery**, a second launcher with tabs for components, screen examples, and settings. Both launchers include the Messages thread demo.
+
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
 buttons, controls, text and input, layout and lists, full-screen layouts, list interaction,
 overlays, clock and mechanical controls, calendar, about. The "full-screen layouts" page holds 13
@@ -312,7 +314,7 @@ editing, form entry, empty state, …) and each one can be copied as a starting 
 
 The semantic palette merges the actual colors used by the three projects and drops duplicates:
 
-- Light: page `#FFFFFF`, divider `#E9E9E9`, primary text `#CC000000`, accent `#E64040`,
+- Light: page `#FFFFFF`, divider `#E9E9E9`, primary text `#CC000000`, accent `#3D70EF`,
   multi-select background `#E5EEFF`, press highlight `#4A69B3`, switch indicator green `#72B27E`.
 - Dark: page `#25282D`, title bar `#292C31`, card `#34373C`, raised surface `#41464D`,
   multi-select background `#26384F`.
@@ -330,8 +332,8 @@ packages it as `darkSmartisanColors()`.
 
 Dark mode is therefore **experimental**, with two known limitations:
 
-- only a minority of the original graphic assets have night variants: 195 of 7922 drawables
-  (~2.5%); the remaining 7727 are light-only and will keep showing light artwork in dark mode;
+- only a minority of the original graphic assets have night variants: 350 of 7928 drawables
+  (~4.4%); the remaining 7578 are light-only and will keep showing light artwork in dark mode;
 - the colour state lists under `res/color/` have no night versions at all, so dialog and menu text
   colours fall back to their light values; this library adds a night palette for the Clock revival's
   dialogs and menus on top of that.
@@ -401,7 +403,7 @@ own pressed state.
 
 ### Inventory
 
-`library/ui/src/main/res/` holds **10485** resource files (`drawable*` 10338, `mipmap*` 34,
+`library/ui/src/main/res/` holds **10669** resource files (`drawable*` 10522, `mipmap*` 34,
 `values*` 92, `color` 21), from three sources:
 
 | Source | Contents |

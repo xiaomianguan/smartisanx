@@ -41,6 +41,7 @@ import cc.wuersan008.smartisanx.ui.overlay.SmartisanBhmSheet
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanBottomSheet
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanConfirmDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
+import cc.wuersan008.smartisanx.ui.overlay.SmartisanDropdownMenu
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialogButton
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialogTitleBar
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
@@ -58,6 +59,7 @@ fun OverlayPage(onBack: () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
+    var showDropdown by remember { mutableStateOf(false) }
     var showSheet by remember { mutableStateOf(false) }
     var showProgress by remember { mutableStateOf(false) }
     var progressDark by remember { mutableStateOf(false) }
@@ -92,6 +94,25 @@ fun OverlayPage(onBack: () -> Unit) {
                 summary = "贴底的全宽动作菜单",
                 onClick = { showMenu = true },
             )
+            SmartisanRowDivider()
+            Box {
+                SmartisanGroupItem(
+                    position = SmartisanGroupRowPosition.Middle,
+                    title = "SmartisanDropdownMenu",
+                    summary = "在触发项旁展开的下拉菜单",
+                    onClick = { showDropdown = true },
+                )
+                SmartisanDropdownMenu(expanded = showDropdown, onDismissRequest = { showDropdown = false }) {
+                    SmartisanMenuItem(
+                        text = "已选择",
+                        backgroundRes = null,
+                        onClick = {
+                            showDropdown = false
+                            snackbar.show("已选择")
+                        },
+                    )
+                }
+            }
             SmartisanRowDivider()
             SmartisanGroupItem(
                 position = SmartisanGroupRowPosition.Middle,

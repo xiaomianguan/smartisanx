@@ -132,6 +132,11 @@ enum class SamplePage(
         // （黑色 30% 不透明度，白底上 178），与设置页那一档同粗同大。
         icon = R.drawable.forcetouch_calendar_add,
     ),
+    Messages(
+        title = "短信",
+        subtitle = "收发气泡与消息输入栏",
+        icon = R.drawable.secletor_setting_item_icon_notification,
+    ),
     About(
         title = "关于",
         subtitle = "组件库与示例应用的信息，版式照抄坚果 R2 设置页",

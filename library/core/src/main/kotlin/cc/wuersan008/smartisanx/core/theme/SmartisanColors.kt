@@ -42,7 +42,7 @@ class SmartisanColors(
     val textDisabled: Color,
     /** 输入框提示文字。 */
     val textHint: Color,
-    /** 品牌强调色（锤子红）。 */
+    /** 默认蓝色强调色。 */
     val accent: Color,
     /** 强调色按压态。 */
     val accentPressed: Color,
@@ -96,9 +96,9 @@ fun lightSmartisanColors(): SmartisanColors =
         textTertiary = Color(0x66000000),
         textDisabled = Color(0x4C000000),
         textHint = Color(0xFFDBDBDB),
-        accent = Color(0xFFE64040),
-        accentPressed = Color(0xFFC14352),
-        accentDisabled = Color(0x66E64040),
+        accent = Color(0xFF3D70EF),
+        accentPressed = Color(0xFF315DCC),
+        accentDisabled = Color(0x663D70EF),
         onAccent = Color(0xFFFFFFFF),
         link = Color(0xFF5E80D0),
         linkPressed = Color(0xFF8A8A8A),
@@ -120,7 +120,7 @@ fun lightSmartisanColors(): SmartisanColors =
  * 深色色板，沿用锤子天气复刻的炭灰色基线。
  *
  * **实验性**：原版 Smartisan OS 没有深色模式，这套炭灰色板由复刻项目新增；
- * 并且原版图形资源里只有约 2.5%（7922 个 drawable 中的 195 个）带夜间变体，深色下的还原度不如浅色。
+ * 并且图形资源里约 4.4%（7928 个 drawable 中的 350 个）带夜间变体，深色下的还原度不如浅色。
  */
 fun darkSmartisanColors(): SmartisanColors =
     SmartisanColors(
@@ -137,12 +137,12 @@ fun darkSmartisanColors(): SmartisanColors =
         textTertiary = Color(0xFF9FA1A4),
         textDisabled = Color(0xFF717377),
         textHint = Color(0xFF85878A),
-        accent = Color(0xFFE64040),
-        accentPressed = Color(0xFFFF5A5A),
-        accentDisabled = Color(0x66E64040),
+        accent = Color(0xFF5C89F2),
+        accentPressed = Color(0xFF5079DF),
+        accentDisabled = Color(0x665C89F2),
         onAccent = Color(0xFFFFFFFF),
-        link = Color(0xFFFF7839),
-        linkPressed = Color(0xFFFF9A6D),
+        link = Color(0xFF8CADFF),
+        linkPressed = Color(0xFFADC4FF),
         success = Color(0xFF72B27E),
         warning = Color(0xFFFF7433),
         selectionBackground = Color(0xFF26384F),

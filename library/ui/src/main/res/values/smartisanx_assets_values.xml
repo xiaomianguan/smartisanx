@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 三个复刻项目原始资源引用到的值资源，自动收集。 -->
 <resources>
-    <color name="app_accent_pressed_color">#c94d46</color>
+    <color name="app_accent_pressed_color">#315dcc</color>
     <color name="app_card_outline_color">#14000000</color>
     <color name="app_divider_color">#e5e5e6</color>
     <color name="app_surface_color">#ffffff</color>

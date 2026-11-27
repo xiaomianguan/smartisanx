@@ -23,7 +23,7 @@ clock & mechanical, calendar, about). The "full-page layouts" page holds 13 comp
 which can be copied as a starting point.
 
 The APK is ~45MB because Smartisan's style is skeuomorphic: the texture comes from the original
-bitmaps and NinePatches (10485 resource files in total), not from Compose redrawing them. More on
+bitmaps and NinePatches (10669 resource files in total), not from Compose redrawing them. More on
 that under "Packaging and size".
 
 ## 1. Requirements
@@ -325,7 +325,7 @@ feedback use `SmartisanSnackbarHost(state = snackbar, ...)` together with
 
 **Light is the default, matching the original.** "Follow the system" and "dark" must be opted into
 explicitly, and you have to tell your own users — the original shipped a single light design, dark mode
-was added by the three revival projects, and only ~2.5% of the original graphic assets have night
+was added by the three revival projects, and only ~4.4% of the original graphic assets have night
 variants (see [Theme.md](Theme.md#dark-mode-experimental)).
 
 ```kotlin
@@ -396,7 +396,7 @@ override fun attachBaseContext(newBase: Context) {
 
 ## 12. Packaging and size
 
-- **Most of the APK is original artwork**: `library/ui/src/main/res` holds 10485 resource files and the
+- **Most of the APK is original artwork**: `library/ui/src/main/res` holds 10669 resource files and the
   debug APK is ~45MB. R8 affects code only, not resources — to slim it down, delete the `drawable*`
   folders you do not use, or keep only the assets you need (every component's artwork entry point is a
   parameter, so you can swap in your own images).
@@ -427,7 +427,7 @@ an explicit error instead of quietly falling back to defaults — deliberate, so
 whose colours "look a bit off" without anyone noticing.
 
 **Q: Why is dark mode experimental?**
-The original has no dark mode. The dark colour scheme and part of the artwork (~2.5%) were added by the
+The original has no dark mode. The dark colour scheme and part of the artwork (~4.4%) were added by the
 three revival projects, so dark is less faithful than light. Whether to ship it is your call.
 
 **Q: Can I use it together with Material?**

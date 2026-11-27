@@ -521,7 +521,7 @@ Prefer reusing these defaults when you write your own components so everything k
 | Card shadows smear together | a missing `SmartisanListVerticalGap()` | add one between every pair of groups |
 | The page looks flat with no pinstripe | the group was given an opaque `color`, or `SmartisanScaffold` got `backgroundRes = null` | drop `color` / keep the default texture |
 | The delete panel shows through during a swipe | the row is the foreground and must be opaque | use a row that draws its own background (`SmartisanListItem`); leave no transparent area |
-| Some artwork stays light in dark mode | only ~2.5% of the original assets have night variants | a known limitation; dark mode is experimental |
+| Some artwork stays light in dark mode | only ~4.4% of the original assets have night variants | a known limitation; dark mode is experimental |
 | Icons look wrong after switching theme inside the app | resources are resolved by the system uiMode | use `smartisanThemedResources` / `smartisanWantsNightResources` |
 | The launcher icon became a compass | `mipmap-anydpi-v26` was renamed to `mipmap-anydpi` | keep `-v26` (see `sample/lint.xml`) |
 | The pressed state "flashes and disappears" on fast taps | you used `interactionSource.collectIsPressedAsState()` | use `collectSmartisanPressedAsState()`, which keeps the pressed state for same-frame taps |

@@ -56,6 +56,7 @@ fun SmartisanTitleBar(
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
     centerContent: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -76,7 +77,7 @@ fun SmartisanTitleBar(
             if (centerContent != null) {
                 Box(Modifier.fillMaxWidth().height(contentHeight)) {
                     Box(Modifier.align(Alignment.Center)) { centerContent() }
-                    TitleBarActions(leftActions, rightActions)
+                    TitleBarActions(leftActions, rightActions, trailingContent)
                 }
             } else {
                 // The title is centred on the bar and kept clear of the
@@ -101,7 +102,10 @@ fun SmartisanTitleBar(
                         Row(
                             Modifier.padding(end = SmartisanDimens.TitleBarHorizontalMargin),
                             verticalAlignment = Alignment.CenterVertically,
-                        ) { rightActions.forEach { item -> SmartisanTitleBarIcon(item) } }
+                        ) {
+                            rightActions.forEach { item -> SmartisanTitleBarIcon(item) }
+                            trailingContent?.invoke()
+                        }
                     },
                 ) { ms, c ->
                     val w = c.maxWidth
@@ -112,7 +116,7 @@ fun SmartisanTitleBar(
                     val gap = TitleMinGap.roundToPx()
                     val edge = SmartisanDimens.TitleBarHorizontalMargin.roundToPx()
                     val from = if (leftActions.isNotEmpty()) left.width + gap else edge
-                    val to = if (rightActions.isNotEmpty()) w - right.width - gap else w - edge
+                    val to = if (rightActions.isNotEmpty() || trailingContent != null) w - right.width - gap else w - edge
                     val room = (to - from).coerceAtLeast(0)
                     val titleP = ms[0].measure(loose.copy(maxWidth = room))
                     // Centred if it fits there, else pushed just clear of the buttons.
@@ -151,6 +155,7 @@ private val TitleMinGap = 8.dp
 private fun androidx.compose.foundation.layout.BoxScope.TitleBarActions(
     leftActions: List<SmartisanTitleBarAction>,
     rightActions: List<SmartisanTitleBarAction>,
+    trailingContent: (@Composable () -> Unit)?,
 ) {
     Row(
         modifier = Modifier.align(Alignment.CenterStart).padding(start = SmartisanDimens.TitleBarHorizontalMargin),
@@ -159,7 +164,10 @@ private fun androidx.compose.foundation.layout.BoxScope.TitleBarActions(
     Row(
         modifier = Modifier.align(Alignment.CenterEnd).padding(end = SmartisanDimens.TitleBarHorizontalMargin),
         verticalAlignment = Alignment.CenterVertically,
-    ) { rightActions.forEach { item -> SmartisanTitleBarIcon(item) } }
+    ) {
+        rightActions.forEach { item -> SmartisanTitleBarIcon(item) }
+        trailingContent?.invoke()
+    }
 }
 
 /** 标题栏下方的原版投影（NinePatch，含夜间变体）。 */

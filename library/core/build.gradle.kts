@@ -23,6 +23,11 @@ android {
         compose = true
     }
 
+    lint {
+        // 版本由仓库统一锁定；升级建议与代码检查分开，避免远程版本变化影响 lint 门槛。
+        disable += setOf("AndroidGradlePluginVersion", "GradleDependency")
+    }
+
     // 允许发布到本地或私有 Maven 仓库：./gradlew publishToMavenLocal
     publishing {
         singleVariant("release") {

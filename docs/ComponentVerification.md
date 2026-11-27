@@ -39,7 +39,7 @@ These are **intentionally** different from the originals; each is noted in the c
 | Item | Original | Here | Why |
 | --- | --- | --- | --- |
 | Title bar height | Music 50dp / Weather & Clock 48dp | 48dp | The three apps disagree; taking the majority. Pass `contentHeight = 50.dp` for Music's |
-| Dark mode | Does not exist | Experimental, off by default | Added by the revival projects; only ~2.5% of original assets have night variants |
+| Dark mode | Does not exist | Experimental, off by default | Added by the revival projects; only ~4.4% of original assets have night variants |
 | Text / hint colours | `editor_text_color` etc. from the framework | Theme semantic colours | Those resources only exist in the Smartisan framework APK |
 | Cursor bar | nine-patch `edittext_cursor_bbackground` | Theme `accent` | Compose's `cursorBrush` only accepts a `Brush` |
 | Clear-button visibility | Instant `setVisibility` | 200ms fade by default | Pass `animateClearIcon = false` to match the original exactly |
@@ -822,3 +822,18 @@ the active letter with the accent colour. Measured on the music library page (20
 formula. `smartisanDefaultLetterIndex()` now returns A–Z then `#`, matching
 `LettersConfig.ENGLISH_LETTERS` plus the default `mPoundPosition = 2` (bottom).
 
+
+## Smartisan R2 Messages and Gallery verification
+
+The darwin R2 ran build `RKQ1.201217.002 dev-keys` at 1080 × 2340 with its existing 400 dpi override (2.5 px/dp). The stock reference was the device's `MmsSmartisan.apk`. Its received and sent NinePatch backgrounds and their pressed variants each have a 176 × 151 px image at xxhdpi. Their decoded RGBA pixels match the APK byte for byte after removing the source NinePatch border.
+
+| Check | Stock Messages | SmartisanX sample |
+| --- | --- | --- |
+| Wrapped text bubble | Incoming node x = 148–912, width 764 px | Outgoing text width 654 px plus 46 px and 64 px artwork insets, total 764 px |
+| Composer send button | 90 × 90 px at x = 945–1035 | 90 × 90 px at x = 975–1065 using the framework composer |
+| Timestamp | Centered, 10.5sp in the original layout | Centered text bounds x = 477–604, height 30 px |
+| Dark theme | Stock app uses its light artwork | Screenshot samples: page `#25282D`, incoming fill `#34373C`, outgoing fill `#26384F`, selected Gallery icon `#5C89F2` |
+
+The Gallery settings switch and grouped row share a text origin at x = 220 px. The R2 test sent a local demo message with the keyboard open and confirmed that it appeared in the thread and the input cleared. The sample's dark bubbles use flat rounded fills from the palette. The sample uses the library's existing framework composer, including its own horizontal geometry.
+
+The dropdown opened at the sample row and dismissed with Back. A 300 px drag in the refresh demo advanced its counter once. The state-based field displayed an 80 × 80 px clear control with text and focus.

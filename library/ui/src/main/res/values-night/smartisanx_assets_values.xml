@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 三个复刻项目原始资源引用到的值资源，自动收集。 -->
 <resources>
-    <color name="app_accent_pressed_color">#ff8a52</color>
+    <color name="app_accent_pressed_color">#5079df</color>
     <color name="app_card_outline_color">#990b0c0e</color>
     <color name="app_divider_color">#404348</color>
     <color name="app_surface_color">#34373c</color>
@@ -13,7 +13,7 @@
     <color name="list_item_second_line">#9fa1a4</color>
     <color name="title_bar_icon_disabled">#717377</color>
     <color name="title_bar_icon_normal">#d2d3d5</color>
-    <color name="title_bar_icon_pressed">#ff7433</color>
+    <color name="title_bar_icon_pressed">#8cadff</color>
     <color name="title_color">#f2f2f2</color>
     <color name="title_down_color">#d2d3d5</color>
     <color name="weather_alert_card_outline_color">#990b0c0e</color>
@@ -30,9 +30,9 @@
     <color name="weather_bg_color_start_standstorm">#292722</color>
     <color name="weather_bg_color_start_sunny">#22272e</color>
     <color name="weather_top_card_scrim">#66000000</color>
-    <color name="app_link_color">#ff7839</color>
-    <color name="app_link_disabled_color">#66ff7839</color>
-    <color name="app_link_pressed_color">#ff9a6d</color>
+    <color name="app_link_color">#8cadff</color>
+    <color name="app_link_disabled_color">#668cadff</color>
+    <color name="app_link_pressed_color">#adc4ff</color>
     <color name="bright_foreground_disabled_smartisanos_light">#717377</color>
     <color name="bright_foreground_smartisanos_light">#f2f2f3</color>
     <color name="setting_item_summary_text_color">#9fa1a4</color>

@@ -13,7 +13,8 @@
 -->
 <resources>
     <color name="listview_divider_color">#3a3d42</color>
-    <color name="app_accent_color">#ff7433</color>
+    <color name="app_accent_color">#5c89f2</color>
+    <color name="app_danger_color">#ff7433</color>
     <color name="app_page_background">#25282d</color>
     <color name="quickbar_ex_alphabet_text_dark_color">#35383d</color>
     <color name="quickbar_ex_alphabet_text_light_color">#3a3d42</color>

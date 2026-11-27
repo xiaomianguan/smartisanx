@@ -750,6 +750,7 @@ class SmartisanTitleBarAction private constructor(
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
     backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
     centerContent: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
 )
 
 // The 14dp shadow is drawn *outside* the bar and on top of the content, exactly like the original
@@ -780,7 +781,7 @@ class SmartisanTitleBarAction private constructor(
 @Composable fun SmartisanTabRow(tabs: List<String>, selectedIndex: Int, onSelected: (Int) -> Unit, modifier, scrollable: Boolean = false)   // library-original; the original has no counterpart
 
 data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val selectedIcon: ImageVector = icon)
-@Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground)
+@Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground, selectedColor, unselectedColor, tintResourceIcons)
 // Structure = the original sb_tab_bar.xml: a standalone tab_bar_shadow strip (26.7dp whose last two
 // rows are the dividing line) sits above the 54dp bar itself; do not draw another divider, or the
 // line lands in the middle of the bar.
@@ -1334,3 +1335,15 @@ SmartisanIntrinsicImage(res = SmartisanClockDrawables.Face)
 ```
 
 Every `@DrawableRes` parameter is replaceable — pass your own resource id to swap the artwork.
+
+## Gallery layout and Messages components
+
+Use the `topBar` overload of `SmartisanScaffold` to draw content behind the bars. Pass the supplied `PaddingValues` to the scrolling content and give the optional `snackbarHost` slot a wrap-content host. A custom bottom bar owns its navigation inset.
+
+Place `SmartisanTitleBarTextAction` in the title bar's `trailingContent`. Ordinary text titles are measured against the space taken by the actions. `SmartisanSwitchRow` can use the same 60dp leading icon slot as grouped rows. Asset-backed `SmartisanIcon` accepts an optional `tint`; use it with monochrome artwork. For monochrome bottom navigation, pass the primary and tertiary text colors and enable `tintResourceIcons`.
+
+Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent controls its expanded state and can supply menu items that close it after a selection.
+
+`SmartisanMessageBubble` renders the incoming and outgoing text bubbles from the stock Messages app. `SmartisanMessageTimestamp` takes a formatted timestamp label. Both can be combined with `SmartisanMessageField` to build a thread. Open the Messages demo from either sample launcher.
+
+`SmartisanClearableField` also accepts a Compose `TextFieldState`, `InputTransformation`, and `TextFieldLineLimits`. Wrap a vertically scrollable child in `SmartisanPullToRefresh` to show the Smartisan progress ring and run a refresh after pulling past the threshold. The caller owns `isRefreshing`.

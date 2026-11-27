@@ -3,9 +3,15 @@ package cc.wuersan008.smartisanx.ui.input
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.KeyboardActionHandler
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
@@ -75,19 +81,18 @@ fun SmartisanClearableField(
     val focused by interaction.collectIsFocusedAsState()
     // 原版 `shouldDrawIcon()`：文本非空且获得焦点才画清除按钮。
     val showClear = value.isNotEmpty() && (!showClearOnlyWhenFocused || focused)
-    // 原版 `getCompoundPaddingRight`：图标可见时才为它让出宽度。
-    val reservedEnd = if (showClear) clearIconSize + clearPaddingEnd else 0.dp
 
-    Box(modifier = modifier) {
+    ClearableFieldLayout(
+        modifier, showClear, enabled, clearIconRes, clearIconSize, clearPaddingEnd, animateClearIcon,
+        onClear = {
+            onValueChange("")
+            onClear?.invoke()
+        },
+    ) { reservedEnd ->
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            // Centered like the clear icon: the box is as tall as the taller of the two.
-            modifier =
-                Modifier
-                    .align(Alignment.CenterStart)
-                    .fillMaxWidth()
-                    .padding(end = reservedEnd),
+            modifier = Modifier.align(Alignment.CenterStart).fillMaxWidth().padding(end = reservedEnd),
             enabled = enabled,
             singleLine = singleLine,
             textStyle = textStyle.copy(color = colors.textPrimary),
@@ -97,40 +102,106 @@ fun SmartisanClearableField(
                 keyboardActions
                     ?: KeyboardActions(onDone = { focusManager.clearFocus() }),
             interactionSource = interaction,
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    if (value.isEmpty()) {
-                        SmartisanText(
-                            text = placeholder,
-                            style = textStyle,
-                            color = colors.textHint,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    innerTextField()
-                }
+            decorationBox = { inner ->
+                ClearableFieldDecoration(value.isEmpty(), placeholder, textStyle, inner)
             },
         )
+    }
+}
 
+/** 使用 [TextFieldState]、输入转换与行数约束的可清空输入框。 */
+@Composable
+fun SmartisanClearableField(
+    state: TextFieldState,
+    modifier: Modifier = Modifier,
+    placeholder: String = "",
+    enabled: Boolean = true,
+    lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine,
+    inputTransformation: InputTransformation? = null,
+    showClearOnlyWhenFocused: Boolean = true,
+    onClear: (() -> Unit)? = null,
+    textStyle: TextStyle = LocalSmartisanTypography.current.body.copy(fontSize = 15.sp),
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    onKeyboardAction: KeyboardActionHandler? = null,
+    @DrawableRes clearIconRes: Int = R.drawable.quick_icon_delete,
+    clearIconSize: Dp = SmartisanInputDefaults.QuickDeleteIconSize,
+    clearPaddingEnd: Dp = SmartisanInputDefaults.QuickDeletePaddingEnd,
+    animateClearIcon: Boolean = true,
+) {
+    val colors = LocalSmartisanColors.current
+    val interaction = rememberSmartisanInteractionSource()
+    val focused by interaction.collectIsFocusedAsState()
+    val showClear = state.text.isNotEmpty() && (!showClearOnlyWhenFocused || focused)
+
+    ClearableFieldLayout(
+        modifier, showClear, enabled, clearIconRes, clearIconSize, clearPaddingEnd, animateClearIcon,
+        onClear = {
+            state.clearText()
+            onClear?.invoke()
+        },
+    ) { reservedEnd ->
+        BasicTextField(
+            state = state,
+            modifier = Modifier.align(Alignment.CenterStart).fillMaxWidth().padding(end = reservedEnd),
+            enabled = enabled,
+            lineLimits = lineLimits,
+            inputTransformation = inputTransformation,
+            textStyle = textStyle.copy(color = colors.textPrimary),
+            cursorBrush = SolidColor(colors.accent),
+            keyboardOptions = keyboardOptions,
+            onKeyboardAction = onKeyboardAction,
+            interactionSource = interaction,
+            decorator = { inner ->
+                ClearableFieldDecoration(state.text.isEmpty(), placeholder, textStyle, inner)
+            },
+        )
+    }
+}
+
+@Composable
+private fun ClearableFieldLayout(
+    modifier: Modifier,
+    showClear: Boolean,
+    enabled: Boolean,
+    @DrawableRes clearIconRes: Int,
+    clearIconSize: Dp,
+    clearPaddingEnd: Dp,
+    animateClearIcon: Boolean,
+    onClear: () -> Unit,
+    content: @Composable BoxScope.(reservedEnd: Dp) -> Unit,
+) {
+    Box(modifier = modifier) {
+        content(if (showClear) clearIconSize + clearPaddingEnd else 0.dp)
         SmartisanClearIcon(
             iconRes = clearIconRes,
             contentDescription = stringResource(R.string.smartisan_clear),
-            onClick = {
-                onValueChange("")
-                onClear?.invoke()
-            },
-            modifier =
-                Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = clearPaddingEnd),
+            onClick = onClear,
+            modifier = Modifier.align(Alignment.CenterEnd).padding(end = clearPaddingEnd),
             size = clearIconSize,
             visible = showClear,
             enabled = enabled,
             animateVisibility = animateClearIcon,
         )
+    }
+}
+
+@Composable
+private fun ClearableFieldDecoration(
+    empty: Boolean,
+    placeholder: String,
+    textStyle: TextStyle,
+    inner: @Composable () -> Unit,
+) {
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+        if (empty) {
+            SmartisanText(
+                text = placeholder,
+                style = textStyle,
+                color = LocalSmartisanColors.current.textHint,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        inner()
     }
 }

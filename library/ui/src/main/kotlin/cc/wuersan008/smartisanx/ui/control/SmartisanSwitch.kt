@@ -21,12 +21,14 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -560,6 +562,7 @@ fun SmartisanSwitchRow(
     summary: String? = null,
     style: SmartisanSwitchStyle = SmartisanSwitchStyle.Music,
     position: SmartisanGroupRowPosition? = null,
+    leading: (@Composable () -> Unit)? = null,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -595,13 +598,19 @@ fun SmartisanSwitchRow(
                     onValueChange = { state.toggle() },
                 )
                 .padding(
-                    start = SmartisanDimens.RowContentStart,
+                    start = if (leading == null) SmartisanDimens.RowContentStart else 0.dp,
                     // 原版右槽的 `right_container_margin`(6dp)：开关位图的固有画布自带内边距，
                     // 所以可见的开关右沿落在卡片右侧约 12dp 处（与原版设置页实测一致）。
                     end = SmartisanDimens.ListRowRightContainerMargin,
                 ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (leading != null) {
+            Box(
+                Modifier.widthIn(min = SmartisanDimens.ListRowLeftIconArea),
+                contentAlignment = Alignment.Center,
+            ) { leading() }
+        }
         Column(
             modifier =
                 Modifier

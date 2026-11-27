@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -24,6 +26,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
@@ -37,6 +40,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.SmartisanPullToRefresh
 import cc.wuersan008.smartisanx.ui.layout.smartisanGroupRowBackground
 import cc.wuersan008.smartisanx.ui.list.SmartisanHiddenRowAction
 import cc.wuersan008.smartisanx.ui.list.SmartisanHiddenRowActions
@@ -49,6 +53,9 @@ import cc.wuersan008.smartisanx.ui.list.smartisanDefaultLetterIndex
 @Composable
 fun ListInteractionPage(onBack: () -> Unit) {
     SamplePageScaffold(title = "列表交互", onBack = onBack) {
+        SampleSectionHeader("下拉刷新")
+        PullToRefreshSection()
+
         SampleSectionHeader("长按拖动排序")
         ReorderSection()
 
@@ -67,6 +74,35 @@ fun ListInteractionPage(onBack: () -> Unit) {
                 "行内隐藏操作来自 framework 的 HiddenListActionLayout（左右 12dp 内边距、图标间距 6dp）；" +
                 "字母索引合并了锤子音乐的字母快捷栏与锤子时钟的 QuickBarEx。",
         )
+    }
+}
+
+@Composable
+private fun PullToRefreshSection() {
+    var refreshing by remember { mutableStateOf(false) }
+    var refreshCount by remember { mutableIntStateOf(0) }
+    LaunchedEffect(refreshing) {
+        if (refreshing) {
+            delay(600)
+            refreshCount++
+            refreshing = false
+        }
+    }
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
+        SmartisanPullToRefresh(
+            isRefreshing = refreshing,
+            onRefresh = { refreshing = true },
+            modifier = Modifier.fillMaxWidth().height(180.dp),
+        ) {
+            LazyColumn(Modifier.fillMaxWidth().height(180.dp)) {
+                item {
+                    SmartisanText("刷新次数：$refreshCount", Modifier.padding(18.dp))
+                }
+                items(5) { index ->
+                    SmartisanText("列表项 ${index + 1}", Modifier.padding(18.dp))
+                }
+            }
+        }
     }
 }
 

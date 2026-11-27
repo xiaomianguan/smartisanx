@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -135,3 +137,51 @@ fun SmartisanScaffold(
         }
     }
 }
+
+/**
+ * 覆盖式页面骨架。内容可在栏下绘制，通过 [PaddingValues] 避开栏与系统导航区域。
+ * 有底部栏时，其测量高度应已包含导航栏留白。提示条放在底部栏或系统导航栏上方。
+ */
+@Composable
+fun SmartisanScaffold(
+    topBar: (@Composable () -> Unit)?,
+    modifier: Modifier = Modifier,
+    bottomBar: (@Composable () -> Unit)? = null,
+    snackbarHost: (@Composable () -> Unit)? = null,
+    containerColor: Color = LocalSmartisanColors.current.pageBackground,
+    applyNavigationBarInset: Boolean = true,
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    val navigationInset = if (applyNavigationBarInset) {
+        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    } else {
+        0.dp
+    }
+    SubcomposeLayout(modifier.fillMaxSize().background(containerColor)) { constraints ->
+        val width = constraints.maxWidth
+        val height = constraints.maxHeight
+        val loose = constraints.copy(minWidth = 0, minHeight = 0)
+        val top = topBar?.let { bar ->
+            subcompose(ScaffoldSlot.Top) { Box(Modifier.fillMaxWidth()) { bar() } }.single().measure(loose)
+        }
+        val bottom = bottomBar?.let { bar ->
+            subcompose(ScaffoldSlot.Bottom) { Box(Modifier.fillMaxWidth()) { bar() } }.single().measure(loose)
+        }
+        val bottomHeight = bottom?.height ?: navigationInset.roundToPx()
+        val padding = PaddingValues(top = (top?.height ?: 0).toDp(), bottom = bottomHeight.toDp())
+        val body = subcompose(ScaffoldSlot.Body) { Box { content(padding) } }
+            .single().measure(constraints)
+        val snackbar = snackbarHost?.let { host ->
+            subcompose(ScaffoldSlot.Snackbar) { Box { host() } }.single()
+                .measure(loose.copy(maxHeight = (height - bottomHeight).coerceAtLeast(0)))
+        }
+        layout(width, height) {
+            body.placeRelative(0, 0)
+            bottom?.placeRelative(0, height - bottom.height)
+            top?.placeRelative(0, 0)
+            snackbar?.placeRelative((width - snackbar.width) / 2, height - bottomHeight - snackbar.height)
+        }
+    }
+}
+
+private enum class ScaffoldSlot { Top, Bottom, Body, Snackbar }

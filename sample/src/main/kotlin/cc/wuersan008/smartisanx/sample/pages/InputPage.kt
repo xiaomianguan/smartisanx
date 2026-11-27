@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -327,7 +328,7 @@ private fun PasswordFieldSection() {
 private fun ClearableFieldSection() {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    var text by remember { mutableStateOf("") }
+    val text = rememberTextFieldState()
     var cleared by remember { mutableIntStateOf(0) }
 
     SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
@@ -336,8 +337,7 @@ private fun ClearableFieldSection() {
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             SmartisanClearableField(
-                value = text,
-                onValueChange = { text = it },
+                state = text,
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 placeholder = "点一下输入框，输入内容后右侧出现清除按钮",
                 onClear = { cleared++ },

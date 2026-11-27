@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import cc.wuersan008.smartisanx.core.utils.rememberSmartisanDrawablePainter
@@ -44,6 +46,7 @@ fun SmartisanIcon(
     size: Dp? = null,
     contentScale: ContentScale = ContentScale.Fit,
     alignment: Alignment = Alignment.Center,
+    tint: Color = Color.Unspecified,
 ) {
     val painter =
         rememberSmartisanDrawablePainter(
@@ -80,12 +83,13 @@ fun SmartisanIcon(
         // 让它 invalidate，那层 layer 于是永远画缓存里的旧图。
         // 因此按状态指纹换一次 key：节点重建 → 新 layer 必然重录 → 新状态画得出来。
         // 视觉结果与原来完全一致（还是同一个 `Image` + 同一个 painter）。
-        key(stateKey) {
+        key(stateKey, painter, tint) {
             Image(
                 painter = painter,
                 contentDescription = contentDescription,
                 alignment = alignment,
                 contentScale = contentScale,
+                colorFilter = if (tint == Color.Unspecified) null else ColorFilter.tint(tint),
             )
         }
     }

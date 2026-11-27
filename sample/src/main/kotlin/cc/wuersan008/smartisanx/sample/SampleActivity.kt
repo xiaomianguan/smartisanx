@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 
 /** 示例应用入口：单 Activity + Compose 内部路由。 */
-class SampleActivity : ComponentActivity() {
+open class SampleActivity : ComponentActivity() {
     /**
      * 示例应用固定使用简体中文。
      *
@@ -27,6 +27,9 @@ class SampleActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // 内容延伸到系统栏，具体 Insets 由各组件自行处理。
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContent { SampleApp() }
+        setContent { SampleApp(gallery = this is GalleryActivity) }
     }
 }
+
+/** 组件画廊的独立启动入口。 */
+class GalleryActivity : SampleActivity()

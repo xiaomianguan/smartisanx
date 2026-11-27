@@ -20,6 +20,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
@@ -98,6 +99,9 @@ fun SmartisanBottomBar(
     includeNavigationBar: Boolean = true,
     showTopDivider: Boolean = true,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomBarBackground,
+    selectedColor: Color = LocalSmartisanColors.current.accent,
+    unselectedColor: Color = LocalSmartisanColors.current.textTertiary,
+    tintResourceIcons: Boolean = !LocalSmartisanColors.current.isLight,
 ) {
     val colors = LocalSmartisanColors.current
     // 原版：底色是 sb_repeat_tabbar_bg，上方叠一张 tab_bar_shadow。
@@ -143,6 +147,8 @@ fun SmartisanBottomBar(
                     SmartisanBottomBarItemView(
                         item = item,
                         selected = index == selectedIndex,
+                        tint = if (index == selectedIndex) selectedColor else unselectedColor,
+                        tintResourceIcons = tintResourceIcons,
                         modifier = Modifier.weight(1f),
                         onClick = { onSelected(index) },
                     )
@@ -156,10 +162,11 @@ fun SmartisanBottomBar(
 private fun SmartisanBottomBarItemView(
     item: SmartisanBottomBarItem,
     selected: Boolean,
+    tint: Color,
+    tintResourceIcons: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
@@ -169,7 +176,6 @@ private fun SmartisanBottomBarItemView(
         animationSpec = SmartisanMotion.PressSpring,
         label = "smartisan bottom bar press",
     )
-    val tint = if (selected) colors.accent else colors.textTertiary
     val res = if (selected) item.selectedIconRes else item.iconRes
     val vector = if (selected) item.selectedIcon else item.icon
     Column(
@@ -197,6 +203,7 @@ private fun SmartisanBottomBarItemView(
                     contentDescription = item.label,
                     size = SmartisanDimens.BottomBarIconSize,
                     selected = selected,
+                    tint = if (tintResourceIcons) tint else Color.Unspecified,
                 )
             vector != null ->
                 SmartisanIcon(
