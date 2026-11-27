@@ -840,6 +840,8 @@ The dropdown opened at the sample row and dismissed with Back. A 300 px drag in 
 
 ### Revised Gallery home and navigation
 
+On the R2, both launcher icons previously opened the list activity. After an in-place update, alternating taps launched the correct activity every time. The signed APK showed two distinct Android tasks, retained the list catalog, and opened the five Gallery tabs under the launcher label `smartisanx`. Tapping each tab and swiping from Settings to Text worked.
+
 On the same R2, a horizontal scan at y = 570 through the light Home page gutter alternated `#F2F2F2` and `#F0F0F0` in 9 px bands. The dark Settings gutter contained `#24272C` and `#24272B`. The expanded Home title occupied x = 60–230, y = 300–400. After scrolling past it, the compact title occupied x = 490–590, y = 151–209. Swiping switched Home to Icons. Tapping the bottom bar opened the color swatches, type specimens, and grouped settings. The Home search action returned to the search field and opened it.
 
 The Gallery now uses the compact Smartisan title bar throughout. The R2 reported the Home title at x = 490–590, y = 151–209 both at the top and after scrolling. The search field starts at y = 278.

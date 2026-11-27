@@ -299,7 +299,7 @@ interactive demos:
 # output: sample/build/outputs/apk/debug/sample-debug.apk
 ```
 
-The APK also installs **smartisanx Gallery**, a second launcher with Home, Icons, Colors, Text, and Settings tabs. Home opens with interactive controls, followed by grouped demo links. Both launchers include the Messages thread demo.
+The APK provides separate launcher entries for **smartisanx** and **smartisanx 组件示例**. The **smartisanx** entry opens the tabbed gallery with Home, Icons, Colors, Text, and Settings tabs. Home opens with interactive controls, followed by grouped demo links. Both launchers include the Messages thread demo.
 
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
 buttons, controls, text and input, layout and lists, full-screen layouts, list interaction,
