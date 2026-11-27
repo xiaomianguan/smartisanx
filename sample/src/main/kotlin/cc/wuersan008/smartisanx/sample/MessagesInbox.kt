@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.contentDescription
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.ui.R as UiR
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanButton
 import cc.wuersan008.smartisanx.ui.control.SmartisanButtonStyle
@@ -47,6 +49,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
+import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarShadow
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageAvatar
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
 
@@ -133,11 +136,14 @@ internal fun MessagesInbox(
                         navigationIcon = if (managing) {
                             SmartisanTitleBarAction(SmartisanDrawables.IconCancel, "取消管理", stopManaging)
                         } else {
+                            SmartisanTitleBarAction(SmartisanDrawables.IconBack, "返回", onBack)
+                        },
+                        navigationActions = if (managing) emptyList() else listOf(
                             SmartisanTitleBarAction(
                                 SmartisanDrawables.IconMultiSelect, "管理短信", { managing = true },
                                 enabled = visible.isNotEmpty(),
-                            )
-                        },
+                            ),
+                        ),
                         action = if (managing) null else SmartisanTitleBarAction(
                             UiR.drawable.mms_compose_selector, "新建短信", onCompose,
                         ),
@@ -237,57 +243,75 @@ internal fun MessagesInbox(
             null
         },
     ) {
-        if (visible.isEmpty()) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                SmartisanText(
-                    if (searching && term.isNotEmpty()) "没有匹配的短信" else "没有短信",
-                    color = colors.textSecondary,
-                )
-            }
-        } else {
-            LazyColumn {
-                items(visible, key = { it.id }) { conversation ->
-                    val checked = conversation.id in selected
-                    val toggle = {
-                        selected = if (checked) selected - conversation.id else selected + conversation.id
-                    }
-                    val preview = conversation.messages.lastOrNull { term.isNotEmpty() && it.contains(term, true) }
-                        ?: conversation.messages.last()
-                    SmartisanListItem(
-                        title = conversation.title,
-                        summary = preview,
-                        leading = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                if (managing) {
-                                    SmartisanCheckbox(
-                                        checked = checked,
-                                        onCheckedChange = { toggle() },
-                                        modifier = Modifier.semantics { contentDescription = conversation.title },
-                                        markSize = 36.dp,
-                                    )
-                                }
-                                SmartisanMessageAvatar(group = conversation.group)
-                            }
-                        },
-                        trailing = if (conversation.id in unread) {
-                            { SmartisanText("未读", fontSize = 12.sp, color = colors.accent) }
-                        } else {
-                            null
-                        },
-                        minHeight = 60.dp,
-                        showDivider = true,
-                        rowBackgroundRes = UiR.drawable.conversation_list_item_background_selector.takeIf { colors.isLight },
-                        onClick = {
-                            if (managing) toggle() else {
-                                unread = unread - conversation.id
-                                focus.clearFocus()
-                                keyboard?.hide()
-                                onOpenThread(conversation)
-                            }
-                        },
+        Box(Modifier.fillMaxSize()) {
+            if (visible.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    SmartisanText(
+                        if (searching && term.isNotEmpty()) "没有匹配的短信" else "没有短信",
+                        color = colors.textSecondary,
                     )
                 }
+            } else {
+                LazyColumn {
+                    items(visible, key = { it.id }) { conversation ->
+                        val checked = conversation.id in selected
+                        val toggle = {
+                            selected = if (checked) selected - conversation.id else selected + conversation.id
+                        }
+                        val preview = conversation.messages.lastOrNull { term.isNotEmpty() && it.contains(term, true) }
+                            ?: conversation.messages.last()
+                        SmartisanListItem(
+                            title = conversation.title,
+                            summary = preview,
+                            leading = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (managing) {
+                                        SmartisanCheckbox(
+                                            checked = checked,
+                                            onCheckedChange = { toggle() },
+                                            modifier = Modifier.semantics { contentDescription = conversation.title },
+                                            markSize = 36.dp,
+                                        )
+                                    }
+                                    SmartisanMessageAvatar(group = conversation.group)
+                                }
+                            },
+                            trailing = {
+                                if (conversation.id in unread) {
+                                    SmartisanText(
+                                        "未读", modifier = Modifier.padding(end = 6.dp),
+                                        fontSize = 12.sp, color = colors.accent,
+                                    )
+                                }
+                                if (!managing) {
+                                    SmartisanIcon(
+                                        res = UiR.drawable.conversation_arrow,
+                                        contentDescription = null,
+                                        modifier = Modifier.padding(end = 6.dp).width(6.dp).height(10.dp),
+                                        tint = if (colors.isLight) Color.Unspecified else colors.textTertiary,
+                                    )
+                                }
+                            },
+                            minHeight = 60.dp,
+                            showDivider = true,
+                            rowBackgroundRes = UiR.drawable.conversation_list_item_background_selector.takeIf { colors.isLight },
+                            onClick = {
+                                if (managing) toggle() else {
+                                    unread = unread - conversation.id
+                                    focus.clearFocus()
+                                    keyboard?.hide()
+                                    onOpenThread(conversation)
+                                }
+                            },
+                        )
+                    }
+                }
             }
+            SmartisanTitleBarShadow(
+                height = (46f / 3).dp,
+                shadowRes = SmartisanDrawables.SecondaryBarShadow,
+            )
+            if (colors.isLight) MessagesDivider()
         }
     }
     if (confirmDelete) {
