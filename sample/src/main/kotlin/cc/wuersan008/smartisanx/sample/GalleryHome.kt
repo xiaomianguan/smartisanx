@@ -13,20 +13,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
-import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanThemeController
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
@@ -72,18 +67,13 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
     val text = rememberLazyListState()
     val settings = rememberLazyListState()
     val lists = listOf(home, icons, colors, text, settings)
-    val current = lists[pager.currentPage]
-    val titleThreshold = with(LocalDensity.current) { 68.dp.roundToPx() }
-    val compactTitle by remember(current, titleThreshold) {
-        derivedStateOf { current.firstVisibleItemIndex > 0 || current.firstVisibleItemScrollOffset >= titleThreshold }
-    }
     var swipeEnabled by rememberSaveable { mutableStateOf(true) }
     var searchExpanded by rememberSaveable { mutableStateOf(false) }
 
     SmartisanScaffold(
         topBar = {
             SmartisanTitleBar(
-                title = if (compactTitle) galleryTabs[pager.currentPage].label else "",
+                title = galleryTabs[pager.currentPage].label,
                 action = if (pager.currentPage == 0) {
                     SmartisanTitleBarAction(SmartisanDrawables.IconSearch, "搜索组件", onClick = {
                         scope.launch {
@@ -119,13 +109,6 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
                     bottom = insets.calculateBottomPadding() + 12.dp,
                 ),
             ) {
-                item {
-                    SmartisanText(
-                        text = galleryTabs[index].label,
-                        modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 16.dp),
-                        style = LocalSmartisanTypography.current.title.copy(fontSize = 34.sp),
-                    )
-                }
                 when (index) {
                     0 -> homeSections(searchExpanded, { searchExpanded = it }, onOpen)
                     1 -> {
