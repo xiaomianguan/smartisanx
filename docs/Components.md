@@ -649,8 +649,15 @@ Notes:
     animateClearIcon: Boolean = true,
 )
 
+@Composable fun SmartisanShadedField(
+    value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+)
+
 object SmartisanInputDefaults
 ```
+
+`SmartisanShadedField` is the inset single-line editor from the Messages Quick Reply dialog. It uses the framework NinePatches for its focused, unfocused, and disabled states.
 
 ### Ported original input components
 

@@ -874,6 +874,8 @@ The stock Quick Search result for Clock on the R2 had a 75 × 75 px icon and its
 
 R2 (400 dpi) side-by-side verification: stock and sample rows start at y = 278 and repeat every 165 px. The first card’s content bounds are x = 30–1050 and y = 297–419. The white fill spans x = 30–1049 in both screenshots. On its centerline it spans y = 291–424 in stock and y = 291–423 in the sample. The edit pencil and grip occupy 75 × 120 px at x = 855 and 960, respectively, with the same y = 298 top edge. The add label is centered at x = 540. The stock and sample fallback portraits are clipped to 95 px circles within 108 px frames. The corners outside the avatar circle show the surrounding page in both screenshots. Device checks covered entering and leaving edit mode, opening the pencil editor, removing a reply, reordering with the handle, and inserting a reply into the composer.
 
+In the Quick Reply dialog, the single-line shaded field is 98 px high at 400 dpi. The focused NinePatch covers 84 px vertically on the centerline in both stock (y = 716–799) and sample (y = 774–857). The sample keeps the library dialog shell, so the field width follows that shell. A device recording of a middle-row removal showed the card sliding right before the next row moved up by one 165 px pitch. Both animation stages are 200 ms, as in the APK.
+
 ### Recorder playback and Notes share strip
 
 On the R2, the waveform used the stock `#AFB0B0` stroke color and the original `#F52718` marker artwork. The marker rendered 2 px wide in the sample. Scrubbing moved the waveform and the 50dp timeline together under the marker. The Notes share thumbnails measured 140 × 143 px with 25 px gaps; tapping one opened its preview.

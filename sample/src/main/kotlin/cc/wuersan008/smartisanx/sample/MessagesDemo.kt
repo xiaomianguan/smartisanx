@@ -1,6 +1,10 @@
 package cc.wuersan008.smartisanx.sample
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,18 +26,22 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
 import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.ui.R as UiR
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
-import cc.wuersan008.smartisanx.ui.input.SmartisanClearableField
+import cc.wuersan008.smartisanx.ui.input.SmartisanShadedField
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachments
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachmentPreview
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
@@ -52,6 +60,7 @@ import cc.wuersan008.smartisanx.ui.list.SmartisanReorderableColumn
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
+import kotlin.math.roundToInt
 
 @Composable
 internal fun MessagesDemo(onBack: () -> Unit) {
@@ -341,7 +350,21 @@ private fun QuickRepliesDemo(
     var text by rememberSaveable { mutableStateOf("") }
     val editing = editIndex
     var editMode by rememberSaveable { mutableStateOf(false) }
-    BackHandler(enabled = editMode) { editMode = false }
+    var removingIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    val slide = remember { Animatable(0f) }
+    val collapse = remember { Animatable(0f) }
+    LaunchedEffect(removingIndex) {
+        val index = removingIndex ?: return@LaunchedEffect
+        slide.animateTo(1f, tween(durationMillis = 200, easing = EaseOutCubic))
+        collapse.animateTo(1f, tween(durationMillis = 200, easing = EaseOut))
+        onRepliesChange(replies.toMutableList().apply { removeAt(index) })
+        removingIndex = null
+        slide.snapTo(0f)
+        collapse.snapTo(0f)
+    }
+    BackHandler(enabled = editMode) {
+        if (removingIndex == null) editMode = false
+    }
     SmartisanScaffold(
         backgroundRes = UiR.drawable.conversation_listview_background_tilemode.takeIf {
             LocalSmartisanColors.current.isLight
@@ -356,7 +379,7 @@ private fun QuickRepliesDemo(
                 action = SmartisanTitleBarAction(
                     if (editMode) SmartisanDrawables.IconConfirm else UiR.drawable.standard_icon_edit_selector,
                     if (editMode) "完成" else "编辑",
-                    { editMode = !editMode },
+                    { if (removingIndex == null) editMode = !editMode },
                 ),
             )
         },
@@ -368,20 +391,33 @@ private fun QuickRepliesDemo(
                 onMove = { from, to ->
                     onRepliesChange(replies.toMutableList().apply { add(to, removeAt(from)) })
                 },
-                dragEnabled = editMode,
+                dragEnabled = editMode && removingIndex == null,
                 dragHandleWidth = 42.dp,
             ) { index, reply, _ ->
                 SmartisanMessageQuickReplyRow(
                     text = reply,
+                    modifier = if (index == removingIndex) {
+                        Modifier.clipToBounds().layout { measurable, constraints ->
+                            val row = measurable.measure(constraints)
+                            val height = constraints.constrainHeight(
+                                (row.height * (1f - collapse.value)).roundToInt(),
+                            )
+                            layout(row.width, height) { row.place(0, 0) }
+                        }.graphicsLayer { translationX = size.width * slide.value }
+                    } else {
+                        Modifier
+                    },
                     onClick = { onSelect(reply) },
                     enabled = !editMode,
                     onEdit = if (editMode) ({
-                        editIndex = index
-                        text = reply
+                        if (removingIndex == null) {
+                            editIndex = index
+                            text = reply
+                        }
                     }) else null,
                     editDescription = "编辑快捷回复",
                     onRemove = if (editMode) ({
-                        onRepliesChange(replies.toMutableList().apply { removeAt(index) })
+                        if (removingIndex == null) removingIndex = index
                     }) else null,
                     removeDescription = "删除快捷回复",
                     reorderDescription = if (editMode) "拖动排序" else null,
@@ -415,12 +451,14 @@ private fun QuickRepliesDemo(
                 editIndex = null
             },
         ) {
-            SmartisanClearableField(
+            val focus = remember { FocusRequester() }
+            SmartisanShadedField(
                 value = text,
-                onValueChange = { text = it },
-                modifier = Modifier.fillMaxWidth().padding(18.dp),
-                placeholder = "快捷回复内容",
+                onValueChange = { text = it.take(100) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp, vertical = 4.dp)
+                    .focusRequester(focus),
             )
+            LaunchedEffect(focus) { focus.requestFocus() }
         }
     }
 }
