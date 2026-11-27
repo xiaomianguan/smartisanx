@@ -165,6 +165,7 @@ to whole physical pixels.
 @Composable fun SmartisanCheckbox(
     checked: Boolean, onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier, enabled: Boolean = true,
+    selectorRes: Int = CheckboxSelector, markSize: Dp = CheckboxMarkSize,
 )
 @Composable fun Modifier.smartisanCheckboxBounds(onBounds: (Rect?) -> Unit): Modifier
 
@@ -1361,7 +1362,7 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 
 `SmartisanCleanerProgress(progress, modifier, content)` uses the stock Cleaner half-dials and mask to display determinate progress. `SmartisanPhotoSelectionTile` uses the stock Notes square thumbnail, selection artwork, and optional separate preview action.
 
-`SmartisanMessageAvatar` draws the stock avatar frame and accepts a photo, with single-contact and group fallbacks. Supply it in the `avatar` slot of `SmartisanMessageBubble`. The bubble also accepts an attachment slot. `SmartisanMessageAttachments` provides the stock emoji pages and tool strip; the caller handles camera, quick reply, contact, and delete actions. Use `SmartisanMessageAttachmentPreview` for staged and sent attachments, and `SmartisanMessageDeliveryRow` for the 60dp delivery report. `SmartisanMessageField.sendEnabled` supports attachment-only sends. The Messages sample opens into an inbox with individual and group threads.
+`SmartisanMessageAvatar` draws the stock avatar frame and accepts a photo, with single-contact and group fallbacks. Supply it in the `avatar` slot of `SmartisanMessageBubble`. The bubble also accepts an attachment slot. `SmartisanMessageAttachments` provides the stock emoji pages and tool strip; the caller handles camera, quick reply, contact, and delete actions. Use `SmartisanMessageAttachmentPreview` for staged and sent attachments, and `SmartisanMessageDeliveryRow` for the 60dp delivery report. `SmartisanMessageField.sendEnabled` supports attachment-only sends. The Messages sample opens into an inbox with individual, group, and notification threads. It reuses `SmartisanSearchBar`, `SmartisanButtonTabGroup`, and `SmartisanCheckbox` for message search, category filtering, and batch read/unread and delete actions.
 
 `SmartisanRecordingCountdown` uses the Screen Recorder APK’s three numeral bitmaps and overlapping scale/fade animations. It starts on composition and invokes the completion callback after three seconds.
 

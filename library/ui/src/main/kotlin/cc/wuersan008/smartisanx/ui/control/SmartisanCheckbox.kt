@@ -30,6 +30,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
 import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
@@ -82,6 +83,7 @@ fun Modifier.smartisanCheckboxBounds(onBounds: (Rect?) -> Unit): Modifier {
  * @param onCheckedChange 传 `null` 时复选框只作为展示，不响应点击（多选列表里未进入编辑态时就是这样）。
  * @param selectorRes 复选框位图 selector，默认是原版 `selector_check_box_red`：
  *   选中态是红色实心圆 + 白色对勾，未选中态是细圆环，按下与禁用态由 selector 自带。
+ * @param markSize 图标的绘制尺寸。短信多选使用原版 36dp 图标。
  */
 @Composable
 fun SmartisanCheckbox(
@@ -90,6 +92,7 @@ fun SmartisanCheckbox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     @DrawableRes selectorRes: Int = CheckboxSelector,
+    markSize: Dp = CheckboxMarkSize,
 ) {
     val interaction: MutableInteractionSource = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
@@ -119,7 +122,7 @@ fun SmartisanCheckbox(
             enabled = enabled,
             pressed = pressed,
             checked = checked,
-            modifier = Modifier.size(CheckboxMarkSize),
+            modifier = Modifier.size(markSize),
         )
     }
 }

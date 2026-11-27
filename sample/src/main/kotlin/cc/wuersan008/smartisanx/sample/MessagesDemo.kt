@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,7 +73,6 @@ import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachments
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachmentPreview
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageRecipients
-import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
@@ -94,7 +94,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun MessagesDemo(onBack: () -> Unit) {
-    var thread by rememberSaveable { mutableStateOf("小锤") }
+    var threadId by rememberSaveable { mutableStateOf(DemoInbox.first().id) }
+    val inboxState = rememberSaveableStateHolder()
     var threadOpen by rememberSaveable { mutableStateOf(false) }
     var composing by rememberSaveable { mutableStateOf(false) }
     var recentEmoji by rememberSaveable(stateSaver = listSaver<List<String>, String>(
@@ -118,35 +119,19 @@ internal fun MessagesDemo(onBack: () -> Unit) {
             label = "Messages conversation",
         ) { showThread ->
             if (showThread) {
+                val thread = DemoInbox.first { it.id == threadId }
                 MessageThreadDemo(thread, threadOpen, recentEmoji, recordEmoji) { threadOpen = false }
             } else {
-                SmartisanScaffold(titleBar = {
-                    MessagesTitleBar("短信", onBack, action = SmartisanTitleBarAction(
-                        UiR.drawable.mms_compose_selector, "新建短信", onClick = { composing = true },
-                    ))
-                }) {
-                    Column {
-                        SmartisanListItem(
-                            title = "小锤",
-                            summary = "明天下午三点见。",
-                            leading = { SmartisanMessageAvatar() },
-                            trailing = { SmartisanIcon(res = SmartisanDrawables.ListItemArrow, contentDescription = null) },
-                            onClick = {
-                                thread = "小锤"
-                                threadOpen = true
-                            },
-                        )
-                        SmartisanListItem(
-                            title = "周末小组",
-                            summary = "大家周六见。",
-                            leading = { SmartisanMessageAvatar(group = true) },
-                            trailing = { SmartisanIcon(res = SmartisanDrawables.ListItemArrow, contentDescription = null) },
-                            onClick = {
-                                thread = "周末小组"
-                                threadOpen = true
-                            },
-                        )
-                    }
+                inboxState.SaveableStateProvider("messages-inbox") {
+                    MessagesInbox(
+                        active = !threadOpen && !composing,
+                        onBack = onBack,
+                        onCompose = { composing = true },
+                        onOpenThread = {
+                            threadId = it.id
+                            threadOpen = true
+                        },
+                    )
                 }
             }
         }
@@ -176,12 +161,13 @@ private data class DemoMessage(val text: String, val attachment: String? = null)
 
 @Composable
 private fun MessageThreadDemo(
-    recipient: String?,
+    thread: InboxConversation?,
     active: Boolean,
     recentEmoji: List<String>,
     onEmojiUsed: (String) -> Unit,
     onBack: () -> Unit,
 ) {
+    val recipient = thread?.title
     var address by rememberSaveable { mutableStateOf("") }
     var recipients by rememberSaveable(stateSaver = listSaver<List<String>, String>(
         save = { it }, restore = { it.toList() },
@@ -203,7 +189,7 @@ private fun MessageThreadDemo(
         restore = { fields ->
             fields.chunked(2).map { DemoMessage(it.first(), it.getOrNull(1)?.takeIf(String::isNotEmpty)) }
         },
-    )) { mutableStateOf(if (recipient == null) emptyList() else listOf(DemoMessage("好，我会提前到。"))) }
+    )) { mutableStateOf(if (thread?.id == "hammer") listOf(DemoMessage("好，我会提前到。")) else emptyList()) }
     var showDelivery by rememberSaveable { mutableStateOf(false) }
     var showAttachments by rememberSaveable { mutableStateOf(false) }
     var menu by rememberSaveable { mutableStateOf<MessageMenu?>(null) }
@@ -369,14 +355,21 @@ private fun MessageThreadDemo(
                     }
                 } else {
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize().padding(top = if (recipient == null) 0.dp else 16.dp)) {
-                        if (recipient != null) {
+                        if (thread != null) {
                             item {
                                 SmartisanMessageTimestamp("今天 14:28")
-                                SmartisanMessageBubble(
-                                    text = if (recipient == "小锤") "明天下午三点见。" else "大家周六见。",
-                                    outgoing = false,
-                                    avatar = { SmartisanMessageAvatar(contentDescription = recipient, group = recipient == "周末小组") },
-                                )
+                                thread.messages.forEach { message ->
+                                    SmartisanMessageBubble(
+                                        text = message,
+                                        outgoing = false,
+                                        avatar = {
+                                            SmartisanMessageAvatar(
+                                                contentDescription = thread.title,
+                                                group = thread.group,
+                                            )
+                                        },
+                                    )
+                                }
                             }
                         }
                         items(sent) { message ->
@@ -533,8 +526,8 @@ private fun MessageContactsList(
 }
 
 @Composable
-private fun MessagesDivider() {
-    Box(Modifier.fillMaxWidth().height((2f / 3).dp).smartisanDrawableBackground(UiR.drawable.divider_bg))
+internal fun MessagesDivider(modifier: Modifier = Modifier) {
+    Box(modifier.fillMaxWidth().height((2f / 3).dp).smartisanDrawableBackground(UiR.drawable.divider_bg))
 }
 
 @Composable
@@ -559,20 +552,6 @@ private fun MessageContactPicker(
         }
     }
 }
-
-@Composable
-private fun MessagesTitleBar(title: String, onBack: () -> Unit, action: SmartisanTitleBarAction? = null) {
-    SmartisanTitleBar(
-        title = title,
-        action = action,
-        navigationIcon = SmartisanTitleBarAction(
-            iconRes = SmartisanDrawables.IconBack,
-            contentDescription = "返回",
-            onClick = onBack,
-        ),
-    )
-}
-
 
 @Composable
 private fun DemoAttachment(label: String, onRemove: (() -> Unit)? = null) {

@@ -284,6 +284,8 @@ private fun SmartisanButtonTabGroupSegment(
         modifier =
             Modifier
                 .fillMaxHeight()
+                // 原版 setEnabled(i, false) 把整个按钮的透明度降到 0.3。
+                .graphicsLayer { alpha = if (enabled) 1f else DisabledAlpha }
                 .smartisanDrawableBackground(
                     drawableRes = backgroundRes,
                     enabled = enabled,
@@ -296,9 +298,7 @@ private fun SmartisanButtonTabGroupSegment(
                     role = Role.RadioButton,
                     onClick = onClick,
                 )
-                .padding(horizontal = SegmentHorizontalPadding)
-                // 原版 setEnabled(i, false) 把整个按钮的透明度降到 0.3。
-                .graphicsLayer { alpha = if (enabled) 1f else DisabledAlpha },
+                .padding(horizontal = SegmentHorizontalPadding),
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

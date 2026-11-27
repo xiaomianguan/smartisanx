@@ -860,6 +860,8 @@ The Notes sample thumbnails measured 264 × 264 px inside 270 × 270 px cells, w
 
 ### Messages inbox, avatars, and attachment panel
 
+At 400 dpi the stock and sample inbox search artwork spans y = 262–337 on the sampled vertical line. The selected category artwork spans y = 382–457 in both. The top-left management button occupies [15,135]–[105,225], and Select All uses [30,255]–[120,345]. Device checks covered category filtering, searching for a code in message text, returning from a filtered conversation, batch read/unread changes, and cancelling and confirming batch deletion. The sample uses in-memory demo conversations.
+
 On the R2 at 400 dpi, New Message uses a white title bar and a 120 px recipient strip from y = 240–360. The stock and sample contact button bounds are x = 975–1065 and y = 255–345. The recipient field begins at x = 48 and takes focus at entry. The inset NinePatch center and the first section shadow match the sampled stock pixels at y = 255–359 and y = 360–405. The sample supplies demo contacts. Its recorded conversation pushes and pops are horizontal, while New Message and Quick Reply slide vertically using the 300 ms timings from the framework APK.
 
 The stock R2 Messages thread shows 95 × 95 px portraits inside 108 px avatar frames. The sample uses the stock frame and single/group fallback art, with portrait bounds of 95 × 95 px on both sides of the thread. The closed composer More button measured 90 × 90 px at x = 45–135 in stock and sample. The stock attachment tool strip was 133 px high, with Camera, Quick Reply, Share Contact, and Delete. The sample uses the stock tool icons and six fixed emoji pages.
