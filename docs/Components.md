@@ -1355,3 +1355,5 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 `SmartisanMessageAvatar` draws the stock avatar frame and accepts a photo, with single-contact and group fallbacks. Supply it in the `avatar` slot of `SmartisanMessageBubble`. The bubble also accepts an attachment slot. `SmartisanMessageAttachments` provides the stock emoji pages and tool strip; the caller handles camera, quick reply, contact, and delete actions. Use `SmartisanMessageAttachmentPreview` for staged and sent attachments, and `SmartisanMessageDeliveryRow` for the 60dp delivery report. `SmartisanMessageField.sendEnabled` supports attachment-only sends. The Messages sample opens into an inbox with individual and group threads.
 
 `SmartisanRecordingCountdown` uses the Screen Recorder APK’s three numeral bitmaps and overlapping scale/fade animations. It starts on composition and invokes the completion callback after three seconds.
+
+`SmartisanMessageRecipients` provides the new-message recipient editor with removable chips and the stock add-contact icon. Pass recent selections to `SmartisanMessageAttachments.recentEmoji` to populate the history page.

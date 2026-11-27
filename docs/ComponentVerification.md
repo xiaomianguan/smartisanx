@@ -865,3 +865,5 @@ The stock R2 Messages thread shows 95 × 95 px portraits inside 108 px avatar fr
 On the R2 sample, tapping an emoji filled the composer, staging a sample photo displayed a 220 px-high preview and a remove action, and Send moved the photo and emoji into the thread. The sent bubble opened the delivery report. The keyboard button restored the IME. The sample uses local fixtures for photos, contacts, and delivery.
 
 The recording countdown uses three byte-identical 366 × 492 px assets from ScreenRecorderSmartisan. The R2 sample showed 3, 2, and 1 in successive captures and returned to its play row on completion. The timing and transforms were compared with the APK animation code.
+
+New Message uses the stock compose icon and the recipient bar uses the stock add-contact icon. Both controls measured 90 × 90 px on the R2. Adding a recipient produced a removable chip. The emoji panel reported page 2 of 7 on open. After choosing an emoji and swiping to page 1, the chosen emoji appeared in Recents.

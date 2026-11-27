@@ -27,6 +27,7 @@ import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.control.SmartisanPageIndicator
+import cc.wuersan008.smartisanx.ui.control.SmartisanPageIndicatorIcon
 
 /** 短信输入扩展面板：五列三行表情与底部相机、快捷回复、联系人、退格操作。 */
 @Composable
@@ -41,13 +42,15 @@ fun SmartisanMessageAttachments(
     quickReplyLabel: String = "Quick Reply",
     contactLabel: String = "Share Contact",
     deleteLabel: String = "Delete",
+    recentEmoji: List<String> = emptyList(),
 ) {
     val colors = LocalSmartisanColors.current
-    val pages = rememberPagerState { MessageEmoji.size / 15 }
+    val pages = rememberPagerState(initialPage = 1) { 1 + MessageEmoji.size / 15 }
     Column(modifier.fillMaxWidth().background(colors.surface)) {
         SmartisanPageIndicator(
             pageCount = pages.pageCount,
             currentPage = pages.currentPage,
+            icons = listOf(SmartisanPageIndicatorIcon(R.drawable.mms_recent_normal, R.drawable.mms_recent_selected)),
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp).height(12.dp),
         )
         HorizontalPager(pages, modifier = Modifier.fillMaxWidth().height(175.dp)) { page ->
@@ -55,12 +58,15 @@ fun SmartisanMessageAttachments(
                 repeat(3) { row ->
                     Row(Modifier.fillMaxWidth().weight(1f)) {
                         repeat(5) { column ->
-                            val emoji = MessageEmoji[page * 15 + row * 5 + column]
+                            val index = row * 5 + column
+                            val emoji = if (page == 0) recentEmoji.getOrNull(index) else MessageEmoji[(page - 1) * 15 + index]
                             Box(
-                                Modifier.weight(1f).fillMaxSize().smartisanClickable { onEmoji(emoji) },
+                                Modifier.weight(1f).fillMaxSize().then(
+                                    if (emoji == null) Modifier else Modifier.smartisanClickable { onEmoji(emoji) },
+                                ),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                SmartisanText(emoji, fontSize = 27.sp)
+                                if (emoji != null) SmartisanText(emoji, fontSize = 27.sp)
                             }
                         }
                     }

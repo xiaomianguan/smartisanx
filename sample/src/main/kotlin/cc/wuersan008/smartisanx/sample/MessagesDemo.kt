@@ -34,6 +34,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachments
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachmentPreview
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
+import cc.wuersan008.smartisanx.ui.input.SmartisanMessageRecipients
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
@@ -49,11 +50,27 @@ import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
 @Composable
 internal fun MessagesDemo(onBack: () -> Unit) {
     var openThread by rememberSaveable { mutableStateOf<String?>(null) }
+    var composing by rememberSaveable { mutableStateOf(false) }
+    var recentEmoji by rememberSaveable(stateSaver = listSaver<List<String>, String>(
+        save = { it }, restore = { it.toList() },
+    )) { mutableStateOf(emptyList()) }
     val thread = openThread
-    if (thread != null) {
-        MessageThreadDemo(thread, onBack = { openThread = null })
+    if (thread != null || composing) {
+        MessageThreadDemo(
+            recipient = thread,
+            recentEmoji = recentEmoji,
+            onEmojiUsed = { emoji -> recentEmoji = (listOf(emoji) + recentEmoji.filterNot { it == emoji }).take(15) },
+            onBack = {
+                openThread = null
+                composing = false
+            },
+        )
     } else {
-        SmartisanScaffold(titleBar = { MessagesTitleBar("短信", onBack) }) {
+        SmartisanScaffold(titleBar = {
+            MessagesTitleBar("短信", onBack, action = SmartisanTitleBarAction(
+                UiR.drawable.mms_compose_selector, "新建短信", onClick = { composing = true },
+            ))
+        }) {
             Column {
                 SmartisanListItem(
                     title = "小锤",
@@ -79,14 +96,26 @@ private const val ExamplePhoto = "示例照片"
 private data class DemoMessage(val text: String, val attachment: String? = null)
 
 @Composable
-private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
+private fun MessageThreadDemo(
+    recipient: String?,
+    recentEmoji: List<String>,
+    onEmojiUsed: (String) -> Unit,
+    onBack: () -> Unit,
+) {
+    var address by rememberSaveable { mutableStateOf("") }
+    var recipients by rememberSaveable(stateSaver = listSaver<List<String>, String>(
+        save = { it }, restore = { it.toList() },
+    )) { mutableStateOf(emptyList()) }
+    val destination = recipient ?: recipients.joinToString("、")
+    val canAddress = recipient != null || recipients.isNotEmpty()
+
     var draft by rememberSaveable { mutableStateOf("") }
     var sent by rememberSaveable(stateSaver = listSaver<List<DemoMessage>, String>(
         save = { messages -> messages.flatMap { listOf(it.text, it.attachment.orEmpty()) } },
         restore = { fields ->
             fields.chunked(2).map { DemoMessage(it.first(), it.getOrNull(1)?.takeIf(String::isNotEmpty)) }
         },
-    )) { mutableStateOf(listOf(DemoMessage("好，我会提前到。"))) }
+    )) { mutableStateOf(if (recipient == null) emptyList() else listOf(DemoMessage("好，我会提前到。"))) }
     var showDelivery by rememberSaveable { mutableStateOf(false) }
     var showAttachments by rememberSaveable { mutableStateOf(false) }
     var menu by rememberSaveable { mutableStateOf<MessageMenu?>(null) }
@@ -98,7 +127,7 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
     val colors = LocalSmartisanColors.current
     val send = {
         val message = DemoMessage(draft.trim(), pendingAttachment)
-        if (message.text.isNotEmpty() || message.attachment != null) {
+        if (canAddress && (message.text.isNotEmpty() || message.attachment != null)) {
             sent = sent + message
             draft = ""
             pendingAttachment = null
@@ -108,11 +137,13 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
         if (showAttachments) showAttachments = false else onBack()
     }
     LaunchedEffect(sent.size, showAttachments) {
-        if (sent.size > 1 || showAttachments) listState.scrollToItem(sent.size)
+        if (sent.isNotEmpty() && (sent.size > 1 || showAttachments || recipient == null)) {
+            listState.scrollToItem(1 + sent.lastIndex)
+        }
     }
     SmartisanScaffold(
         modifier = Modifier.imePadding(),
-        titleBar = { MessagesTitleBar(recipient, onBack) },
+        titleBar = { MessagesTitleBar(recipient ?: "新建短信", onBack) },
         bottomBar = {
             Column(Modifier.fillMaxWidth().background(colors.surface).navigationBarsPadding()) {
                 pendingAttachment?.let { attachment ->
@@ -144,13 +175,18 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
                     backgroundRes = if (colors.isLight) UiR.drawable.mms_compose_inputbox else SmartisanDrawables.MessageFieldBackground,
                     iconEdgePadding = 18.dp,
                     fieldSideSpacing = 3.33.dp,
-                    sendEnabled = draft.isNotBlank() || pendingAttachment != null,
+                    sendEnabled = canAddress && (draft.isNotBlank() || pendingAttachment != null),
                     editorModifier = Modifier.focusRequester(editorFocus),
                     leftIconDescription = if (showAttachments) "键盘" else "更多附件",
                 )
                 if (showAttachments) {
                     SmartisanMessageAttachments(
-                        onEmoji = { if (draft.length + it.length <= 2000) draft += it },
+                        onEmoji = {
+                            if (draft.length + it.length <= 2000) {
+                                draft += it
+                                onEmojiUsed(it)
+                            }
+                        },
                         onCamera = { menu = MessageMenu.Camera },
                         onQuickReply = { menu = MessageMenu.QuickReply },
                         onContact = { menu = MessageMenu.Contact },
@@ -159,6 +195,7 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
                         quickReplyLabel = "快捷回复",
                         contactLabel = "分享联系人",
                         deleteLabel = "删除",
+                        recentEmoji = recentEmoji,
                     )
                 }
             }
@@ -166,12 +203,29 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
     ) {
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize().padding(top = 16.dp)) {
             item {
-                SmartisanMessageTimestamp("今天 14:28")
-                SmartisanMessageBubble(
-                    text = if (recipient == "小锤") "明天下午三点见。" else "大家周六见。",
-                    outgoing = false,
-                    avatar = { SmartisanMessageAvatar(contentDescription = recipient, group = recipient == "周末小组") },
-                )
+                if (recipient == null) {
+                    val addRecipient = {
+                        val candidate = address.trim()
+                        if (candidate.isNotEmpty() && candidate !in recipients) {
+                            recipients = recipients + candidate
+                            address = ""
+                        }
+                    }
+                    SmartisanMessageRecipients(
+                        address, { address = it }, recipients, addRecipient,
+                        onRemove = { recipients = recipients - it },
+                        label = "收件人",
+                        placeholder = "姓名或号码",
+                        addDescription = "添加收件人",
+                    )
+                } else {
+                    SmartisanMessageTimestamp("今天 14:28")
+                    SmartisanMessageBubble(
+                        text = if (recipient == "小锤") "明天下午三点见。" else "大家周六见。",
+                        outgoing = false,
+                        avatar = { SmartisanMessageAvatar(contentDescription = recipient, group = recipient == "周末小组") },
+                    )
+                }
             }
             items(sent) { message ->
                 val attachment = message.attachment
@@ -192,7 +246,7 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
             onDismissRequest = { showDelivery = false },
             onConfirm = { showDelivery = false },
         ) {
-            SmartisanMessageDeliveryRow(recipient, timestamp = "今天 14:28", status = "示例送达")
+            SmartisanMessageDeliveryRow(destination, timestamp = "今天 14:28", status = "示例送达")
         }
     }
     val replyMenu = menu
@@ -225,9 +279,10 @@ private fun MessageThreadDemo(recipient: String, onBack: () -> Unit) {
 }
 
 @Composable
-private fun MessagesTitleBar(title: String, onBack: () -> Unit) {
+private fun MessagesTitleBar(title: String, onBack: () -> Unit, action: SmartisanTitleBarAction? = null) {
     SmartisanTitleBar(
         title = title,
+        action = action,
         navigationIcon = SmartisanTitleBarAction(
             iconRes = SmartisanDrawables.IconBack,
             contentDescription = "返回",
