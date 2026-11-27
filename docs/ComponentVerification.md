@@ -837,3 +837,7 @@ The darwin R2 ran build `RKQ1.201217.002 dev-keys` at 1080 × 2340 with its exis
 The Gallery settings switch and grouped row share a text origin at x = 220 px. The R2 test sent a local demo message with the keyboard open and confirmed that it appeared in the thread and the input cleared. The sample's dark bubbles use flat rounded fills from the palette. The sample uses the library's existing framework composer, including its own horizontal geometry.
 
 The dropdown opened at the sample row and dismissed with Back. A 300 px drag in the refresh demo advanced its counter once. The state-based field displayed an 80 × 80 px clear control with text and focus.
+
+### Revised Gallery home and navigation
+
+On the same R2, a horizontal scan at y = 570 through the light Home page gutter alternated `#F2F2F2` and `#F0F0F0` in 9 px bands. The dark Settings gutter contained `#24272C` and `#24272B`. The expanded Home title occupied x = 60–230, y = 300–400. After scrolling past it, the compact title occupied x = 490–590, y = 151–209. Swiping switched Home to Icons. Tapping the bottom bar opened the color swatches, type specimens, and grouped settings. The Home search action returned to the search field and opened it.

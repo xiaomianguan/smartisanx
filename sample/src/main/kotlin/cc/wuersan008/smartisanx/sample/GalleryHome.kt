@@ -1,35 +1,48 @@
 package cc.wuersan008.smartisanx.sample
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanThemeController
+import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
+import cc.wuersan008.smartisanx.sample.pages.ColorSwatchSection
+import cc.wuersan008.smartisanx.sample.pages.IconGrid
+import cc.wuersan008.smartisanx.sample.pages.TypographySection
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
+import cc.wuersan008.smartisanx.ui.asset.SmartisanIconSet
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.basic.SmartisanText
+import cc.wuersan008.smartisanx.ui.control.SmartisanButton
+import cc.wuersan008.smartisanx.ui.control.SmartisanCheckbox
+import cc.wuersan008.smartisanx.ui.control.SmartisanProgressBar
+import cc.wuersan008.smartisanx.ui.control.SmartisanSwitch
 import cc.wuersan008.smartisanx.ui.control.SmartisanSwitchRow
+import cc.wuersan008.smartisanx.ui.input.SmartisanSearchBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBarItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
@@ -37,95 +50,247 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
+import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarTextAction
+import kotlinx.coroutines.launch
 
-private val galleryTabs = listOf("组件", "整页示例", "设置")
-private val galleryTabIcons = listOf(SamplePage.Control.icon, SamplePage.Layouts.icon, SamplePage.Theme.icon)
-private val galleryExamples = listOf(SamplePage.Layouts, SamplePage.Messages, SamplePage.Clock, SamplePage.Calendar)
+private val galleryTabs = listOf(
+    SmartisanBottomBarItem(label = "首页", iconRes = SamplePage.Layouts.icon),
+    SmartisanBottomBarItem(label = "图标", iconRes = SamplePage.Icon.icon),
+    SmartisanBottomBarItem(label = "色彩", iconRes = SamplePage.Theme.icon),
+    SmartisanBottomBarItem(label = "文字", iconRes = SamplePage.Text.icon),
+    SmartisanBottomBarItem(label = "设置", iconRes = SmartisanDrawables.IconSettings),
+)
 
 @Composable
 internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePage) -> Unit) {
-    var tab by rememberSaveable { mutableIntStateOf(0) }
-    val colors = LocalSmartisanColors.current
-    val typography = LocalSmartisanTypography.current
-    val pages = when (tab) {
-        0 -> SamplePage.entries.filter { it !in galleryExamples && it != SamplePage.About }
-        1 -> galleryExamples
-        else -> emptyList()
+    val pager = rememberPagerState { galleryTabs.size }
+    val scope = rememberCoroutineScope()
+    val home = rememberLazyListState()
+    val icons = rememberLazyListState()
+    val colors = rememberLazyListState()
+    val text = rememberLazyListState()
+    val settings = rememberLazyListState()
+    val lists = listOf(home, icons, colors, text, settings)
+    val current = lists[pager.currentPage]
+    val titleThreshold = with(LocalDensity.current) { 68.dp.roundToPx() }
+    val compactTitle by remember(current, titleThreshold) {
+        derivedStateOf { current.firstVisibleItemIndex > 0 || current.firstVisibleItemScrollOffset >= titleThreshold }
     }
+    var swipeEnabled by rememberSaveable { mutableStateOf(true) }
+    var searchExpanded by rememberSaveable { mutableStateOf(false) }
+
     SmartisanScaffold(
         topBar = {
             SmartisanTitleBar(
-                title = "SmartisanX",
-                trailingContent = if (tab == 2) {
+                title = if (compactTitle) galleryTabs[pager.currentPage].label else "",
+                action = if (pager.currentPage == 0) {
+                    SmartisanTitleBarAction(SmartisanDrawables.IconSearch, "搜索组件", onClick = {
+                        scope.launch {
+                            home.scrollToItem(0)
+                            searchExpanded = true
+                        }
+                    })
+                } else null,
+                trailingContent = if (pager.currentPage == galleryTabs.lastIndex) {
                     { SmartisanTitleBarTextAction("关于", onClick = { onOpen(SamplePage.About) }) }
                 } else null,
             )
         },
         bottomBar = {
             SmartisanBottomBar(
-                items = galleryTabs.mapIndexed { index, label ->
-                    SmartisanBottomBarItem(label = label, iconRes = galleryTabIcons[index])
-                },
-                selectedIndex = tab,
-                onSelected = { tab = it },
+                items = galleryTabs,
+                selectedIndex = pager.currentPage,
+                onSelected = { index -> scope.launch { pager.animateScrollToPage(index) } },
                 tintResourceIcons = true,
             )
         },
     ) { insets ->
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(156.dp),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 16.dp, end = 16.dp,
-                top = insets.calculateTopPadding() + 24.dp,
-                bottom = insets.calculateBottomPadding() + 20.dp,
-            ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                SmartisanText(
-                    text = galleryTabs[tab],
-                    style = typography.title.copy(fontSize = 32.sp),
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-            }
-            if (tab == 2) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SmartisanGroup {
-                        SmartisanSwitchRow(
-                            text = "深色模式",
-                            checked = !colors.isLight,
-                            onCheckedChange = { dark ->
-                                controller.colorSchemeMode = if (dark) SmartisanColorSchemeMode.Dark else SmartisanColorSchemeMode.Light
-                            },
-                            position = SmartisanGroupRowPosition.Top,
-                            leading = { SmartisanIcon(res = SamplePage.Theme.icon, contentDescription = null, size = 24.dp) },
-                        )
-                        SmartisanGroupItem(
-                            position = SmartisanGroupRowPosition.Bottom,
-                            title = "主题与设计变量",
-                            leading = { SmartisanIcon(res = SamplePage.Icon.icon, contentDescription = null, size = 24.dp) },
-                            onClick = { onOpen(SamplePage.Theme) },
-                        )
-                    }
+        HorizontalPager(
+            state = pager,
+            modifier = Modifier.fillMaxSize().smartisanDrawableBackground(SmartisanDrawables.PageBackground),
+            userScrollEnabled = swipeEnabled,
+        ) { index ->
+            LazyColumn(
+                state = lists[index],
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = insets.calculateTopPadding(),
+                    bottom = insets.calculateBottomPadding() + 12.dp,
+                ),
+            ) {
+                item {
+                    SmartisanText(
+                        text = galleryTabs[index].label,
+                        modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 16.dp),
+                        style = LocalSmartisanTypography.current.title.copy(fontSize = 34.sp),
+                    )
                 }
-            }
-            items(pages, key = { it.name }) { page ->
-                Column(
-                    Modifier.fillMaxWidth().heightIn(min = 124.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(colors.surfaceRaised)
-                        .smartisanClickable { onOpen(page) }
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    SmartisanIcon(res = page.icon, contentDescription = null, size = 28.dp, tint = colors.accent)
-                    SmartisanText(page.title, style = typography.body)
-                    SmartisanText(page.subtitle, style = typography.caption, color = colors.textSecondary, maxLines = 2)
+                when (index) {
+                    0 -> homeSections(searchExpanded, { searchExpanded = it }, onOpen)
+                    1 -> {
+                        SmartisanIconSet.groups.forEach { group ->
+                            item {
+                                SampleSectionHeader(group.title)
+                                IconGrid(group.icons.take(8))
+                            }
+                        }
+                        galleryLinks("原版素材", listOf(SamplePage.Icon), onOpen)
+                    }
+                    2 -> {
+                        item { ColorSwatchSection() }
+                        galleryLinks("设计变量", listOf(SamplePage.Theme), onOpen)
+                    }
+                    3 -> {
+                        item { TypographySection() }
+                        galleryLinks("文字示例", listOf(SamplePage.Text), onOpen)
+                    }
+                    else -> settingsSections(controller, swipeEnabled, { swipeEnabled = it }, onOpen)
                 }
             }
         }
     }
+}
+
+private fun LazyListScope.homeSections(
+    searchExpanded: Boolean,
+    onSearchExpandedChange: (Boolean) -> Unit,
+    onOpen: (SamplePage) -> Unit,
+) {
+    item { HomeControls(searchExpanded, onSearchExpandedChange, onOpen) }
+    galleryLinks(
+        "交互示例",
+        listOf(SamplePage.Input, SamplePage.Control, SamplePage.Button, SamplePage.Overlay, SamplePage.ListInteraction),
+        onOpen,
+    )
+    galleryLinks(
+        "布局示例",
+        listOf(SamplePage.Messages, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
+        onOpen,
+    )
+}
+
+@Composable
+private fun HomeControls(
+    searchExpanded: Boolean,
+    onSearchExpandedChange: (Boolean) -> Unit,
+    onOpen: (SamplePage) -> Unit,
+) {
+    var query by rememberSaveable { mutableStateOf("") }
+    var switched by rememberSaveable { mutableStateOf(true) }
+    var checked by rememberSaveable { mutableStateOf(false) }
+    SmartisanSearchBar(
+        query = query,
+        onQueryChange = { query = it },
+        expanded = searchExpanded,
+        onExpandedChange = onSearchExpandedChange,
+        placeholder = "搜索组件",
+        onCancel = {
+            query = ""
+            onSearchExpandedChange(false)
+        },
+        showShadow = false,
+    )
+    if (query.isNotBlank()) {
+        val matches = SamplePage.entries.filter { it.title.contains(query.trim(), ignoreCase = true) }
+        if (matches.isEmpty()) {
+            SampleSectionHeader("没有匹配的组件")
+        } else {
+            GalleryLinks(matches, onOpen)
+        }
+    }
+    SampleSectionHeader("基础控件")
+    SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                SmartisanText("开关", Modifier.weight(1f))
+                SmartisanSwitch(switched, { switched = it })
+            }
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                SmartisanText("复选框", Modifier.weight(1f))
+                SmartisanCheckbox(checked, { checked = it })
+            }
+            SmartisanText("进度")
+            SmartisanProgressBar(if (checked) 1f else if (switched) 0.55f else 0f)
+            SmartisanButton("查看按钮示例", onClick = { onOpen(SamplePage.Button) }, modifier = Modifier.fillMaxWidth())
+        }
+    }
+}
+
+private fun LazyListScope.settingsSections(
+    controller: SmartisanThemeController,
+    swipeEnabled: Boolean,
+    onSwipeChange: (Boolean) -> Unit,
+    onOpen: (SamplePage) -> Unit,
+) {
+    item {
+        SampleSectionHeader("外观")
+        SmartisanGroup {
+            SmartisanSwitchRow(
+                text = "深色模式",
+                checked = !LocalSmartisanColors.current.isLight,
+                onCheckedChange = {
+                    controller.colorSchemeMode = if (it) SmartisanColorSchemeMode.Dark else SmartisanColorSchemeMode.Light
+                },
+                position = SmartisanGroupRowPosition.Top,
+                leading = { GalleryIcon(SamplePage.Theme) },
+            )
+            SmartisanGroupItem(
+                position = SmartisanGroupRowPosition.Bottom,
+                title = SamplePage.Theme.title,
+                leading = { GalleryIcon(SamplePage.Icon) },
+                onClick = { onOpen(SamplePage.Theme) },
+            )
+        }
+    }
+    item {
+        SampleSectionHeader("导航")
+        SmartisanGroup {
+            SmartisanSwitchRow(
+                text = "左右滑动切换页面",
+                checked = swipeEnabled,
+                onCheckedChange = onSwipeChange,
+                position = SmartisanGroupRowPosition.Single,
+                leading = { GalleryIcon(SamplePage.Layout) },
+            )
+        }
+    }
+    galleryLinks("应用", listOf(SamplePage.About), onOpen)
+}
+
+private fun LazyListScope.galleryLinks(title: String, pages: List<SamplePage>, onOpen: (SamplePage) -> Unit) {
+    item {
+        SampleSectionHeader(title)
+        GalleryLinks(pages, onOpen)
+    }
+}
+
+@Composable
+private fun GalleryLinks(pages: List<SamplePage>, onOpen: (SamplePage) -> Unit) {
+    SmartisanGroup {
+        pages.forEachIndexed { index, page ->
+            val position = when {
+                pages.size == 1 -> SmartisanGroupRowPosition.Single
+                index == 0 -> SmartisanGroupRowPosition.Top
+                index == pages.lastIndex -> SmartisanGroupRowPosition.Bottom
+                else -> SmartisanGroupRowPosition.Middle
+            }
+            SmartisanGroupItem(
+                position = position,
+                title = page.title,
+                summary = page.subtitle,
+                leading = { GalleryIcon(page) },
+                trailing = { SmartisanIcon(res = SmartisanDrawables.ListItemArrow, contentDescription = null) },
+                onClick = { onOpen(page) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun GalleryIcon(page: SamplePage) {
+    SmartisanIcon(res = page.icon, contentDescription = null, size = page.iconSize)
 }

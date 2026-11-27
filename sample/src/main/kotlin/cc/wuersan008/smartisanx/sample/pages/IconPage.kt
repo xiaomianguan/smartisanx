@@ -70,7 +70,7 @@ fun IconPage(onBack: () -> Unit) {
 }
 
 @Composable
-private fun IconGrid(icons: List<SmartisanIconEntry>) {
+internal fun IconGrid(icons: List<SmartisanIconEntry>) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
     SmartisanGroup(position = SmartisanGroupRowPosition.Single) {
