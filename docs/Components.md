@@ -1359,3 +1359,5 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 `SmartisanMessageRecipients` provides the new-message recipient editor with removable chips and the stock add-contact icon. Pass recent selections to `SmartisanMessageAttachments.recentEmoji` to populate the history page.
 
 `SmartisanSearchSuggestion` renders the stock Quick Search app result row, with a 30dp icon inside a 60dp slot, optional subtitle and detail, and the original light pressed artwork. Gallery search uses this row.
+
+`SmartisanMessageQuickReplyRow` uses the stock Quick Reply card and add/edit glyphs. The sample opens a separate page with selection, creation, and editing.

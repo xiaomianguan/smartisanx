@@ -31,17 +31,20 @@ import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.ui.R as UiR
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
+import cc.wuersan008.smartisanx.ui.input.SmartisanClearableField
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachments
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachmentPreview
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageRecipients
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListItem
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageAvatar
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageBubble
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageDeliveryRow
+import cc.wuersan008.smartisanx.ui.list.SmartisanMessageQuickReplyRow
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageTimestamp
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuDialog
@@ -120,6 +123,9 @@ private fun MessageThreadDemo(
     var showAttachments by rememberSaveable { mutableStateOf(false) }
     var menu by rememberSaveable { mutableStateOf<MessageMenu?>(null) }
     var pendingAttachment by rememberSaveable { mutableStateOf<String?>(null) }
+    var replies by rememberSaveable(stateSaver = listSaver<List<String>, String>(
+        save = { it }, restore = { it.toList() },
+    )) { mutableStateOf(listOf("我稍后给你打电话。", "现在不方便接听，有什么事？", "我正在路上。")) }
     val focus = LocalFocusManager.current
     val editorFocus = remember { FocusRequester() }
     val keyboard = LocalSoftwareKeyboardController.current
@@ -134,7 +140,23 @@ private fun MessageThreadDemo(
         }
     }
     BackHandler {
-        if (showAttachments) showAttachments = false else onBack()
+        when {
+            menu == MessageMenu.QuickReply -> menu = null
+            showAttachments -> showAttachments = false
+            else -> onBack()
+        }
+    }
+    if (menu == MessageMenu.QuickReply) {
+        QuickRepliesDemo(
+            replies = replies,
+            onRepliesChange = { replies = it },
+            onSelect = {
+                draft = it
+                menu = null
+            },
+            onBack = { menu = null },
+        )
+        return
     }
     LaunchedEffect(sent.size, showAttachments) {
         if (sent.isNotEmpty() && (sent.size > 1 || showAttachments || recipient == null)) {
@@ -250,7 +272,7 @@ private fun MessageThreadDemo(
         }
     }
     val replyMenu = menu
-    if (replyMenu != null) {
+    if (replyMenu != null && replyMenu != MessageMenu.QuickReply) {
         val options = when (replyMenu) {
             MessageMenu.Camera -> listOf("添加示例照片")
             MessageMenu.QuickReply -> listOf("现在不方便接听。", "我稍后回复你。", "我马上到。")
@@ -301,4 +323,69 @@ private fun DemoAttachment(label: String, onRemove: (() -> Unit)? = null) {
         onRemove = onRemove,
         removeDescription = "移除附件",
     )
+}
+
+
+
+@Composable
+private fun QuickRepliesDemo(
+    replies: List<String>,
+    onRepliesChange: (List<String>) -> Unit,
+    onSelect: (String) -> Unit,
+    onBack: () -> Unit,
+) {
+    var editIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    var text by rememberSaveable { mutableStateOf("") }
+    val editing = editIndex
+    SmartisanScaffold(titleBar = { MessagesTitleBar("编辑", onBack) }) {
+        LazyColumn(Modifier.fillMaxSize()) {
+            item { SmartisanListVerticalGap(height = 15.dp) }
+            items(replies.size) { index ->
+                SmartisanMessageQuickReplyRow(
+                    text = replies[index],
+                    onClick = { onSelect(replies[index]) },
+                    onEdit = {
+                        editIndex = index
+                        text = replies[index]
+                    },
+                    editDescription = "编辑快捷回复",
+                )
+            }
+            item {
+                SmartisanMessageQuickReplyRow(
+                    text = "添加快捷回复",
+                    addRow = true,
+                    onClick = {
+                        editIndex = replies.size
+                        text = ""
+                    },
+                )
+            }
+        }
+    }
+    if (editing != null) {
+        SmartisanDialog(
+            title = if (editing < replies.size) "编辑快捷回复" else "添加快捷回复",
+            onDismissRequest = { editIndex = null },
+            confirmEnabled = text.isNotBlank(),
+            onConfirm = {
+                val reply = text.trim()
+                if (reply.isNotEmpty()) {
+                    onRepliesChange(
+                        if (editing < replies.size) replies.mapIndexed { index, value ->
+                            if (index == editing) reply else value
+                        } else replies + reply,
+                    )
+                }
+                editIndex = null
+            },
+        ) {
+            SmartisanClearableField(
+                value = text,
+                onValueChange = { text = it },
+                modifier = Modifier.fillMaxWidth().padding(18.dp),
+                placeholder = "快捷回复内容",
+            )
+        }
+    }
 }

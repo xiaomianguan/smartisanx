@@ -871,3 +871,5 @@ New Message uses the stock compose icon and the recipient bar uses the stock add
 ### Global Search result row
 
 The stock Quick Search result for Clock on the R2 had a 75 × 75 px icon and its title started at x = 150 px. The Gallery Clock result starts at x = 150 px and is 150 px high. Tapping it opens the clock demo. The normal and pressed artwork match both the dump APK and the APK installed on the R2.
+
+Quick Reply opens as a separate page. The stock R2 cards had a 165 px row pitch, and the sample rows have the same pitch. Adding a reply made it available in the list, and selecting it returned to the composer with the text filled in.
