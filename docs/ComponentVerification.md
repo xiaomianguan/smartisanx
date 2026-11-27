@@ -867,3 +867,7 @@ On the R2 sample, tapping an emoji filled the composer, staging a sample photo d
 The recording countdown uses three byte-identical 366 × 492 px assets from ScreenRecorderSmartisan. The R2 sample showed 3, 2, and 1 in successive captures and returned to its play row on completion. The timing and transforms were compared with the APK animation code.
 
 New Message uses the stock compose icon and the recipient bar uses the stock add-contact icon. Both controls measured 90 × 90 px on the R2. Adding a recipient produced a removable chip. The emoji panel reported page 2 of 7 on open. After choosing an emoji and swiping to page 1, the chosen emoji appeared in Recents.
+
+### Global Search result row
+
+The stock Quick Search result for Clock on the R2 had a 75 × 75 px icon and its title started at x = 150 px. The Gallery Clock result starts at x = 150 px and is 150 px high. Tapping it opens the clock demo. The normal and pressed artwork match both the dump APK and the APK installed on the R2.

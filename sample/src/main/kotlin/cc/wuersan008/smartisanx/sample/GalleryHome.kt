@@ -47,6 +47,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
+import cc.wuersan008.smartisanx.ui.list.SmartisanSearchSuggestion
 import kotlinx.coroutines.launch
 
 private val galleryTabs = listOf(
@@ -153,11 +154,21 @@ private fun HomeControls(onOpen: (SamplePage) -> Unit) {
         showShadow = false,
     )
     if (query.isNotBlank()) {
-        val matches = SamplePage.entries.filter { it.title.contains(query.trim(), ignoreCase = true) }
+        val term = query.trim()
+        val matches = SamplePage.entries.filter {
+            it.title.contains(term, ignoreCase = true) || it.name.contains(term, ignoreCase = true)
+        }
         if (matches.isEmpty()) {
             SampleSectionHeader("没有匹配的组件")
         } else {
-            GalleryLinks(matches, onOpen)
+            matches.forEach { page ->
+                SmartisanSearchSuggestion(
+                    title = page.title,
+                    subtitle = page.subtitle,
+                    icon = { GalleryIcon(page) },
+                    onClick = { onOpen(page) },
+                )
+            }
         }
     }
     SampleSectionHeader("基础控件")
