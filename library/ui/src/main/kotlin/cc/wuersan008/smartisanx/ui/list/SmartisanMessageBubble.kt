@@ -2,6 +2,7 @@ package cc.wuersan008.smartisanx.ui.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,8 @@ fun SmartisanMessageBubble(
     outgoing: Boolean,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    avatar: (@Composable () -> Unit)? = null,
+    attachment: (@Composable () -> Unit)? = null,
 ) {
     val colors = LocalSmartisanColors.current
     val interaction = rememberSmartisanInteractionSource()
@@ -58,34 +61,47 @@ fun SmartisanMessageBubble(
         role = null,
         onClick = onClick,
     )
-    Box(
-        modifier.fillMaxWidth().padding(
-            start = if (outgoing) 16.dp else 59.33.dp,
-            end = if (outgoing) 59.33.dp else 16.dp,
-            bottom = 11.25.dp,
-        ),
-        contentAlignment = if (outgoing) Alignment.CenterEnd else Alignment.CenterStart,
-    ) {
+    Box(modifier.fillMaxWidth()) {
+        if (avatar != null) {
+            Box(
+                Modifier.align(if (outgoing) Alignment.TopEnd else Alignment.TopStart)
+                    .padding(start = 12.dp, end = 12.dp, top = 2.dp),
+            ) { avatar() }
+        }
         Box(
-            Modifier.widthIn(max = bubbleWidth).heightIn(min = 50.33.dp)
-                .then(decoration).then(click)
-                .padding(
-                    start = if (outgoing) 18.33.dp else 25.67.dp,
-                    end = if (outgoing) 25.67.dp else 18.33.dp,
-                    top = 14.dp,
-                    bottom = 14.dp,
-                ),
-            contentAlignment = Alignment.CenterStart,
+            Modifier.fillMaxWidth().padding(
+                start = if (outgoing) 16.dp else 59.33.dp,
+                end = if (outgoing) 59.33.dp else 16.dp,
+                bottom = 11.25.dp,
+            ),
+            contentAlignment = if (outgoing) Alignment.CenterEnd else Alignment.CenterStart,
         ) {
-            SmartisanText(
-                text = text,
-                style = LocalSmartisanTypography.current.body.copy(fontSize = 15.sp),
-                color = when {
-                    !colors.isLight -> colors.textPrimary
-                    outgoing -> Color(0xFF3C5D9A)
-                    else -> Color(0xFF666666)
-                },
-            )
+            Box(
+                Modifier.widthIn(max = bubbleWidth).heightIn(min = 50.33.dp)
+                    .then(decoration).then(click)
+                    .padding(
+                        start = if (outgoing) 18.33.dp else 25.67.dp,
+                        end = if (outgoing) 25.67.dp else 18.33.dp,
+                        top = 14.dp,
+                        bottom = 14.dp,
+                    ),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                Column {
+                    attachment?.invoke()
+                    if (text.isNotEmpty()) {
+                        SmartisanText(
+                            text = text,
+                            style = LocalSmartisanTypography.current.body.copy(fontSize = 15.sp),
+                            color = when {
+                                !colors.isLight -> colors.textPrimary
+                                outgoing -> Color(0xFF3C5D9A)
+                                else -> Color(0xFF666666)
+                            },
+                        )
+                    }
+                }
+            }
         }
     }
 }

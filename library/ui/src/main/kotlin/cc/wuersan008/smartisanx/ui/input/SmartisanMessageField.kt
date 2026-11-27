@@ -19,9 +19,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.interaction.smartisanClickable
+import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
+import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSource
+import androidx.compose.runtime.getValue
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
@@ -112,6 +116,11 @@ fun SmartisanMessageField(
             imeAction = ImeAction.Send,
         ),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    sendEnabled: Boolean = value.isNotEmpty(),
+    editorModifier: Modifier = Modifier,
+    leftIconDescription: String = "添加",
+    iconEdgePadding: Dp = SmartisanDimens.TitleBarHorizontalMargin,
+    fieldSideSpacing: Dp? = null,
 ) {
     val colors = LocalSmartisanColors.current
     val density = LocalDensity.current
@@ -123,11 +132,11 @@ fun SmartisanMessageField(
             rememberSmartisanDrawablePainter(SmartisanDrawables.BottomBarShadowPlain)
                 .intrinsicSize.height.toDp()
         }
-    val canSend = enabled && value.isNotEmpty()
+    val canSend = enabled && sendEnabled
     // 原版 adjustMessageFiledLayoutParams：有左图标时输入区左边距 title_bar_margin_view（12dp），
     // 没有时退回 bar_margin_edge（6dp）。
     val fieldStartMargin =
-        if (leftIconRes != null) {
+        fieldSideSpacing ?: if (leftIconRes != null) {
             SmartisanDimens.ComboTitleCenterMargin
         } else {
             SmartisanDimens.TitleBarHorizontalMargin
@@ -166,20 +175,23 @@ fun SmartisanMessageField(
         ) {
             if (leftIconRes != null) {
                 val leftClick = onLeftIconClick
+                val interaction = rememberSmartisanInteractionSource()
+                val pressed by interaction.collectSmartisanPressedAsState()
                 SmartisanIcon(
                     res = leftIconRes,
-                    contentDescription = "添加",
+                    contentDescription = leftIconDescription,
                     modifier =
                         Modifier
-                            .padding(start = SmartisanDimens.TitleBarHorizontalMargin)
+                            .padding(start = iconEdgePadding)
                             .then(
                                 if (leftClick != null) {
-                                    Modifier.smartisanClickable(enabled = enabled, onClick = leftClick)
+                                    Modifier.smartisanClickable(interactionSource = interaction, enabled = enabled, onClick = leftClick)
                                 } else {
                                     Modifier
                                 },
                             ),
                     enabled = enabled,
+                    pressed = pressed,
                     size = SmartisanDimens.IconSize,
                 )
             }
@@ -187,7 +199,7 @@ fun SmartisanMessageField(
                 modifier =
                     Modifier
                         .weight(1f)
-                        .padding(start = fieldStartMargin, end = SmartisanDimens.ComboTitleCenterMargin)
+                        .padding(start = fieldStartMargin, end = fieldSideSpacing ?: SmartisanDimens.ComboTitleCenterMargin)
                         .padding(vertical = SmartisanDimens.MessageFieldFieldGap)
                         .heightIn(min = fieldHeight)
                         .smartisanDrawableBackground(backgroundRes),
@@ -196,7 +208,7 @@ fun SmartisanMessageField(
                 BasicTextField(
                     value = value,
                     onValueChange = { if (it.length <= maxLength) onValueChange(it) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = editorModifier.fillMaxWidth(),
                     enabled = enabled,
                     textStyle = textStyle.copy(color = colors.textPrimary),
                     cursorBrush = SolidColor(colors.accent),
@@ -245,17 +257,20 @@ fun SmartisanMessageField(
                     )
                 }
             }
+            val sendInteraction = rememberSmartisanInteractionSource()
+            val sendPressed by sendInteraction.collectSmartisanPressedAsState()
             SmartisanIcon(
                 res = sendIconRes,
                 contentDescription = "发送",
                 modifier =
                     Modifier
                         .padding(
-                            start = SmartisanDimens.ComboTitleCenterMargin,
-                            end = SmartisanDimens.TitleBarHorizontalMargin,
+                            start = if (fieldSideSpacing == null) SmartisanDimens.ComboTitleCenterMargin else 0.dp,
+                            end = iconEdgePadding,
                         )
-                        .smartisanClickable(enabled = canSend) { onSend() },
+                        .smartisanClickable(interactionSource = sendInteraction, enabled = canSend) { onSend() },
                 enabled = canSend,
+                pressed = sendPressed,
                 size = SmartisanDimens.IconSize,
             )
         }

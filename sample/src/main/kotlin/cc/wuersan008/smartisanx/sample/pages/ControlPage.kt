@@ -1,5 +1,8 @@
 package cc.wuersan008.smartisanx.sample.pages
 
+import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
+import cc.wuersan008.smartisanx.ui.control.SmartisanRecordingCountdown
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -143,6 +146,9 @@ fun ControlPage(onBack: () -> Unit) {
         SampleSectionHeader("环形进度（CircleProgressView）")
         CircleProgressSection()
 
+        SampleSectionHeader("录屏倒计时")
+        RecordingCountdownSection()
+
         SampleSectionHeader("单选对勾（SelectionMark）")
         SelectionMarkSection()
 
@@ -275,6 +281,24 @@ private fun SelectionMarkSection() {
                 SmartisanRadioButton(selected = selected == index, onClick = { selected = index })
             }
             if (index != 2) SmartisanRowDivider()
+        }
+    }
+}
+
+
+@Composable
+private fun RecordingCountdownSection() {
+    var running by remember { mutableStateOf(false) }
+    SmartisanGroup {
+        SmartisanGroupItem(
+            position = SmartisanGroupRowPosition.Single,
+            title = if (running) "停止倒计时" else "播放倒计时",
+            onClick = { running = !running },
+        )
+        if (running) {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                SmartisanRecordingCountdown(onFinished = { running = false })
+            }
         }
     }
 }

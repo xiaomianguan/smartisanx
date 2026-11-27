@@ -857,3 +857,11 @@ The stock Settings APK's `about_logo.9.png` and the R2 About phone screenshot bo
 The Cleaner progress demo was exercised at 0%, 50%, and 94% on the R2. The three layer PNGs are byte-identical to those in the stock APK. The demo supplies controlled progress to the dial. The stock cleaning service was outside the verification scope.
 
 The Notes sample thumbnails measured 264 × 264 px inside 270 × 270 px cells, with a 53 × 53 px preview target at the top end. Selection and the separate preview action were exercised. The stock Notes insertion action opened Gallery on this R2, so the internal Notes picker geometry was checked against the APK layout and code.
+
+### Messages inbox, avatars, and attachment panel
+
+The stock R2 Messages thread shows 95 × 95 px portraits inside 108 px avatar frames. The sample uses the stock frame and single/group fallback art, with portrait bounds of 95 × 95 px on both sides of the thread. The closed composer More button measured 90 × 90 px at x = 45–135 in stock and sample. The stock attachment tool strip was 133 px high, with Camera, Quick Reply, Share Contact, and Delete. The sample uses the stock tool icons and six fixed emoji pages.
+
+On the R2 sample, tapping an emoji filled the composer, staging a sample photo displayed a 220 px-high preview and a remove action, and Send moved the photo and emoji into the thread. The sent bubble opened the delivery report. The keyboard button restored the IME. The sample uses local fixtures for photos, contacts, and delivery.
+
+The recording countdown uses three byte-identical 366 × 492 px assets from ScreenRecorderSmartisan. The R2 sample showed 3, 2, and 1 in successive captures and returned to its play row on completion. The timing and transforms were compared with the APK animation code.
