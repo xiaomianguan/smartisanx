@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.ui.list.SmartisanPhotoSelectionTile
+import cc.wuersan008.smartisanx.ui.list.SmartisanPhotoPreviewStrip
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
 
 @Composable
@@ -39,6 +40,12 @@ internal fun NotesPhotosDemo(onBack: () -> Unit) {
                 )
             }
         }
+        SampleSectionHeader("分享缩略图")
+        SmartisanPhotoPreviewStrip(
+            photos = demoColors.map(::ColorPainter),
+            onPhotoClick = { preview = it },
+            photoDescription = { "分享缩略图 ${it + 1}" },
+        )
     }
     if (preview in demoColors.indices) {
         PhotoTilePreview(preview, demoColors[preview], onDismiss = { preview = -1 })

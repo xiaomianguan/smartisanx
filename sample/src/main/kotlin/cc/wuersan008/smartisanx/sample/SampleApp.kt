@@ -83,6 +83,7 @@ fun SampleApp(gallery: Boolean = false) {
                     SamplePage.Messages -> MessagesDemo(back)
                     SamplePage.Cleaner -> CleanerDemo(back)
                     SamplePage.NotesPhotos -> NotesPhotosDemo(back)
+                    SamplePage.RecorderWaveform -> RecorderWaveformDemo(back)
                     SamplePage.About -> AboutPage(onBack = back)
                     null -> Unit
                 }

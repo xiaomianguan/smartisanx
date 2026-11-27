@@ -22,7 +22,7 @@ import cc.wuersan008.smartisanx.core.scroll.SmartisanOverscrollFactory
  * 原版 Smartisan OS 只有浅色一套设计，没有深色模式。
  *
  * [System] 与 [Dark] 属于**实验性**特性：深色方案由三个复刻项目新增，
- * 而且图形资源里约 4.4%（7976 个 drawable 中的 350 个）带夜间变体，
+ * 而且图形资源里约 4.4%（7980 个 drawable 中的 350 个）带夜间变体，
  * 颜色状态列表则完全没有夜间版本，因此深色下的还原度不如浅色。
  * 由开发者自行决定是否启用，并在自己的产品里向用户说明。
  */

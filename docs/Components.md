@@ -1361,3 +1361,9 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 `SmartisanSearchSuggestion` renders the stock Quick Search app result row, with a 30dp icon inside a 60dp slot, optional subtitle and detail, and the original light pressed artwork. Gallery search uses this row.
 
 `SmartisanMessageQuickReplyRow` uses the stock Quick Reply card and add/edit glyphs. The sample opens a separate page with selection, creation, and editing.
+
+`SmartisanRecorderWaveform(samples, positionMillis, modifier, waveformColor)` displays Sound Recorder playback peaks. Pass one unsigned amplitude byte per 20ms; the waveform scrolls under the original fixed playhead.
+
+`SmartisanRecorderTimeline(positionMillis, modifier)` uses the original scale bitmap and 50dp one-second spacing. Pass the same playback position as the waveform to keep ticks aligned.
+
+`SmartisanPhotoPreviewStrip` is the horizontal Notes share thumbnail strip. It uses the original 56 × 57dp frame with a 5dp image inset and 10dp gap.

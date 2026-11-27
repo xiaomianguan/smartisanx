@@ -130,7 +130,7 @@ private fun LazyListScope.homeSections(onOpen: (SamplePage) -> Unit) {
     )
     galleryLinks(
         "布局示例",
-        listOf(SamplePage.Messages, SamplePage.Cleaner, SamplePage.NotesPhotos, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
+        listOf(SamplePage.Messages, SamplePage.Cleaner, SamplePage.NotesPhotos, SamplePage.RecorderWaveform, SamplePage.Layouts, SamplePage.Layout, SamplePage.Clock, SamplePage.Calendar),
         onOpen,
     )
 }

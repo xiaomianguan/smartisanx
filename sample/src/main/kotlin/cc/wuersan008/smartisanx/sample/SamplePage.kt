@@ -147,6 +147,11 @@ enum class SamplePage(
         subtitle = "原版照片选择标记与独立预览操作",
         icon = R.drawable.setting_item_icon_wallpaper,
     ),
+    RecorderWaveform(
+        title = "录音波形",
+        subtitle = "原版录音机波形与播放指示线",
+        icon = R.drawable.setting_item_icon_sound,
+    ),
     About(
         title = "关于",
         subtitle = "组件库与示例应用的信息，版式照抄坚果 R2 设置页",
