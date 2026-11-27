@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,6 +48,7 @@ import cc.wuersan008.smartisanx.ui.list.SmartisanMessageBubble
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageDeliveryRow
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageQuickReplyRow
 import cc.wuersan008.smartisanx.ui.list.SmartisanMessageTimestamp
+import cc.wuersan008.smartisanx.ui.list.SmartisanReorderableColumn
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuDialog
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanMenuItem
@@ -337,30 +340,62 @@ private fun QuickRepliesDemo(
     var editIndex by rememberSaveable { mutableStateOf<Int?>(null) }
     var text by rememberSaveable { mutableStateOf("") }
     val editing = editIndex
-    SmartisanScaffold(titleBar = { MessagesTitleBar("编辑", onBack) }) {
-        LazyColumn(Modifier.fillMaxSize()) {
-            item { SmartisanListVerticalGap(height = 15.dp) }
-            items(replies.size) { index ->
+    var editMode by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = editMode) { editMode = false }
+    SmartisanScaffold(
+        backgroundRes = UiR.drawable.conversation_listview_background_tilemode.takeIf {
+            LocalSmartisanColors.current.isLight
+        },
+        titleBar = {
+            SmartisanTitleBar(
+                title = "编辑",
+                backgroundRes = null,
+                navigationIcon = if (editMode) null else SmartisanTitleBarAction(
+                    SmartisanDrawables.IconCancel, "返回", onBack,
+                ),
+                action = SmartisanTitleBarAction(
+                    if (editMode) SmartisanDrawables.IconConfirm else UiR.drawable.standard_icon_edit_selector,
+                    if (editMode) "完成" else "编辑",
+                    { editMode = !editMode },
+                ),
+            )
+        },
+    ) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            SmartisanListVerticalGap(height = 15.dp)
+            SmartisanReorderableColumn(
+                items = replies,
+                onMove = { from, to ->
+                    onRepliesChange(replies.toMutableList().apply { add(to, removeAt(from)) })
+                },
+                dragEnabled = editMode,
+                dragHandleWidth = 42.dp,
+            ) { index, reply, _ ->
                 SmartisanMessageQuickReplyRow(
-                    text = replies[index],
-                    onClick = { onSelect(replies[index]) },
-                    onEdit = {
+                    text = reply,
+                    onClick = { onSelect(reply) },
+                    enabled = !editMode,
+                    onEdit = if (editMode) ({
                         editIndex = index
-                        text = replies[index]
-                    },
+                        text = reply
+                    }) else null,
                     editDescription = "编辑快捷回复",
+                    onRemove = if (editMode) ({
+                        onRepliesChange(replies.toMutableList().apply { removeAt(index) })
+                    }) else null,
+                    removeDescription = "删除快捷回复",
+                    reorderDescription = if (editMode) "拖动排序" else null,
                 )
             }
-            item {
-                SmartisanMessageQuickReplyRow(
-                    text = "添加快捷回复",
-                    addRow = true,
-                    onClick = {
-                        editIndex = replies.size
-                        text = ""
-                    },
-                )
-            }
+            SmartisanMessageQuickReplyRow(
+                text = "添加快捷回复",
+                addRow = true,
+                enabled = !editMode,
+                onClick = {
+                    editIndex = replies.size
+                    text = ""
+                },
+            )
         }
     }
     if (editing != null) {

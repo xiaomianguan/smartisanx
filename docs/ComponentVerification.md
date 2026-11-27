@@ -872,7 +872,7 @@ New Message uses the stock compose icon and the recipient bar uses the stock add
 
 The stock Quick Search result for Clock on the R2 had a 75 × 75 px icon and its title started at x = 150 px. The Gallery Clock result starts at x = 150 px and is 150 px high. Tapping it opens the clock demo. The normal and pressed artwork match both the dump APK and the APK installed on the R2.
 
-Quick Reply opens as a separate page. The stock R2 cards had a 165 px row pitch, and the sample rows have the same pitch. Adding a reply made it available in the list, and selecting it returned to the composer with the text filled in.
+R2 (400 dpi) side-by-side verification: stock and sample rows start at y = 278 and repeat every 165 px. The first card’s content bounds are x = 30–1050 and y = 297–419. The white fill spans x = 30–1049 in both screenshots. On its centerline it spans y = 291–424 in stock and y = 291–423 in the sample. The edit pencil and grip occupy 75 × 120 px at x = 855 and 960, respectively, with the same y = 298 top edge. The add label is centered at x = 540. The stock and sample fallback portraits are clipped to 95 px circles within 108 px frames. The corners outside the avatar circle show the surrounding page in both screenshots. Device checks covered entering and leaving edit mode, opening the pencil editor, removing a reply, reordering with the handle, and inserting a reply into the composer.
 
 ### Recorder playback and Notes share strip
 

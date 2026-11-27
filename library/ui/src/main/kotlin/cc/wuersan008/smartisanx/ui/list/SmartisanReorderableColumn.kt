@@ -2,6 +2,8 @@ package cc.wuersan008.smartisanx.ui.list
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,14 +12,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.zIndex
-import kotlin.math.roundToInt
 import cc.wuersan008.smartisanx.core.anim.SmartisanMotion
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
@@ -39,10 +44,13 @@ fun <T> SmartisanReorderableColumn(
     dragEnabled: Boolean = true,
     onDragIndexChange: (Int?) -> Unit = {},
     @DrawableRes dragBackgroundRes: Int? = SmartisanDrawables.ListDragBackground,
+    dragHandleWidth: Dp? = null,
     content: @Composable (index: Int, item: T, dragging: Boolean) -> Unit,
 ) {
+    val layoutDirection = LocalLayoutDirection.current
+    val move by rememberUpdatedState(onMove)
+    val notifyDrag by rememberUpdatedState(onDragIndexChange)
     // 只在手势回调里读取，不需要触发重组，因此用普通 Map 即可。
-    val bounds = remember { HashMap<Int, IntRange>() }
     val heights = remember { HashMap<Int, Int>() }
     var draggingIndex by remember { mutableIntStateOf(-1) }
     var targetIndex by remember { mutableIntStateOf(-1) }
@@ -52,50 +60,80 @@ fun <T> SmartisanReorderableColumn(
         draggingIndex = -1
         targetIndex = -1
         dragDelta = 0f
-        onDragIndexChange(null)
+        notifyDrag(null)
     }
 
     Column(
         modifier =
-            modifier.pointerInput(items, dragEnabled) {
+            modifier.pointerInput(items, dragEnabled, dragHandleWidth, layoutDirection) {
                 if (!dragEnabled) return@pointerInput
-                detectDragGesturesAfterLongPress(
-                    onDragStart = { offset ->
-                        val index =
-                            bounds.entries
-                                .firstOrNull { offset.y >= it.value.first && offset.y <= it.value.last }
-                                ?.key
-                        if (index != null) {
-                            draggingIndex = index
-                            targetIndex = index
-                            dragDelta = 0f
-                            onDragIndexChange(index)
-                        }
-                    },
-                    onDrag = { change, amount ->
-                        if (draggingIndex >= 0) {
-                            dragDelta += amount.y
-                            change.consume()
-                            val range = bounds[draggingIndex]
-                            if (range != null) {
-                                val center = (range.first + range.last) / 2f + dragDelta
-                                val hit =
-                                    bounds.entries
-                                        .filter { it.key != draggingIndex }
-                                        .firstOrNull { center >= it.value.first && center <= it.value.last }
-                                        ?.key
-                                targetIndex = hit ?: draggingIndex
+                fun indexAt(y: Float): Int? {
+                    var bottom = 0
+                    return items.indices.firstOrNull { index ->
+                        val top = bottom
+                        bottom += heights[index] ?: 0
+                        y >= top && y < bottom
+                    }
+                }
+
+                fun startDrag(index: Int) {
+                    draggingIndex = index
+                    targetIndex = index
+                    dragDelta = 0f
+                    notifyDrag(index)
+                }
+
+                fun updateDrag(amount: Float) {
+                    dragDelta += amount
+                    val top = (0 until draggingIndex).sumOf { heights[it] ?: 0 }
+                    val center = top + (heights[draggingIndex] ?: 0) / 2f + dragDelta
+                    targetIndex = indexAt(center) ?: if (center < 0f) 0 else items.lastIndex
+                }
+
+                fun finishDrag() {
+                    if (draggingIndex >= 0 && targetIndex >= 0 && targetIndex != draggingIndex) {
+                        move(draggingIndex, targetIndex)
+                    }
+                    resetDrag()
+                }
+
+                if (dragHandleWidth == null) {
+                    detectDragGesturesAfterLongPress(
+                        onDragStart = { offset -> indexAt(offset.y)?.let(::startDrag) },
+                        onDrag = { change, amount ->
+                            if (draggingIndex >= 0) {
+                                change.consume()
+                                updateDrag(amount.y)
                             }
+                        },
+                        onDragEnd = ::finishDrag,
+                        onDragCancel = ::resetDrag,
+                    )
+                } else {
+                    val handlePx = dragHandleWidth.toPx()
+                    awaitEachGesture {
+                        val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                        val distanceFromEnd = if (layoutDirection == LayoutDirection.Ltr) {
+                            size.width - down.position.x
+                        } else {
+                            down.position.x
                         }
-                    },
-                    onDragEnd = {
-                        if (draggingIndex >= 0 && targetIndex >= 0 && targetIndex != draggingIndex) {
-                            onMove(draggingIndex, targetIndex)
+                        val index = indexAt(down.position.y)
+                        if (index != null && distanceFromEnd <= handlePx) {
+                            down.consume()
+                            startDrag(index)
+                            var released = false
+                            while (!released) {
+                                val change = awaitPointerEvent(PointerEventPass.Initial)
+                                    .changes.firstOrNull { it.id == down.id } ?: break
+                                released = !change.pressed
+                                if (!released) updateDrag(change.position.y - change.previousPosition.y)
+                                change.consume()
+                            }
+                            if (released) finishDrag() else resetDrag()
                         }
-                        resetDrag()
-                    },
-                    onDragCancel = { resetDrag() },
-                )
+                    }
+                }
             },
     ) {
         items.forEachIndexed { index, item ->
@@ -125,14 +163,10 @@ fun <T> SmartisanReorderableColumn(
                                 Modifier
                             },
                         )
+                        .onSizeChanged { heights[index] = it.height }
                         .graphicsLayer {
                             translationY = if (isDragging) dragDelta else animatedShift
                             shadowElevation = if (isDragging) 8f else 0f
-                        }
-                        .onGloballyPositioned { coordinates ->
-                            val top = coordinates.positionInParent().y.roundToInt()
-                            bounds[index] = top..(top + coordinates.size.height)
-                            heights[index] = coordinates.size.height
                         },
             ) {
                 content(index, item, isDragging)

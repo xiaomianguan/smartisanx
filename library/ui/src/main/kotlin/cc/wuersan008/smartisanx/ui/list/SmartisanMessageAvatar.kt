@@ -27,6 +27,7 @@ fun SmartisanMessageAvatar(
             SmartisanIcon(
                 res = if (group) R.drawable.mms_group_contacts_picture else R.drawable.mms_contact_picture,
                 contentDescription = contentDescription,
+                modifier = Modifier.clip(CircleShape),
                 size = 38.dp,
             )
         } else {

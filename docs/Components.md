@@ -1010,6 +1010,8 @@ Notes:
     items: List<T>, onMove: (from: Int, to: Int) -> Unit,
     modifier: Modifier = Modifier, dragEnabled: Boolean = true,
     onDragIndexChange: (Int?) -> Unit = {},
+    dragBackgroundRes: Int? = SmartisanDrawables.ListDragBackground,
+    dragHandleWidth: Dp? = null,
     content: @Composable (index: Int, item: T, dragging: Boolean) -> Unit,
 )
 
@@ -1360,7 +1362,7 @@ Put `SmartisanDropdownMenu` inside the same Box as its trigger. The parent contr
 
 `SmartisanSearchSuggestion` renders the stock Quick Search app result row, with a 30dp icon inside a 60dp slot, optional subtitle and detail, and the original light pressed artwork. Gallery search uses this row.
 
-`SmartisanMessageQuickReplyRow` uses the stock Quick Reply card and add/edit glyphs. The sample opens a separate page with selection, creation, and editing.
+`SmartisanMessageQuickReplyRow` uses the stock Quick Reply card and glyphs. Set `addRow` for the centered add action. In edit mode, pass `onRemove`, `onEdit`, and `reorderDescription` to show the minus, pencil, and drag grip. The sample disables row selection and the add action during editing, and uses a 42dp end handle in `SmartisanReorderableColumn` for reordering.
 
 `SmartisanRecorderWaveform(samples, positionMillis, modifier, waveformColor)` displays Sound Recorder playback peaks. Pass one unsigned amplitude byte per 20ms; the waveform scrolls under the original fixed playhead.
 
