@@ -347,6 +347,7 @@ framework's `values-sw432dp`), i.e. **2.5px/dp**. All numbers below are uiautoma
 | section header | 75px = 30dp | `ListSectionTitleHeight` 30dp ✅ |
 | in-row hidden actions | first icon 30px = 12dp from the edge, icons 36dp | `HiddenActionSidePadding` 12dp ✅ |
 | bottom tab bar (Contacts) | 135px = 54dp, icons 67px≈26.8dp / centre 75px=30dp | `BottomBarHeight` 54dp, `BottomBarIconSize` 30dp ✅ |
+| bottom tab bar colours (Contacts) | selected label `#656565`, icon `#666666`; unselected label `#999999`, icon `#CCCCCC`; framework `tab_bar_text_color` = `#9A000000` / `#66000000` | selected `textSecondary` (#9A000000), unselected label `textTertiary` (#66000000), unselected icon at half that (#33000000) ✅ |
 | multi-select bottom bar (File Manager) | 120px = 48dp | a different component from the tab bar: the framework's `smartisan_tabswitch_tabbar_height` points at `smartisan_bottom_bar_height` (54dp) |
 | bottom menu dialog | title bar 120px=48dp, buttons 120px=48dp, side margin 45px=18dp, gap 45px=18dp, bottom 60px=24dp | `DialogTitleHeight` 48dp, `DialogButtonHeight` 48dp, `MenuHorizontalMargin` 18dp, `MenuActionGap` 18dp, `MenuButtonBottomMargin` 24dp ✅ |
 | music playback bar | 167px = 66.8dp, artwork 125px = 50dp, transport buttons 120px = 48dp | `MinimumTouchTarget` 48dp ✅ |

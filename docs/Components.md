@@ -789,7 +789,7 @@ class SmartisanTitleBarAction private constructor(
 @Composable fun SmartisanTabRow(tabs: List<String>, selectedIndex: Int, onSelected: (Int) -> Unit, modifier, scrollable: Boolean = false)   // library-original; the original has no counterpart
 
 data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val selectedIcon: ImageVector = icon)
-@Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground, selectedColor, unselectedColor, tintResourceIcons)
+@Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground, selectedColor, unselectedColor, unselectedIconColor, tintResourceIcons)
 // Structure = the original sb_tab_bar.xml: a standalone tab_bar_shadow strip (26.7dp whose last two
 // rows are the dividing line) sits above the 54dp bar itself; do not draw another divider, or the
 // line lands in the middle of the bar.

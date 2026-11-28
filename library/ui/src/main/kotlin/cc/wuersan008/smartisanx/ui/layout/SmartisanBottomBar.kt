@@ -33,6 +33,7 @@ import cc.wuersan008.smartisanx.core.interaction.rememberSmartisanInteractionSou
 import cc.wuersan008.smartisanx.core.interaction.smartisanClick
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.core.theme.SmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
@@ -44,8 +45,8 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 /**
  * 底部标签栏的一项。
  *
- * 对应锤子音乐的可排序底部导航与锤子时钟的四页底部栏：
- * 选中态用一级文字色，未选中态用三级文字色。
+ * 对应锤子音乐的可排序底部导航与锤子时钟的四页底部栏，
+ * 颜色见 [SmartisanBottomBar]。
  *
  * 图标支持两种来源，原版素材优先：
  *
@@ -82,7 +83,14 @@ data class SmartisanBottomBarItem(
  * 那条分界线是**投影素材自己的最后两行**（alpha 12.5%），所以不要再另画一条 divider：
  * 否则线会落到 54dp 栏体中间，看着像栏里多了一道缝。
  *
- * 图标 30dp、文字 10sp；选中项使用一级文字色，按压时轻微缩放。
+ * 图标 30dp、文字 10sp，按压时轻微缩放。
+ *
+ * **颜色**照抄框架 `color/tab_bar_text_color`（`framework-smartisanos-res`）：
+ * 选中 `tab_bar_text_press` = `#9A000000`（即 [SmartisanColors.textSecondary]），
+ * 未选中 `tab_bar_text_normal` = `#66000000`（即 [SmartisanColors.textTertiary]）。
+ * 未选中的图标比文字更浅：原版联系人底栏实测未选中图标 `#CCCCCC`（白底上 `#33000000`），
+ * 所以默认 `unselectedIconColor` 是未选中文字色再减半透明度。
+ * 选中项不用一级文字色、也不用强调色 —— 原版底栏没有蓝色选中态。
  *
  * **系统导航栏**：`includeNavigationBar`（默认 `true`）把导航栏高度作为标签栏自己的
  * 内边距，于是栏底色一直画到屏幕最底下（透明导航栏下也能看到它）。把它当
@@ -99,8 +107,9 @@ fun SmartisanBottomBar(
     includeNavigationBar: Boolean = true,
     showTopDivider: Boolean = true,
     @DrawableRes backgroundRes: Int? = SmartisanDrawables.BottomBarBackground,
-    selectedColor: Color = LocalSmartisanColors.current.textPrimary,
+    selectedColor: Color = LocalSmartisanColors.current.textSecondary,
     unselectedColor: Color = LocalSmartisanColors.current.textTertiary,
+    unselectedIconColor: Color = unselectedColor.copy(alpha = unselectedColor.alpha / 2f),
     tintResourceIcons: Boolean = true,
 ) {
     val colors = LocalSmartisanColors.current
@@ -148,6 +157,7 @@ fun SmartisanBottomBar(
                         item = item,
                         selected = index == selectedIndex,
                         tint = if (index == selectedIndex) selectedColor else unselectedColor,
+                        iconTint = if (index == selectedIndex) selectedColor else unselectedIconColor,
                         tintResourceIcons = tintResourceIcons,
                         modifier = Modifier.weight(1f),
                         onClick = { onSelected(index) },
@@ -163,6 +173,7 @@ private fun SmartisanBottomBarItemView(
     item: SmartisanBottomBarItem,
     selected: Boolean,
     tint: Color,
+    iconTint: Color,
     tintResourceIcons: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
@@ -203,13 +214,13 @@ private fun SmartisanBottomBarItemView(
                     contentDescription = item.label,
                     size = SmartisanDimens.BottomBarIconSize,
                     selected = selected,
-                    tint = if (tintResourceIcons) tint else Color.Unspecified,
+                    tint = if (tintResourceIcons) iconTint else Color.Unspecified,
                 )
             vector != null ->
                 SmartisanIcon(
                     imageVector = vector,
                     contentDescription = item.label,
-                    tint = tint,
+                    tint = iconTint,
                     size = SmartisanDimens.BottomBarIconSize,
                 )
         }
