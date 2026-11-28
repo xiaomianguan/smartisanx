@@ -365,6 +365,10 @@ private fun SmartisanCircleRing(
         }
     val ringPainter = rememberSmartisanDrawablePainter(R.drawable.circle)
     val arcColorArgb = arcColor.toArgb()
+    // 绘制对象只建一次：进度动画每帧都会重画，避免逐帧分配。
+    val paint = remember { Paint(Paint.ANTI_ALIAS_FLAG) }
+    val maskBounds = remember { RectF() }
+    val dstIn = remember { PorterDuffXfermode(PorterDuff.Mode.DST_IN) }
     Canvas(modifier = modifier.size(size)) {
         val width = this.size.width
         val height = this.size.height
@@ -374,14 +378,11 @@ private fun SmartisanCircleRing(
             drawIntoCanvas { canvas ->
                 val native = canvas.nativeCanvas
                 val layer = native.saveLayer(0f, 0f, width, height, null)
-                val paint =
-                    Paint().apply {
-                        isAntiAlias = true
-                        color = arcColorArgb
-                    }
+                paint.color = arcColorArgb
                 native.drawArc(0f, 0f, width, height, -90f, sweepAngle, true, paint)
-                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
-                native.drawBitmap(mask, null, RectF(0f, 0f, width, height), paint)
+                paint.xfermode = dstIn
+                maskBounds.set(0f, 0f, width, height)
+                native.drawBitmap(mask, null, maskBounds, paint)
                 paint.xfermode = null
                 native.restoreToCount(layer)
             }

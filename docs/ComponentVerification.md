@@ -90,8 +90,7 @@ Components verified this way so far:
 | | primary text colour | gray 51 ⇒ `#cc000000` (80% black), matching the original |
 | | summary / disabled | summary gray 153 (40% black), disabled gray 179 (30% black) |
 | `SmartisanGroup` spacing | card → card (bare neighbours) | 14.3dp vs 14.0dp on the R2 Sound page — in the original this is a blank view **between** groups, not padding of the group |
-| | card → section title | 21.4dp (R2 21.6dp) |
-| | section title → card | 7.7dp (R2 7.2dp); the title carries its own spacing, no extra gap needed |
+| | section title | Original R2 Sound & Vibration: `headset_category` sits 14dp below the title bar (same spot as the first card on the Settings home page); the title TextView is 18.4dp with 3.2dp above/below to the card; groups are separated by a 14dp blank View. The library title carries only that 3.2dp; the 14dp before it always comes from `SmartisanListVerticalGap` |
 | `SmartisanSwitchRow` | row height | 59.7dp (white band), divider pitch 60.6dp; R2 reference 59.2dp / 60.0dp (the 6dp top/bottom padding belongs to the text column, not the row) |
 | `SmartisanListSectionTitle` | band | 30.0dp tall, full width (x = 0..1263), text gray 149 (40% black) |
 | `SmartisanListBoardSectionTitle` | band | 40dp white bar + 1px divider, text gray 101 (60% black) |

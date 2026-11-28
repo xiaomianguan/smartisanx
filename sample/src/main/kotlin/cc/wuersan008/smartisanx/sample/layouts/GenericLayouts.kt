@@ -109,6 +109,7 @@ fun FormEditorLayout(onBack: () -> Unit) {
         },
     ) {
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            SmartisanListVerticalGap()
             SmartisanGroup {
                 SmartisanEditorRow(
                     label = "姓名",

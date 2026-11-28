@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -107,13 +108,14 @@ fun SmartisanSnackbar(
 ) {
     // 文案 / 按钮变化时视为一条新提示条，重新开始计时。
     var visible by remember(message, actionText, iconRes) { mutableStateOf(true) }
+    val currentOnDismiss by rememberUpdatedState(onDismiss)
     LaunchedEffect(message, actionText, iconRes, durationMillis) {
         if (durationMillis > 0) {
             delay(durationMillis.toLong())
             visible = false
             // 等淡出动画放完再通知调用方，避免动画被提前打断。
             delay(SmartisanMotion.DurationShort.toLong())
-            onDismiss()
+            currentOnDismiss()
         }
     }
     AnimatedVisibility(

@@ -403,6 +403,7 @@ private fun SmartisanSwitchContent(
     val framePressed = remember(resources, bitmaps.framePressed) { resources.bitmap(bitmaps.framePressed) }
     val knob = remember(resources, bitmaps.knob) { resources.bitmap(bitmaps.knob) }
     val knobPressed = remember(resources, bitmaps.knobPressed) { resources.bitmap(bitmaps.knobPressed) }
+    val layerPaint = remember { Paint() }
     Canvas(
         modifier =
             modifier
@@ -449,7 +450,7 @@ private fun SmartisanSwitchContent(
         // 开启时滑动层贴左（滑块停在轨道右端），关闭时整体左移一个行程。
         val shift = (-SwitchKnobTravel.toPx() * (1f - state.position)).roundToInt()
         // 原版把这几张图叠在同一个离屏层里，轨道底色用 SrcIn 裁进遮罩形状。
-        drawIntoCanvas { canvas -> canvas.saveLayer(Rect(Offset.Zero, size), Paint()) }
+        drawIntoCanvas { canvas -> canvas.saveLayer(Rect(Offset.Zero, size), layerPaint) }
         drawImage(mask, dstOffset = IntOffset(0, top), dstSize = IntSize(bitmapWidth, bitmapHeight))
         drawImage(
             bottom,

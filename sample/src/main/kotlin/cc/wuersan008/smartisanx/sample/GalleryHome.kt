@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanColorSchemeMode
 import cc.wuersan008.smartisanx.core.theme.SmartisanThemeController
-import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.sample.pages.ColorSwatchSection
 import cc.wuersan008.smartisanx.sample.pages.IconGrid
@@ -45,6 +44,7 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanBottomBarItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupItem
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.list.SmartisanSearchSuggestion
@@ -91,7 +91,8 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
                 state = lists[index],
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    top = insets.calculateTopPadding() + SmartisanDimens.ListItemVerticalGap,
+                    // 不加 14dp：每个分组自己以分组留白开头（SampleSectionHeader / SmartisanListVerticalGap）。
+                    top = insets.calculateTopPadding(),
                     bottom = insets.calculateBottomPadding() + 12.dp,
                 ),
             ) {
@@ -107,11 +108,17 @@ internal fun GalleryHome(controller: SmartisanThemeController, onOpen: (SamplePa
                         galleryLinks("原版素材", listOf(SamplePage.Icon), onOpen)
                     }
                     2 -> {
-                        item { ColorSwatchSection() }
+                        item {
+                            SmartisanListVerticalGap()
+                            ColorSwatchSection()
+                        }
                         galleryLinks("设计变量", listOf(SamplePage.Theme), onOpen)
                     }
                     3 -> {
-                        item { TypographySection() }
+                        item {
+                            SmartisanListVerticalGap()
+                            TypographySection()
+                        }
                         galleryLinks("文字示例", listOf(SamplePage.Text), onOpen)
                     }
                     else -> settingsSections(controller, swipeEnabled, { swipeEnabled = it }, onOpen)

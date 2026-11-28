@@ -41,6 +41,9 @@ and [overscrollFactory] is written into Compose's `LocalOverscrollFactory`
 
 `SmartisanColors` merges the semantic colors of the three revival projects; after removing
 duplicates it has 30 entries.
+`SmartisanColors` / `SmartisanTypography` / `SmartisanShapes` / `SmartisanFonts` are data classes:
+to change a few entries use `lightSmartisanColors().copy(accent = ...)`; the theme compares them by
+value, so an equal palette does not recompose the whole tree.
 
 ### Surfaces
 
@@ -287,8 +290,8 @@ In the original the vertical gap is a spacer view inserted between two groups
 (`group_list_item_vertical_gap_layout`), not padding of the group itself — the shadows of the two
 cards (each nine-patch expands 14dp up and down) overlap inside that single spacer. `SmartisanGroup`
 therefore adds no vertical spacing of its own and only keeps the horizontal margin: insert a
-`SmartisanListVerticalGap` between two adjacent groups. No gap is needed around a section title —
-the title carries its own spacing.
+`SmartisanListVerticalGap` between two adjacent groups. Titled groups work the same way: the 14dp gap
+goes before the title, and the title itself only carries 3.2dp.
 
 ### Row height
 

@@ -2,11 +2,14 @@ package cc.wuersan008.smartisanx.ui.layout
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -27,9 +30,13 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  *
  * 对应原版设置页、资料库里的灰色小标题（13.5sp，`textTertiary`）。
  *
- * 标题本身就带原版的上下留白：坚果 R2 声音页实测「卡片下沿 → 标题字顶」约 21.6dp、
- * 「标题字底 → 下一张卡片上沿」约 7.2dp（字号 13.5sp，字面上下各约 2dp 是由字体
- * 行高带来的）。所以标题前后**不再需要** [SmartisanListVerticalGap]。
+ * **标题只带自己的小留白，不带分组间距**，与原版一致：R2 设置「声音与振动」页
+ * （`headset_category`）里，标题 TextView 高 18.4dp，上下各留 3.2dp 就是卡片；
+ * 分组之间、页面顶部的 14dp 一律是那段独立的 `list_item_vertical_gap`
+ * （[SmartisanListVerticalGap] / 列表的 contentPadding）。
+ *
+ * 所以「有标题的分组」和「没标题的分组」排法完全一样：前面都是 14dp 留白，
+ * 有标题时标题框的上沿正好落在无标题卡片上沿的位置（原版实测两者都在标题栏下 14dp）。
  */
 @Composable
 fun SmartisanSectionTitle(
@@ -39,14 +46,28 @@ fun SmartisanSectionTitle(
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
-    SmartisanText(
-        text = text,
-        modifier = modifier.fillMaxWidth().padding(start = startIndent, end = startIndent, top = 19.5.dp, bottom = 5.5.dp),
-        style = typography.sectionTitle,
-        color = colors.textTertiary,
-        maxLines = 1,
-    )
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(start = startIndent, end = startIndent, top = SectionTitleVerticalPadding, bottom = SectionTitleVerticalPadding)
+                .height(SectionTitleHeight),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        SmartisanText(
+            text = text,
+            style = typography.sectionTitle,
+            color = colors.textTertiary,
+            maxLines = 1,
+        )
+    }
 }
+
+/** 原版分组标题 TextView 的高度（R2 实测 46px @ 2.5px/dp）。 */
+private val SectionTitleHeight = 18.4.dp
+
+/** 原版分组标题上下到卡片的留白（R2 实测 8px @ 2.5px/dp）。 */
+private val SectionTitleVerticalPadding = 3.2.dp
 
 /**
  * 分组容器。
@@ -64,7 +85,7 @@ fun SmartisanSectionTitle(
  * 两个分组之间的空白 View（`group_list_item_vertical_gap_layout`），不是分组
  * 自己的内边距 —— 两张卡片的投影（9-patch 上下各向外扩 14dp）正好落在这段留白里
  * 互相重叠。所以相邻两个分组之间请显式插一个 [SmartisanListVerticalGap]，
- * 分组标题前后则不用（标题自带留白）。
+ * 有标题的分组也一样：留白插在标题前面（见 [SmartisanSectionTitle]）。
  *
  * [position] 是给「内容不是列表行」的分组用的（比如演示用的控件排排站）：
  * 这类分组里的内容自己不会画卡片，传 [position] 后由分组统一画上原版的

@@ -22,6 +22,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroup
 import cc.wuersan008.smartisanx.ui.layout.SmartisanGroupRowPosition
 import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
+import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSectionTitle
 import cc.wuersan008.smartisanx.ui.layout.SmartisanSnackbarHost
@@ -93,9 +94,15 @@ fun SamplePageScaffold(
     }
 }
 
-/** 页面内的分组标题。 */
+/**
+ * 页面内一个带标题分组的开头：14dp 分组留白 + 分组标题。
+ *
+ * 原版每个分组（不管有没有标题）前面都是同一段 14dp 留白，标题本身只带 3.2dp 的小留白，
+ * 所以没有标题的分组前面放一个 [SmartisanListVerticalGap]，两者就对齐了。
+ */
 @Composable
 fun SampleSectionHeader(text: String) {
+    SmartisanListVerticalGap()
     SmartisanSectionTitle(text = text)
 }
 

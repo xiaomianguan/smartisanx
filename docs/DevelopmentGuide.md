@@ -88,8 +88,9 @@ Key points:
    applies it outside the content area;
 2. **Leave a gap at both ends**: the original's `settings_item_top_bottom_margin` gives the list 14dp
    above and below.
-3. **No** gap around a section title — `SmartisanSectionTitle` carries its own (19.5dp above, 5.5dp
-   below).
+3. Put a `SmartisanListVerticalGap()` before **every** group (including the first one at the top of the
+   page), with or without a title: `SmartisanSectionTitle` only carries the original's 3.2dp padding
+   (18.4dp title box), so titled and untitled groups line up.
 4. Dividers between rows: `showDivider = true`, which already indents by 30dp
    (`SmartisanDimens.RowContentStart`) to line up with the text.
 

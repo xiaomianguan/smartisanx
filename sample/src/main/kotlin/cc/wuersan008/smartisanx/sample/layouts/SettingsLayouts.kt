@@ -83,6 +83,7 @@ fun SettingsSoundLayout(onBack: () -> Unit) {
                     // 滚到底时最后一行还在导航栏之上）。
                     .padding(bottom = LocalSmartisanContentBottomInset.current),
         ) {
+            SmartisanListVerticalGap()
             SmartisanSectionTitle("铃声与振动")
             SmartisanGroup {
                 SmartisanSwitchRow(

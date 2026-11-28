@@ -13,9 +13,12 @@ import androidx.compose.ui.graphics.Color
  *
  * 深色基线沿用三个项目已经互相校准过的炭灰色板：
  * 页底 `#25282D`、标题栏 `#292C31`、卡片 `#34373C`、较高表面 `#41464D`。
+ *
+ * 是 data class：只改几个颜色时用 `lightSmartisanColors().copy(accent = ...)`；
+ * 主题按值比较，内容相同的色板不会让整棵界面树重组。
  */
 @Immutable
-class SmartisanColors(
+data class SmartisanColors(
     /** 页面底色。 */
     val pageBackground: Color,
     /** 卡片、列表、对话框的常规表面。 */

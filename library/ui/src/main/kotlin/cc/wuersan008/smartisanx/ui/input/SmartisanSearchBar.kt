@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -188,6 +189,7 @@ fun SmartisanSearchBar(
     )
 
     // 原版 `AnimationListenr`：动画开始 / 结束时回调。
+    val currentOnAnimationEnd by rememberUpdatedState(onAnimationEnd)
     LaunchedEffect(expanded) {
         onAnimationStart?.invoke()
         val total =
@@ -199,7 +201,7 @@ fun SmartisanSearchBar(
                 SmartisanInputDefaults.ItemStartDelay + SmartisanInputDefaults.DurationItem
             }
         if (total > 0) delay(total.toLong())
-        onAnimationEnd?.invoke()
+        currentOnAnimationEnd?.invoke()
     }
 
     // 原版 `updateEditorStatus`：进入搜索态时聚焦并弹出键盘，退出时收起键盘并清空输入。

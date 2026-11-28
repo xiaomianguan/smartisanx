@@ -18,6 +18,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -144,10 +145,11 @@ fun SmartisanWheelPicker(
         }
     }
     // 内部滚动 → 等惯性结束再上报，避免快速滚动时连续回调。
+    val currentOnChange by rememberUpdatedState(onSelectedIndexChange)
     LaunchedEffect(centeredIndex) {
         if (centeredIndex != safeIndex) {
             snapshotFlow { listState.isScrollInProgress }.first { !it }
-            onSelectedIndexChange(centeredIndex)
+            currentOnChange(centeredIndex)
         }
     }
 

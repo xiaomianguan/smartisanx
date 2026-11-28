@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -77,11 +78,15 @@ fun SmartisanCalculatorButton(
         if (held) haptic()
     }
     // 原版删除键：按下 500ms 后开始连发，之后每 150ms 一次。
-    LaunchedEffect(held, onRepeat) {
-        if (held && onRepeat != null) {
+    // 只按「是否连发」作 key：调用方每次重组都会传一个新 lambda，若把 lambda 本身作 key，
+    // 每连发一次（删掉一个字 → 外层重组）效果就会重启、重新等 500ms，连发就慢成了 500ms 一次。
+    val currentRepeat by rememberUpdatedState(onRepeat)
+    val repeats = onRepeat != null
+    LaunchedEffect(held, repeats) {
+        if (held && repeats) {
             delay(RepeatStartDelayMillis)
             while (true) {
-                onRepeat()
+                currentRepeat?.invoke()
                 delay(RepeatIntervalMillis)
             }
         }

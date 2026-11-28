@@ -367,8 +367,8 @@ sits in **cards with an outward shadow**.
 - Because the projection is drawn outside, groups need margin: `list_item_left_right_margin` (12dp)
   horizontally, exposed as `SmartisanDimens.ListItemHorizontalMargin`. Vertically the original's
   `list_item_vertical_gap` (14dp) is a spacer view **between two groups**, exposed here as
-  `SmartisanListVerticalGap()` — `SmartisanGroup` itself adds no vertical spacing, and the section
-  title carries its own.
+  `SmartisanListVerticalGap()` — `SmartisanGroup` itself adds no vertical spacing; a titled group also
+  starts with this gap, then `SmartisanSectionTitle` (which only carries 3.2dp).
 
 ```kotlin
 SmartisanScaffold {                       // textured by default

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
  * 列表一级 15sp、列表二级 12.5sp、分组标题 13.5sp。
  */
 @Immutable
-class SmartisanTypography(
+data class SmartisanTypography(
     /** 标题栏标题。 */
     val titleBar: TextStyle = TextStyle(
         fontSize = 20.sp,

@@ -34,7 +34,7 @@ enum class SmartisanFontMode {
  * @param numerals 机械数字字体族（时钟、计时器），`null` 表示与 [text] 相同
  */
 @Immutable
-class SmartisanFonts(
+data class SmartisanFonts(
     val text: FontFamily?,
     val numerals: FontFamily?,
 ) {

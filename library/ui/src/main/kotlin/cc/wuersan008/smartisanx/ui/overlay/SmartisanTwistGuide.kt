@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -154,6 +155,7 @@ fun SmartisanTwistGuide(
     val closeProgress = remember { Animatable(1f) }
     val dimProgress = remember { Animatable(1f) }
     var closing by remember { mutableStateOf(false) }
+    val currentOnDismiss by rememberUpdatedState(onDismiss)
     LaunchedEffect(closing) {
         if (closing) bodyProgress.animateTo(0f, tween(BodyExitDuration, easing = FastOutSlowInEasing))
     }
@@ -163,7 +165,7 @@ fun SmartisanTwistGuide(
     LaunchedEffect(closing) {
         if (closing) {
             dimProgress.animateTo(0f, tween(DimExitDuration, easing = LinearEasing))
-            onDismiss()
+            currentOnDismiss()
         }
     }
     val close: () -> Unit = {

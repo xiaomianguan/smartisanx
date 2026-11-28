@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
  * 锤子风格整体偏方正：列表、标题栏都是直角，只有弹窗与悬浮元素带小圆角。
  */
 @Immutable
-class SmartisanShapes(
+data class SmartisanShapes(
     /** 完全直角，列表、标题栏、分组卡片默认使用。 */
     val none: Shape = RoundedCornerShape(0.dp),
     /** 极小圆角，用于标签、徽标。 */
