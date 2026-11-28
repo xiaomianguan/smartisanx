@@ -40,7 +40,7 @@ and [overscrollFactory] is written into Compose's `LocalOverscrollFactory`
 ## Palette
 
 `SmartisanColors` merges the semantic colors of the three revival projects; after removing
-duplicates it has 30 entries.
+duplicates it has 31 entries.
 `SmartisanColors` / `SmartisanTypography` / `SmartisanShapes` / `SmartisanFonts` are data classes:
 to change a few entries use `lightSmartisanColors().copy(accent = ...)`; the theme compares them by
 value, so an equal palette does not recompose the whole tree.
@@ -69,9 +69,10 @@ value, so an equal palette does not recompose the whole tree.
 | --- | --- | --- | --- |
 | `textPrimary` | `#CC000000` | `#F2F2F2` | Primary text |
 | `textSecondary` | `#9A000000` | `#D2D3D5` | Secondary text |
-| `textTertiary` | `#66000000` | `#9FA1A4` | Tertiary text, section titles |
+| `textTertiary` | `#66000000` | `#9FA1A4` | Tertiary text |
 | `textDisabled` | `#4C000000` | `#717377` | Disabled |
 | `textHint` | `#DBDBDB` | `#85878A` | Input hints |
+| `textSectionTitle` | `#80000000` | `#B8BABD` | Settings section titles (original `setting_item_primary_title_color`) |
 
 ### Accent and status
 

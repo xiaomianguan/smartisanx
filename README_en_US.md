@@ -204,7 +204,7 @@ copy-pasteable template.
 | --- | --- |
 | `SmartisanTheme` | Provides colors, text styles, shapes and the scroll overscroll bounce |
 | `SmartisanThemeController` / `rememberSmartisanThemeController` | System / light / dark |
-| `SmartisanColors` | 30 semantic colors, one set for light and one for dark |
+| `SmartisanColors` | 31 semantic colors, one set for light and one for dark |
 | `SmartisanTypography` | Title bar, body, list primary/secondary, button, dialog, tabular numerals |
 | `SmartisanShapes` | Square plus 2/4/8/10/16dp corners |
 | `SmartisanDimens` | Dimension tokens for title bar, icons, lists, dialogs, bottom bar |

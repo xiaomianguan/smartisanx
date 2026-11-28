@@ -45,6 +45,8 @@ data class SmartisanColors(
     val textDisabled: Color,
     /** 输入框提示文字。 */
     val textHint: Color,
+    /** 设置页分组标题（原版 `setting_item_primary_title_color`，50% 黑）。 */
+    val textSectionTitle: Color,
     /** 默认蓝色强调色。 */
     val accent: Color,
     /** 强调色按压态。 */
@@ -99,6 +101,7 @@ fun lightSmartisanColors(): SmartisanColors =
         textTertiary = Color(0x66000000),
         textDisabled = Color(0x4C000000),
         textHint = Color(0xFFDBDBDB),
+        textSectionTitle = Color(0x80000000),
         accent = Color(0xFF3D70EF),
         accentPressed = Color(0xFF315DCC),
         accentDisabled = Color(0x663D70EF),
@@ -140,6 +143,7 @@ fun darkSmartisanColors(): SmartisanColors =
         textTertiary = Color(0xFF9FA1A4),
         textDisabled = Color(0xFF717377),
         textHint = Color(0xFF85878A),
+        textSectionTitle = Color(0xFFB8BABD),
         accent = Color(0xFF5C89F2),
         accentPressed = Color(0xFF5079DF),
         accentDisabled = Color(0x665C89F2),

@@ -624,7 +624,8 @@ fun SmartisanSwitchRow(
         ) {
             SmartisanText(
                 text = text,
-                style = typography.listItemPrimary,
+                // 与 SmartisanListItem 同一档（17sp）：R2 设置页的开关行与文字行标题一样大。
+                style = typography.listRowPrimary,
                 color = if (enabled) colors.textPrimary else colors.textDisabled,
                 maxLines = 2,
             )

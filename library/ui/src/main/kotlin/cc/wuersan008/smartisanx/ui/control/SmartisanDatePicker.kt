@@ -61,7 +61,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.utils.smartisanColor
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
-import cc.wuersan008.smartisanx.core.theme.SmartisanColors
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.ui.R
 import cc.wuersan008.smartisanx.ui.overlay.SmartisanBottomSheet
@@ -210,41 +209,8 @@ internal fun SmartisanPickerColors(
     val colors = LocalSmartisanColors.current
     val overridden =
         remember(colors, normal, selected) {
-            SmartisanColors(
-                pageBackground = colors.pageBackground,
-                surface = colors.surface,
-                surfaceRaised = colors.surfaceRaised,
-                surfacePressed = colors.surfacePressed,
-                surfaceDisabled = colors.surfaceDisabled,
-                titleBarBackground = colors.titleBarBackground,
-                divider = colors.divider,
-                rowDivider = colors.rowDivider,
-                textPrimary = colors.textPrimary,
-                textSecondary = colors.textSecondary,
-                // 普通行文字色。
-                textTertiary = normal,
-                textDisabled = colors.textDisabled,
-                textHint = colors.textHint,
-                // 选中行文字色与单位后缀色。
-                accent = selected,
-                accentPressed = colors.accentPressed,
-                accentDisabled = colors.accentDisabled,
-                onAccent = colors.onAccent,
-                link = colors.link,
-                linkPressed = colors.linkPressed,
-                success = colors.success,
-                warning = colors.warning,
-                selectionBackground = colors.selectionBackground,
-                pressedHighlight = colors.pressedHighlight,
-                onPressedHighlight = colors.onPressedHighlight,
-                switchTrack = colors.switchTrack,
-                switchTrackStroke = colors.switchTrackStroke,
-                switchKnob = colors.switchKnob,
-                switchIndicator = colors.switchIndicator,
-                scrollbarThumb = colors.scrollbarThumb,
-                scrim = colors.scrim,
-                isLight = colors.isLight,
-            )
+            // 普通行文字色走 textTertiary，选中行与单位后缀走 accent。
+            colors.copy(textTertiary = normal, accent = selected)
         }
     CompositionLocalProvider(LocalSmartisanColors provides overridden) { content() }
 }

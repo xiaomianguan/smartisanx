@@ -23,7 +23,9 @@ import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
  * 标题栏容器。
  *
  * 当标题栏里需要放搜索框、标签页等自定义内容时使用，
- * 它保证与 [SmartisanTitleBar] 完全一致的原版底色、高度与投影。
+ * 它保证与 [SmartisanTitleBar] 完全一致的底色、高度与投影（[SmartisanTitleBar] 就建在它上面）。
+ * 底色默认主题 `titleBarBackground` 纯色，与 R2 固件一致；要早期应用的渐变底图就传
+ * `backgroundRes = SmartisanDrawables.TitleBarBackground`。
  */
 @Composable
 fun SmartisanTitleBarSurface(
@@ -32,7 +34,7 @@ fun SmartisanTitleBarSurface(
     showShadow: Boolean = true,
     @DrawableRes shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
-    @DrawableRes backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
+    @DrawableRes backgroundRes: Int? = null,
     content: @Composable () -> Unit,
 ) {
     val colors = LocalSmartisanColors.current

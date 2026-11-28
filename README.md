@@ -189,7 +189,7 @@ selector 自带按下 / 禁用态），原版没有对应素材时才用 `Smarti
 | --- | --- |
 | `SmartisanTheme` | 提供色板、文字样式、形状，以及滚动越界回弹 |
 | `SmartisanThemeController` / `rememberSmartisanThemeController` | 跟随系统 / 浅色 / 深色 |
-| `SmartisanColors` | 30 个语义色，浅色与深色各一套 |
+| `SmartisanColors` | 31 个语义色，浅色与深色各一套 |
 | `SmartisanTypography` | 标题栏、正文、列表一二级、按钮、弹窗、等宽数字等 |
 | `SmartisanShapes` | 直角、2/4/8/10/16dp 圆角 |
 | `SmartisanDimens` | 标题栏、图标、列表、弹窗、底部栏等尺寸常量 |

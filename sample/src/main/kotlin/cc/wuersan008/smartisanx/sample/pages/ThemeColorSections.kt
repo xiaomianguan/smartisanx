@@ -39,6 +39,7 @@ fun ColorSwatchSection() {
             "textSecondary" to colors.textSecondary,
             "textTertiary" to colors.textTertiary,
             "textDisabled" to colors.textDisabled,
+            "textSectionTitle" to colors.textSectionTitle,
             "accent" to colors.accent,
             "accentPressed" to colors.accentPressed,
             "link" to colors.link,

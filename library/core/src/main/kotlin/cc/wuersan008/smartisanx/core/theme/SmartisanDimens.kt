@@ -74,6 +74,25 @@ object SmartisanDimens {
      */
     val ListItemVerticalGap = 14.dp
 
+    /**
+     * 设置页分组标题距屏幕左沿 30dp，原版 `settings_item_title_left_margin`
+     * （= 卡片外边距 12dp + 行内文字缩进 18dp，所以标题与行文字左沿对齐）。
+     */
+    val SectionTitleStart = 30.dp
+
+    /** 设置页分组标题右边距，原版 `common_horizontal_padding`。 */
+    val SectionTitleEnd = 16.dp
+
+    /** 设置页分组标题上下到卡片的留白，原版 `SettingItemTitleStyle` 的 `layout_marginTop/Bottom`。 */
+    val SectionTitleVerticalMargin = 3.dp
+
+    /**
+     * 设置页分组标题文字框高度：原版 TextView 是 wrap_content，但 Android 的字体内边距
+     * （includeFontPadding）让 13.5sp 粗体撑到 46px（R2 400dpi 实测，18.4dp），
+     * 比 Compose 的行框高，这里按实测补齐，卡片位置才与原版一致。
+     */
+    val SectionTitleMinHeight = 18.4.dp
+
     /** 列表内容 / 分隔线的左缩进 18dp。原版文件管理器的文件列表里，分隔线左端实测在 43px（400dpi 下约 17.2dp）。 */
     val RowContentStart = 18.dp
 

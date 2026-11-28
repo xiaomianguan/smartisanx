@@ -6,18 +6,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanShapes
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
+import cc.wuersan008.smartisanx.core.theme.SmartisanColors
 import cc.wuersan008.smartisanx.core.theme.SmartisanDimens
 import cc.wuersan008.smartisanx.core.utils.smartisanDrawableBackground
 import cc.wuersan008.smartisanx.core.utils.smartisanShadowBackground
@@ -28,10 +32,11 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 /**
  * 分组标题。
  *
- * 对应原版设置页、资料库里的灰色小标题（13.5sp，`textTertiary`）。
+ * 照抄原版设置的 `SettingItemTitleStyle`：13.5sp 粗体、50% 黑（[SmartisanColors.textSectionTitle]）、
+ * 白色 2px 浮雕投影，距屏幕左沿 30dp（与行文字左沿对齐）、右 16dp，上下各 3dp。
  *
  * **标题只带自己的小留白，不带分组间距**，与原版一致：R2 设置「声音与振动」页
- * （`headset_category`）里，标题 TextView 高 18.4dp，上下各留 3.2dp 就是卡片；
+ * （`headset_category`）里，标题 TextView 上下各留 3dp 就是卡片；
  * 分组之间、页面顶部的 14dp 一律是那段独立的 `list_item_vertical_gap`
  * （[SmartisanListVerticalGap] / 列表的 contentPadding）。
  *
@@ -42,7 +47,7 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
 fun SmartisanSectionTitle(
     text: String,
     modifier: Modifier = Modifier,
-    startIndent: Dp = SmartisanDimens.RowContentStart,
+    startIndent: Dp = SmartisanDimens.SectionTitleStart,
 ) {
     val colors = LocalSmartisanColors.current
     val typography = LocalSmartisanTypography.current
@@ -50,24 +55,30 @@ fun SmartisanSectionTitle(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(start = startIndent, end = startIndent, top = SectionTitleVerticalPadding, bottom = SectionTitleVerticalPadding)
-                .height(SectionTitleHeight),
+                .padding(
+                    start = startIndent,
+                    end = SmartisanDimens.SectionTitleEnd,
+                    top = SmartisanDimens.SectionTitleVerticalMargin,
+                    bottom = SmartisanDimens.SectionTitleVerticalMargin,
+                )
+                .heightIn(min = SmartisanDimens.SectionTitleMinHeight),
         contentAlignment = Alignment.CenterStart,
     ) {
         SmartisanText(
             text = text,
-            style = typography.sectionTitle,
-            color = colors.textTertiary,
+            style =
+                typography.sectionTitle.copy(
+                    fontWeight = FontWeight.Bold,
+                    // 原版 shadowColor #2dffffff、shadowDy 2px：白色浮雕，只在浅色底上有意义。
+                    shadow = if (colors.isLight) SectionTitleEmboss else null,
+                ),
+            color = colors.textSectionTitle,
             maxLines = 1,
         )
     }
 }
 
-/** 原版分组标题 TextView 的高度（R2 实测 46px @ 2.5px/dp）。 */
-private val SectionTitleHeight = 18.4.dp
-
-/** 原版分组标题上下到卡片的留白（R2 实测 8px @ 2.5px/dp）。 */
-private val SectionTitleVerticalPadding = 3.2.dp
+private val SectionTitleEmboss = Shadow(color = Color(0x2DFFFFFF), offset = Offset(0f, 2f), blurRadius = 0.1f)
 
 /**
  * 分组容器。

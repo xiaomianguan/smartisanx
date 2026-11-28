@@ -28,7 +28,7 @@ All public APIs grouped by package. Every component must be wrapped in `Smartisa
 | `SmartisanThemeController.colorSchemeMode` | `System` / `Light` / `Dark` (**dark is experimental** — the original had no dark mode) |
 | `SmartisanThemeController.isDark()` / `colors()` | Current state |
 | `lightSmartisanColors()` / `darkSmartisanColors()` | Default palettes (dark is experimental) |
-| `SmartisanColors` | 30 semantic colors (see [Theme.md](Theme.md)) |
+| `SmartisanColors` | 31 semantic colors (see [Theme.md](Theme.md)) |
 | `SmartisanTypography` | 12 text styles |
 | `SmartisanShapes` | 7 shapes |
 | `SmartisanDimens` | Dimension tokens |
@@ -756,7 +756,7 @@ class SmartisanTitleBarAction private constructor(
     includeStatusBar: Boolean = true, showShadow: Boolean = true,
     shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
-    backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
+    backgroundRes: Int? = null,   // null = the theme's flat titleBarBackground (pure white on R2 firmware); pass SmartisanDrawables.TitleBarBackground for the older apps' gradient
     centerContent: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 )
@@ -862,7 +862,10 @@ Notes:
 
 - This is the **master** list row of the framework (`list_content_item_layout` plus
   `smartisanos.widget.ListContentItem`), with a 17sp / 16sp primary line. `SmartisanListItem` is the
-  other line (15sp, from the three re-implemented apps); both are kept, pick by source.
+  other line (from the three re-implemented apps); both are kept, pick by source.
+  `SmartisanListItem` / `SmartisanGroupItem` / `SmartisanSwitchRow` titles also use 17sp: that is what the
+  R2 Settings app measures (they used to keep the revival apps' 15sp, which looked mismatched next to
+  framework rows in the same card).
   **They share the same horizontal geometry** (fixed 60dp left slot, 6dp right slot, 18dp indent when
   there is no leading icon), so titles inside one card always line up — `SmartisanListItem` used to
   size the left slot from the icon's intrinsic width, so the 36dp calendar icon pushed its title 12dp right.

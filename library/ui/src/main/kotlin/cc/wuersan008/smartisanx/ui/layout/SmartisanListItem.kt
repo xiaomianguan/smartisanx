@@ -35,7 +35,8 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * 锤子风格列表行。
  *
  * 合并了锤子音乐的资料库行 / 设置行与锤子天气的城市行：60dp 行高、12dp 左右外边距、
- * 一级文字 15sp、二级文字 12.5sp。按压时切换为 `surfacePressed`，
+ * 一级文字 17sp（`listRowPrimary`，R2 设置页实测：标题 TextView 46px ⇔ 13.5sp 标定字体行框 1.363 倍，
+ * 行标题 TextView 58px ⇒ 17.0sp，即 framework `list_content_mid_primary`）、二级文字 12.5sp。按压时切换为 `surfacePressed`，
  * 多选选中时切换为 `selectionBackground`（原版的浅蓝高亮），不使用涟漪。
  *
  * 三槽位的横向几何与 framework 的列表行母版（`list_content_item_layout.xml`）一致，
@@ -155,7 +156,7 @@ fun SmartisanListItem(
             Column(modifier = Modifier.weight(1f)) {
                 SmartisanText(
                     text = title,
-                    style = typography.listItemPrimary,
+                    style = typography.listRowPrimary,
                     color = titleColor,
                     maxLines = 2,
                 )
