@@ -756,7 +756,7 @@ class SmartisanTitleBarAction private constructor(
     includeStatusBar: Boolean = true, showShadow: Boolean = true,
     shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
-    backgroundRes: Int? = null,   // null = the theme's flat titleBarBackground (pure white on R2 firmware); pass SmartisanDrawables.TitleBarBackground for the older apps' gradient
+    backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,   // gradient by default; pass null for the theme's flat titleBarBackground (the R2 system apps' pure white)
     centerContent: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 )

@@ -26,9 +26,9 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  *
  * 布局来自锤子音乐的 `SmartisanTitleBar` 与锤子天气的 `WeatherTitleBar`（两者布局一致，已合并），
  * 底色与文字按 R2 固件的 `smartisanos.widget.TitleBar`：
- * - 底色默认是主题的 `titleBarBackground` 纯色（浅色 `#FFFFFF`）：R2 上设置、联系人、短信、日历、
- *   文件管理的标题栏实测都是纯白；早期应用（音乐、天气）用的渐变底图 `titlebar_bg` 仍可通过
- *   `backgroundRes = SmartisanDrawables.TitleBarBackground` 打开；
+ * - 底色默认是早期应用（音乐、天气）的渐变底图 `titlebar_bg`（NinePatch，自带夜间变体）；
+ *   传 `backgroundRes = null` 则改用主题 `titleBarBackground` 纯色（浅色 `#FFFFFF`）——
+ *   R2 固件里设置、联系人、短信、日历、文件管理的标题栏实测都是这种纯白；
  * - 标题 20sp 加粗、`#99000000`（framework `TitleTextStyle` / `title_text_color`）；
  * - 下方 14dp 使用原版 `title_bar_shadow`，**画在标题栏下边界之外、盖在内容上**：
  *   原版 `BarsHelper` 把投影作为标题栏的子 View，用 `translationY = ±shadowHeight` 平移出
@@ -51,7 +51,7 @@ fun SmartisanTitleBar(
     showShadow: Boolean = true,
     @DrawableRes shadowRes: Int = SmartisanDrawables.TitleBarShadow,
     contentHeight: Dp = SmartisanDimens.TitleBarHeight,
-    @DrawableRes backgroundRes: Int? = null,
+    @DrawableRes backgroundRes: Int? = SmartisanDrawables.TitleBarBackground,
     centerContent: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
