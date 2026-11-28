@@ -145,6 +145,36 @@ private fun androidx.compose.foundation.layout.BoxScope.TitleBarActions(
     }
 }
 
+/**
+ * R2 framework 顶部栏（标题栏、搜索行）下方的投影：`BarsHelper.BarShadowBuilder` 的默认样式。
+ *
+ * 原版给栏加两个子 View 并向下平移出栏外、盖在内容上：14dp 的 `title_bar_shadow`
+ * （framework 那张 12×45px 的淡渐变，比早期应用 [SmartisanTitleBarShadow] 默认那张浅）
+ * 和 0.67dp 的 `divider_bg` 分隔线。R2 联系人的搜索行（`ShadowRelativeLayout`）、短信的次级栏都是这一套。
+ *
+ * 放在**内容顶部、叠在内容之上**（例如列表 `Box` 里 `Modifier.align(Alignment.TopStart)`），不占布局空间。
+ *
+ * @param showShadow false 时只画分隔线（原版 `setShadowViewVisible(false)`，例如上方还压着别的栏）。
+ */
+@Composable
+fun SmartisanBarShadow(modifier: Modifier = Modifier, showShadow: Boolean = true) {
+    Box(modifier.fillMaxWidth().height(SmartisanDimens.TitleBarShadowHeight)) {
+        if (showShadow) {
+            Box(Modifier.fillMaxSize().smartisanDrawableBackground(SmartisanDrawables.TitleBarShadowStandard))
+        }
+        SmartisanBarDivider()
+    }
+}
+
+/** R2 framework 栏边缘的 0.67dp 分隔线（`divider_bg`，`BarsHelper` 的 `bar_divider_height`）。 */
+@Composable
+fun SmartisanBarDivider(modifier: Modifier = Modifier) {
+    Box(modifier.fillMaxWidth().height(BarDividerHeight).smartisanDrawableBackground(SmartisanDrawables.BarDivider))
+}
+
+/** framework `bar_divider_height`。 */
+private val BarDividerHeight = 0.67.dp
+
 /** 标题栏下方的原版投影（NinePatch，含夜间变体）。 */
 @Composable
 fun SmartisanTitleBarShadow(

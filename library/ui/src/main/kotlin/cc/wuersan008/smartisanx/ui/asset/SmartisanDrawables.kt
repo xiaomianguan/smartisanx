@@ -20,6 +20,9 @@ object SmartisanDrawables {
     /** 标题栏下方投影。 */
     @DrawableRes val TitleBarShadow = R.drawable.title_bar_shadow
 
+    /** R2 framework 的标题栏投影（`title_bar_shadow.png` 12×45px，比 [TitleBarShadow] 浅；`BarsHelper` 用这张）。 */
+    @DrawableRes val TitleBarShadowStandard = R.drawable.title_bar_shadow_standard
+
     /**
      * 标题栏下方投影的**短**版本（原版 `title_bar_shadow_short`）。
      *
@@ -56,6 +59,24 @@ object SmartisanDrawables {
      * 消息输入栏（[cc.wuersan008.smartisanx.ui.input.SmartisanMessageField]）等 framework 底栏用它。
      */
     @DrawableRes val BottomBarShadowPlain = R.drawable.sos_smartisanos_drawable_bottom_bar_shadow
+
+    /** 标题栏 / 底栏外侧那条 0.67dp 分隔线（framework `divider_bg`，`BarsHelper` 用）。 */
+    @DrawableRes val BarDivider = R.drawable.divider_bg
+
+    /** framework 列表分组标题色带（`list_section_title`：`#F5F5F5` + 下沿 2px 分隔线，30dp）。 */
+    @DrawableRes val ListSectionTitleBackground = R.drawable.list_section_title
+
+    /** R2 联系人底栏「通话记录」图标（30dp 矢量，`ContactsSmartisan` 的 `bottom_recent_icon`）。 */
+    @DrawableRes val BottomTabRecent = R.drawable.bottom_recent_icon
+
+    /** R2 联系人底栏「联系人」图标（`bottom_contact_icon`）。 */
+    @DrawableRes val BottomTabContacts = R.drawable.bottom_contact_icon
+
+    /** R2 联系人底栏「拨号」图标（`bottom_keypad_icon`）。 */
+    @DrawableRes val BottomTabKeypad = R.drawable.bottom_keypad_icon
+
+    /** R2 联系人底栏「收藏」图标（`bottom_favorite_icon`）。 */
+    @DrawableRes val BottomTabFavorite = R.drawable.bottom_favorite_icon
 
     // ---- 消息输入栏（framework smartisanos.widget.MessageField） ----
 
@@ -437,6 +458,9 @@ object SmartisanDrawables {
 
     /** 搜索栏收起态右侧的筛选按钮 selector，原版 `sorting_icon_selector`。 */
     @DrawableRes val SearchBarSorting = R.drawable.sorting_icon_selector
+
+    /** R2 framework 的排序按钮 selector（`standard_icon_sorting_selector`，联系人搜索栏右侧用的就是它）。 */
+    @DrawableRes val IconSort = R.drawable.standard_icon_sorting_selector
 
     /** 搜索栏展开态的取消按钮 selector，原版 `standard_icon_cancel_selector`。 */
     @DrawableRes val SearchBarCancel = R.drawable.standard_icon_cancel_selector

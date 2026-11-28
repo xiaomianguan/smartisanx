@@ -318,10 +318,13 @@ fun SmartisanListRowArrow(
 /**
  * 分组标题（`list_section_title_layout`）。
  *
- * 原版是一块 30dp 高（`list_section_title_height`）、底色 `#f5f5f5`、左边距 12dp 的
- * 13.5sp 加粗标题。这里底色改用主题的 `surfaceRaised`（浅色 `#F7F8F9`，与原版基本一致），
- * 这样深色模式下也能自动跟随；文字色原版是 `#4c000000`（30% 黑），这里用主题的
- * `textTertiary`（浅色 `#66000000`，40%），与 [SmartisanGroup] 的分组标题保持同一档。
+ * 原版是一块 30dp 高（`list_section_title_height`）、左边距 12dp 的 13.5sp 加粗标题，
+ * 底图是 framework 的 nine-patch `list_section_title`（`#F5F5F5`，**下沿 2px `#E7E7E7` 分隔线**），
+ * 文字色 `#4C000000`（30% 黑 = [cc.wuersan008.smartisanx.core.theme.SmartisanColors.textDisabled]）。
+ * 浅色下照抄这两样；底图没有夜间变体，深色下退回主题的 `surfaceRaised` + `textTertiary`。
+ *
+ * R2 联系人实测（400dpi）：色带 75px（30dp），底色灰度 245、下沿两行 231，字母灰度 172 —— 与本组件一致。
+ * 此前用 `surfaceRaised`（247）+ `textTertiary`（149）且没有下沿分隔线，与原版不符。
  */
 @Composable
 fun SmartisanListSectionTitle(
@@ -336,14 +339,20 @@ fun SmartisanListSectionTitle(
             modifier
                 .fillMaxWidth()
                 .height(SmartisanDimens.ListSectionTitleHeight)
-                .background(colors.surfaceRaised)
+                .then(
+                    if (colors.isLight) {
+                        Modifier.smartisanDrawableBackground(SmartisanDrawables.ListSectionTitleBackground)
+                    } else {
+                        Modifier.background(colors.surfaceRaised)
+                    },
+                )
                 .padding(start = startIndent),
         contentAlignment = Alignment.CenterStart,
     ) {
         SmartisanText(
             text = text,
             style = typography.sectionTitle.copy(fontWeight = FontWeight.Bold),
-            color = colors.textTertiary,
+            color = if (colors.isLight) colors.textDisabled else colors.textTertiary,
             maxLines = 1,
         )
     }

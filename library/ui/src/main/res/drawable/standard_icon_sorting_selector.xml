@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 照抄 framework-smartisanos-res 的 standard_icon_sorting_selector（R2 联系人搜索栏右侧的排序按钮）。 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/standard_icon_sort_pressed" />
+    <item android:state_enabled="false" android:drawable="@drawable/standard_icon_sort_disabled" />
+    <item android:drawable="@drawable/standard_icon_sort" />
+</selector>

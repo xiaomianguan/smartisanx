@@ -769,6 +769,11 @@ class SmartisanTitleBarAction private constructor(
 @Composable fun SmartisanTitleBarSurface(modifier, includeStatusBar, showShadow, shadowRes, contentHeight, backgroundRes, content)
 // In-flow 14dp shadow band, for the rare case where the content is a different surface.
 @Composable fun SmartisanTitleBarShadow(modifier, height, shadowRes)
+// The R2 framework BarsHelper top-bar shadow (14dp light shadow title_bar_shadow_standard + 0.67dp divider_bg), laid over
+// the top of the content without taking space. R2 Contacts' search row and the Messages secondary bar use it;
+// showShadow = false draws only the divider.
+@Composable fun SmartisanBarShadow(modifier: Modifier = Modifier, showShadow: Boolean = true)
+@Composable fun SmartisanBarDivider(modifier: Modifier = Modifier)
 
 @Composable fun SmartisanListItem(
     title: String, modifier: Modifier = Modifier, summary: String? = null,
@@ -790,6 +795,11 @@ class SmartisanTitleBarAction private constructor(
 
 data class SmartisanBottomBarItem(val icon: ImageVector, val label: String, val selectedIcon: ImageVector = icon)
 @Composable fun SmartisanBottomBar(items, selectedIndex, onSelected, modifier, includeNavigationBar = true, showTopDivider = true, backgroundRes = SmartisanDrawables.BottomBarBackground, selectedColor, unselectedColor, unselectedIconColor, tintResourceIcons)
+// The R2 firmware bottom bar (framework smartisanos.widget.BottomBar, scalable style, used by Contacts): white 54dp,
+// each item screen width / 5 wide and centred, an 11dp shadow + 0.67dp divider drawn above the bar; 30dp tinted icons
+// (selected #99000000 / others #33000000), 9sp bold labels; unselected items scale to 0.9, selected 1.0, pressed 1.1
+// with a spring (damping 0.55, stiffness 800). Icons and labels are within 2px of R2 Contacts, colours identical.
+@Composable fun SmartisanBottomTabBar(items: List<SmartisanBottomBarItem>, selectedIndex: Int, onSelected: (Int) -> Unit, modifier: Modifier = Modifier, includeNavigationBar: Boolean = true)
 // Structure = the original sb_tab_bar.xml: a standalone tab_bar_shadow strip (26.7dp whose last two
 // rows are the dividing line) sits above the 54dp bar itself; do not draw another divider, or the
 // line lands in the middle of the bar.
@@ -852,7 +862,7 @@ enum class SmartisanListRowLines { TwoLine, TwoLineAlt, ThreeLine, ThreeLineAlt 
 )
 
 @Composable fun SmartisanListRowArrow(subtitle: String? = null, modifier, enabled, subtitleMaxWidth)
-@Composable fun SmartisanListSectionTitle(text: String, modifier, startIndent)
+@Composable fun SmartisanListSectionTitle(text: String, modifier, startIndent)   // light: original list_section_title bitmap (2px bottom line) + #4C000000 text
 @Composable fun SmartisanLetterSectionTitle(text: String, modifier, startIndent)
 @Composable fun SmartisanListBoardSectionTitle(text: String, modifier, enabled, onClick)
 @Composable fun SmartisanAboutStaticItem(title: String, modifier, summary, showArrow)

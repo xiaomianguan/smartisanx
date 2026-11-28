@@ -128,7 +128,7 @@ Dark mode is therefore **experimental**, with two known limitations:
 
 | Limitation | Detail |
 | --- | --- |
-| Incomplete night artwork | Only 350 of 7983 drawables (~4.4%) have night variants; the other 7633 are light-only and will keep showing light artwork in dark mode |
+| Incomplete night artwork | Only 350 of 7991 drawables (~4.4%) have night variants; the other 7641 are light-only and will keep showing light artwork in dark mode |
 | No night colour state lists | There are no night variants under `res/color/` at all, so dialog and menu text colours use their light values; this library adds a night palette for the Clock revival's dialogs and menus |
 
 `SmartisanTheme` writes "is the theme dark" into `LocalSmartisanDarkOverride`, and components resolve

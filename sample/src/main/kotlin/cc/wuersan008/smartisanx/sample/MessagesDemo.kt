@@ -73,6 +73,7 @@ import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachments
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageAttachmentPreview
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageField
 import cc.wuersan008.smartisanx.ui.input.SmartisanMessageRecipients
+import cc.wuersan008.smartisanx.ui.layout.SmartisanBarDivider
 import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
@@ -527,7 +528,7 @@ private fun MessageContactsList(
 
 @Composable
 internal fun MessagesDivider(modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth().height((2f / 3).dp).smartisanDrawableBackground(UiR.drawable.divider_bg))
+    SmartisanBarDivider(modifier)
 }
 
 @Composable

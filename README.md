@@ -19,7 +19,7 @@
 按职责拆分模块、示例应用独立成模块、组件按功能分包。
 
 > **本库包含原始图形资源。** 锤子风格是拟物设计，质感来自 NinePatch、位图与 selector，
-> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（10724 个文件，含夜间与多密度变体），
+> 因此本库直接使用三个复刻项目从原版 APK 还原的素材（10732 个文件，含夜间与多密度变体），
 > 而不是用 Compose 重新画一遍。这些素材的知识产权归原权利人所有，
 > 使用前请先阅读[资源来源与授权](#资源来源与授权)。
 
@@ -246,7 +246,7 @@ selector 自带按下 / 禁用态），原版没有对应素材时才用 `Smarti
 ### 列表交互（`cc.wuersan008.smartisanx.ui.list`）
 
 `SmartisanReorderableColumn`、`SmartisanSwipeToDelete`、`SmartisanHiddenRowActions`、
-`SmartisanHiddenRowAction`、`SmartisanLetterIndexBar`、`SmartisanQuickBar`
+`SmartisanHiddenRowAction`、`SmartisanLetterIndexBar`、`SmartisanQuickBar`、`SmartisanBottomTabBar`、`SmartisanBarShadow`、`SmartisanBarDivider`
 
 ### 浮层（`cc.wuersan008.smartisanx.ui.overlay`）
 
@@ -320,8 +320,8 @@ AGP 9 起 Kotlin 编译由 AGP 内置支持（built-in Kotlin），所以模块�
 
 因此深色模式属于**实验性**特性，有两点已知限制：
 
-- 原版图形资源里带夜间变体的只占少数：7983 个 drawable 中有 350 个（约 4.4%）带夜间变体，
-  其余 7633 个只有浅色版本，深色下会继续显示浅色素材；
+- 原版图形资源里带夜间变体的只占少数：7991 个 drawable 中有 350 个（约 4.4%）带夜间变体，
+  其余 7641 个只有浅色版本，深色下会继续显示浅色素材；
 - `res/color/` 下的颜色状态列表完全没有夜间版本，弹窗、菜单等文字色只能沿用浅色取值；
   本库另外为锤子时钟的弹窗与菜单补了一套夜间颜色。
 
@@ -384,7 +384,7 @@ SmartisanScaffold {                       // 默认已带平铺底纹
 
 ### 资源清单
 
-`library/ui/src/main/res/` 下共 **10724** 个资源文件（`drawable*` 10577、`mipmap*` 34、
+`library/ui/src/main/res/` 下共 **10732** 个资源文件（`drawable*` 10585、`mipmap*` 34、
 `values*` 92、`color` 21），来源分三部分：
 
 | 来源 | 内容 |
