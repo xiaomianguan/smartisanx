@@ -1,5 +1,6 @@
 package cc.wuersan008.smartisanx.sample.layouts
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.ui.R
+import cc.wuersan008.smartisanx.ui.asset.SmartisanDrawables
 import cc.wuersan008.smartisanx.ui.asset.SmartisanOriginalIcons
 import cc.wuersan008.smartisanx.ui.basic.SmartisanIcon
 import cc.wuersan008.smartisanx.ui.layout.LocalSmartisanContentBottomInset
@@ -32,8 +34,19 @@ import cc.wuersan008.smartisanx.ui.layout.SmartisanListVerticalGap
 import cc.wuersan008.smartisanx.ui.layout.SmartisanScaffold
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBar
 import cc.wuersan008.smartisanx.ui.layout.SmartisanTitleBarAction
-import cc.wuersan008.smartisanx.ui.list.SmartisanLetterIndexBar
+import cc.wuersan008.smartisanx.ui.list.SmartisanLetterSymbol
+import cc.wuersan008.smartisanx.ui.list.SmartisanQuickBar
+import cc.wuersan008.smartisanx.ui.list.rememberSmartisanQuickBarState
+import cc.wuersan008.smartisanx.ui.list.smartisanDefaultLetterIndex
 import kotlinx.coroutines.launch
+
+/** 联系人字母栏最上面的「我」：常态 / 持有态照抄联系人 APK，按下时着白。 */
+private val ContactsMeSymbol =
+    SmartisanLetterSymbol(
+        key = '@',
+        iconRes = SmartisanDrawables.QuickBarMe,
+        holderIconRes = SmartisanDrawables.QuickBarMeHolder,
+    )
 
 /** 联系人列表里的两种条目（组标题 / 联系人）。 */
 private sealed interface ContactRow {
@@ -52,7 +65,7 @@ private sealed interface ContactRow {
  * | 顶部账号筛选条 | `account_filter_header.xml`（示例里省略，它是多账号场景才需要的） |
  * | 字母分组列表 | `PinnedHeaderListView` + `contact_list_item.xml`，行高 `list_item_height` = 60dp |
  * | 头像 | `AvatarImageView`，在行左侧 `list_item_left_width` 的方形区里居中 |
- * | 右侧 A–Z 索引条 | `quickbar_left_letters_bar`（74px = 29.6dp） |
+ * | 右侧索引 | `QuickBarEx`：「我」+ A–Z + #，往左拖出九宫格 → [SmartisanQuickBar] |
  *
  * 头像在示例里用 [SampleAvatar] 画（主题底色 + 首字），原版显示的是联系人照片。
  */
@@ -75,6 +88,8 @@ fun ContactsLayout(onBack: () -> Unit) {
                 .filter { it.value is ContactRow.Section }
                 .associate { (index, row) -> (row as ContactRow.Section).letter to index }
         }
+    val quickBar = rememberSmartisanQuickBarState()
+    BackHandler(enabled = !quickBar.isGridHidden) { scope.launch { quickBar.hideGrid() } }
     SmartisanScaffold(
         modifier = Modifier.fillMaxSize(),
         // 内容会滚动：内容区一直画到屏幕最底下，导航栏留白补在滚动内容的末尾。
@@ -116,9 +131,9 @@ fun ContactsLayout(onBack: () -> Unit) {
                         is ContactRow.Section ->
                             SmartisanLetterSectionTitle(text = row.letter.toString())
                         is ContactRow.Person ->
+                            // 原版通讯录行只有头像和名字（`contact_list_item.xml` 没有号码行）。
                             SmartisanListRow(
                                 title = row.contact.name,
-                                summary = row.contact.phone,
                                 leading = {
                                     // 原版联系人头像 `listview_photo_width/height` 是 38dp，
                                     // 居中放在 60dp 的 `list_item_left_width` 里。
@@ -130,14 +145,22 @@ fun ContactsLayout(onBack: () -> Unit) {
                     }
                 }
             }
-            SmartisanLetterIndexBar(
-                letters = letterIndex.keys.toList(),
+            // 原版 QuickBarEx：字母栏一直是完整的「我」+ A–Z + #，没有联系人的字母点了就停在最近的分组；
+            // 往左拖出 A–Z 九宫格，返回键先收起九宫格。
+            SmartisanQuickBar(
+                letters = smartisanDefaultLetterIndex(),
+                symbols = listOf(ContactsMeSymbol),
                 onLetterSelected = { letter ->
-                    letterIndex[letter]?.let { index ->
-                        scope.launch { listState.animateScrollToItem(index) }
-                    }
+                    val index =
+                        if (letter == ContactsMeSymbol.key) {
+                            0
+                        } else {
+                            letterIndex.entries.lastOrNull { it.key <= letter }?.value ?: 0
+                        }
+                    scope.launch { listState.scrollToItem(index) }
                 },
                 modifier = Modifier.align(Alignment.CenterEnd),
+                state = quickBar,
             )
         }
     }

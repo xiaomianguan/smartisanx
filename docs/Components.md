@@ -1037,7 +1037,20 @@ Notes:
     activeLetter: Char? = null, showOverlay: Boolean = true,
     minLetterHeight: Dp = SmartisanDimens.LetterIndexMinLetterHeight,   // 12dp
     backgroundRes: Int? = SmartisanDrawables.LetterBarBackground,       // shown only while held
+    symbols: List<SmartisanLetterSymbol> = emptyList(),                 // icon entries before the letters (Contacts' "me")
 )
+data class SmartisanLetterSymbol(key: Char, iconRes: Int, holderIconRes: Int = iconRes, touchedIconRes: Int? = null)
+
+@Composable fun SmartisanQuickBar(
+    letters: List<Char>, onLetterSelected: (Char) -> Unit, modifier: Modifier = Modifier,
+    symbols: List<SmartisanLetterSymbol> = emptyList(),
+    gridLetters: List<Char> = ('A'..'Z').toList(),
+    state: SmartisanQuickBarState = rememberSmartisanQuickBarState(),
+    onGridVisibleChange: (Boolean) -> Unit = {},
+)
+class SmartisanQuickBarState { val fraction: Float; val isDragging: Boolean; val isGridHidden: Boolean; val isGridShown: Boolean
+    suspend fun showGrid(); suspend fun hideGrid() }
+@Composable fun rememberSmartisanQuickBarState(): SmartisanQuickBarState
 fun smartisanDefaultLetterIndex(): List<Char>   // A–Z + '#'
 fun smartisanIndexLetter(name: String): Char
 
@@ -1067,6 +1080,17 @@ data class SmartisanHiddenRowAction(
   mapped **linearly across the whole bar onto the whole alphabet** (`y / bar height * count`), not per
   cell; the `letters_bar_background` shows **only while held**, and the held letter turns white and
   bold inside the 20dp `letters_bar_highlight_icon` (drawn inside the bar, behind the letter).
+  Letters are opaque `#9A9A9A` (`no_chosen_letter_font_color`, i.e. `textTertiary`; R2 measures grey 153,
+  original 154). Pressing **only highlights**; the callback fires on a cell change or on release (original
+  `dispatchTouchEvent`), so touching the bar or dragging the grid out does not make the list jump.
+- `SmartisanQuickBar` reproduces the framework `QuickBarEx` (Contacts / Music library / World clock): shadow +
+  letter bar + a 3-column A–Z grid move as one panel. Once the finger drags left past the bar's left edge the
+  panel follows it; on release it opens if the last move was leftward and the panel's left edge is more than
+  150px from the right edge of the screen, otherwise it closes, animating over 200ms with AccelerateDecelerate;
+  when open, dragging right by more than 4dp grabs it again. The grid has 60dp columns, 3px gaps and 9 equal
+  rows alternating `#F5F5F5` / `#F0F0F0`; the 27th cell is the fold button, and tapping a letter reports it and
+  folds. Hosts call `state.hideGrid()` on back. The Chinese surname grid shown on long-pressing a letter
+  (`SurnameGridView`) is **not ported**.
 - `SmartisanHiddenRowActions` ports the framework's `smartisanos.widget.HiddenListActionLayout`: a
   horizontal strip of icon buttons with 12dp on both sides (`hidden_list_action_left_right_padding`),
   6dp between icons (`hidden_list_action_icon_gap`), icons at `wrap_content` and vertically centred,

@@ -353,6 +353,12 @@ object SmartisanDrawables {
     @DrawableRes val LetterBarUnfold = R.drawable.letter_bar_unfold_btn
     @DrawableRes val LetterBarUnfoldPressed = R.drawable.letter_bar_unfold_btn_pressed
 
+    /** 联系人字母栏最上面的「我」（`ContactsSmartisan` 的 `quickbar_me_nor`，灰 #B3B3B3）。 */
+    @DrawableRes val QuickBarMe = R.drawable.quickbar_me_nor
+
+    /** 「我」的持有态：有别的字母被按住或九宫格拖出时（`quickbar_me_holder`）。 */
+    @DrawableRes val QuickBarMeHolder = R.drawable.quickbar_me_holder
+
     // ---- 侧滑删除 ----
     @DrawableRes val SlideDelete = R.drawable.slide_delete
     @DrawableRes val SlideDeletePressed = R.drawable.slide_delete_down
