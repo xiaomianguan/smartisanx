@@ -2,7 +2,7 @@
 <lint>
     <!--
       示例应用的自适应图标必须放在 `mipmap-anydpi-v26/`：一旦改成 `mipmap-anydpi/`，
-      AGP 会把这个资源整个丢掉 —— 对比 `aapt2 dump resources sample-debug.apk` 就能看到
+      AGP 会把这个资源整个丢掉 —— 对比 `aapt2 dump resources sample-gallery-debug.apk` 就能看到
       `mipmap/ic_launcher` 只剩库里那张 `mipmap-400dpi/ic_launcher.png`（原版指南针图标），
       启动器于是显示成指南针。`aapt2 compile` 单独编译 `mipmap-anydpi/` 是能过的，
       所以这是合并/链接阶段静默丢资源，不是 XML 写错。

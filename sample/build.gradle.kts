@@ -16,6 +16,19 @@ android {
         versionName = "1.0.0"
     }
 
+    flavorDimensions += "layout"
+    productFlavors {
+        create("gallery") {
+            dimension = "layout"
+            manifestPlaceholders["sampleLauncher"] = ".GalleryActivity"
+        }
+        create("list") {
+            dimension = "layout"
+            applicationId = "cc.wuersan008.smartisanx.sampleold"
+            manifestPlaceholders["sampleLauncher"] = ".SampleActivity"
+        }
+    }
+
     buildTypes {
         release {
             // 库里有上万个原版素材，发布构建靠资源压缩把没用到的剔掉。
@@ -44,6 +57,12 @@ android {
             enableSplit = false
         }
     }
+}
+
+tasks.register("lintDebug") {
+    group = "verification"
+    description = "Runs lint for both debug sample layouts."
+    dependsOn("lintGalleryDebug", "lintListDebug")
 }
 
 // 内置 Kotlin 不需要单独设 kotlin.compilerOptions.jvmTarget：

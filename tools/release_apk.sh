@@ -1,5 +1,5 @@
 #!/bin/bash
-# 打一个可以装的 release 包并发到 Telegram：与 debug 同一个 keystore，所以能覆盖安装。
+# 构建两个独立的 release APK，使用与 debug 相同的 keystore，支持覆盖安装。
 #
 # 构建环境：JDK 17 及以上即可（本机默认的 JDK 27 直接用，不用 export JAVA_HOME），
 # 由 Gradle 9.8.1 + AGP 9.4.1 保证；仓库里没有任何 JDK 版本固定文件。
@@ -13,14 +13,21 @@ KS="/tmp/dbg.jks"
 # /tmp 每次重启都会清掉，丢了就自动复制回来。
 [ -f "$KS" ] || cp "$HOME/.android/debug.keystore" "$KS"
 OUT="sample/build/outputs/apk/release"
-NAME="smartisanx-sample-release.apk"
+mkdir -p "$OUT"
 
 ./gradlew :sample:assembleRelease -q
 
-"$BT/zipalign" -p -f 4 "$OUT/sample-release-unsigned.apk" "/tmp/$NAME"
-"$BT/apksigner" sign \
-  --ks "$KS" --ks-pass pass:android --key-pass pass:android \
-  --out "$OUT/$NAME" "/tmp/$NAME"
-"$BT/apksigner" verify --print-certs "$OUT/$NAME" | head -3
+sign_sample() {
+  local layout="$1"
+  local name="$2"
 
-ls -lh "$OUT/$NAME"
+  "$BT/zipalign" -p -f 4 "sample/build/outputs/apk/$layout/release/sample-$layout-release-unsigned.apk" "/tmp/$name"
+  "$BT/apksigner" sign \
+    --ks "$KS" --ks-pass pass:android --key-pass pass:android \
+    --out "$OUT/$name" "/tmp/$name"
+  "$BT/apksigner" verify --print-certs "$OUT/$name" | head -3
+  ls -lh "$OUT/$name"
+}
+
+sign_sample gallery smartisanx-sample-release.apk
+sign_sample list smartisanx-sampleold-release.apk

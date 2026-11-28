@@ -296,10 +296,11 @@ interactive demos:
 
 ```bash
 ./gradlew :sample:assembleDebug
-# output: sample/build/outputs/apk/debug/sample-debug.apk
+# Tabbed: sample/build/outputs/apk/gallery/debug/sample-gallery-debug.apk
+# List:   sample/build/outputs/apk/list/debug/sample-list-debug.apk
 ```
 
-The APK provides separate launcher entries for **smartisanx** and **smartisanx 组件示例**. The **smartisanx** entry opens the tabbed gallery with Home, Icons, Colors, Text, and Settings tabs. Home opens with interactive controls, followed by grouped demo links. Both launchers include the Messages thread demo.
+Both APKs can be installed side by side. **smartisanx** (`cc.wuersan008.smartisanx.sample`) opens the tabbed layout with Home, Icons, Colors, Text, and Settings. **smartisanx 组件示例** (`cc.wuersan008.smartisanx.sampleold`) opens the original list. Both include the Messages demo.
 
 The demo pages map one-to-one onto the component groups: theme and design tokens, text, icons,
 buttons, controls, text and input, layout and lists, full-screen layouts, list interaction,

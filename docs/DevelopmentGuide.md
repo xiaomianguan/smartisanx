@@ -536,7 +536,7 @@ Test device: a nubia P0110, 1264×2800 @560dpi (**1dp = 3.5px**); there is also 
 
 ```bash
 # 1) Install (plain `adb install -r` hangs on the P0110; use push + pm install)
-adb push sample/build/outputs/apk/debug/sample-debug.apk /data/local/tmp/s.apk
+adb push sample/build/outputs/apk/gallery/debug/sample-gallery-debug.apk /data/local/tmp/s.apk
 adb shell pm install -r -t /data/local/tmp/s.apk      # a USB install dialog appears: tap ACCEPT
 
 # 2) This device's AOD is aggressive: it returns to Dozing + NotificationShade

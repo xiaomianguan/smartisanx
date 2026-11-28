@@ -280,10 +280,11 @@ selector 自带按下 / 禁用态），原版没有对应素材时才用 `Smarti
 
 ```bash
 ./gradlew :sample:assembleDebug
-# 产物：sample/build/outputs/apk/debug/sample-debug.apk
+# 标签页：sample/build/outputs/apk/gallery/debug/sample-gallery-debug.apk
+# 列表：sample/build/outputs/apk/list/debug/sample-list-debug.apk
 ```
 
-APK 同时安装 **smartisanx**（标签页）与 **smartisanx 组件示例**（列表）两个独立的启动入口。**smartisanx** 提供首页、图标、色彩、文字和设置五个标签；首页先展示可操作控件，再列出分组示例。两个入口均提供短信会话示例。
+两个 APK 可以同时安装。**smartisanx**（`cc.wuersan008.smartisanx.sample`）提供首页、图标、色彩、文字和设置五个标签；**smartisanx 组件示例**（`cc.wuersan008.smartisanx.sampleold`）提供原有列表。两个应用均提供短信会话示例。
 
 构建环境：**JDK 17 及以上**（本机默认的 JDK 27 直接用，不需要切换 JDK、也不用设
 `JAVA_HOME`）；工具链为 Gradle 9.8.1 + AGP 9.4.1 + Kotlin 2.4.21，`compileSdk = 37`。

@@ -13,7 +13,7 @@
 ## 每完成一件事的固定动作
 
 1. 跑构建与 `./gradlew lintDebug`（仓库里没有单元测试，lint 就是门槛）。
-   **门槛是「0 警告」**：三个模块的 `lint-results-debug.txt` 结尾都必须是 `No issues found.`，
+   **门槛是「0 警告」**：两个库模块及示例的两个 Debug 变体的 lint 文本报告结尾都必须是 `No issues found.`，
    出现新警告要修掉或按下面的规则明确关闭。
    `library/ui` 里针对「原版素材」的检查（图标重复 / 密度 / px 单位 / plurals / 私有资源名）
    已经在 `library/ui/build.gradle.kts` 的 `lint { disable += ... }` 里关掉并写了原因 ——
@@ -23,6 +23,7 @@
    ```bash
    ./tools/release_apk.sh        # 与 debug 同签名，可直接覆盖安装手机上已装的包
    ./tools/send_tg.sh sample/build/outputs/apk/release/smartisanx-sample-release.apk <说明文件>
+   ./tools/send_tg.sh sample/build/outputs/apk/release/smartisanx-sampleold-release.apk <说明文件>
    ```
    说明文件（caption）用**英文**写，且**别超过 1024 字符** —— 超了 Telegram 会直接回
    `Bad Request: message caption is too long`，包根本不会发出去（发送前可以先数一下：
@@ -45,7 +46,7 @@
   `mipmap-anydpi-v26` 改成 `mipmap-anydpi`（`ObsoleteSdkInt`），照做之后 AGP 会把这个资源
   从 APK 里**静默丢掉**，`@mipmap/ic_launcher` 于是落到 `library/ui` 里那张原版
   `mipmap-400dpi/ic_launcher.png`（一张指南针），启动器上就显示成指南针。改完用
-  `aapt2 dump resources sample/build/outputs/apk/debug/sample-debug.apk | grep -A3 'mipmap/ic_launcher$'`
+  `aapt2 dump resources sample/build/outputs/apk/gallery/debug/sample-gallery-debug.apk | grep -A3 'mipmap/ic_launcher$'`
   确认 `(anydpi)` 那条还在（原因写在 `sample/lint.xml` 里）。
 
 ## 其它
