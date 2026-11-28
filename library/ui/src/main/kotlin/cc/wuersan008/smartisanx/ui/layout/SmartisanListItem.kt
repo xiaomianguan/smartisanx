@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cc.wuersan008.smartisanx.core.interaction.collectSmartisanPressedAsState
@@ -52,6 +53,8 @@ import cc.wuersan008.smartisanx.ui.basic.SmartisanText
  * 后面文字都落在同一个 x 上（有左图标时距屏幕左 72dp）。副标题 / 箭头所在的右槽
  * 左边留 `flexible_space`(18dp)，右边留 6dp。
  *
+ * 原版各应用的行字号不尽相同（例如短信会话行标题 16sp、摘要 13.5sp），用 `titleStyle` / `summaryStyle` 覆盖。
+ *
  * **什么时候用它**：单独一行，自带整张卡片底图与向外投影，直接放在页面底纹上，
  * 上下用 [SmartisanListVerticalGap] 分隔。
  * 要拼成**一张**卡片的分组（原版设置页那样）请用 [SmartisanGroupItem]；
@@ -75,9 +78,10 @@ fun SmartisanListItem(
     @DrawableRes rowShadowRes: Int? = null,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
+    titleStyle: TextStyle = LocalSmartisanTypography.current.listRowPrimary,
+    summaryStyle: TextStyle = LocalSmartisanTypography.current.listItemSecondary,
 ) {
     val colors = LocalSmartisanColors.current
-    val typography = LocalSmartisanTypography.current
     val interaction = rememberSmartisanInteractionSource()
     val pressed by interaction.collectSmartisanPressedAsState()
     val click = smartisanClick { onClick?.invoke() }
@@ -156,7 +160,7 @@ fun SmartisanListItem(
             Column(modifier = Modifier.weight(1f)) {
                 SmartisanText(
                     text = title,
-                    style = typography.listRowPrimary,
+                    style = titleStyle,
                     color = titleColor,
                     maxLines = 2,
                 )
@@ -164,7 +168,7 @@ fun SmartisanListItem(
                     SmartisanText(
                         text = summary,
                         modifier = Modifier.padding(top = 2.dp),
-                        style = typography.listItemSecondary,
+                        style = summaryStyle,
                         color = if (enabled) colors.textTertiary else colors.textDisabled,
                         maxLines = 2,
                     )

@@ -783,6 +783,7 @@ class SmartisanTitleBarAction private constructor(
     minHeight: Dp = SmartisanDimens.ListItemMinHeight,
     contentPadding: Dp = SmartisanDimens.RowContentStart,
     onClick: (() -> Unit)? = null, onLongClick: (() -> Unit)? = null,
+    titleStyle: TextStyle = listRowPrimary, summaryStyle: TextStyle = listItemSecondary,   // per-app row text sizes, e.g. the Messages conversation row 16sp / 13.5sp
 )
 
 @Composable fun SmartisanGroup(modifier, shape, color, horizontalMargin, content)

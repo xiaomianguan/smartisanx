@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cc.wuersan008.smartisanx.core.theme.LocalSmartisanColors
+import cc.wuersan008.smartisanx.core.theme.LocalSmartisanTypography
 import cc.wuersan008.smartisanx.ui.R as UiR
 import cc.wuersan008.smartisanx.ui.anim.SmartisanDecelerateCubic
 import cc.wuersan008.smartisanx.ui.anim.SmartisanNavigationOpenEasing
@@ -307,33 +308,40 @@ internal fun MessagesInbox(
                             title = conversation.title,
                             summary = preview,
                             leading = {
+                                // 原版 conversation_list_item_content.xml：头像在 60dp 的左槽里居中，
+                                // 文字列 layout_marginLeft = 76dp —— 竖分隔线（行底图里）和文字之间留 16dp。
                                 Box(
-                                    Modifier.width(60.dp).height(130.dp / 3),
-                                    contentAlignment = Alignment.Center,
+                                    Modifier.width(ConversationTextStart).height(130.dp / 3),
+                                    contentAlignment = Alignment.CenterStart,
                                 ) {
-                                    if (!managing || changingMode) {
-                                        SmartisanMessageAvatar(
-                                            modifier = Modifier.graphicsLayer {
-                                                val visibility = avatarVisibility.value
-                                                alpha = visibility
-                                                scaleX = 0.1f + 0.9f * visibility
-                                                scaleY = scaleX
-                                            },
-                                            group = conversation.group,
-                                        )
-                                    }
-                                    if (showEditControls) {
-                                        SmartisanCheckbox(
-                                            checked = checked,
-                                            onCheckedChange = if (managing && !changingMode) ({ toggle() }) else null,
-                                            modifier = Modifier.graphicsLayer {
-                                                val visibility = checkboxVisibility.value
-                                                alpha = visibility
-                                                scaleX = 0.1f + 0.9f * visibility
-                                                scaleY = scaleX
-                                            }.semantics { contentDescription = conversation.title },
-                                            markSize = 36.dp,
-                                        )
+                                    Box(
+                                        Modifier.width(60.dp).height(130.dp / 3),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        if (!managing || changingMode) {
+                                            SmartisanMessageAvatar(
+                                                modifier = Modifier.graphicsLayer {
+                                                    val visibility = avatarVisibility.value
+                                                    alpha = visibility
+                                                    scaleX = 0.1f + 0.9f * visibility
+                                                    scaleY = scaleX
+                                                },
+                                                group = conversation.group,
+                                            )
+                                        }
+                                        if (showEditControls) {
+                                            SmartisanCheckbox(
+                                                checked = checked,
+                                                onCheckedChange = if (managing && !changingMode) ({ toggle() }) else null,
+                                                modifier = Modifier.graphicsLayer {
+                                                    val visibility = checkboxVisibility.value
+                                                    alpha = visibility
+                                                    scaleX = 0.1f + 0.9f * visibility
+                                                    scaleY = scaleX
+                                                }.semantics { contentDescription = conversation.title },
+                                                markSize = 36.dp,
+                                            )
+                                        }
                                     }
                                 }
                             },
@@ -355,6 +363,9 @@ internal fun MessagesInbox(
                             minHeight = 60.dp,
                             showDivider = true,
                             rowBackgroundRes = UiR.drawable.conversation_list_item_background_selector.takeIf { colors.isLight },
+                            // 原版会话行：联系人 16sp、摘要 13.5sp（conversation_list_item_content.xml）。
+                            titleStyle = LocalSmartisanTypography.current.listRowPrimary.copy(fontSize = 16.sp),
+                            summaryStyle = LocalSmartisanTypography.current.listItemSecondary.copy(fontSize = 13.5.sp),
                             onClick = {
                                 if (changingMode) return@SmartisanListItem
                                 if (managing) toggle() else {
@@ -390,3 +401,6 @@ internal fun MessagesInbox(
         }
     }
 }
+
+/** 原版会话行文字列的左边距（`layout_marginLeft = 76dp`）。 */
+private val ConversationTextStart = 76.dp
